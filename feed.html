@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Social - Feed Principal</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <!-- Container Principal do Feed -->
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho / Navegação Rápida -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-4 shadow-xl flex justify-between items-center">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase">
+                JENIOS SOCIAL • Feed Global
+            </span>
+            <div class="flex gap-2">
+                <button class="bg-[#7c3aed] text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer">Seguindo</button>
+                <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer">Explorar</button>
+            </div>
+        </div>
+
+        <!-- Caixa de Criação de Post ("O que está a pensar?") -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-start gap-4 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white font-black text-sm flex items-center justify-center shrink-0">
+                    PS
+                </div>
+                <textarea 
+                    rows="3" 
+                    placeholder="Partilhe uma análise, contexto de mercado ou visão de risco com a comunidade..." 
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] resize-none"
+                ></textarea>
+            </div>
+            <div class="flex justify-between items-center border-t border-slate-100 pt-3">
+                <div class="flex gap-2 text-xs text-slate-500 font-bold">
+                    <button class="hover:text-[#7c3aed] cursor-pointer">📷 Imagem</button>
+                    <button class="hover:text-[#7c3aed] cursor-pointer">📊 Gráfico</button>
+                </div>
+                <button onclick="alert('Publicação enviada com sucesso para o feed!')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                    Publicar
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de Publicações do Feed -->
+        <div class="space-y-4">
+            
+            <!-- Post 1 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-purple-700 text-white font-black text-xs flex items-center justify-center">
+                            MC
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Marcos Costa</h4>
+                            <span class="text-[10px] text-slate-500 font-mono">@marcoscosta • Há 25 minutos</span>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-purple-100 text-[#7c3aed] px-2 py-0.5 rounded-md font-bold">Day Trade</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    O robô da JENIOS acabou de salvar-me de um loss desnecessário na abertura do dólar. O Modo Reverso transformou uma operação emocional numa entrada técnica vencedora. Incrível! 🚀
+                </p>
+                <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                    <button class="hover:text-rose-600 font-bold cursor-pointer">❤️ 28 Gostos</button>
+                    <button class="hover:text-[#7c3aed] font-bold cursor-pointer">💬 6 Comentários</button>
+                    <button class="hover:text-slate-900 font-bold cursor-pointer">🔄 Partilhar</button>
+                </div>
+            </div>
+
+            <!-- Post 2 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-800 text-white font-black text-xs flex items-center justify-center">
+                            AL
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Ana Lima</h4>
+                            <span class="text-[10px] text-slate-500 font-mono">@analima • Há 2 horas</span>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold">Cripto 24/7</span>
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    Alguém a monitorizar o fluxo de liquidações no Bitcoin nas últimas horas? O suporte em 62k está a segurar forte com ordens institucionais ocultas.
+                </p>
+                <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                    <button class="hover:text-rose-600 font-bold cursor-pointer">❤️ 45 Gostos</button>
+                    <button class="hover:text-[#7c3aed] font-bold cursor-pointer">💬 14 Comentários</button>
+                    <button class="hover:text-slate-900 font-bold cursor-pointer">🔄 Partilhar</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

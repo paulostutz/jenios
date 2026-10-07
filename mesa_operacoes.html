@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Mesa de Operações HFT & Disciplina Algorítmica</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-6 flex flex-col space-y-4 relative">
+
+    <!-- Barra de Controlo de Ativos e Conexão com Corretora -->
+    <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-4 shadow-xl flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase">
+                JENIOS DESK •
+            </span>
+            <!-- Seletor de Ativos -->
+            <select class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-black text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                <option>WINZ26 (B3 - Mini-Índice Futuro)</option>
+                <option>WDOF26 (B3 - Mini-Dólar Futuro)</option>
+                <option>PETR4 (B3 - Ações A Vista)</option>
+                <option>BTCUSD (Cripto - Bitcoin Perpetuo)</option>
+            </select>
+        </div>
+
+        <!-- Indicadores & Conexão -->
+        <div class="flex flex-wrap items-center gap-4 text-xs font-mono">
+            <button onclick="abrirModalCorretora()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow flex items-center gap-1.5 cursor-pointer">
+                🔗 Conectar Corretora (Conta Real)
+            </button>
+            <div>
+                <span class="text-slate-500">Resultado:</span>
+                <span class="font-black text-emerald-600 ml-1">+ R$ 940,00</span>
+            </div>
+            <button onclick="alert('A abrir engenharia reversa adaptativa...')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl transition-all cursor-pointer">
+                ⚙️ Risco
+            </button>
+        </div>
+    </div>
+
+    <!-- Área Principal: Gráfico TradingView + Painel de Execução -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-1">
+        
+        <!-- Gráfico TradingView (3 colunas) -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-4 shadow-xl lg:col-span-3 flex flex-col h-[500px] lg:h-auto">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
+                <span class="text-xs font-bold uppercase text-slate-700">Gráfico em Tempo Real (TradingView Engine)</span>
+                <span class="text-[10px] text-slate-400 font-mono">1m • 5m • 15m • 1H • Diário</span>
+            </div>
+            
+            <div class="flex-1 bg-slate-900 rounded-xl flex items-center justify-center relative overflow-hidden text-slate-500 font-mono text-xs">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#7c3aed_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="text-center space-y-2 z-10">
+                    <span class="text-purple-400 font-bold block">[ Widget Oficial TradingView Integrado ]</span>
+                    <span class="text-[10px] text-slate-400">Fluxo Institucional & Execução HFT em Tempo Real</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel Lateral: Alocação Manual & Bloqueio Emocional -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-5 shadow-xl space-y-4 flex flex-col justify-between">
+            <div class="space-y-4">
+                <div class="border-b border-slate-200 pb-3">
+                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-900">Mesa de Execução HFT</h2>
+                    <span class="text-[10px] text-emerald-600 font-bold">● Proteção Algorítmica Ativa</span>
+                </div>
+
+                <!-- 1. Alocação Manual de Capital (Sem valores pré-estabelecidos) -->
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase text-slate-700 font-mono">Capital a Operar (R$ Manual)</label>
+                    <input type="number" value="10000.00" step="100.00" min="100" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+                    <span class="text-[9px] text-slate-500">Informe exatamente quanto da sua banca deseja alocar nesta sessão.</span>
+                </div>
+
+                <!-- Alocação de Contratos -->
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold uppercase text-slate-500 font-mono">Contratos por Operação</label>
+                    <input type="number" value="5" min="1" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+                </div>
+
+                <!-- Botões de Compra e Venda -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button onclick="alert('Ordem de VENDA enviada! Gerida pelo algoritmo (Colherinha/Balde).')" class="bg-rose-600 hover:bg-rose-700 text-white font-black text-xs py-3 rounded-xl transition-all shadow cursor-pointer uppercase">
+                        📉 Vender
+                    </button>
+                    <button onclick="alert('Ordem de COMPRA enviada! Gerida pelo algoritmo (Colherinha/Balde).')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-3 rounded-xl transition-all shadow cursor-pointer uppercase">
+                        📈 Comprar
+                    </button>
+                </div>
+
+                <!-- 2. Bloqueio de Pânico / Intervenção Manual Bloqueada -->
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-3 text-[10px] text-amber-900 space-y-1">
+                    <b>🛡️ Modo Disciplina Rígida Ativo:</b> 
+                    <span>O botão de encerramento manual antecipado está <b>bloqueado</b> pelo Robô de Frieza. O algoritmo garante a execução estrita da estratégia assimétrica sem interferência emocional.</span>
+                </div>
+            </div>
+
+            <!-- Rodapé do Painel -->
+            <div class="bg-purple-50 border border-purple-200 rounded-xl p-3 text-[10px] text-slate-600 leading-tight">
+                <b>Estratégia Aplicada:</b> Perder de colherinha (stop matemático curto) e ganhar de balde (alvo longo).
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE CONEXÃO COM CORRETORA -->
+    <div id="modalCorretora" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS BROKER GATEWAY • Conexão Segura
+                </span>
+                <h2 class="text-lg font-black text-slate-900">Vincular Conta Real da Corretora</h2>
+                <p class="text-xs text-slate-600 mt-1">
+                    Insira as credenciais de API da sua corretora para sincronizar o capital manual alocado.
+                </p>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold uppercase text-slate-700">Corretora / Exchange</label>
+                <select class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                    <option>XP Investimentos (B3 / Futuros)</option>
+                    <option>Clear Corretora (B3 / Mini-Índice & Dólar)</option>
+                    <option>Rico Investimentos (B3)</option>
+                    <option>Binance (Cripto Derivativos)</option>
+                    <option>Interactive Brokers (Global / Forex)</option>
+                </select>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold uppercase text-slate-700">Chave de API / Token</label>
+                <input type="password" placeholder="Token de segurança..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <button onclick="conectarContaReal()" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow uppercase tracking-wide cursor-pointer">
+                    Conectar e Sincronizar Mesa
+                </button>
+                <button onclick="fecharModalCorretora()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalCorretora() {
+            document.getElementById('modalCorretora').classList.remove('hidden');
+            document.getElementById('modalCorretora').classList.add('flex');
+        }
+        function fecharModalCorretora() {
+            document.getElementById('modalCorretora').classList.remove('flex');
+            document.getElementById('modalCorretora').classList.add('hidden');
+        }
+        function conectarContaReal() {
+            alert('Conta real conectada com sucesso! Capital manual sincronizado.');
+            fecharModalCorretora();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Plataforma Unificada de Alta Performance</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen flex flex-col md:flex-row">
+
+    <!-- MENU LATERAL DE NAVEGAÇÃO -->
+    <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+        <div class="space-y-6">
+            <!-- Logótipo / Título -->
+            <div>
+                <span class="text-[10px] text-[#7c3aed] font-bold font-mono tracking-widest uppercase block mb-1">
+                    JENIOS FINTECH
+                </span>
+                <h1 class="text-base font-black text-white">Painel Institucional</h1>
+            </div>
+
+            <!-- Links de Navegação -->
+            <nav class="space-y-1 text-xs font-bold">
+                <button onclick="mudarSecao('dashboard')" id="btn-dashboard" class="w-full text-left px-4 py-3 rounded-xl transition-all bg-[#7c3aed] text-white shadow-md">
+                    📊 Dashboard Principal
+                </button>
+                <button onclick="mudarSecao('feed')" id="btn-feed" class="w-full text-left px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    🌐 Feed Social & Ads
+                </button>
+                <button onclick="mudarSecao('ranking')" id="btn-ranking" class="w-full text-left px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    🏆 Ranking de Elite
+                </button>
+                <button onclick="mudarSecao('mesa')" id="btn-mesa" class="w-full text-left px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    ⚡ Mesa de Operações (HFT)
+                </button>
+                <button onclick="mudarSecao('engenharia')" id="btn-engenharia" class="w-full text-left px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    ⚙️ Engenharia Reversa
+                </button>
+                <button onclick="mudarSecao('extrato')" id="btn-extrato" class="w-full text-left px-4 py-3 rounded-xl transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    📄 Extrato Financeiro
+                </button>
+            </nav>
+        </div>
+
+        <!-- Rodapé do Menu -->
+        <div class="pt-6 border-t border-slate-800 text-[10px] text-slate-500 font-mono">
+            Paulo Stutz • CEO<br>Letter Franqueadora Ltda
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL (MUDANÇA DINÂMICA DE ABAS) -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto max-h-screen">
+        
+        <!-- SECÇÃO 1: DASHBOARD -->
+        <section id="secao-dashboard" class="secao-conteudo space-y-6">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4">
+                <h2 class="text-xl font-black text-slate-900">Dashboard Central</h2>
+                <p class="text-xs text-slate-600">Bem-vindo à área logada da JENIOS. Aqui visualiza o seu capital, o Índice de Frieza Emocional e as subscrições ativas.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <span class="text-[10px] font-mono text-slate-500 uppercase">Capital Protegido</span>
+                        <div class="text-lg font-black text-slate-900">R$ 45.820,00</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <span class="text-[10px] font-mono text-slate-500 uppercase">Índice de Frieza</span>
+                        <div class="text-lg font-black text-[#7c3aed]">92 / 100</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                        <span class="text-[10px] font-mono text-slate-500 uppercase">Rentabilidade Mês</span>
+                        <div class="text-lg font-black text-emerald-600">+14.2% (IPJ)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECÇÃO 2: FEED SOCIAL & ADS -->
+        <section id="secao-feed" class="secao-conteudo space-y-6 hidden">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4 max-w-xl mx-auto">
+                <h2 class="text-xl font-black text-slate-900">Gestor de Tráfego & Impulsionamento</h2>
+                <p class="text-xs text-slate-600">Selecione uma publicação do seu perfil para impulsionar com segmentação geográfica livre, objetivos de conversão e orçamento diário manual (Mín. R$ 10,00).</p>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-medium">
+                    📊 Post Selecionado: Análise Institucional - Mini-Índice (WIN)
+                </div>
+                <button onclick="alert('Campanha configurada com sucesso!')" class="w-full bg-[#7c3aed] text-white font-bold text-xs py-3 rounded-xl uppercase shadow">
+                    Lançar Anúncio (Gerar Pix)
+                </button>
+            </div>
+        </section>
+
+        <!-- SECÇÃO 3: RANKING -->
+        <section id="secao-ranking" class="secao-conteudo space-y-6 hidden">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4 max-w-2xl mx-auto">
+                <h2 class="text-xl font-black text-slate-900">Top 10 Traders de Elite (Mensal)</h2>
+                <p class="text-xs text-slate-600">Os 3 primeiros colocados ganham a mensalidade abonada. Copiar mestres exige um plano base ativo.</p>
+                <div class="space-y-2">
+                    <div class="bg-amber-50 border-2 border-amber-400 rounded-xl p-3 flex justify-between items-center text-xs">
+                        <div><b>1º Carlos Quant</b> (+42.5% • Frieza 98)</div>
+                        <button onclick="alert('Redirecionando para plano + cópia')" class="bg-[#7c3aed] text-white px-3 py-1.5 rounded-lg font-bold">⚡ Copiar (R$ 49,90)</button>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-300 rounded-xl p-3 flex justify-between items-center text-xs">
+                        <div><b>2º Ana Trader</b> (+38.1% • Frieza 95)</div>
+                        <button onclick="alert('Redirecionando para plano + cópia')" class="bg-[#7c3aed] text-white px-3 py-1.5 rounded-lg font-bold">⚡ Copiar (R$ 49,90)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECÇÃO 4: MESA DE OPERAÇÕES -->
+        <section id="secao-mesa" class="secao-conteudo space-y-6 hidden">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4">
+                <h2 class="text-xl font-black text-slate-900">Mesa de Operações HFT & TradingView</h2>
+                <p class="text-xs text-slate-600">Defina o capital manual a operar, conecte a sua corretora real e execute ordens sob a disciplina do motor quantitativo.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="lg:col-span-2 bg-slate-900 text-slate-400 rounded-xl h-64 flex items-center justify-center font-mono text-xs">
+                        [ Gráfico TradingView Oficial Integrado ]
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 text-xs">
+                        <label class="block font-bold uppercase text-slate-700">Capital Manual a Operar (R$)</label>
+                        <input type="number" value="10000.00" class="w-full bg-white border border-slate-300 rounded-lg p-2 font-mono">
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button class="bg-rose-600 text-white font-bold py-2.5 rounded-lg">VENDER</button>
+                            <button class="bg-emerald-600 text-white font-bold py-2.5 rounded-lg">COMPRAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECÇÃO 5: ENGENHARIA REVERSA -->
+        <section id="secao-engenharia" class="secao-conteudo space-y-6 hidden">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4 max-w-2xl mx-auto">
+                <h2 class="text-xl font-black text-slate-900">Engenharia Reversa Adaptativa</h2>
+                <p class="text-xs text-slate-600">Filosofia: Perder de colherinha e ganhar de balde. O robô impede o pânico e gere o stop curto e o alvo longo.</p>
+                <div class="bg-purple-900 text-white p-4 rounded-xl font-mono text-xs space-y-1">
+                    <div><b>Payoff Assimétrico:</b> Ratio = (Take Profit / Stop Loss) &ge; 4.0</div>
+                    <div><b>Bloqueio Emocional:</b> Intervenção Manual = FALSE</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECÇÃO 6: EXTRATO FINANCEIRO -->
+        <section id="secao-extrato" class="secao-conteudo space-y-6 hidden">
+            <div class="bg-white text-slate-900 rounded-2xl p-6 shadow-xl space-y-4 max-w-2xl mx-auto">
+                <h2 class="text-xl font-black text-slate-900">Extrato Financeiro & Operacional</h2>
+                <p class="text-xs text-slate-600">Auditoria completa de pagamentos à plataforma, custos de mestres e resultados operacionais.</p>
+                <div class="flex gap-2">
+                    <button onclick="alert('A gerar PDF...')" class="bg-slate-100 border border-slate-300 px-4 py-2 rounded-xl text-xs font-bold">📄 Baixar PDF</button>
+                    <button onclick="alert('A exportar CSV...')" class="bg-slate-100 border border-slate-300 px-4 py-2 rounded-xl text-xs font-bold">📊 Exportar CSV</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPT DE CONTROLO DE ABAS -->
+    <script>
+        function mudarSecao(nomeSecao) {
+            // Ocultar todas as secções
+            const secoes = document.querySelectorAll('.secao-conteudo');
+            secoes.forEach(s => s.classList.add('hidden'));
+
+            // Remover estilo ativo de todos os botões
+            const botoes = document.querySelectorAll('aside nav button');
+            botoes.forEach(b => {
+                b.classList.remove('bg-[#7c3aed]', 'text-white', 'shadow-md');
+                b.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+            });
+
+            // Mostrar a secção escolhida
+            document.getElementById('secao-' + nomeSecao).classList.remove('hidden');
+
+            // Ativar o botão correspondente
+            const btnAtivo = document.getElementById('btn-' + nomeSecao);
+            btnAtivo.classList.remove('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+            btnAtivo.classList.add('bg-[#7c3aed]', 'text-white', 'shadow-md');
+        }
+    </script>
+</body>
+</html>

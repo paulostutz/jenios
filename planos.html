@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Platform - Escolha o seu Plano</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Cabeçalho da Seção -->
+    <div class="max-w-4xl w-full text-center mb-10">
+        <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-2 block">
+            JENIOS PLATFORM • Assinaturas e Tecnologia Adaptativa
+        </span>
+        <h1 class="text-3xl md:text-4xl font-black text-white mb-3">
+            Escolha o Nível de Blindagem do seu Capital
+        </h1>
+        <p class="text-slate-400 text-xs md:text-sm max-w-xl mx-auto leading-relaxed">
+            Selecione o plano ideal para o seu mercado de atuação e ative o motor algorítmico de retificação de viés comportamental.
+        </p>
+    </div>
+
+    <!-- Grade de Planos -->
+    <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Plano 1: Nacional -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Iniciante / B3</span>
+                <h3 class="text-lg font-black text-slate-900 mb-2">Plano Nacional</h3>
+                <div class="text-2xl font-black text-[#7c3aed] mb-4">R$ 99,90<span class="text-xs text-slate-500 font-normal">/mês</span></div>
+                <p class="text-xs text-slate-600 mb-6 leading-relaxed">
+                    Acesso exclusivo à Bolsa Brasileira (B3) com contratos ilimitados e gestão de risco automatizada.
+                </p>
+                <ul class="space-y-2 text-xs text-slate-700 mb-6">
+                    <li>✔ WIN e WDO ilimitados</li>
+                    <li>✔ Filtro Antifúria básico</li>
+                    <li>✔ Gestão OCO integrada</li>
+                </ul>
+            </div>
+            <button onclick="selecionarPlano('Plano Nacional (B3)', 'R$ 99,90/mês')" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                Selecionar Nacional
+            </button>
+        </div>
+
+        <!-- Plano 2: Global Crypto (Mais Vendido) -->
+        <div class="bg-slate-900 text-white border-2 border-[#a855f7] rounded-2xl p-6 shadow-2xl flex flex-col justify-between relative">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#7c3aed] text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-wider">
+                Mais Popular
+            </div>
+            <div>
+                <span class="text-[10px] font-bold font-mono text-purple-400 uppercase tracking-wider block mb-1">Avançado / 24h</span>
+                <h3 class="text-lg font-black text-white mb-2">Global Crypto</h3>
+                <div class="text-2xl font-black text-purple-400 mb-4">R$ 149,90<span class="text-xs text-slate-400 font-normal">/mês</span></div>
+                <p class="text-xs text-slate-300 mb-6 leading-relaxed">
+                    Tudo da B3 integrado ao Mercado Futuros de Criptomoedas 24/7 com alta frequência algorítmica.
+                </p>
+                <ul class="space-y-2 text-xs text-slate-300 mb-6">
+                    <li>✔ B3 + Binance / Bybit</li>
+                    <li>✔ Modo Reverso Automático</li>
+                    <li>✔ Execução HFT (3ms)</li>
+                </ul>
+            </div>
+            <button onclick="selecionarPlano('Global Crypto (B3 + Cripto)', 'R$ 149,90/mês')" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-lg shadow-purple-600/30 uppercase tracking-wide cursor-pointer">
+                Selecionar Global Crypto
+            </button>
+        </div>
+
+        <!-- Plano 3: Internacional Pro -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Institucional / Global</span>
+                <h3 class="text-lg font-black text-slate-900 mb-2">Internacional Pro</h3>
+                <div class="text-2xl font-black text-slate-900 mb-4">R$ 199,90<span class="text-xs text-slate-500 font-normal">/mês</span></div>
+                <p class="text-xs text-slate-600 mb-6 leading-relaxed">
+                    Acesso total aos mercados globais, incluindo Forex (Ouro, Petróleo) e maiores Ações de Wall Street.
+                </p>
+                <ul class="space-y-2 text-xs text-slate-700 mb-6">
+                    <li>✔ Acesso Global Total</li>
+                    <li>✔ Servidor Dedicado VIP</li>
+                    <li>✔ Modo Espelho Direto</li>
+                </ul>
+            </div>
+            <button onclick="selecionarPlano('Internacional Pro (Global Total)', 'R$ 199,90/mês')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                Selecionar Pro
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Script de Ação -->
+    <script>
+        function selecionarPlano(nome, valor) {
+            alert(`Plano escolhido: ${nome} (${valor}). Este bloco HTML está operacional e pronto para salvar como planos.html no Bloco de Notas.`);
+        }
+    </script>
+</body>
+</html>

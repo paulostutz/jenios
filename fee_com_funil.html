@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Social - Feed com Funil de Conversão</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho do Feed -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-4 shadow-xl flex justify-between items-center">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase">
+                JENIOS SOCIAL • Comunidade Global
+            </span>
+            <div class="flex gap-2">
+                <a href="planos.html" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-all">Ver Planos (A partir de R$ 99,90)</a>
+            </div>
+        </div>
+
+        <!-- BANNER NATIVO DO FUNIL: O Simulador Isca dentro do Feed -->
+        <div class="bg-gradient-to-r from-purple-900 to-[#7c3aed] text-white border border-purple-500 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+            <span class="text-[10px] bg-white/20 text-white font-mono font-bold px-2.5 py-0.5 rounded-full uppercase mb-2 inline-block">Teste Gratuito</span>
+            <h3 class="text-base font-black mb-1">Quanto dinheiro você perdeu este mês por falta de proteção?</h3>
+            <p class="text-xs text-purple-100 mb-4 leading-relaxed">
+                Faça o teste de 1 minuto no Simulador JENIOS e descubra o seu índice de risco operacional antes de voltar a operar.
+            </p>
+            <button onclick="alertRedirecionarSimulador()" class="bg-white text-[#7c3aed] hover:bg-purple-50 font-bold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                🚀 Calcular Meus Riscos no Simulador
+            </button>
+        </div>
+
+        <!-- Post de um Trader Mestre com Botão de Cópia (R$ 49,90) -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-700 text-white font-black text-xs flex items-center justify-center">
+                        CQ
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="text-xs font-bold text-slate-900">Carlos Quant</h4>
+                            <span class="text-[10px] bg-purple-100 text-[#7c3aed] font-bold px-2 py-0.5 rounded-full">
+                                + Seguir
+                            </span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono">@carlosq • Posição Real Verificada 🛡️</span>
+                    </div>
+                </div>
+                <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md font-bold uppercase">B3 • WIN</span>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                Identificado fluxo institucional de alta no Mini-Índice. Ativei o espelhamento automático com o robô de proteção ligado. Alvo técnico nos 132.800 pontos.
+            </p>
+
+            <!-- Bloco de Cópia com Preço Específico (R$ 49,90) -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 flex items-center justify-between gap-4">
+                <div>
+                    <span class="text-[10px] font-bold font-mono text-slate-500 uppercase block">Copiar Estratégia de Carlos Quant</span>
+                    <span class="text-xs font-black text-[#7c3aed]">R$ 49,90 <span class="text-slate-500 font-normal">/ mês (70% para o Mestre)</span></span>
+                </div>
+                <button onclick="alert('Redirecionando para assinatura de cópia de Carlos Quant por R$ 49,90/mês...')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md uppercase tracking-wide shrink-0 cursor-pointer">
+                    ⚡ Copiar por R$ 49,90
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <div class="flex gap-4">
+                    <button class="hover:text-rose-600 font-bold cursor-pointer">❤️ 84 Gostos</button>
+                    <button class="hover:text-[#7c3aed] font-bold cursor-pointer">💬 22 Comentários</button>
+                </div>
+                <span class="text-[10px] text-slate-400 font-mono">👁️ 2.150 Visualizações</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function alertRedirecionarSimulador() {
+            alert('A abrir o Simulador Isca para captação de leads...');
+        }
+    </script>
+</body>
+</html>

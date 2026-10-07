@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Extrato Financeiro & Operacional</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-4xl w-full space-y-6">
+        
+        <!-- Cartão Principal do Extrato -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+            
+            <!-- Cabeçalho com Opções de Download -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                        JENIOS FINANCE • Auditoria e Histórico
+                    </span>
+                    <h1 class="text-xl font-black text-slate-900">Extrato Financeiro & Operacional</h1>
+                </div>
+                
+                <!-- Botões de Exportação / Download -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="baixarExtratoPDF()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm">
+                        📄 Baixar PDF
+                    </button>
+                    <button onclick="baixarExtratoCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm">
+                        📊 Exportar CSV (Excel)
+                    </button>
+                    <button onclick="alert('A abrir filtros avançados de período...')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow cursor-pointer">
+                        🔍 Filtrar Período
+                    </button>
+                </div>
+            </div>
+
+            <!-- Abas / Categorias de Extrato -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- COLUNA 1: Extrato de Pagamentos & Custos (Plataforma, Mestres e Ads) -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center bg-purple-50/60 border border-purple-200 rounded-xl p-3">
+                        <h2 class="text-xs font-black uppercase text-slate-900">💳 Pagamentos e Assinaturas</h2>
+                        <span class="text-[10px] text-[#7c3aed] font-bold font-mono">Outubro / 2026</span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <!-- Item 1: Plano SaaS -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Plano Base Pro (SaaS)</span>
+                                <span class="text-[10px] text-slate-500">Renovação Mensal • Cartão Final 4210</span>
+                            </div>
+                            <span class="font-black text-rose-600">- R$ 149,90</span>
+                        </div>
+
+                        <!-- Item 2: Cópia de Mestre -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Cópia Mestre: Carlos Quant</span>
+                                <span class="text-[10px] text-slate-500">Split Automático (30% JENIOS / 70% Mestre)</span>
+                            </div>
+                            <span class="font-black text-rose-600">- R$ 49,90</span>
+                        </div>
+
+                        <!-- Item 3: Impulsionamento / Ads -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">JENIOS Ads (Campanha de Tráfego)</span>
+                                <span class="text-[10px] text-slate-500">Impulsionamento de Post • Pix Pago</span>
+                            </div>
+                            <span class="font-black text-rose-600">- R$ 100,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUNA 2: Extrato Operacional (Resultados de Trading e Repasses) -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center bg-emerald-50/60 border border-emerald-200 rounded-xl p-3">
+                        <h2 class="text-xs font-black uppercase text-slate-900">📈 Extrato Operacional & Ganhos</h2>
+                        <span class="text-[10px] text-emerald-700 font-bold font-mono">B3 / Mini-Índice</span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <!-- Operacional 1 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Resultado Mesa HFT (Day Trade)</span>
+                                <span class="text-[10px] text-slate-500">Operações autónomas com robô protetor</span>
+                            </div>
+                            <span class="font-black text-emerald-600">+ R$ 1.840,00</span>
+                        </div>
+
+                        <!-- Operacional 2 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Repasse Recebido (Como Mestre)</span>
+                                <span class="text-[10px] text-slate-500">70% de 4 seguidores copiando a sua conta</span>
+                            </div>
+                            <span class="font-black text-emerald-600">+ R$ 139,72</span>
+                        </div>
+
+                        <!-- Operacional 3 -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Abono de Mensalidade (Ranking Top 3)</span>
+                                <span class="text-[10px] text-slate-500">Prémio de eficiência do mês anterior</span>
+                            </div>
+                            <span class="font-black text-emerald-600">Isento (R$ 0,00)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Resumo Consolidado do Mês -->
+            <div class="bg-slate-900 text-white rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <span class="text-[10px] text-purple-300 font-mono uppercase tracking-wider block">Balanço Líquido Consolidado (Outubro)</span>
+                    <span class="text-sm font-bold text-slate-200">Total de Entradas vs. Saídas e Custos Operacionais</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xl font-black text-emerald-400">+ R$ 1.680,82</span>
+                    <span class="block text-[10px] text-slate-400">Saldo Líquido Disponível</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts de Simulação de Download -->
+    <script>
+        function baixarExtratoPDF() {
+            alert('A gerar ficheiro PDF oficial do extrato financeiro e operacional da JENIOS...\nO download começará em instantes.');
+        }
+
+        function baixarExtratoCSV() {
+            alert('A compilar dados em formato CSV (compatível com Excel / Google Sheets)...\nO download começará em instantes.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Social - Comunidades Temáticas</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <!-- Container Principal das Comunidades -->
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS SOCIAL • Grupos de Discussão
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Comunidades Temáticas</h1>
+                <p class="text-xs text-slate-600">Junte-se a grupos focados em mercados específicos e partilhe experiências de blindagem.</p>
+            </div>
+            <button onclick="alert('Funcionalidade de criar nova comunidade aberta.')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                + Criar Comunidade
+            </button>
+        </div>
+
+        <!-- Grade de Comunidades Disponíveis -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Comunidade 1 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[10px] font-bold font-mono bg-purple-100 text-[#7c3aed] px-2.5 py-1 rounded-lg uppercase">B3 & Futuros</span>
+                        <span class="text-xs text-slate-500 font-mono">1.420 membros</span>
+                    </div>
+                    <h3 class="text-base font-black text-slate-900 mb-2">Day Trade & Mini-Índice (WIN/WDO)</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                        Comunidade dedicada à análise de fluxo, leituras de livro de ofertas e atuação do Botão Antifúria na Bolsa Brasileira.
+                    </p>
+                </div>
+                <button onclick="alert('Entrou com sucesso na comunidade Day Trade & Mini-Índice!')" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                    Aceder à Comunidade
+                </button>
+            </div>
+
+            <!-- Comunidade 2 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[10px] font-bold font-mono bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg uppercase">Cripto 24/7</span>
+                        <span class="text-xs text-slate-500 font-mono">2.890 membros</span>
+                    </div>
+                    <h3 class="text-base font-black text-slate-900 mb-2">Cripto Futuros & HFT Global</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                        Discussões avançadas sobre o mercado de derivativos de criptomoedas, alavancagem inteligente e sincronização com a Binance.
+                    </p>
+                </div>
+                <button onclick="alert('Entrou com sucesso na comunidade Cripto Futuros!')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                    Aceder à Comunidade
+                </button>
+            </div>
+
+            <!-- Comunidade 3 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[10px] font-bold font-mono bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg uppercase">Psicologia</span>
+                        <span class="text-xs text-slate-500 font-mono">980 membros</span>
+                    </div>
+                    <h3 class="text-base font-black text-slate-900 mb-2">Controlo Emocional & Mindset</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                        Focado em debater viés comportamental, eliminação do modo fúria e disciplina operacional através dos laudos do simulador.
+                    </p>
+                </div>
+                <button onclick="alert('Entrou com sucesso na comunidade Controlo Emocional!')" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                    Aceder à Comunidade
+                </button>
+            </div>
+
+            <!-- Comunidade 4 -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[10px] font-bold font-mono bg-blue-100 text-blue-800 px-2.5 py-1 rounded-lg uppercase">Quant</span>
+                        <span class="text-xs text-slate-500 font-mono">750 membros</span>
+                    </div>
+                    <h3 class="text-base font-black text-slate-900 mb-2">Algoritmos & Automação</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                        Espaço para programadores e operadores testarem estratégias quantitativas e integrações de API de alta frequência.
+                    </p>
+                </div>
+                <button onclick="alert('Entrou com sucesso na comunidade Algoritmos!')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                    Aceder à Comunidade
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

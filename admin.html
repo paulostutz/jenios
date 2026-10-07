@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Platform - Painel Administrativo (Backoffice)</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <!-- Container Principal do Admin -->
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho do Backoffice -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS ADMIN • Backoffice de Gestão Operacional
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Painel de Controlo do C-Level</h1>
+                <p class="text-xs text-slate-600">Visão geral do ecossistema, utilizadores ativos e faturamento da plataforma.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-[#7c3aed]">
+                    ● Modo Administrador
+                </span>
+                <button onclick="alert('Sessão administrativa terminada com segurança.')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer">
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <!-- Grade de Métricas Principais (KPIs) -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-5 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Total de Leads (Quiz)</span>
+                <div class="text-2xl font-black text-slate-900">1.284</div>
+                <span class="text-[10px] text-emerald-600 font-bold">↑ +14% esta semana</span>
+            </div>
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-5 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Assinantes Ativos (SaaS)</span>
+                <div class="text-2xl font-black text-[#7c3aed]">342</div>
+                <span class="text-[10px] text-emerald-600 font-bold">Plano Global Crypto em destaque</span>
+            </div>
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-5 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Faturamento Recorrente (MRR)</span>
+                <div class="text-2xl font-black text-emerald-600">R$ 48.350</div>
+                <span class="text-[10px] text-slate-500">Previsão de fecho mensal</span>
+            </div>
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-5 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Volume Protegido Hoje</span>
+                <div class="text-2xl font-black text-slate-900">R$ 142.900</div>
+                <span class="text-[10px] text-purple-600 font-bold">Retificações HFT ativas</span>
+            </div>
+        </div>
+
+        <!-- Secção de Gestão de Assinantes Recentes -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider">Últimas Assinaturas Registadas (Pix / Gateway)</h3>
+                <button onclick="alert('A exportar lista de assinantes em formato CSV...')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg transition-all cursor-pointer">
+                    📥 Exportar Relatório
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-500 font-mono">
+                            <th class="pb-3">Utilizador</th>
+                            <th class="pb-3">E-mail</th>
+                            <th class="pb-3">Plano Contratado</th>
+                            <th class="pb-3">Estado</th>
+                            <th class="pb-3 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr>
+                            <td class="py-3 font-bold text-slate-900">Carlos Eduardo Silva</td>
+                            <td class="py-3">carlos.silva@email.com</td>
+                            <td class="py-3">Global Crypto (B3 + Cripto)</td>
+                            <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-md font-bold text-[10px]">Ativo</span></td>
+                            <td class="py-3 text-right"><button onclick="alert('A gerir conta do utilizador...')" class="text-[#7c3aed] font-bold hover:underline">Gerir</button></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-bold text-slate-900">Mariana Souza Costa</td>
+                            <td class="py-3">mariana.costa@email.com</td>
+                            <td class="py-3">Plano Nacional (B3)</td>
+                            <td class="py-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-md font-bold text-[10px]">Ativo</span></td>
+                            <td class="py-3 text-right"><button onclick="alert('A gerir conta do utilizador...')" class="text-[#7c3aed] font-bold hover:underline">Gerir</button></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-bold text-slate-900">Roberto Mendes</td>
+                            <td class="py-3">roberto.mendes@email.com</td>
+                            <td class="py-3">Internacional Pro</td>
+                            <td class="py-3"><span class="bg-amber-100 text-amber-800 px-2 py-1 rounded-md font-bold text-[10px]">Pendente Pix</span></td>
+                            <td class="py-3 text-right"><button onclick="alert('A gerir conta do utilizador...')" class="text-[#7c3aed] font-bold hover:underline">Gerir</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

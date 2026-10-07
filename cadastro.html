@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS ID - Criar Conta</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Card de Cadastro -->
+    <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+        
+        <!-- Identificação da Marca / Módulo -->
+        <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-2 block">
+            JENIOS ID • Acesso Único ao Ecossistema
+        </span>
+        
+        <h1 class="text-2xl font-black mb-2 text-slate-900">Criar a sua Conta</h1>
+        <p class="text-xs text-slate-600 mb-6 leading-relaxed">
+            Registe-se para desbloquear o seu painel, gerir assinaturas e aceder à tecnologia de blindagem.
+        </p>
+
+        <!-- Formulário de Registo -->
+        <form onsubmit="realizarCadastro(event)">
+            
+            <div class="mb-4">
+                <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Nome Completo</label>
+                <input 
+                    type="text" 
+                    id="regNome" 
+                    required
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] focus:bg-white transition-all"
+                    placeholder="O seu nome completo"
+                >
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold uppercase text-slate-700 mb-1">E-mail Profissional</label>
+                <input 
+                    type="email" 
+                    id="regEmail" 
+                    required
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] focus:bg-white transition-all"
+                    placeholder="seu@email.com"
+                >
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-bold uppercase text-slate-700 mb-1">WhatsApp / Telemóvel</label>
+                <input 
+                    type="text" 
+                    id="regTelefone" 
+                    required
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] focus:bg-white transition-all"
+                    placeholder="(00) 90000-0000"
+                >
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Palavra-passe (Senha)</label>
+                <input 
+                    type="password" 
+                    id="regSenha" 
+                    required
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] focus:bg-white transition-all"
+                    placeholder="Mínimo de 6 caracteres"
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg shadow-purple-600/20 uppercase tracking-wide cursor-pointer"
+            >
+                Criar Conta Gratuitamente
+            </button>
+        </form>
+
+        <!-- Rodapé do Card -->
+        <div class="mt-6 text-center border-t border-slate-200 pt-4">
+            <p class="text-xs text-slate-600">
+                Já possui uma conta? 
+                <a href="#" onclick="alert('Redirecionando para a tela de login...')" class="text-[#7c3aed] font-bold hover:underline">Fazer Login</a>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Script de Simulação de Ação -->
+    <script>
+        function realizarCadastro(event) {
+            event.preventDefault();
+            const nome = document.getElementById('regNome').value;
+            const email = document.getElementById('regEmail').value;
+            
+            alert(`Sucesso! Conta criada para ${nome} (${email}). Este bloco HTML está operacional e pronto para salvar no Bloco de Notas.`);
+        }
+    </script>
+</body>
+</html>

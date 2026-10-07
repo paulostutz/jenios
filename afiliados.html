@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Programa de Afiliados e Embaixadores</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                JENIOS PARTNERS • Programa de Embaixadores
+            </span>
+            <h1 class="text-2xl font-black text-slate-900 mb-2">Indique e Ganhe Comissões Recorrentes</h1>
+            <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                Partilhe o seu link exclusivo e ganhe comissões vitalícias em Pix por cada operador que assinar a plataforma através da sua indicação.
+            </p>
+
+            <!-- Caixa do Link Exclusivo -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase text-slate-700">O seu Link de Indicação Exclusivo</label>
+                <div class="flex gap-3">
+                    <input type="text" readonly value="https://jenios.com.br/convite/paulostutz" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-mono focus:outline-none">
+                    <button onclick="alert('Link copiado para a área de transferência!')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-6 py-3 rounded-xl transition-all uppercase tracking-wide shrink-0 cursor-pointer">
+                        Copiar Link
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas de Afiliado -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Total de Indicados</span>
+                <div class="text-2xl font-black text-slate-900">24</div>
+                <span class="text-[10px] text-emerald-600 font-bold">18 ativos no SaaS</span>
+            </div>
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Comissões Acumuladas</span>
+                <div class="text-2xl font-black text-[#7c3aed]">R$ 1.340,00</div>
+                <span class="text-[10px] text-slate-500">Disponível para saque Pix</span>
+            </div>
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Resgate de Saldo</span>
+                    <h3 class="text-sm font-black text-slate-900 mb-1">Pedir Saque via Pix</h3>
+                </div>
+                <button onclick="alert('Solicitação de saque via Pix efetuada com sucesso!')" class="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                    ⚡ Solicitar Pix
+                </button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

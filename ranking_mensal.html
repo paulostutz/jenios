@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Top 10 Ranking Mensal</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-3xl w-full space-y-6">
+        
+        <!-- Cartão do Ranking Mensal Top 10 -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+            
+            <!-- Cabeçalho -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                        JENIOS GAMIFICATION • Competição Mensal
+                    </span>
+                    <h1 class="text-xl font-black text-slate-900">Top 10 Traders de Elite (Outubro)</h1>
+                </div>
+                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase">
+                    🎁 Prémio Top 3: Mensalidade Abonada
+                </span>
+            </div>
+
+            <!-- Explicação da Métrica -->
+            <div class="bg-purple-50/50 border border-purple-200 rounded-xl p-3 text-xs text-slate-700">
+                <b>Regra do Ecossistema:</b> O ranking premia a eficiência e o <i>Índice de Frieza</i>. Para copiar qualquer Mestre, é obrigatório possuir um plano base ativo na plataforma.
+            </div>
+
+            <!-- Tabela Top 10 -->
+            <div class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                
+                <!-- 1º Lugar (Ouro) -->
+                <div class="bg-gradient-to-r from-amber-50 to-white border-2 border-amber-400 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-white font-black text-sm flex items-center justify-center shrink-0 shadow">
+                            🥇 1º
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-900">Carlos Quant (@carlosq)</h4>
+                            <span class="text-[10px] text-amber-700 font-bold">Frieza: 98/100 • Rentabilidade: +42.5%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                        <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-md hidden md:inline-block">Mensalidade Abonada 🛡️</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="alert('Seguindo Carlos Quant!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition-all cursor-pointer">+ Seguir</button>
+                            <div class="flex items-center gap-1">
+                                <button onclick="tentarCopiarMestre('Carlos Quant', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow cursor-pointer">⚡ Copiar (R$ 49,90)</button>
+                                <div class="relative group cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">?</span>
+                                    <div class="absolute bottom-full right-0 mb-2 hidden group-hover:block w-48 bg-slate-900 text-white text-[10px] p-2 rounded-xl shadow-lg z-10 leading-tight">Espelha ordens automaticamente. Requer plano base ativo na JENIOS.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2º Lugar (Prata) -->
+                <div class="bg-gradient-to-r from-slate-100 to-white border-2 border-slate-300 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-400 text-white font-black text-sm flex items-center justify-center shrink-0">
+                            🥈 2º
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-900">Ana Trader (@anatrader)</h4>
+                            <span class="text-[10px] text-slate-600 font-bold">Frieza: 95/100 • Rentabilidade: +38.1%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                        <span class="text-[10px] bg-slate-200 text-slate-800 font-bold px-2.5 py-1 rounded-md hidden md:inline-block">Mensalidade Abonada 🛡️</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="alert('Seguindo Ana Trader!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition-all cursor-pointer">+ Seguir</button>
+                            <div class="flex items-center gap-1">
+                                <button onclick="tentarCopiarMestre('Ana Trader', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow cursor-pointer">⚡ Copiar (R$ 49,90)</button>
+                                <div class="relative group cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">?</span>
+                                    <div class="absolute bottom-full right-0 mb-2 hidden group-hover:block w-48 bg-slate-900 text-white text-[10px] p-2 rounded-xl shadow-lg z-10 leading-tight">Espelha ordens automaticamente. Requer plano base ativo na JENIOS.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3º Lugar (Bronze) -->
+                <div class="bg-gradient-to-r from-amber-900/5 to-white border-2 border-amber-700/40 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-700 text-white font-black text-sm flex items-center justify-center shrink-0">
+                            🥉 3º
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-900">Marcos FX (@marcosfx)</h4>
+                            <span class="text-[10px] text-amber-800 font-bold">Frieza: 92/100 • Rentabilidade: +31.4%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                        <span class="text-[10px] bg-amber-100 text-amber-900 font-bold px-2.5 py-1 rounded-md hidden md:inline-block">Mensalidade Abonada 🛡️</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="alert('Seguindo Marcos FX!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition-all cursor-pointer">+ Seguir</button>
+                            <div class="flex items-center gap-1">
+                                <button onclick="tentarCopiarMestre('Marcos FX', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow cursor-pointer">⚡ Copiar (R$ 49,90)</button>
+                                <div class="relative group cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">?</span>
+                                    <div class="absolute bottom-full right-0 mb-2 hidden group-hover:block w-48 bg-slate-900 text-white text-[10px] p-2 rounded-xl shadow-lg z-10 leading-tight">Espelha ordens automaticamente. Requer plano base ativo na JENIOS.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4º ao 10º Lugar -->
+                <!-- 4º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">4º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Beatriz Lima (@bialima)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 90/100 • Rentabilidade: +28.9%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Beatriz Lima!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Beatriz Lima', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 5º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">5º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Lucas Invest (@lucasinv)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 88/100 • Rentabilidade: +26.2%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Lucas Invest!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Lucas Invest', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 6º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">6º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Renata Tech (@renatatech)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 87/100 • Rentabilidade: +24.0%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Renata Tech!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Renata Tech', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 7º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">7º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Gabriel B3 (@gabrielb3)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 85/100 • Rentabilidade: +21.8%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Gabriel B3!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Gabriel B3', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 8º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">8º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Juliana Trade (@julianatrade)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 84/100 • Rentabilidade: +19.5%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Juliana Trade!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Juliana Trade', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 9º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">9º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Thiago Alpha (@thiagoalpha)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 82/100 • Rentabilidade: +18.0%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Thiago Alpha!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Thiago Alpha', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+                <!-- 10º -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">10º</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Patricia Momentum (@patimomentum)</h4>
+                            <span class="text-[10px] text-slate-500">Frieza: 80/100 • Rentabilidade: +16.4%</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+                        <button onclick="alert('Seguindo Patricia Momentum!')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition-all">+ Seguir</button>
+                        <button onclick="tentarCopiarMestre('Patricia Momentum', 49.90)" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow">⚡ Copiar</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script de Validação de Plano e Agregação de Valores -->
+    <script>
+        function tentarCopiarMestre(nomeMestre, valorCopia) {
+            let temPlanoAtivo = false; // Simulação: false obriga a escolher o plano
+
+            if (!temPlanoAtivo) {
+                let escolhaPlano = prompt("Para ativar a cópia de " + nomeMestre + " (R$ " + valorCopia.toFixed(2) + "), precisa de um plano base ativo na JENIOS.\n\nEscolha o seu plano:\n1 - Essencial (R$ 99,90)\n2 - Pro (R$ 149,90)\n3 - Elite (R$ 199,90)\n\nDigite 1, 2 ou 3:");
+                
+                let valorPlano = 0;
+                let nomePlano = "";
+
+                if (escolhaPlano === "1") { valorPlano = 99.90; nomePlano = "Essencial (R$ 99,90)"; }
+                else if (escolhaPlano === "2") { valorPlano = 149.90; nomePlano = "Pro (R$ 149,90)"; }
+                else if (escolhaPlano === "3") { valorPlano = 199.90; nomePlano = "Elite (R$ 199,90)"; }
+                else {
+                    alert("Operação cancelada. É necessário selecionar um plano base para ativar a cópia.");
+                    return;
+                }
+
+                let totalAgregado = valorPlano + valorCopia;
+                alert("Plano selecionado: " + nomePlano + "\nMestre: " + nomeMestre + " (R$ " + valorCopia.toFixed(2) + ")\n\nTotal Mensal Agregado: R$ " + totalAgregado.toFixed(2) + "\n\nA redirecionar para o checkout com split automático...");
+            } else {
+                alert("Plano ativo detetado! A ativar cópia de " + nomeMestre + " por R$ " + valorCopia.toFixed(2) + "/mês...");
+            }
+        }
+    </script>
+</body>
+</html>

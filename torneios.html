@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Torneio Semanal & Ranking</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho do Torneio -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS ARENA • Competição Semanal
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Torneio de Blindagem & Eficiência</h1>
+                <p class="text-xs text-slate-600">Os 3 melhores operadores da semana ganham 1 mês de bónus (assinatura gratuita).</p>
+            </div>
+            <div class="bg-purple-100 text-[#7c3aed] px-4 py-3 rounded-xl text-center">
+                <span class="text-[10px] font-bold uppercase block">Encerramento em:</span>
+                <span class="text-sm font-black font-mono">03d 14h 22m</span>
+            </div>
+        </div>
+
+        <!-- Tabela de Ranking -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Ranking Oficial da Semana</h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-slate-500 font-mono">
+                            <th class="pb-3">Posição</th>
+                            <th class="pb-3">Operador</th>
+                            <th class="pb-3">Losses Neutralizados</th>
+                            <th class="pb-3">Eficiência HFT</th>
+                            <th class="pb-3 text-right">Prémio Atual</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                        <tr class="bg-purple-50/50">
+                            <td class="py-3 font-black text-[#7c3aed]">🥇 1º Lugar</td>
+                            <td class="py-3 font-bold text-slate-900">Ricardo Mendes (@ricardom)</td>
+                            <td class="py-3 font-mono font-bold text-emerald-600">R$ 12.450,00</td>
+                            <td class="py-3 font-mono">98.4%</td>
+                            <td class="py-3 text-right font-bold text-[#7c3aed]">1 Mês Grátis (Global Pro)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-black text-slate-700">🥈 2º Lugar</td>
+                            <td class="py-3 font-bold text-slate-900">Beatriz Lima (@bealima)</td>
+                            <td class="py-3 font-mono font-bold text-emerald-600">R$ 9.890,00</td>
+                            <td class="py-3 font-mono">96.1%</td>
+                            <td class="py-3 text-right font-bold text-[#7c3aed]">1 Mês Grátis (Global Pro)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-black text-amber-700">🥉 3º Lugar</td>
+                            <td class="py-3 font-bold text-slate-900">Lucas Souza (@lucass)</td>
+                            <td class="py-3 font-mono font-bold text-emerald-600">R$ 8.320,00</td>
+                            <td class="py-3 font-mono">94.8%</td>
+                            <td class="py-3 text-right font-bold text-[#7c3aed]">1 Mês Grátis (Global Pro)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-mono text-slate-500">4º</td>
+                            <td class="py-3 font-bold text-slate-900">Paulo Stutz (@paulostutz)</td>
+                            <td class="py-3 font-mono font-bold text-emerald-600">R$ 7.100,00</td>
+                            <td class="py-3 font-mono">92.0%</td>
+                            <td class="py-3 text-right text-slate-400">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

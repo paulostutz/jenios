@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Simulador de Estresse Operacional</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #0f172a; color: #1e293b; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .card { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        .tag { font-size: 11px; color: #7c3aed; font-weight: bold; font-family: monospace; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: block; }
+        h2 { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.4; color: #0f172a; }
+        p { font-size: 13px; color: #334155; line-height: 1.5; margin-bottom: 15px; }
+        .btn-opcao { width: 100%; text-align: left; background-color: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 14px; border-radius: 10px; font-size: 13px; margin-bottom: 10px; cursor: pointer; }
+        .btn-opcao:hover { border-color: #7c3aed; background-color: #f3e8ff; color: #581c87; }
+        .btn-acao { width: 100%; background: #7c3aed; color: white; font-weight: bold; font-size: 13px; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 10px; text-align: center; display: block; }
+        .btn-secundario { width: 100%; text-align: center; background-color: #1e293b; border: 1px solid #475569; color: #ffffff; font-weight: bold; font-size: 13px; padding: 14px; border-radius: 10px; cursor: pointer; margin-top: 8px; display: block; }
+        .btn-voltar { width: 100%; background: #e2e8f0; color: #475569; font-weight: bold; font-size: 12px; padding: 10px; border-radius: 10px; border: none; cursor: pointer; margin-top: 12px; text-align: center; display: block; }
+        
+        .input-form { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; margin-bottom: 12px; background-color: #f8fafc; }
+        .input-form:focus { outline: none; border-color: #7c3aed; background-color: #fff; }
+
+        .caixa-grafico { background-color: #060814; border: 1px solid #334155; border-radius: 12px; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 12px; position: relative; }
+        .svg-grafico { width: 100%; height: 65px; }
+        .txt-grafico { color: #94a3b8; font-size: 10px; font-family: monospace; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn-plano-1 { width: 100%; background: #7c3aed; color: white; font-weight: bold; font-size: 12px; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 8px; text-align: center; display: block; }
+        .btn-plano-2 { width: 100%; background: #0f172a; color: white; font-weight: bold; font-size: 12px; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 8px; text-align: center; border: 2px solid #a855f7; display: block; }
+        .btn-plano-3 { width: 100%; background: #334155; color: white; font-weight: bold; font-size: 12px; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 8px; text-align: center; display: block; }
+        
+        .caixa-pix { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; margin: 15px 0; word-break: break-all; font-family: monospace; font-size: 11px; color: #334155; max-height: 80px; overflow-y: auto; }
+        .sucesso-copia { background-color: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; font-size: 12px; text-align: center; font-weight: bold; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <main id="container-quiz" class="card"></main>
+
+    <script>
+        let scores = { impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 };
+        let etapaAtual = 0;
+        let tradeAtual = 0;
+        let leadFeito = false;
+        let dadosLead = { nome: '', email: '', whatsapp: '' };
+
+        const perguntas = [
+            { q: "Você passa duas horas analisando um ativo. Assim que você entra, o preço vira e bate no seu Stop Loss. Qual sua reação imediata?", a: [{ t: "Sinto o sangue subir. Abro outra operação na hora com o dobro do lote para recuperar rápido.", p: "impulsivo", v: 2 }, { t: "Fico arrasado. Encerro o computador por hoje com medo de perder mais.", p: "ansioso", v: 2 }, { t: "Recuso-me a aceitar. Arrasto o Stop Loss para baixo, afinal o mercado vai voltar.", p: "teimoso", v: 2 }, { t: "Passo o resto do dia paralisado refazendo cálculos sem clicar em nada para ver onde errei.", p: "hesitante", v: 2 }] },
+            { q: "Você está em uma operação que está dando R$ 100 de lucro. Seu alvo final planejado é de R$ 500. O preço começa a oscilar de lado. O que você faz?", a: [{ t: "Aumento ainda mais a minha mão na operação para tentar arrancar R$ 1.000 rápido.", p: "impulsivo", v: 2 }, { t: "Encerro a operação imediatamente e coloco os R$ 100 no bolso por medo de devolver.", p: "ansioso", v: 2 }, { t: "Deixo o trade correr e ignoro qualquer sinal de reversão do gráfico.", p: "teimoso", v: 2 }, { t: "Fico monitorando o gráfico segundo a segundo, mudando de ideia a cada oscilação.", p: "hesitante", v: 2 }] },
+            { q: "O mercado entra em uma Megatendência de Baixa (queda livre). Como você se posiciona originalmente?", a: [{ t: "Clico em comprar repetidamente de forma furiosa, tentando adivinhar onde é o fundo exato.", p: "impulsivo", v: 2 }, { t: "Fico apenas olhando a tela com o coração acelerado e a mente congelada, sem coragem de clicar.", p: "ansioso", v: 2 }, { t: "Abro novas ordens de compra a cada queda (Preço Médio), convicto de que o ativo está barato demais.", p: "teimoso", v: 2 }, { t: "Espero o mercado cair por horas. Quando decido finalmente entrar vendido, o mercado vira.", p: "hesitante", v: 2 }] },
+            { q: "Como é o seu histórico de fechamento de faturamento de trade no final do mês?", a: [{ t: "Consigo passar semanas ganhando, mas perco absolutamente tudo e quebro a conta em um único dia de fúria.", p: "impulsivo", v: 2 }, { t: "Minha conta vai sangrando um pouco a cada semana porque meus ganhos são minúsculos e minhas perdas são longas.", p: "ansioso", v: 2 }, { t: "Tenho dias de lucros estrondosos, seguidos por dias de perdas catastróficas que zeram meu patrimônio.", p: "teimoso", v: 2 }, { t: "Meus ganhos e perdas se equivalem, e o meu único saldo real negativo são as taxas que pago para a corretora.", p: "hesitante", v: 2 }] },
+            { q: "O que mais te incomoda na sua rotina atual de operações no mercado financeiro?", a: [{ t: "A raiva incontrolável e o arrependimento devastador que sinto minutos após fechar um dia de fúria.", p: "impulsivo", v: 2 }, { t: "A ansiedade crônica e a dor no estômago que sinto toda vez que vejo o saldo oscilar na tela.", p: "ansioso", v: 2 }, { t: "A sensação de que o mercado me persegue e que os grandes bancos sabem onde está o meu stop.", p: "teimoso", v: 2 }, { t: "A frustração de estudar centenas de horas de teoria e não conseguir sair do lugar.", p: "hesitante", v: 2 }] }
+        ];
+
+        const cenariosTrades = [
+            { id: 1, titulo: "TRADE 1: O Teste do Pânico (Bitcoin Desabando)", msg: "O mercado virou contra você. Seu stop técnico calculado seria em -R$ 100, mas o preço continua caindo forte e agora está em -R$ 150. O que você faz?", btn1: "Estopar Perda Curta (Aceitar)", btn2: "Arrastar Stop para Baixo (Torcer)", path: "M5,10 Q50,15 100,25 T200,45 T300,55 T400,65", cor: "#ef4444", label: "BITCOIN • QUEDA VERTICAL (-R$ 150)" },
+            { id: 2, titulo: "TRADE 2: A Mão de Alface (Mini-Índice Subindo)", msg: "Seu alvo final planejado é de R$ 400,00, mas o preço deu uma balançada rápida para os lados. Deseja encerrar a operação agora e garantir os R$ 80,00?", btn1: "Garantir Lucro Curto Agora", btn2: "Manter Protegido até o Alvo", path: "M5,55 Q50,45 100,50 T200,30 T300,25 T400,15", cor: "#10b981", label: "MINI-ÍNDICE • ALTA FIRME (+R$ 100)" },
+            { id: 3, titulo: "TRADE 3: O Falso Rompimento das Baleias", msg: "As instituições romperam a resistência induzindo o varejo à compra e viraram a mão para baixo. Você está preso no topo de uma armadilha. Ação:", btn1: "Aceitar a Falha e Sair", btn2: "Vender o Triplo para Virar a Mão", path: "M5,40 Q50,10 100,12 T200,35 T300,55 T400,60", cor: "#ef4444", label: "FALSO ROMPIMENTO • REVERSÃO BRUSCA" },
+            { id: 4, titulo: "TRADE 4: Paralisia por Análise (Petrobras em Alta)", msg: "Oportunidade Clara de Compra Identificada. O preço está subindo barra por barra. Tome a decisão rápido!", btn1: "COMPRAR AGORA", btn2: "Aguardar Mais Confirmações", path: "M5,60 Q50,50 100,45 T200,30 T300,20 T400,10", cor: "#10b981", label: "PETROBRAS • TENDÊNCIA DE ALTA" },
+            { id: 5, titulo: "TRADE 5: O Dia de Fúria (Dólar Caótico)", msg: "Você acabou de tomar 2 stop losses seguidos em menos de 1 minuto. Seu saldo está em -R$ 300,00. O que você faz?", btn1: "Clicar Rápido para Recuperar", btn2: "Fechar a Plataforma por Hoje", path: "M5,30 Q50,60 100,20 T200,55 T300,15 T400,50", cor: "#f59e0b", label: "DÓLAR • ALTA VOLATILIDADE" }
+        ];
+
+        function renderizarTela() {
+            const container = document.getElementById("container-quiz");
+            if (!container) return;
+
+            if (etapaAtual < perguntas.length) {
+                const dados = perguntas[etapaAtual];
+                let html = `<span class="tag">Mapeamento Psicológico: ${etapaAtual + 1}/${perguntas.length}</span><h2>${dados.q}</h2><div>`;
+                dados.a.forEach((alt, idx) => { html += `<button class="btn-opcao" onclick="processarResposta(${idx})">${alt.t}</button>`; });
+                html += `</div>`;
+                if (etapaAtual > 0) {
+                    html += `<button class="btn-voltar" onclick="voltarQuestao()">← Voltar à questão anterior</button>`;
+                }
+                container.innerHTML = html;
+                return;
+            }
+
+            if (tradeAtual < cenariosTrades.length) {
+                renderizarTrade();
+                return;
+            }
+
+            if (!leadFeito) {
+                renderizarCapturaLead();
+                return;
+            }
+
+            gerarLaudo();
+        }
+
+        function processarResposta(idx) {
+            scores[perguntas[etapaAtual].a[idx].p] += perguntas[etapaAtual].a[idx].v;
+            etapaAtual++;
+            renderizarTela();
+        }
+
+        function voltarQuestao() {
+            if (etapaAtual > 0) {
+                etapaAtual--;
+                renderizarTela();
+            }
+        }
+
+        function renderizarTrade() {
+            const container = document.getElementById("container-quiz");
+            const c = cenariosTrades[tradeAtual];
+            let html = `<span class="tag">SIMULADOR DE ESTRESSE: TRADE (${c.id}/5)</span>`;
+            html += `<p style="font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 8px;">${c.titulo}</p>`;
+            html += `<div class="caixa-grafico"><svg class="svg-grafico" viewBox="0 0 400 70" preserveAspectRatio="none"><path d="${c.path}" fill="none" stroke="${c.cor}" stroke-width="3" stroke-linecap="round"/></svg><span class="txt-grafico">● ${c.label}</span></div>`;
+            html += `<p>${c.msg}</p>`;
+            html += `<button class="btn-acao" onclick="processarTrade(${c.id}, 1)">${c.btn1}</button>`;
+            html += `<button class="btn-secundario" onclick="processarTrade(${c.id}, 2)">${c.btn2}</button>`;
+            html += `<button class="btn-voltar" onclick="voltarTrade()">← Voltar à etapa anterior</button>`;
+            container.innerHTML = html;
+        }
+
+        function voltarTrade() {
+            if (tradeAtual > 0) {
+                tradeAtual--;
+                renderizarTrade();
+            } else {
+                etapaAtual = perguntas.length - 1;
+                renderizarTela();
+            }
+        }
+
+        function processarTrade(id, opcao) {
+            if (id === 1) { if(opcao===1) scores.tecnico_positivo += 3; else scores.teimoso += 5; }
+            if (id === 2) { if(opcao===1) scores.ansioso += 5; else scores.tecnico_positivo += 4; }
+            if (id === 3) { if(opcao===1) scores.tecnico_positivo += 2; else scores.impulsivo += 5; }
+            if (id === 4) { if(opcao===1) scores.tecnico_positivo += 3; else scores.hesitante += 4; }
+            if (id === 5) { if(opcao===1) scores.impulsivo += 6; else scores.tecnico_positivo += 5; }
+            tradeAtual++;
+            renderizarTela();
+        }
+
+        function renderizarCapturaLead() {
+            const container = document.getElementById("container-quiz");
+            let html = `<span class="tag">🔒 ÚLTIMA ETAPA ANTES DO LAUDO</span>`;
+            html += `<h2>Onde devemos enviar o seu Diagnóstico de Perfil e o Plano de Proteção JENIOS?</h2>`;
+            html += `<p>Insira seus dados abaixo para liberar o acesso ao seu relatório comportamental completo e ferramentas de automação.</p>`;
+            html += `<input type="text" id="nomeLead" class="input-form" placeholder="Seu Nome Completo">`;
+            html += `<input type="email" id="emailLead" class="input-form" placeholder="Seu melhor E-mail">`;
+            html += `<input type="text" id="wppLead" class="input-form" placeholder="Seu WhatsApp (com DDD)">`;
+            html += `<button class="btn-acao" onclick="salvarLead()">🔓 Liberar Meu Diagnóstico Agora</button>`;
+            container.innerHTML = html;
+        }
+
+        function salvarLead() {
+            const nome = document.getElementById("nomeLead").value;
+            const email = document.getElementById("emailLead").value;
+            const whatsapp = document.getElementById("wppLead").value;
+
+            if (!nome || !email || !whatsapp) {
+                alert("Por favor, preencha todos os campos para continuar.");
+                return;
+            }
+
+            dadosLead = { nome, email, whatsapp };
+            leadFeito = true;
+            gerarLaudo();
+        }
+
+        function gerarLaudo() {
+            const container = document.getElementById("container-quiz");
+            let maiorVicio = "impulsivo", maiorScore = scores.impulsivo;
+            if (scores.ansioso > maiorScore) { maiorVicio = "ansioso"; maiorScore = scores.ansioso; }
+            if (scores.teimoso > maiorScore) { maiorVicio = "teimoso"; maiorScore = scores.teimoso; }
+            if (scores.hesitante > maiorScore) { maiorVicio = "hesitante"; maiorScore = scores.hesitante; }
+            let percentual = Math.min(100, (scores.tecnico_positivo / 17) * 100);
+            
+            let html = `<span class="tag">🎯 AUDITORIA COMPORTAMENTAL 360° • ${dadosLead.nome.toUpperCase()}</span>`;
+            html += `<h2>Seu Diagnóstico de Viés Operacional</h2>`;
+            html += `<p>Score de Disciplina Técnica: <b>${percentual.toFixed(0)}%</b></p>`;
+
+            if (percentual >= 65) {
+                html += `<p style="color: #059669; font-weight: bold; margin-bottom: 15px;">Perfil: Mestre Disciplinado (Baixo Risco)</p><p style="margin-bottom: 20px;">Você demonstrou maturidade. O robô da JENIOS atuará no Modo Espelho Direto para alavancar sua escala.</p>`;
+            } else if (maiorVicio === "impulsivo") {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 15px;">Perfil: Impulsivo Vingativo (Risco Crítico)</p><p style="margin-bottom: 20px;">Você ativa o modo fúria na perda. A JENIOS usará o Modo Reverso Automático para inverter seu clique de raiva em lucro.</p>`;
+            } else if (maiorVico === "ansioso") {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 15px;">Perfil: Ansioso Precipitado (Risco Alto)</p><p style="margin-bottom: 20px;">Você sofre de Mão de Alface. A JENIOS tranca os alvos com Gestão OCO para obrigá-lo a ganhar de balde.</p>`;
+            } else if (maiorVicio === "teimoso") {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 15px;">Perfil: Teimoso Sobreconfiante</p><p style="margin-bottom: 20px;">Você arrasta stops e faz preço médio contra a tendência. O Filtro de Megatendência bloqueará ordens contrárias ao fluxo.</p>`;
+            } else {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 15px;">Perfil: Técnico Hesitante</p><p style="margin-bottom: 20px;">A busca por perfeição gera paralisia. A boleta One-Touch despacha ordens em milissegundos.</p>`;
+            }
+
+            html += `<p style="font-size: 11px; text-transform: uppercase; font-family: monospace; color: #7c3aed; font-weight: bold; margin-bottom: 5px;">Escolha seu plano de proteção:</p>`;
+            
+            html += `<button class="btn-plano-1" onclick="abrirCheckout('Plano Nacional (B3)', 'R$ 99,90/mês', '00020101021126540014br.gov.bcb.pix0114572556070001300214Plano Nacional520400005303986540599.905802BR5913LETTER LETTER6007VITORIA62070503***63043B77')">👉 Ativar Plano Nacional (B3) - R$ 99,90/mês</button>`;
+            html += `<button class="btn-plano-2" onclick="abrirCheckout('Global Crypto (B3 + Cripto)', 'R$ 149,90/mês', '00020101021126590014br.gov.bcb.pix0114572556070001300219Plano Global Crypto5204000053039865406149.905802BR5913LETTER LETTER6007VITORIA62070503***6304C56A')">⭐ Ativar Global Crypto (B3 + Cripto) - R$ 149,90/mês (MAIS VENDIDO)</button>`;
+            html += `<button class="btn-plano-3" onclick="abrirCheckout('Internacional Pro (Global Total)', 'R$ 199,90/mês', '00020101021126630014br.gov.bcb.pix0114572556070001300223Plano Internacional Pro5204000053039865406199.905802BR5913LETTER LETTER6007VITORIA62070503***6304157A')">👉 Ativar Internacional Pro (Global Total) - R$ 199,90/mês</button>`;
+            
+            container.innerHTML = html;
+        }
+
+        function abrirCheckout(nomePlano, valorPlano, pixCode) {
+            const container = document.getElementById("container-quiz");
+            let html = `<span class="tag">💳 PAGAMENTO VIA PIX • BANCO INTER</span>`;
+            html += `<h2>${nomePlano}</h2>`;
+            html += `<p>Valor Total: <b>${valorPlano}</b></p>`;
+            html += `<p>Utilize o código Pix Copia e Cola abaixo para efetuar o pagamento:</p>`;
+            html += `<div class="caixa-pix">${pixCode}</div>`;
+            html += `<button class="btn-acao" onclick="copiarPix('${pixCode}')">📋 Copiar Código Pix Copia e Cola</button>`;
+            html += `<div id="sucessoCopia" class="sucesso-copia">✅ Código Pix copiado com sucesso! Cole no app do seu banco.</div>`;
+            html += `<button class="btn-voltar" onclick="gerarLaudo()">← Escolher outro plano</button>`;
+            container.innerHTML = html;
+        }
+
+        function copiarPix(pixCode) {
+            navigator.clipboard.writeText(pixCode).then(() => {
+                const aviso = document.getElementById("sucessoCopia");
+                if (aviso) aviso.style.display = "block";
+            }).catch(err => {
+                alert("Erro ao copiar o código Pix. Tente selecionar manualmente.");
+            });
+        }
+
+        renderizarTela();
+    </script>
+</body>
+</html>

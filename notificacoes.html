@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Central de Notificações e Alertas</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <!-- Container Principal -->
+    <div class="max-w-3xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS ECOSYSTEM • Central de Notificações
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Alertas e Avisos</h1>
+                <p class="text-xs text-slate-600">Acompanhe avisos de risco, interceções HFT e interações do ecossistema.</p>
+            </div>
+            <button onclick="marcarTodasLidas()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer">
+                Marcar todas como lidas
+            </button>
+        </div>
+
+        <!-- Lista de Notificações -->
+        <div class="space-y-3">
+            
+            <!-- Notificação 1: Alerta HFT / Plataforma -->
+            <div class="bg-white text-slate-900 border-l-4 border-[#7c3aed] border-y border-r border-slate-300 rounded-2xl p-5 shadow-lg flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="bg-purple-100 text-[#7c3aed] p-2.5 rounded-xl text-sm font-bold shrink-0">🛡️</div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="text-xs font-black text-slate-900 uppercase">Proteção Ativada com Sucesso</h4>
+                            <span class="bg-purple-100 text-[#7c3aed] text-[9px] font-bold px-2 py-0.5 rounded-md">Platform</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            O Botão Antifúria interceptou um clique impulsivo no Mini-Índice e poupou -R$ 450,00 da sua conta.
+                        </p>
+                        <span class="text-[10px] text-slate-400 mt-2 block font-mono">Há 8 minutos</span>
+                    </div>
+                </div>
+                <button onclick="this.closest('div.flex').remove()" class="text-slate-400 hover:text-slate-700 text-xs font-bold cursor-pointer">✕</button>
+            </div>
+
+            <!-- Notificação 2: Alerta de Mercado -->
+            <div class="bg-white text-slate-900 border-l-4 border-emerald-500 border-y border-r border-slate-300 rounded-2xl p-5 shadow-lg flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="bg-emerald-100 text-emerald-700 p-2.5 rounded-xl text-sm font-bold shrink-0">📈</div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="text-xs font-black text-slate-900 uppercase">Novo Relatório de Fluxo Institucional</h4>
+                            <span class="bg-emerald-100 text-emerald-800 text-[9px] font-bold px-2 py-0.5 rounded-md">Market</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            A análise macro de posições abertas na B3 já está disponível no painel JENIOS Market.
+                        </p>
+                        <span class="text-[10px] text-slate-400 mt-2 block font-mono">Há 1 hora</span>
+                    </div>
+                </div>
+                <button onclick="this.closest('div.flex').remove()" class="text-slate-400 hover:text-slate-700 text-xs font-bold cursor-pointer">✕</button>
+            </div>
+
+            <!-- Notificação 3: Aviso de Conta / Segurança -->
+            <div class="bg-white text-slate-900 border-l-4 border-slate-400 border-y border-r border-slate-300 rounded-2xl p-5 shadow-lg flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="bg-slate-100 text-slate-700 p-2.5 rounded-xl text-sm font-bold shrink-0">🔐</div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="text-xs font-black text-slate-900 uppercase">Sessão Iniciada em Novo Dispositivo</h4>
+                            <span class="bg-slate-100 text-slate-800 text-[9px] font-bold px-2 py-0.5 rounded-md">JENIOS ID</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Detetámos um novo acesso à sua conta a partir de um MacBook Air em São Paulo, SP.
+                        </p>
+                        <span class="text-[10px] text-slate-400 mt-2 block font-mono">Ontem às 19:42</span>
+                    </div>
+                </div>
+                <button onclick="this.closest('div.flex').remove()" class="text-slate-400 hover:text-slate-700 text-xs font-bold cursor-pointer">✕</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script de Ação -->
+    <script>
+        function marcarTodasLidas() {
+            alert('Todas as notificações foram marcadas como lidas. Este bloco HTML está pronto para salvar como notificacoes.html no Bloco de Notas.');
+        }
+    </script>
+</body>
+</html>

@@ -58,7 +58,9 @@ export default function SocialPage() {
   let percentual = Math.min(100, (scores.tecnico_positivo / 17) * 100);
 
   const [usuarioLogado, setUsuarioLogado] = useState(true);
-  const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');const meuPerfil = {
+  const [nomeUsuario] = useState('Paulo Stutz Netto');
+  
+  const meuPerfil = {
     nome: 'Paulo Stutz Netto',
     cargo: 'CEO & Fundador • Letter Franqueadora',
     rentabilidade: '+ R$ 18.400',
@@ -76,39 +78,44 @@ export default function SocialPage() {
   };
 
   const tickerMacro = [
-    { id: 1, rede: 'B3', tipo: '📊 MEGAPULSE', titulo: 'Ibovespa (IBOV): ▲ Alta Institucional (+1.2%)', detalhes: 'Fluxo de ordens institucionais indica forte acumulação no setor financeiro e commodities.' },
-    { id: 2, rede: 'SOLANA', tipo: '🚀 TOKEN HFT', titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade.' },
-    { id: 3, rede: 'ETHEREUM', tipo: '🐋 BALEIA ETH', titulo: 'Acumulação de 15,000 ETH em carteira institucional', detalhes: 'Movimento de alocação de longo prazo.' },
-    { id: 4, rede: 'TRON', tipo: '⚡ USDT FLOW', titulo: 'Transferência maciça de US$ 85M para DEX de alta frequência', detalhes: 'Elevada liquidez cruzando redes.' }
+    { id: 1, rede: 'B3', tipo: '📊 MEGAPULSE', titulo: 'Ibovespa (IBOV): ▲ Alta Institucional (+1.2%)', detalhes: 'Fluxo de ordens institucionais.' },
+    { id: 2, rede: 'SOLANA', tipo: '🚀 TOKEN HFT', titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', detalhes: 'Pools de liquidez na Solana.' },
+    { id: 3, rede: 'ETHEREUM', tipo: '🐋 BALEIA ETH', titulo: 'Acumulação de 15,000 ETH em carteira institucional', detalhes: 'Alocação de longo prazo.' },
+    { id: 4, rede: 'TRON', tipo: '⚡ USDT FLOW', titulo: 'Transferência maciça de US$ 85M para DEX', detalhes: 'Liquidez cruzando redes.' }
   ];
 
   const tickerDuplicado = [...tickerMacro, ...tickerMacro];
 
-  const [stories, setStories] = useState([
-    { id: 1, autor: 'Paulo (CEO)', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', midia: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800', texto: 'Transmissão ao vivo do Robô HFT em execução na B3!' },
-    { id: 2, autor: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', midia: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800', texto: 'Análise de rompimento bem-sucedida no Mini-Índice.' },
-    { id: 3, autor: 'Ana Paula S.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', midia: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800', texto: 'Monitoramento de baleias na rede Solana.' }
+  const [stories] = useState([
+    { id: 1, autor: 'Paulo (CEO)', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', midia: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800', texto: 'Transmissão ao vivo do Robô HFT na B3!' },
+    { id: 2, autor: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', midia: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800', texto: 'Análise de rompimento bem-sucedida.' },
+    { id: 3, autor: 'Ana Paula S.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', midia: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800', texto: 'Monitoramento de baleias na Solana.' }
   ]);
 
   const [noticiasMacro] = useState([
-    { id: 1, hora: 'Há 5 mins', cat: 'GEOPOLÍTICA', titulo: 'Estreito de Ormuz: Ajuste no tráfego de petroleiros gera volatilidade', impacto: 'Alto Impacto no Petróleo', url: 'https://www.reuters.com' },
-    { id: 2, hora: 'Há 25 mins', cat: 'COMMODITIES', titulo: 'Petróleo Brent registra alta acentuada com novos relatórios de oferta', impacto: 'Positivo para Energia', url: 'https://www.infomoney.com.br' },
-    { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA BRASIL', titulo: 'Novas diretrizes fiscais anunciadas pelo Banco Central impactam juros', impacto: 'Ajuste em Renda Fixa e Ibovespa', url: 'https://valor.globo.com' }
+    { id: 1, hora: 'Há 5 mins', cat: 'GEOPOLÍTICA', titulo: 'Estreito de Ormuz: Ajuste no tráfego gera volatilidade', impacto: 'Alto Impacto', url: 'https://www.reuters.com' },
+    { id: 2, hora: 'Há 25 mins', cat: 'COMMODITIES', titulo: 'Petróleo Brent registra alta com relatórios de oferta', impacto: 'Positivo', url: 'https://www.infomoney.com.br' },
+    { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA', titulo: 'Novas diretrizes fiscais do Banco Central impactam juros', impacto: 'Ajuste', url: 'https://valor.globo.com' }
   ]);
 
+  // LISTA COMPLETA DOS 10 OPERADORES COM ASSERTIVIDADE E RENTABILIDADE DETALHADAS
   const [rankingOperadores] = useState([
-    { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar • Mensalidade Abonada', bio: 'Especialista em robôs HFT para Mini-Índice e Mini-Dólar com foco em proteção de drawdown.', seguidores: '1.4k', postsCount: '32', visualizacoes30Dias: '28.4k' },
-    { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar • Mensalidade Abonada', bio: 'Gestora de capital e arbitragem algorítmica em ativos multi-rede na Solana e B3.', seguidores: '1.2k', postsCount: '25', visualizacoes30Dias: '21.0k' },
-    { pos: 3, nome: 'Roberto Dias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: '🥉 3º Lugar • Mensalidade Abonada', bio: 'Focado em tendências de médio prazo e ações.', seguidores: '950', postsCount: '19', visualizacoes30Dias: '15.8k' },
-    { pos: 4, nome: 'Beatriz Lima', cargo: '@bialima', rentabilidade: '+28.9%', assertividade: '90%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', status: 'Frieza: 90/100', bio: 'Especialista em controle emocional e robôs de proteção.', seguidores: '820', postsCount: '14', visualizacoes30Dias: '12.1k' }
+    { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar', bio: 'Especialista em robôs HFT para Mini-Índice e Mini-Dólar com foco em proteção de drawdown.', seguidores: '1.4k', postsCount: '32', visualizacoes30Dias: '28.4k' },
+    { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar', bio: 'Gestora de capital e arbitragem algorítmica em ativos multi-rede na Solana e B3.', seguidores: '1.2k', postsCount: '25', visualizacoes30Dias: '21.0k' },
+    { pos: 3, nome: 'Roberto Dias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: '🥉 3º Lugar', bio: 'Focado em tendências de médio prazo e ações.', seguidores: '950', postsCount: '19', visualizacoes30Dias: '15.8k' },
+    { pos: 4, nome: 'Beatriz Lima', cargo: 'Day Trader', rentabilidade: '+ R$ 8.100', assertividade: '90%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', status: 'Top 4', bio: 'Especialista em controle emocional e robôs de proteção.', seguidores: '820', postsCount: '14', visualizacoes30Dias: '12.1k' },
+    { pos: 5, nome: 'Marcos Vinicius', cargo: 'Quant Analyst', rentabilidade: '+ R$ 7.600', assertividade: '87%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: 'Top 5', bio: 'Modelagem matemática para mercados futuros.', seguidores: '740', postsCount: '12', visualizacoes30Dias: '10.5k' },
+    { pos: 6, nome: 'Juliana Mendes', cargo: 'Scalper', rentabilidade: '+ R$ 6.900', assertividade: '89%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: 'Top 6', bio: 'Operações de alta frequência no Dólar futuro.', seguidores: '680', postsCount: '18', visualizacoes30Dias: '9.8k' },
+    { pos: 7, nome: 'Lucas Silveira', cargo: 'Arbitrageur', rentabilidade: '+ R$ 5.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: 'Top 7', bio: 'Explorando distorções de preço entre exchanges.', seguidores: '590', postsCount: '10', visualizacoes30Dias: '8.2k' },
+    { pos: 8, nome: 'Fernanda Costa', cargo: 'Position Trader', rentabilidade: '+ R$ 5.200', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', status: 'Top 8', bio: 'Alocação em ativos globais e commodities.', seguidores: '510', postsCount: '8', visualizacoes30Dias: '7.4k' },
+    { pos: 9, nome: 'Gabriel Souza', cargo: 'Crypto Specialist', rentabilidade: '+ R$ 4.700', assertividade: '84%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: 'Top 9', bio: 'Foco em DeFi e ecossistema Solana.', seguidores: '460', postsCount: '9', visualizacoes30Dias: '6.9k' },
+    { pos: 10, nome: 'Camila Rocha', cargo: 'Risk Manager', rentabilidade: '+ R$ 4.100', assertividade: '92%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: 'Top 10', bio: 'Gestão de drawdown e mitigação de risco.', seguidores: '420', postsCount: '7', visualizacoes30Dias: '6.1k' }
   ]);
 
   const [posts, setPosts] = useState([
     { id: 1, autor: 'Carlos M.', cargo: 'ESTRATEGISTA HFT', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', texto: 'O Modo Reverso salvou-me hoje no Mini-Índice! Falso rompimento detectado em 128.500.', imagem: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800', tempo: 'Há 15 mins', likes: 34, curtido: false, estrategiaCopiada: false, perfilAssociado: rankingOperadores[0] },
     { id: 2, autor: 'Ana Paula S.', cargo: 'INSTITUCIONAL', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', texto: 'Arbitragem cruzada entre Solana e B3 operando com alta assertividade.', imagem: '', tempo: 'Há 1 hora', likes: 22, curtido: false, estrategiaCopiada: false, perfilAssociado: rankingOperadores[1] }
-  ]);
-
-  const publicarPost = (e) => {
+  ]);const publicarPost = (e) => {
     e.preventDefault();
     if (!novoTexto.trim() && !imagemInput.trim()) return;
     setPosts([{ 
@@ -135,7 +142,9 @@ export default function SocialPage() {
   const copiarEstrategia = (id) => {
     setPosts(posts.map(p => p.id === id ? { ...p, estrategiaCopiada: true } : p));
     alert('⚡ Estratégia copiada com sucesso para o seu Robô HFT!');
-  };return (
+  };
+
+  return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       <style dangerouslySetInnerHTML={{ __html: `
@@ -180,7 +189,7 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* Página de Perfil Completa (Estilo Instagram com Feed daquela Pessoa) */}
+      {/* MODAL DE PERFIL COM RENTABILIDADE, ASSERTIVIDADE E SEGUIDORES RESTAURADOS */}
       {perfilAtivo && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 15000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '650px', width: '100%', padding: '35px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -198,18 +207,19 @@ export default function SocialPage() {
               </div>
             </div>
 
+            {/* CAIXA COM AS MÉTRICAS (Rentabilidade, Assertividade e Seguidores) */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
               <div>
-                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>POSTS</span>
-                <b style={{ fontSize: '16px', color: '#0f172a' }}>{perfilAtivo.postsCount || posts.filter(p => p.autor.includes(perfilAtivo.nome.split(' ')[0])).length}</b>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>RENTABILIDADE</span>
+                <b style={{ fontSize: '15px', color: '#059669' }}>{perfilAtivo.rentabilidade || '+ R$ 10.000'}</b>
+              </div>
+              <div>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>ASSERTIVIDADE</span>
+                <b style={{ fontSize: '15px', color: '#7c3aed' }}>{perfilAtivo.assertividade || '90%'}</b>
               </div>
               <div>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>SEGUIDORES</span>
-                <b style={{ fontSize: '16px', color: '#7c3aed' }}>{perfilAtivo.seguidores || '1.2k'}</b>
-              </div>
-              <div>
-                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>VIEWS (30D)</span>
-                <b style={{ fontSize: '16px', color: '#059669' }}>{perfilAtivo.visualizacoes30Dias || '15.4k'}</b>
+                <b style={{ fontSize: '15px', color: '#0f172a' }}>{perfilAtivo.seguidores || '1.2k'}</b>
               </div>
             </div>
 
@@ -231,7 +241,7 @@ export default function SocialPage() {
               </button>
             </div>
 
-            {/* Publicações deste perfil específico */}
+            {/* Publicações deste perfil */}
             <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px', marginTop: '5px' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px' }}>Publicações de {perfilAtivo.nome}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '250px', overflowY: 'auto' }}>
@@ -254,11 +264,9 @@ export default function SocialPage() {
             </button>
           </div>
         </div>
-      )}
-
-      <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
+      )}<div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* CABEÇALHO DO PRÓPRIO PERFIL COM MÉTRICAS À VISTA */}
+        {/* CABEÇALHO DO PRÓPRIO PERFIL */}
         <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
             
@@ -277,7 +285,6 @@ export default function SocialPage() {
               </div>
             )}
 
-            {/* MÉTRICAS À VISTA (Posts, Seguidores, Visualizações) */}
             <div style={{ display: 'flex', gap: '16px', backgroundColor: '#f8fafc', padding: '12px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', alignItems: 'center' }}>
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>POSTS</span>
@@ -299,7 +306,6 @@ export default function SocialPage() {
               <button onClick={() => setAbaAtiva('feed')} style={{ backgroundColor: '#f1f5f9', color: '#334155', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
                 🏠 Início
               </button>
-
               {usuarioLogado ? (
                 <>
                   <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>
@@ -311,12 +317,8 @@ export default function SocialPage() {
                 </>
               ) : (
                 <>
-                  <a href="/login" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                    Entrar
-                  </a>
-                  <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px' }}>
-                    Criar Conta 🚀
-                  </a>
+                  <a href="/login" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>Entrar</a>
+                  <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px' }}>Criar Conta 🚀</a>
                 </>
               )}
             </div>
@@ -324,7 +326,7 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* Abas Principais */}
+        {/* Abas */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', flexWrap: 'wrap' }}>
           <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             📱 Feed Contínuo
@@ -334,12 +336,12 @@ export default function SocialPage() {
           </button>
         </div>
 
-        {/* FEED */}
+        {/* ABA FEED */}
         {abaAtiva === 'feed' && (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Stories / Status */}
+              {/* Stories */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px 20px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
                 {stories.map((st) => (
                   <div key={st.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '64px' }} onClick={() => setStoryAtivo(st)}>
@@ -351,7 +353,7 @@ export default function SocialPage() {
                 ))}
               </div>
 
-              {/* Caixa de Post */}
+              {/* Caixa Post */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
@@ -361,14 +363,14 @@ export default function SocialPage() {
                 </form>
               </div>
 
-              {/* Posts do Feed com redirecionamento ao clicar no autor */}
+              {/* Posts */}
               {posts.map((p) => (
                 <div key={p.id} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden' }}>
-                  <div onClick={() => setPerfilAtivo(p.perfilAssociado || rankingOperadores[0])} style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }} title="Clique para visitar o perfil do estrategista">
+                  <div onClick={() => setPerfilAtivo(p.perfilAssociado || rankingOperadores[0])} style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }}>
                     <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                     <div>
                       <b style={{ color: '#0f172a', fontSize: '14px' }}>{p.autor}</b>
-                      <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', display: 'block' }}>{p.tempo} • Visitar Perfil e Ver Publicações 🔍</span>
+                      <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', display: 'block' }}>{p.tempo} • Visitar Perfil 🔍</span>
                     </div>
                   </div>
                   <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
@@ -392,11 +394,10 @@ export default function SocialPage() {
             {/* Coluna Direita */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Notícias Macro */}
+              {/* Notícias */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🌐 Canal Oficial de Notícias Macro</h3>
-                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Clique na notícia para ler no site oficial.</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                   {noticiasMacro.map((n) => (
                     <a key={n.id} href={n.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', display: 'block' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
@@ -410,10 +411,10 @@ export default function SocialPage() {
                 </div>
               </div>
 
-              {/* Top Traders da Semana */}
+              {/* Top Traders (Lateral) */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🏆 Top Traders da Semana</h3>
-                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Clique num operador para visitar o perfil e ver publicações.</p>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Clique num operador para visitar o perfil.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {rankingOperadores.slice(0, 3).map((op) => (
                     <div key={op.pos} onClick={() => setPerfilAtivo(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
@@ -421,7 +422,7 @@ export default function SocialPage() {
                         <img src={op.avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
                         <div>
                           <b style={{ fontSize: '12px', color: '#0f172a', display: 'block' }}>{op.pos}º - {op.nome}</b>
-                          <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>{op.rentabilidade}</span>
+                          <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>{op.rentabilidade} • Assertividade: {op.assertividade}</span>
                         </div>
                       </div>
                       <span style={{ fontSize: '10px', color: '#7c3aed', backgroundColor: '#ede9fe', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>Visitar 🔍</span>
@@ -430,84 +431,15 @@ export default function SocialPage() {
                 </div>
               </div>
 
-              {/* Simulador de Risco da LP */}
-              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxSizing: 'border-box' }}>
-                {etapaAtual < perguntas.length && (
-                  <div>
-                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>🧠 DIAGNÓSTICO DE RISCO: {etapaAtual + 1}/5</span>
-                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px', lineHeight: '1.4' }}>{perguntas[etapaAtual].q}</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {perguntas[etapaAtual].a.map((alt, idx) => (
-                        <button key={idx} onClick={() => processarResposta(idx)} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '10px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', fontWeight: '500' }}>{alt.t}</button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {etapaAtual >= perguntas.length && tradeAtual < cenariosTrades.length && (
-                  <div>
-                    {(() => {
-                      const c = cenariosTrades[tradeAtual];
-                      return (
-                        <div>
-                          <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>⚡ TESTE DE ESTRESSE ({c.id}/5)</span>
-                          <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}>{c.titulo}</p>
-                          <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', height: '80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '10px', padding: '8px' }}>
-                            <svg viewBox="0 0 400 70" preserveAspectRatio="none" style={{ width: '100%', height: '50px' }}>
-                              <path d={c.path} fill="none" stroke={c.cor} strokeWidth="3" strokeLinecap="round" />
-                            </svg>
-                            <span style={{ color: '#94a3b8', fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase' }}>● {c.label}</span>
-                          </div>
-                          <p style={{ fontSize: '11px', color: '#334155', lineHeight: '1.4', marginBottom: '12px' }}>{c.msg}</p>
-                          <button onClick={() => processarTrade(c.id, 1)} style={{ width: '100%', backgroundColor: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: 'none', cursor: 'pointer', marginBottom: '6px', textTransform: 'uppercase' }}>{c.btn1}</button>
-                          <button onClick={() => processarTrade(c.id, 2)} style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#334155', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer', marginBottom: '6px', textTransform: 'uppercase' }}>{c.btn2}</button>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
-                {etapaAtual >= perguntas.length && tradeAtual >= cenariosTrades.length && !leadFeito && (
-                  <div>
-                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>🔒 LAUDO DE VIÉS</span>
-                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}>Receba seu Diagnóstico Completo</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <input type="text" id="nomeLead" placeholder="Seu Nome" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
-                      <input type="email" id="emailLead" placeholder="Seu E-mail" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
-                      <input type="text" id="wppLead" placeholder="WhatsApp" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
-                      <button onClick={() => {
-                        const nome = document.getElementById("nomeLead").value;
-                        const email = document.getElementById("emailLead").value;
-                        const whatsapp = document.getElementById("wppLead").value;
-                        if (!nome || !email || !whatsapp) { alert("Preencha todos os campos."); return; }
-                        setDadosLead({ nome, email, whatsapp });
-                        setLeadFeito(true);
-                      }} style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: 'none', cursor: 'pointer', textTransform: 'uppercase' }}>🔓 Revelar Laudo</button>
-                    </div>
-                  </div>
-                )}
-                {leadFeito && (
-                  <div style={{ textAlign: 'center' }}>
-                    <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>✅ LAUDO GERADO</span>
-                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>Disciplina: {percentual.toFixed(0)}%</h3>
-                    <p style={{ fontSize: '11px', color: '#64748b', marginBottom: '12px', lineHeight: '1.4' }}>
-                      {percentual >= 65 ? "Perfil Moderado. Robô pronto para modo espelho." : "⚠️ Alerta: Vulnerabilidade a rage trading detectada."}
-                    </p>
-                    <a href="/login" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '10px 14px', borderRadius: '8px', display: 'inline-block', textTransform: 'uppercase' }}>
-                      🚀 Ativar 7 Dias Grátis
-                    </a>
-                  </div>
-                )}
-              </div>
-
             </div>
-
           </div>
         )}
 
-        {/* RANKING COMPLETO */}
+        {/* ABA RANKING COMPLETO (EXIBE OS 10 OPERADORES COM RENTABILIDADE E ASSERTIVIDADE) */}
         {abaAtiva === 'ranking' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>Ranking Completo Top 10</h2>
-            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px' }}>Clique em qualquer operador para inspecionar métricas e perfil.</p>
+            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px' }}>Clique em qualquer operador para inspecionar métricas e perfil completo.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {rankingOperadores.map((op) => (
                 <div key={op.pos} onClick={() => setPerfilAtivo(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
@@ -518,7 +450,10 @@ export default function SocialPage() {
                       <span style={{ fontSize: '11px', color: '#64748b' }}>{op.bio}</span>
                     </div>
                   </div>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#059669' }}>{op.rentabilidade}</span>
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#059669', display: 'block' }}>{op.rentabilidade}</span>
+                    <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold' }}>Assertividade: {op.assertividade}</span>
+                  </div>
                 </div>
               ))}
             </div>

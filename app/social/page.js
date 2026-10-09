@@ -10,14 +10,14 @@ export default function SocialPage() {
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
   const [storyAtivo, setStoryAtivo] = useState(null);
 
-  // Estados do Simulador HFT (Isca de Conversão)
+  // Simulador HFT (Isca de Conversão)
   const [capitalSimulado, setCapitalSimulado] = useState(10000);
   const [diasSimulados, setDiasSimulados] = useState(30);
 
+  // Estado de Autenticação (Alternar entre Logado e Visitante para teste)
   const [usuarioLogado, setUsuarioLogado] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
 
-  // Perfil do próprio usuário logado
   const meuPerfil = {
     nome: 'Paulo Stutz Netto',
     cargo: 'CEO & Fundador • Letter Franqueadora',
@@ -27,15 +27,6 @@ export default function SocialPage() {
     bio: 'Desenvolvedor da infraestrutura de pagamentos AsaaS e operador de alta frequência com protocolos de engenharia reversa.',
     seguidores: '2.1k',
     status: '🏆 Conta Master Verificada'
-  };
-
-  const irParaSalaDeControle = () => {
-    if (!usuarioLogado) {
-      alert('🔒 Acesso restrito! Por favor, faça login ou crie sua conta para acessar a Sala de Controle.');
-      window.location.href = '/login';
-    } else {
-      window.location.href = '/dashboard-logado';
-    }
   };
 
   const irParaTendencias = () => {
@@ -85,7 +76,7 @@ export default function SocialPage() {
     if (!novoTexto.trim() && !imagemInput.trim()) return;
     setPosts([{ 
       id: Date.now(), 
-      autor: nomeUsuario, 
+      autor: usuarioLogado ? nomeUsuario : 'Visitante Anônimo', 
       cargo: 'MEMBRO', 
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
       texto: novoTexto, 
@@ -213,22 +204,56 @@ export default function SocialPage() {
 
       <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* Cabeçalho (Clicável para ver o próprio perfil) */}
+        {/* Cabeçalho com Verificação Dinâmica (Logado vs Visitante) */}
         <div style={{ backgroundColor: '#ffffff', padding: '18px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
-          <div onClick={() => setPerfilAtivo(meuPerfil)} style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }} title="Clique para ver o seu perfil">
-            <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
-            <div>
-              <span style={{ fontSize: '13px', fontWeight: '800', color: '#0f172a', display: 'block' }}>JENIOS SOCIAL</span>
-              <span style={{ fontSize: '10.5px', color: '#7c3aed', fontWeight: '700' }}>Olá, {nomeUsuario} (Ver Meu Perfil 🔍)</span>
+          
+          {/* Esquerda: Perfil ou Identificação */}
+          {usuarioLogado ? (
+            <div onClick={() => setPerfilAtivo(meuPerfil)} style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }} title="Clique para ver o seu perfil">
+              <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
+              <div>
+                <span style={{ fontSize: '13px', fontWeight: '800', color: '#0f172a', display: 'block' }}>JENIOS SOCIAL</span>
+                <span style={{ fontSize: '10.5px', color: '#7c3aed', fontWeight: '700' }}>Olá, {nomeUsuario} (Ver Meu Perfil 🔍)</span>
+              </div>
             </div>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#7c3aed', color: '#fff', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>J</div>
+              <div>
+                <span style={{ fontSize: '13px', fontWeight: '800', color: '#0f172a', display: 'block' }}>JENIOS SOCIAL</span>
+                <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: '600' }}>Modo Visitante (Explore a rede)</span>
+              </div>
+            </div>
+          )}
+
+          {/* Direita: Botões de Ação (Entrar / Criar Conta vs Sala de Controle) */}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <button onClick={() => setAbaAtiva('feed')} style={{ backgroundColor: '#f1f5f9', color: '#334155', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
               🏠 Início
             </button>
-            <button onClick={irParaSalaDeControle} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}>
-              Sala de Controle
-            </button>
+
+            {usuarioLogado ? (
+              <>
+                <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}>
+                  Sala de Controle
+                </button>
+                <button onClick={() => setUsuarioLogado(false)} style={{ backgroundColor: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontSize: '11px', fontWeight: 'bold', padding: '8px 10px', borderRadius: '8px', cursor: 'pointer' }} title="Simular saída para modo visitante">
+                  Sair
+                </button>
+              </>
+            ) : (
+              <>
+                <a href="/login" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                  Entrar
+                </a>
+                <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(124,58,237,0.3)' }}>
+                  Criar Conta 🚀
+                </a>
+                <button onClick={() => setUsuarioLogado(true)} style={{ backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', fontSize: '10px', fontWeight: 'bold', padding: '8px 8px', borderRadius: '8px', cursor: 'pointer' }} title="Entrar como Paulo">
+                  Simular Login ✓
+                </button>
+              </>
+            )}
           </div>
         </div>
 

@@ -102,7 +102,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Card Plataforma & Motor HFT (Corrigido para /market) */}
+          {/* Card Plataforma & Motor HFT (Aponstando para /lp) */}
           <div style={{ 
             backgroundColor: '#f8fafc', 
             color: '#0f172a',
@@ -136,7 +136,7 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <Link href="/market" style={{ 
+              <Link href="/lp" style={{ 
                 display: 'block',
                 backgroundColor: '#10b981', 
                 color: '#fff', 

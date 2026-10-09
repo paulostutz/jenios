@@ -3,12 +3,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function DashboardLogado() {
-  // Simulação de status do usuário (false = não assinou plano ainda / true = assinado)
-  const [usuarioAssinado, setUsuarioAssinado] = useState(false);
-  // Simulação de status do diagnóstico obrigatório
+  const [usuarioAssinado, setUsuarioAssinado] = useState(true);
   const [diagnosticoRealizado, setDiagnosticoRealizado] = useState(false);
 
-  // Função para validar o acesso às operações e APIs
   const validarAcessoOperacional = (acao) => {
     if (!usuarioAssinado) {
       const assinar = confirm(`⚡ Para ${acao}, é necessário assinar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos agora?`);
@@ -30,24 +27,22 @@ export default function DashboardLogado() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#070a12', color: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#070b14', color: '#f8fafc', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
-      {/* Sidebar / Menu Lateral */}
-      <aside style={{ width: '260px', backgroundColor: '#0b0f19', borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
+      {/* Sidebar Refinada */}
+      <aside style={{ width: '260px', backgroundColor: '#0e1626', borderRight: '1px solid #1f2937', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
         
-        {/* Topo da Sidebar */}
         <div style={{ marginBottom: '30px', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0', letterSpacing: '0.5px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#fff', margin: '0 0 4px 0' }}>
             JENIOS HFT
           </h2>
-          <span style={{ fontSize: '11px', color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Sala de Controle Oficial
+          <span style={{ fontSize: '11px', color: '#a78bfa', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>
+            SALA DE CONTROLE OFICIAL
           </span>
         </div>
 
-        {/* Links de Navegação */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-          <Link href="/dashboard-logado" style={{ padding: '10px 14px', borderRadius: '8px', backgroundColor: '#1e293b', color: '#fff', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+          <Link href="/dashboard-logado" style={{ padding: '10px 14px', borderRadius: '8px', backgroundColor: '#1f2937', color: '#fff', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
             📊 Visão Geral
           </Link>
           <a onClick={() => validarAcessoOperacional('abrir a Mesa de Operação')} style={{ padding: '10px 14px', borderRadius: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '14px', cursor: 'pointer' }}>
@@ -68,63 +63,75 @@ export default function DashboardLogado() {
           <Link href="/social" style={{ padding: '10px 14px', borderRadius: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '14px' }}>
             🌐 Jenios Social
           </Link>
-          <Link href="/planos" style={{ padding: '10px 14px', borderRadius: '8px', color: '#10b981', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
-            💳 Planos (7 Dias Grátis)
-          </Link>
         </nav>
 
-        {/* Rodapé da Sidebar */}
-        <div style={{ borderTop: '1px solid #1e293b', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button 
-            onClick={() => setUsuarioAssinado(!usuarioAssinado)} 
-            style={{ backgroundColor: usuarioAssinado ? '#059669' : '#334155', color: '#fff', border: 'none', padding: '8px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
-          >
-            {usuarioAssinado ? 'Status: Plano Ativo ✓' : 'Simular Assinatura (Testar)'}
-          </button>
-          <Link href="/" style={{ color: '#f43f5e', fontSize: '13px', textDecoration: 'none', fontWeight: '600', textAlign: 'center' }}>
-            &larr; Sair da Conta
+        {/* Rodapé e Botão de Início na Sidebar */}
+        <div style={{ borderTop: '1px solid #1f2937', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <Link href="/" style={{ backgroundColor: '#1f2937', color: '#cbd5e1', padding: '10px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center' }}>
+            🏠 Voltar ao Início (Portal)
+          </Link>
+          <Link href="/" style={{ color: '#f43f5e', fontSize: '12px', textDecoration: 'none', fontWeight: '600', textAlign: 'center' }}>
+            &larr; Terminar Sessão
           </Link>
         </div>
 
       </aside>
 
-      {/* Conteúdo Principal */}
+      {/* Conteúdo Principal Estilo Painel de Alta Performance */}
       <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
-        <header style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', margin: '0 0 8px 0' }}>
-              Painel de Controlo HFT
-            </h1>
-            <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>
-              Gerencie suas conexões, execute ordens de alta frequência e monitore sua retificação comportamental.
-            </p>
+        
+        {/* Topo do Usuário (Inspirado no layout limpo da foto 3) */}
+        <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '24px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)', flexWrap: 'wrap', gap: '15px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px', color: '#fff' }}>
+              PS
+            </div>
+            <div>
+              <span style={{ fontSize: '10px', color: '#a78bfa', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase', display: 'block' }}>JENIOS ID • PLANO PRO ATIVO</span>
+              <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', margin: 0 }}>Olá, Paulo Stutz Netto</h2>
+            </div>
           </div>
-          <div>
-            <span style={{ backgroundColor: usuarioAssinado ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: usuarioAssinado ? '#34d399' : '#f87171', padding: '8px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', border: `1px solid ${usuarioAssinado ? '#059669' : '#991b1b'}` }}>
-              {usuarioAssinado ? '🚀 Conta Ativa (Teste Grátis)' : '🔒 Conta Gratuita (Requer Plano)'}
-            </span>
-          </div>
-        </header>
 
-        {/* Cards de Atalho Rápido */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <Link href="/social" style={{ backgroundColor: '#1f2937', color: '#f8fafc', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #374151' }}>
+              Feed Social
+            </Link>
+            <Link href="/ranking" style={{ backgroundColor: '#1f2937', color: '#f8fafc', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #374151' }}>
+              Ranking
+            </Link>
+            <a onClick={() => validarAcessoOperacional('abrir a mesa de operações')} style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)' }}>
+              ⚡ Mesa de Operações
+            </a>
+          </div>
+        </div>
+
+        {/* Blocos de Resumo Financeiro e de Proteção */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           
-          <div style={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '24px' }}>
-            <h3 style={{ fontSize: '16px', color: '#fff', margin: '0 0 8px 0' }}>⚡ Mesa de Operação</h3>
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: '0 0 16px 0' }}>Executar ordens em tempo real via motor de alta frequência.</p>
-            <button onClick={() => validarAcessoOperacional('aceder à Mesa de Operação')} style={{ background: 'none', border: 'none', color: '#34d399', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: 0 }}>Aceder &rarr;</button>
+          <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '20px' }}>
+            <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Capital Total / Protegido</span>
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fff', margin: '0 0 4px 0' }}>R$ 45.820,00</h3>
+            <span style={{ fontSize: '11px', color: '#34d399' }}>● Proteção HFT Ativa (Drawdown Máx: 3%)</span>
           </div>
 
-          <div style={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '24px' }}>
-            <h3 style={{ fontSize: '16px', color: '#fff', margin: '0 0 8px 0' }}>🧠 Diagnóstico Comportamental</h3>
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: '0 0 16px 0' }}>Mapeie seu tempo de reação e calibre o robô HFT.</p>
-            <Link href="/diagnostico" style={{ color: '#38bdf8', fontSize: '13px', fontWeight: '600', textDecoration: 'none' }}>Fazer Diagnóstico &rarr;</Link>
+          <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '20px' }}>
+            <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Índice de Frieza Emocional</span>
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#38bdf8', margin: '0 0 4px 0' }}>92 / 100</h3>
+            <span style={{ fontSize: '11px', color: '#94a3b8' }}>Excelente autocontrole mensal</span>
           </div>
 
-          <div style={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px', padding: '24px' }}>
-            <h3 style={{ fontSize: '16px', color: '#fff', margin: '0 0 8px 0' }}>🔌 APIs & Conexões</h3>
-            <p style={{ fontSize: '13px', color: '#94a3b8', margin: '0 0 16px 0' }}>Configurar credenciais de corretoras e endpoints AsaaS.</p>
-            <button onClick={() => validarAcessoOperacional('configurar as APIs')} style={{ background: 'none', border: 'none', color: '#34d399', fontSize: '13px', fontWeight: '600', cursor: 'pointer', padding: 0 }}>Aceder &rarr;</button>
+          <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '20px' }}>
+            <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Rentabilidade (Outubro)</span>
+            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#34d399', margin: '0 0 4px 0' }}>+14.2% (IPJ)</h3>
+            <span style={{ fontSize: '11px', color: '#94a3b8' }}>14º lugar no Ranking Geral</span>
+          </div>
+
+          <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '20px' }}>
+            <span style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Robô de Proteção</span>
+            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#34d399', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: '10px', height: '10px', backgroundColor: '#34d399', borderRadius: '50%', display: 'inline-block' }}></span> Ligado
+            </h3>
+            <span style={{ fontSize: '11px', color: '#94a3b8' }}>B3 • Mini-Índice (WIN)</span>
           </div>
 
         </div>

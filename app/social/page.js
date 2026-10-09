@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function SocialPage() {
   const [abaAtiva, setAbaAtiva] = useState('feed');
@@ -10,10 +11,12 @@ export default function SocialPage() {
   const [perfilSelecionado, setPerfilSelecionado] = useState(null);
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
 
-  // Simulação de status do usuário (false = não assinou plano ainda, true = assinado)
+  // Simulação: se o usuário já estiver logado/registrado na Social
+  const [usuarioLogado, setUsuarioLogado] = useState(false);
+  const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
+
   const [usuarioAssinado, setUsuarioAssinado] = useState(false);
 
-  // Função para checar acesso a ações restritas (operar / copiar / APIs)
   const verificarAcessoRestrito = (acaoNome) => {
     if (!usuarioAssinado) {
       const confirmar = confirm(`⚡ Para ${acaoNome}, você precisa ativar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos e iniciar o seu teste?`);
@@ -30,19 +33,19 @@ export default function SocialPage() {
       id: 1, 
       tipo: '📊 MEGAPULSE', 
       titulo: 'Ibovespa (IBOV): ▲ Alta Institucional (+1.2%)', 
-      detalhes: 'O fluxo de ordens institucionais nas últimas 2 horas indica forte acumulação nos principais papéis do setor financeiro e de commodities. O motor HFT detectou entrada de capital estrangeiro de R$ 1.2B.' 
+      detalhes: 'O fluxo de ordens institucionais nas últimas 2 horas indica forte acumulação nos principais papéis do setor financeiro e de commodities.' 
     },
     { 
       id: 2, 
       tipo: '🐋 BALEIA B3', 
       titulo: 'Aporte detectado em VALE3 (+R$ 45M em lotes)', 
-      detalhes: 'Grande player posicionado no suporte de curto prazo. Movimento típico de realocação de carteira institucional com foco em dividendos e proteção de alpha.' 
+      detalhes: 'Grande player posicionado no suporte de curto prazo. Movimento típico de realocação de carteira institucional.' 
     },
     { 
       id: 3, 
       tipo: '🚀 TOKEN', 
       titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', 
-      detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade com execução automática de contratos inteligentes. Contrato validado e seguro.' 
+      detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade com execução automática de contratos inteligentes.' 
     }
   ];
 
@@ -54,7 +57,7 @@ export default function SocialPage() {
       autor: 'Carlos M. (Trader Pro)', 
       cargo: 'ESTRATEGISTA HFT', 
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-      texto: 'O Modo Reverso salvou-me hoje no Mini-Índice! Falso rompimento detectado em 128.500 e o robô inverteu o meu clique emocional gerando +R$ 820,00 protegidos. Incrível!', 
+      texto: 'O Modo Reverso salvou-me hoje no Mini-Índice! Falso rompimento detectado em 128.500 e o robô inverteu o meu clique emocional gerando +R$ 820,00 protegidos.', 
       imagem: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800',
       tempo: 'Há 15 mins', 
       likes: 34, 
@@ -66,7 +69,7 @@ export default function SocialPage() {
       autor: 'Ana Paula S. (Institucional)', 
       cargo: 'VIP GLOBAL', 
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      texto: 'Radar de baleias indicou acumulação pesada na VALE3. Mantive o Botão Antifúria armado e evitei entrar contra a tendência macro. Disciplina pura!', 
+      texto: 'Radar de baleias indicou acumulação pesada na VALE3. Mantive o Botão Antifúria armado e evitei entrar contra a tendência macro.', 
       imagem: '',
       tempo: 'Há 45 mins', 
       likes: 51, 
@@ -76,7 +79,7 @@ export default function SocialPage() {
   ]);
 
   const [rankingOperadores] = useState([
-    { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar • Mensalidade Abonada + Destaque Master' },
+    { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar • Mensalidade Abonada' },
     { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar • Mensalidade Abonada' },
     { pos: 3, nome: 'Roberto Dias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: '🥉 3º Lugar • Mensalidade Abonada' }
   ]);
@@ -86,8 +89,8 @@ export default function SocialPage() {
     if (!novoTexto.trim() && !imagemInput.trim()) return;
     setPosts([{ 
       id: Date.now(), 
-      autor: 'Paulo Stutz (CEO)', 
-      cargo: 'FOUNDER', 
+      autor: usuarioLogado ? nomeUsuario : 'Visitante Anônimo', 
+      cargo: 'MEMBRO', 
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
       texto: novoTexto, 
       imagem: imagemInput,
@@ -118,7 +121,7 @@ export default function SocialPage() {
   };
 
   return (
-    <main style={{ backgroundColor: '#090d16', color: '#f8fafc', minHeight: '100vh', paddingBottom: '60px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%', position: 'relative' }}>
+    <main style={{ backgroundColor: '#070b14', color: '#f8fafc', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', position: 'relative' }}>
       
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes marquee {
@@ -140,7 +143,7 @@ export default function SocialPage() {
       ` }} />
 
       {/* Ticker Rotativo de Mercado */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: '#131b2e', borderBottom: '1px solid #1e293b', padding: '12px 0', width: '100%', boxSizing: 'border-box' }} className="ticker-container">
+      <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: '#0e1626', borderBottom: '1px solid #1e293b', padding: '10px 0', width: '100%', boxSizing: 'border-box' }} className="ticker-container">
         <div className="ticker-track">
           {tickerDuplicado.map((item, index) => (
             <div 
@@ -159,8 +162,8 @@ export default function SocialPage() {
       {/* Modal Detalhes do Ticker */}
       {tickerSelecionado && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(5, 8, 20, 0.85)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#151d30', border: '1px solid #334155', borderRadius: '20px', maxWidth: '500px', width: '100%', padding: '25px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid #1e293b', paddingBottom: '10px' }}>
+          <div style={{ backgroundColor: '#111827', border: '1px solid #334155', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '25px', boxShadow: '0 25px 50px rgba(0,0,0,0.7)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid #1f2937', paddingBottom: '10px' }}>
               <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#34d399', fontFamily: 'monospace' }}>{tickerSelecionado.tipo}</span>
               <button onClick={() => setTickerSelecionado(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
@@ -169,15 +172,15 @@ export default function SocialPage() {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button 
                 onClick={() => {
-                  if (verificarAcessoRestrito('operar com base neste relatório')) {
+                  if (verificarAcessoRestrito('operar com base neste sinal')) {
                     window.location.href = '/mesa-operacao';
                   }
                 }}
-                style={{ backgroundColor: '#10b981', color: '#000', border: 'none', padding: '10px 18px', borderRadius: '10px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+                style={{ backgroundColor: '#10b981', color: '#000', border: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
               >
                 ⚡ Operar este Sinal
               </button>
-              <button onClick={() => setTickerSelecionado(null)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '10px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+              <button onClick={() => setTickerSelecionado(null)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
                 Fechar
               </button>
             </div>
@@ -188,10 +191,10 @@ export default function SocialPage() {
       {/* Modal de Perfil de Usuário */}
       {perfilSelecionado && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(5, 8, 20, 0.85)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', boxSizing: 'border-box' }}>
-          <div style={{ backgroundColor: '#151d30', border: '1px solid #334155', borderRadius: '24px', maxWidth: '550px', width: '100%', padding: '30px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)', display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: '#111827', border: '1px solid #334155', borderRadius: '16px', maxWidth: '550px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.7)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: '11px', color: '#c084fc', fontWeight: 'bold', fontFamily: 'monospace' }}>PERFIL DO ESTRATEGISTA</span>
-              <button onClick={() => setPerfilSelecionado(null)} style={{ backgroundColor: '#1e293b', color: '#fff', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setPerfilSelecionado(null)} style={{ backgroundColor: '#1f2937', color: '#fff', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>✕</button>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -210,7 +213,7 @@ export default function SocialPage() {
             <div style={{ display: 'flex', gap: '10px' }}>
               <button 
                 onClick={() => alternarSeguir(perfilSelecionado.nome)}
-                style={{ flex: 1, backgroundColor: seguindoPerfis[perfilSelecionado.nome] ? '#334155' : '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
+                style={{ flex: 1, backgroundColor: seguindoPerfis[perfilSelecionado.nome] ? '#334155' : '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
               >
                 {seguindoPerfis[perfilSelecionado.nome] ? 'Seguindo ✓' : 'Seguir Estrategista'}
               </button>
@@ -221,40 +224,69 @@ export default function SocialPage() {
                     setPerfilSelecionado(null);
                   }
                 }}
-                style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
+                style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
               >
                 ⚡ Copiar Estratégia
               </button>
             </div>
+            
+            <button 
+              onClick={() => setPerfilSelecionado(null)} 
+              style={{ backgroundColor: '#1f2937', color: '#cbd5e1', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', marginTop: '10px' }}
+            >
+              ← Voltar ao Feed Principal
+            </button>
           </div>
         </div>
       )}
 
       <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* Cabeçalho */}
-        <div style={{ backgroundColor: '#131b2e', color: '#f8fafc', padding: '20px 24px', borderRadius: '20px', border: '1px solid #1e293b', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '38px', height: '38px', borderRadius: '10px', backgroundColor: '#7c3aed', color: '#fff', fontWeight: '900', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(124, 58, 237, 0.4)' }}>
+        {/* Cabeçalho refinado (Identidade Visual Sofisticada) */}
+        <div style={{ backgroundColor: '#111827', color: '#f8fafc', padding: '20px 24px', borderRadius: '16px', border: '1px solid #1f2937', boxShadow: '0 10px 25px rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', color: '#fff', fontWeight: '900', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 15px rgba(139, 92, 246, 0.4)' }}>
               J
             </div>
             <div>
-              <span style={{ fontSize: '13px', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', display: 'block' }}>JENIOS SOCIAL</span>
-              <span style={{ fontSize: '10px', color: '#38bdf8', fontWeight: 'bold', fontFamily: 'monospace' }}>● COMUNIDADE & COPY TRADING INSTITUCIONAL</span>
+              <span style={{ fontSize: '14px', fontWeight: '800', letterSpacing: '0.5px', color: '#fff', display: 'block' }}>JENIOS SOCIAL</span>
+              <span style={{ fontSize: '11px', color: '#a78bfa', fontWeight: '600' }}>{usuarioLogado ? `Olá, ${nomeUsuario}` : '● Comunidade & Copy Trading'}</span>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <a href="/dashboard-logado" style={{ backgroundColor: '#1e293b', color: '#f8fafc', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', border: '1px solid #334155' }}>Sala de Controle</a>
-            <a href="/planos" style={{ backgroundColor: '#10b981', color: '#000', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}>Assinar Plano (7 Dias Grátis)</a>
+
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+            {/* Botão de Início para retornar à área principal */}
+            <Link href="/" style={{ backgroundColor: '#1f2937', color: '#cbd5e1', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #374151' }}>
+              🏠 Início (Portal)
+            </Link>
+
+            <Link href="/dashboard-logado" style={{ backgroundColor: '#1f2937', color: '#f8fafc', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #374151' }}>
+              Sala de Controle
+            </Link>
+
+            {/* Condicional: Se não tiver conta, mostra Entrar/Criar Conta. Se tiver, mostra status */}
+            {!usuarioLogado ? (
+              <Link href="/login" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)' }}>
+                Entrar / Criar Conta
+              </Link>
+            ) : (
+              <button 
+                onClick={() => setUsuarioAssinado(!usuarioAssinado)} 
+                style={{ backgroundColor: usuarioAssinado ? '#059669' : '#10b981', color: usuarioAssinado ? '#fff' : '#000', border: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)' }}
+              >
+                {usuarioAssinado ? 'Plano Ativo ✓' : 'Assinar Plano (7d Grátis)'}
+              </button>
+            )}
           </div>
         </div>
 
         {/* Abas */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '25px' }}>
-          <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '10px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #1e293b', backgroundColor: abaAtiva === 'feed' ? '#1e293b' : '#131b2e', color: '#fff', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-            📱 Feed Contínuo (Scroll)
+          <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #8b5cf6' : '1px solid #1f2937', backgroundColor: abaAtiva === 'feed' ? '#111827' : '#0e1626', color: '#fff', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
+            📱 Feed Contínuo
           </button>
-          <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '10px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #1e293b', backgroundColor: abaAtiva === 'ranking' ? '#1e293b' : '#131b2e', color: '#fff', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
+          <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #1f2937', backgroundColor: abaAtiva === 'ranking' ? '#111827' : '#0e1626', color: '#fff', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             🏆 Ranking Top 10
           </button>
         </div>
@@ -262,44 +294,42 @@ export default function SocialPage() {
         {abaAtiva === 'feed' ? (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             
-            {/* COLUNA ESQUERDA: Criação e Feed */}
+            {/* Coluna Esquerda: Posts */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Caixa de Criação de Post */}
-              <div style={{ backgroundColor: '#131b2e', border: '1px solid #1e293b', borderRadius: '20px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)' }}>
+              <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
                 <form onSubmit={publicarPost}>
                   <textarea 
                     value={novoTexto} 
                     onChange={(e) => setNovoTexto(e.target.value)} 
                     placeholder="O que está vendo no mercado agora? Compartilhe com a rede..." 
-                    style={{ width: '100%', height: '80px', backgroundColor: '#0b1120', border: '1px solid #334155', borderRadius: '12px', color: '#fff', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', resize: 'none', marginBottom: '12px' }} 
+                    style={{ width: '100%', height: '80px', backgroundColor: '#070b14', border: '1px solid #374151', borderRadius: '10px', color: '#fff', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', resize: 'none', marginBottom: '12px' }} 
                   />
                   <input 
                     type="text" 
                     value={imagemInput} 
                     onChange={(e) => setImagemInput(e.target.value)} 
                     placeholder="Link de imagem ou gráfico (opcional)..." 
-                    style={{ width: '100%', backgroundColor: '#0b1120', color: '#fff', border: '1px solid #334155', padding: '12px 14px', borderRadius: '10px', fontSize: '12px', outline: 'none', marginBottom: '15px', boxSizing: 'border-box' }} 
+                    style={{ width: '100%', backgroundColor: '#070b14', color: '#fff', border: '1px solid #374151', padding: '12px 14px', borderRadius: '8px', fontSize: '12px', outline: 'none', marginBottom: '15px', boxSizing: 'border-box' }} 
                   />
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)' }}>
+                    <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)' }}>
                       Publicar Análise 🚀
                     </button>
                   </div>
                 </form>
               </div>
 
-              {/* FEED DE POSTS */}
+              {/* FEED */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {posts.map((p) => (
-                  <div key={p.id} style={{ backgroundColor: '#131b2e', border: '1px solid #1e293b', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)' }}>
+                  <div key={p.id} style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
                     
-                    {/* Cabeçalho do Post */}
                     <div 
                       onClick={() => setPerfilSelecionado({ nome: p.autor, cargo: p.cargo, avatar: p.avatar })}
-                      style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #1e293b', cursor: 'pointer', backgroundColor: '#131b2e' }}
+                      style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #1f2937', cursor: 'pointer', backgroundColor: '#111827' }}
                     >
-                      <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
+                      <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #8b5cf6' }} />
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <b style={{ color: '#fff', fontSize: '14px' }}>{p.autor}</b>
@@ -319,7 +349,7 @@ export default function SocialPage() {
                       </div>
                     )}
 
-                    <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0b1120', borderTop: '1px solid #1e293b', fontSize: '12px' }}>
+                    <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#070b14', borderTop: '1px solid #1f2937', fontSize: '12px' }}>
                       <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#ef4444' : '#cbd5e1', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
                         {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
                       </button>
@@ -338,9 +368,9 @@ export default function SocialPage() {
 
             </div>
 
-            {/* COLUNA DIREITA: Ranking Rápido */}
+            {/* Coluna Direita: Ranking */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ backgroundColor: '#131b2e', border: '1px solid #1e293b', borderRadius: '20px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)' }}>
+              <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#fff', margin: 0, marginBottom: '6px' }}>🏆 Top Traders da Semana</h3>
                 <p style={{ fontSize: '11px', color: '#94a3b8', margin: '0 0 16px 0' }}>Clique num operador para visitar o perfil e seguir.</p>
 
@@ -349,7 +379,7 @@ export default function SocialPage() {
                     <div 
                       key={op.pos} 
                       onClick={() => setPerfilSelecionado(op)}
-                      style={{ backgroundColor: '#0b1120', border: '1px solid #1e293b', borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: '0.2s' }}
+                      style={{ backgroundColor: '#070b14', border: '1px solid #1f2937', borderRadius: '10px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <img src={op.avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
@@ -358,7 +388,7 @@ export default function SocialPage() {
                           <span style={{ fontSize: '10px', color: '#34d399', fontWeight: 'bold' }}>{op.rentabilidade}</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: '10px', color: '#38bdf8', backgroundColor: '#1e293b', padding: '4px 8px', borderRadius: '6px', fontFamily: 'monospace' }}>Ver Perfil →</span>
+                      <span style={{ fontSize: '10px', color: '#38bdf8', backgroundColor: '#1f2937', padding: '4px 8px', borderRadius: '6px', fontFamily: 'monospace' }}>Ver →</span>
                     </div>
                   ))}
                 </div>
@@ -367,8 +397,8 @@ export default function SocialPage() {
 
           </div>
         ) : (
-          /* ABA RANKING COMPLETO */
-          <div style={{ backgroundColor: '#131b2e', border: '1px solid #1e293b', borderRadius: '20px', padding: '30px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.3)' }}>
+          /* Ranking Completo */
+          <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '16px', padding: '30px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', marginBottom: '6px' }}>Ranking Completo Top 10</h2>
             <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '20px' }}>Clique em qualquer operador para inspecionar métricas e seguir.</p>
             
@@ -377,10 +407,10 @@ export default function SocialPage() {
                 <div 
                   key={op.pos} 
                   onClick={() => setPerfilSelecionado(op)}
-                  style={{ backgroundColor: '#0b1120', border: '1px solid #1e293b', borderRadius: '14px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                  style={{ backgroundColor: '#070b14', border: '1px solid #1f2937', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <img src={op.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
+                    <img src={op.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #8b5cf6' }} />
                     <div>
                       <b style={{ fontSize: '14px', color: '#fff', display: 'block' }}>#{op.pos} - {op.nome}</b>
                       <span style={{ fontSize: '11px', color: '#c084fc', display: 'block' }}>{op.status}</span>

@@ -8,12 +8,23 @@ export default function MesaOperacoesPage() {
   // Estados de Plano e Assinatura
   const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
 
-  // Estados de Conta e Modo
+  // Estados de Conta e Saldo Sincronizado
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [modoOperacao, setModoOperacao] = useState('reversa'); // 'manual' ou 'reversa'
-  
-  // Saldo Fictício Customizável para a Conta Simulada
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
+
+  // Sincroniza o saldo simulado globalmente
+  useEffect(() => {
+    const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
+    if (saldoSalvo) {
+      setSaldoSimulado(Number(saldoSalvo));
+    }
+  }, []);
+
+  const atualizarSaldoSimulado = (novoValor) => {
+    setSaldoSimulado(novoValor);
+    localStorage.setItem('jenios_saldo_simulado', novoValor);
+  };
 
   // Estados de Ativos e Categoria
   const [categoria, setCategoria] = useState('b3');
@@ -23,14 +34,12 @@ export default function MesaOperacoesPage() {
   // Input de busca personalizada
   const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
 
-  // Gestão de Risco e Alocação
+  // Gestão de Risco e Alocação (Baseada no Saldo Simulado Sincronizado)
   const [capitalAlocar, setCapitalAlocar] = useState(10000);
   const [contratos, setContratos] = useState(5);
   
-  // Limite máximo de 5% calculado dinamicamente com base no saldo simulado
   const limiteMaximoRiscoPermitido = saldoSimulado * 0.05;
 
-  // Listas de Atalhos Rápidos por Categoria
   const atalhosPorMercado = {
     b3: [
       { nome: 'Mini-Índice (WIN1!)', simbolo: 'BMFBOVESPA:WIN1!' },
@@ -51,7 +60,6 @@ export default function MesaOperacoesPage() {
     ]
   };
 
-  // Função para mudar de categoria com validação de plano
   const mudarCategoria = (cat) => {
     if (planoUsuario === 'basico' && (cat === 'cripto' || cat === 'forex')) {
       alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
@@ -65,13 +73,11 @@ export default function MesaOperacoesPage() {
     }
   };
 
-  // Função para buscar ativo customizado digitado
   const handleBuscaCustomizada = (e) => {
     e.preventDefault();
     if (!inputBuscaCustomizada.trim()) return;
 
     let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
-    
     if (!simboloFormatado.includes(':')) {
       if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
         simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
@@ -89,7 +95,6 @@ export default function MesaOperacoesPage() {
     setInputBuscaCustomizada('');
   };
 
-  // ⚡ UseEffect para carregar e atualizar dinamicamente o Gráfico Real do TradingView na Mesa de Operações
   useEffect(() => {
     const carregarGrafico = () => {
       const container = document.getElementById('tradingview_mesa_container');
@@ -140,7 +145,7 @@ export default function MesaOperacoesPage() {
     const riscoCalculado = capitalAlocar * 0.02; 
     const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
+    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo Fictício: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
@@ -156,7 +161,6 @@ export default function MesaOperacoesPage() {
             JENIOS DESK •
           </span>
 
-          {/* Seletor de Conta (Simulada vs Real) */}
           <div style={{ display: 'flex', backgroundColor: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
             <button 
               onClick={() => setTipoConta('simulada')} 
@@ -172,14 +176,13 @@ export default function MesaOperacoesPage() {
             </button>
           </div>
 
-          {/* Input para Saldo Fictício Customizável (Visível apenas na conta simulada) */}
           {tipoConta === 'simulada' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#f8fafc', padding: '4px 10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
               <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Saldo Fictício (R$):</span>
               <input 
                 type="number" 
                 value={saldoSimulado} 
-                onChange={(e) => setSaldoSimulado(Number(e.target.value))}
+                onChange={(e) => atualizarSaldoSimulado(Number(e.target.value))}
                 style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 6px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none' }}
               />
             </div>
@@ -188,7 +191,6 @@ export default function MesaOperacoesPage() {
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', fontSize: '12px', fontFamily: 'monospace' }}>
           
-          {/* Seletor de Teste de Plano */}
           <div style={{ backgroundColor: '#f1f5f9', padding: '4px 8px', borderRadius: '8px', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Plano:</span>
             <select 
@@ -222,13 +224,10 @@ export default function MesaOperacoesPage() {
         </div>
       </div>
 
-      {/* ÁREA PRINCIPAL: SELETOR DE ATIVOS + GRÁFICO + PAINEL */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px', flex: 1 }}>
         
-        {/* COLUNA ESQUERDA: SELETOR DE ATIVOS + GRÁFICO REAL TRADINGVIEW */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '16px', boxSizing: 'border-box' }}>
           
-          {/* SELETOR DE ATIVOS E BUSCA */}
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '6px' }}>
@@ -238,7 +237,6 @@ export default function MesaOperacoesPage() {
               </div>
             </div>
 
-            {/* BARRA DE PESQUISA CUSTOMIZADA PARA QUALQUER ATIVO */}
             <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
                 <span>🔍</span>
@@ -255,7 +253,6 @@ export default function MesaOperacoesPage() {
               </button>
             </form>
 
-            {/* Botões de Atalho Rápido por Categoria */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -290,13 +287,11 @@ export default function MesaOperacoesPage() {
             <span style={{ fontSize: '10px', color: '#059669', fontFamily: 'monospace', fontWeight: 'bold' }}>● Conectado ao TradingView</span>
           </div>
           
-          {/* CONTAINER DO GRÁFICO REAL TRADINGVIEW */}
           <div style={{ flex: 1, minHeight: '420px', backgroundColor: '#0b0f19', borderRadius: '12px', overflow: 'hidden', border: '1px solid #334155', position: 'relative' }}>
             <div id="tradingview_mesa_container" style={{ width: '100%', height: '100%' }}></div>
           </div>
         </div>
 
-        {/* PAINEL LATERAL DE EXECUÇÃO HFT */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             
@@ -367,7 +362,6 @@ export default function MesaOperacoesPage() {
 
       </div>
 
-      {/* MODAL DE CONFIGURAÇÃO DE RISCO & ALVO */}
       {modalRiscoAberto && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 50 }}>
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '420px', width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -396,7 +390,6 @@ export default function MesaOperacoesPage() {
         </div>
       )}
 
-      {/* MODAL DE CONEXÃO COM CORRETORA */}
       {modalBrokerAberto && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 50 }}>
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '420px', width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>

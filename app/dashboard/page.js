@@ -6,6 +6,23 @@ export default function DashboardPage() {
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
   
+  // Estados de Conta e Saldo Fictício Sincronizado via LocalStorage
+  const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
+  const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
+
+  // Carrega e sincroniza o saldo simulado globalmente entre as páginas
+  useEffect(() => {
+    const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
+    if (saldoSalvo) {
+      setSaldoSimulado(Number(saldoSalvo));
+    }
+  }, []);
+
+  const atualizarSaldoSimulado = (novoValor) => {
+    setSaldoSimulado(novoValor);
+    localStorage.setItem('jenios_saldo_simulado', novoValor);
+  };
+
   // Estados de Plano e Assinatura do Usuário
   const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
 
@@ -41,7 +58,6 @@ export default function DashboardPage() {
     { nome: '$NEXUS (Multichain)', status: 'Nova Listagem | Alta Retenção de LP' }
   ]);
 
-  // Lista de Atalhos Rápidos por Categoria
   const atalhosPorMercado = {
     b3: [
       { nome: 'Mini-Índice (WIN1!)', simbolo: 'BMFBOVESPA:WIN1!' },
@@ -64,7 +80,6 @@ export default function DashboardPage() {
     ]
   };
 
-  // Função para mudar de mercado com validação de plano
   const mudarMercado = (categoria) => {
     if (planoUsuario === 'basico' && (categoria === 'cripto' || categoria === 'global')) {
       alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
@@ -74,14 +89,11 @@ export default function DashboardPage() {
     setMercadoCategoria(categoria);
   };
 
-  // Função para buscar ativo customizado digitado
   const handleBuscaCustomizada = (e) => {
     e.preventDefault();
     if (!inputBuscaCustomizada.trim()) return;
 
     let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
-    
-    // Se o usuário digitar apenas o ticker da B3 sem o prefixo, adicionamos automaticamente
     if (!simboloFormatado.includes(':')) {
       if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
         simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
@@ -99,7 +111,6 @@ export default function DashboardPage() {
     setInputBuscaCustomizada('');
   };
 
-  // ⚡ UseEffect para carregar e atualizar o Gráfico Real do TradingView dinamicamente
   useEffect(() => {
     const carregarGrafico = () => {
       const container = document.getElementById('tradingview_widget_container');
@@ -166,21 +177,51 @@ export default function DashboardPage() {
       return;
     }
 
-    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
-  };
-
-  return (
+    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo Fictício: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
+  };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', padding: '40px 20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         
         {/* Cabeçalho do Dashboard */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #e2e8f0', paddingBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-          <div>
-            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#7c3aed', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase' }}>
-              JENIOS PLATFORM • SALA DE CONTROLO HFT
-            </span>
-            <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#0f172a', margin: '5px 0 0 0' }}>Olá, Operador</h1>
-            <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>{statusMensagem}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div>
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#7c3aed', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                JENIOS PLATFORM • SALA DE CONTROLO HFT
+              </span>
+              <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#0f172a', margin: '5px 0 0 0' }}>Olá, Operador</h1>
+              <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>{statusMensagem}</p>
+            </div>
+
+            {/* Seletor de Conta (Simulador vs Real) e Saldo Fictício Sincronizado */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#e2e8f0', padding: '4px 8px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
+              <div style={{ display: 'flex', backgroundColor: '#ffffff', padding: '2px', borderRadius: '6px' }}>
+                <button 
+                  onClick={() => setTipoConta('simulada')} 
+                  style={{ backgroundColor: tipoConta === 'simulada' ? '#7c3aed' : 'transparent', color: tipoConta === 'simulada' ? '#fff' : '#475569', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  Simulador
+                </button>
+                <button 
+                  onClick={() => setTipoConta('real')} 
+                  style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                  Real
+                </button>
+              </div>
+
+              {tipoConta === 'simulada' && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Saldo (R$):</span>
+                  <input 
+                    type="number" 
+                    value={saldoSimulado} 
+                    onChange={(e) => atualizarSaldoSimulado(Number(e.target.value))}
+                    style={{ width: '100px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 6px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none' }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
@@ -209,7 +250,6 @@ export default function DashboardPage() {
         {/* 4 Cartões Principais do Topo */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           
-          {/* 1. Modo Reverso Automático */}
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>MODO DE RETIFICAÇÃO</span>
@@ -228,7 +268,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 2. Botão Antifúria (Destacado) */}
           <div style={{ backgroundColor: '#ffffff', border: antifuriaAcionado ? '2px solid #ef4444' : '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#dc2626', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>BLINDAGEM EMOCIONAL</span>
@@ -242,7 +281,6 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* 3. Losses Neutralizados */}
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>ESTATÍSTICAS</span>
@@ -257,7 +295,6 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* 4. Trava Manual de Emergência */}
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#e11d48', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>EMERGÊNCIA</span>
@@ -276,10 +313,8 @@ export default function DashboardPage() {
         {/* LAYOUT PRINCIPAL DO TERMINAL */}
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
           
-          {/* COLUNA ESQUERDA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             
-            {/* PAINEL DE SELEÇÃO RÁPIDA DE MERCADOS E BUSCA PERSONALIZADA */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                 <div>
@@ -287,7 +322,6 @@ export default function DashboardPage() {
                   <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: '2px 0 0 0' }}>{nomeAtivoExibicao} <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'normal' }}>({ativoSelecionado})</span></h3>
                 </div>
 
-                {/* Abas de Categoria de Mercado com Validação de Plano */}
                 <div style={{ display: 'flex', gap: '6px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                   <button 
                     onClick={() => mudarMercado('b3')}
@@ -310,7 +344,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* BARRA DE PESQUISA CUSTOMIZADA PARA QUALQUER ATIVO */}
               <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
                   <span>🔍</span>
@@ -327,7 +360,6 @@ export default function DashboardPage() {
                 </button>
               </form>
 
-              {/* Botões de Atalho Rápido por Categoria */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -357,7 +389,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* GRÁFICO REAL DO TRADINGVIEW */}
             <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '520px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div>
@@ -371,7 +402,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* PAINEL DE GESTÃO DE CAPITAL E RISCO */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '12px' }}>
                 ⚙️ GESTÃO DE CAPITAL & ALOCAÇÃO DE RISCO
@@ -427,7 +457,6 @@ export default function DashboardPage() {
 
               </div>
 
-              {/* Botões de Execução Rápida */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                 <button onClick={() => executarOrdem('COMPRA (BUY)')} style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(5, 150, 105, 0.2)' }}>
                   🟢 COMPRAR A MERCADO (Lotes: {lotes})
@@ -441,10 +470,8 @@ export default function DashboardPage() {
 
           </div>
 
-          {/* COLUNA DIREITA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
-            {/* 1. Megatendências */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>📊 FLUXO MACRO EM TEMPO REAL</span>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Megatendências</h3>
@@ -458,7 +485,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* 2. Radar de Baleias */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>🐋 MOVIMENTOS INSTITUCIONAIS</span>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Radar de Baleias</h3>
@@ -475,7 +501,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* 3. Tokens Explosivos */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '10px', color: '#d97706', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>🚀 ATIVOS RECENTES</span>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Tokens Explosivos</h3>

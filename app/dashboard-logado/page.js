@@ -6,14 +6,18 @@ export default function DashboardLogado() {
   const [diagnosticoFeito, setDiagnosticoFeito] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('geral');
 
-  // Dados financeiros e de gestão
+  // Estados de API de Corretoras
+  const [corretoraSelecionada, setCorretoraSelecionada] = useState('B3 / Profit Pro');
+  const [apiKeyCorretora, setApiKeyCorretora] = useState('');
+  const [apiSecretCorretora, setApiSecretCorretora] = useState('');
+  const [corretorasConectadas, setCorretorasConectadas] = useState([
+    { id: 1, nome: 'B3 / Nelogica Profit', status: 'Conectado (Latência: 12ms)', ativo: true }
+  ]);
+
   const [dadosFinanceiros] = useState({
     plano: 'Plano Pro HFT (Anual)',
     statusAssinatura: 'Ativa (Renovação em 18/11/2026)',
     valorFatura: 'R$ 297,00',
-    faturaPaga: false,
-    asaasApiKey: 'live_asaas_sec_889347192847192',
-    saldoDisponivel: 'R$ 14.820,00',
     ganhosAfiliados: 'R$ 3.450,00',
     indicacoesAtivas: 12,
     ganhosCopyTrading: 'R$ 2.180,00',
@@ -28,7 +32,6 @@ export default function DashboardLogado() {
   }, []);
 
   const abrirMesaOperacao = () => {
-    // Verifica obrigatoriedade do diagnóstico antes de operar
     const jaFez = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
     if (!jaFez && !diagnosticoFeito) {
       alert('⚠️ Protocolo Obrigatório: Você precisa concluir o Diagnóstico Comportamental de 6 perguntas antes de realizar sua primeira operação na Mesa.');
@@ -39,7 +42,19 @@ export default function DashboardLogado() {
   };
 
   const pagarFaturaAtual = () => {
-    alert('💳 Fatura de R$ 297,00 processada via AsaaS Gateway com sucesso! Assinatura mantida por mais 30 dias.');
+    alert('💳 Fatura de R$ 297,00 processada com sucesso! Assinatura mantida por mais 30 dias.');
+  };
+
+  const conectarCorretora = (e) => {
+    e.preventDefault();
+    if (!apiKeyCorretora) {
+      alert('Por favor, insira a Chave de API da corretora.');
+      return;
+    }
+    setCorretorasConectadas(prev => [...prev, { id: Date.now(), nome: corretoraSelecionada, status: 'Conectado e Sincronizado', ativo: true }]);
+    setApiKeyCorretora('');
+    setApiSecretCorretora('');
+    alert(`🚀 Tecnologia JENIOS plugada com sucesso na corretora ${corretoraSelecionada}! As ordens HFT já estão roteadas.`);
   };
 
   return (
@@ -78,7 +93,7 @@ export default function DashboardLogado() {
             📊 Copy Trading & Ganhos
           </button>
           <button onClick={() => setAbaAtiva('apis')} style={{ textAlign: 'left', background: abaAtiva === 'apis' ? '#f3e8ff' : 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: abaAtiva === 'apis' ? '#7c3aed' : '#334155', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
-            🔌 Conexão de APIs (AsaaS)
+            🔌 Conexão de APIs (Corretoras)
           </button>
         </nav>
 
@@ -127,9 +142,9 @@ export default function DashboardLogado() {
                 <span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>● Modo Reverso Adaptativo Ativo</span>
               </div>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
-                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Monitoramento (15 Ops)</span>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0284c7', margin: '0 0 4px 0' }}>Ativo (Ciclo 3/15)</h3>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>Proteção contra 3 acertos em sequência</span>
+                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Corretoras Conectadas (APIs)</span>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0284c7', margin: '0 0 4px 0' }}>{corretorasConectadas.length} Ativa(s)</h3>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Roteamento HFT em tempo real</span>
               </div>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Ganhos Totais Afiliados & Copy</span>
@@ -144,7 +159,7 @@ export default function DashboardLogado() {
         {abaAtiva === 'financeiro' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Gestão de Assinatura & Faturas</h2>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>Acompanhe o estado da sua assinatura profissional e realize pagamentos de faturas pendentes via AsaaS.</p>
+            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>Acompanhe o estado da sua assinatura profissional e realize pagamentos de faturas pendentes.</p>
             
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
               <div>
@@ -162,8 +177,10 @@ export default function DashboardLogado() {
         {/* ABA: GESTÃO DE AFILIADOS */}
         {abaAtiva === 'afiliados' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Programa de Afiliados & Comissões</h2>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>Monitore os seus ganhos em cima de indicações e assinaturas de novos operadores.</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Programa de Afiliados & Comissões Automáticas</h2>
+            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>
+              <b>Como funciona:</b> Basta compartilhar o seu link exclusivo abaixo. O sistema reconhece automaticamente qualquer cadastro ou assinatura realizada através do seu link e atribui a comissão para a sua conta em tempo real.
+            </p>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '25px' }}>
               <div style={{ backgroundColor: '#f8fafc', padding: '20px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
@@ -177,8 +194,11 @@ export default function DashboardLogado() {
             </div>
 
             <div style={{ backgroundColor: '#f1f5f9', padding: '16px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
-              <span style={{ fontSize: '12px', color: '#334155', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>O seu link exclusivo de afiliado:</span>
-              <input type="text" readOnly value="https://jenios.com.br/convite/paulo-stutz-hft" style={{ width: '100%', padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12px', color: '#0f172a' }} />
+              <span style={{ fontSize: '12px', color: '#334155', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>O seu link exclusivo de afiliado (Rastreamento Automático):</span>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <input type="text" readOnly value="https://jenios.com.br/convite/paulo-stutz-netto" style={{ flex: 1, padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12px', color: '#0f172a' }} />
+                <button onClick={() => alert('Link copiado para a área de transferência!')} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Copiar Link</button>
+              </div>
             </div>
           </div>
         )}
@@ -202,19 +222,74 @@ export default function DashboardLogado() {
           </div>
         )}
 
-        {/* ABA: CONEXÃO DE APIS */}
+        {/* ABA: CONEXÃO DE APIS (CORRETORAS) */}
         {abaAtiva === 'apis' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Conexão com APIs & Gateway de Pagamentos (AsaaS)</h2>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>Gerencie chaves de API, webhooks e subcontas para emissão automatizada de cobranças e notificações.</p>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Conexão de APIs com Corretoras</h2>
+            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>
+              Plugue a tecnologia JENIOS HFT e o robô de reversão diretamente à sua corretora ou plataforma de negociação (Profit Pro, MetaTrader, Binance, etc.) para execução automática de ordens.
+            </p>
             
-            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px' }}>
-              <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CHAVE DE API ASAAS (PRODUÇÃO)</span>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <input type="text" readOnly value={dadosFinanceiros.asaasApiKey} style={{ flex: 1, padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12px', fontFamily: 'monospace', color: '#0f172a' }} />
-                <button onClick={() => alert('Chave de API copiada!')} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Copiar</button>
+            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', marginBottom: '25px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Corretoras Já Conectadas</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {corretorasConectadas.map(c => (
+                  <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', padding: '12px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                    <div>
+                      <b style={{ fontSize: '13px', color: '#0f172a', display: 'block' }}>{c.nome}</b>
+                      <span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>● {c.status}</span>
+                    </div>
+                    <span style={{ fontSize: '11px', backgroundColor: '#f0fdf4', color: '#16a34a', padding: '4px 10px', borderRadius: '6px', fontWeight: 'bold' }}>Ativo</span>
+                  </div>
+                ))}
               </div>
             </div>
+
+            <form onSubmit={conectarCorretora} style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Nova Conexão via API / Webhook</h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px', marginBottom: '15px' }}>
+                <div>
+                  <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>SELECIONE A CORRETORA / PLATAFORMA:</label>
+                  <select 
+                    value={corretoraSelecionada} 
+                    onChange={(e) => setCorretoraSelecionada(e.target.value)}
+                    style={{ width: '100%', padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a' }}
+                  >
+                    <option value="B3 / Profit Pro (Nelogica)">B3 / Profit Pro (Nelogica)</option>
+                    <option value="MetaTrader 5 (MT5)">MetaTrader 5 (MT5)</option>
+                    <option value="Binance Futures (Cripto)">Binance Futures (Cripto)</option>
+                    <option value="Solana DEX / Meteora API">Solana DEX / Meteora API</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CHAVE DE API (API KEY):</label>
+                  <input 
+                    type="text" 
+                    value={apiKeyCorretora} 
+                    onChange={(e) => setApiKeyCorretora(e.target.value)} 
+                    placeholder="Insira a API Key gerada na sua corretora" 
+                    style={{ width: '100%', padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CHAVE SECRETA (API SECRET):</label>
+                  <input 
+                    type="password" 
+                    value={apiSecretCorretora} 
+                    onChange={(e) => setApiSecretCorretora(e.target.value)} 
+                    placeholder="••••••••••••••••••••••••••••••••" 
+                    style={{ width: '100%', padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
+                  />
+                </div>
+              </div>
+
+              <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                🔌 Conectar Tecnologia à Corretora
+              </button>
+            </form>
           </div>
         )}
 

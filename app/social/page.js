@@ -5,12 +5,12 @@ import { useSearchParams } from 'next/navigation';
 export default function SocialPage() {
   const searchParams = useSearchParams();
   const perfilUrl = searchParams.get('perfil');
-  const postIdUrl = searchParams.get('post');
 
   const [abaAtiva, setAbaAtiva] = useState('feed');
   const [novoTexto, setNovoTexto] = useState('');
-  const [tipoMidia, setTipoMidia] = useState('nenhuma');
-  const [urlMidiaInput, setUrlMidiaInput] = useState('');
+  const [proporcaoFoto, setProporcaoFoto] = useState('quadrada'); // 'quadrada', 'em-pe', 'deitada'
+  const [imagensPreview, setImagensPreview] = useState([]); // Suporte a Carrossel (várias fotos)
+  const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
 
   // Modais
@@ -24,7 +24,7 @@ export default function SocialPage() {
   const [modalCamera, setModalCamera] = useState(false);
   const videoRef = useRef(null);
 
-  // Perfil do Usuário com Bio e Métricas Dinâmicas
+  // Perfil do Usuário
   const [meuPerfil, setMeuPerfil] = useState({
     nome: 'Paulo Stutz Netto',
     handle: '@paulostutz',
@@ -33,9 +33,9 @@ export default function SocialPage() {
     assertividade: '0%',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
     bio: 'Desenvolvedor da infraestrutura AsaaS e operador HFT.',
-    seguidores: 0,
-    postsCount: 0,
-    visualizacoes30Dias: 0,
+    seguidores: 1280,
+    postsCount: 1,
+    visualizacoes30Dias: 4150,
     status: '🏆 Conta Verificada',
     autenticado: true
   });
@@ -65,7 +65,7 @@ export default function SocialPage() {
     e.preventDefault();
     localStorage.setItem('jenios_social_perfil', JSON.stringify(meuPerfil));
     setModalEditarPerfil(false);
-    alert('✅ Perfil e bio atualizados com sucesso!');
+    alert('✅ Perfil atualizado com sucesso!');
   };
 
   const fazerLogout = () => {
@@ -75,7 +75,6 @@ export default function SocialPage() {
     alert('Sessão encerrada.');
   };
 
-  // Criação de Conta / Login Automático com Métricas Zeradas e Bio Própria
   const processarAuth = (e) => {
     e.preventDefault();
     const nomeUser = modoAuth === 'cadastro' ? 'Novo Trader' : 'Paulo Stutz Netto';
@@ -88,37 +87,36 @@ export default function SocialPage() {
       autenticado: true,
       seguidores: 0,
       postsCount: 0,
-      visualizacoes30Dias: 0,
+      visualizacoes30Dias: 120, // Inicial realista
       bio: modoAuth === 'cadastro' ? 'Trader iniciante na plataforma Jenios HFT.' : 'Desenvolvedor da infraestrutura AsaaS e operador HFT.'
     };
 
     setMeuPerfil(perfilLogado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilLogado));
     setModalAutenticacao(false);
-    alert(modoAuth === 'cadastro' ? '🎉 Conta criada com sucesso! Métricas iniciadas em zero e bio ativada.' : 'Bem-vindo de volta!');
+    alert('Autenticado com sucesso!');
   };
 
-  // Upload de Avatar via Arquivos/Galeria
-  const handleAvatarUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setMeuPerfil({ ...meuPerfil, avatar: reader.result });
-      reader.readAsDataURL(file);
+  // Upload Múltiplo de Fotos (Carrossel) com Preview Visível
+  const handleUploadCarrossel = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      const leitores = files.map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      });
+
+      Promise.all(leitores).then(resultados => {
+        setImagensPreview(prev => [...prev, ...resultados]);
+      });
     }
   };
 
-  // Upload de Imagem para Post via Arquivos/Galeria
-  const handlePostImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUrlMidiaInput(reader.result);
-        setTipoMidia('imagem');
-      };
-      reader.readAsDataURL(file);
-    }
+  const removerFotoPreview = (index) => {
+    setImagensPreview(prev => prev.filter((_, i) => i !== index));
   };
 
   const iniciarCamera = async () => {
@@ -138,12 +136,13 @@ export default function SocialPage() {
     canvas.height = videoRef.current.videoHeight || 480;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    setUrlMidiaInput(canvas.toDataURL('image/png'));
-    setTipoMidia('imagem');
+    const fotoUrl = canvas.toDataURL('image/png');
+    setImagensPreview(prev => [...prev, fotoUrl]);
+    
     const stream = videoRef.current.srcObject;
     if (stream) stream.getTracks().forEach(t => t.stop());
     setModalCamera(false);
-    alert('📸 Foto capturada!');
+    alert('📸 Foto capturada e adicionada ao post!');
   };
 
   // Ranking Top 10 Semanal Completo
@@ -161,12 +160,27 @@ export default function SocialPage() {
   ]);
 
   const [posts, setPosts] = useState([
-    { id: 1, autor: 'Carlos M.', handle: '@carlosm', cargo: 'ESTRATEGISTA HFT', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', tipoMidia: 'nenhuma', urlMidia: '', tempo: 'Há 15 mins', likes: 34, curtido: false, perfilAssociado: rankingOperadores[0] }
+    { 
+      id: 1, 
+      autor: 'Carlos M.', 
+      handle: '@carlosm', 
+      cargo: 'ESTRATEGISTA HFT', 
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
+      texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', 
+      imagens: ['https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800'], 
+      proporcao: 'quadrada',
+      tempo: 'Há 15 mins', 
+      likes: 34, 
+      curtido: false, 
+      views: 890,
+      perfilAssociado: rankingOperadores[0] 
+    }
   ]);
 
   const publicarPost = (e) => {
     e.preventDefault();
-    if (!novoTexto.trim() && !urlMidiaInput.trim()) return;
+    if (!novoTexto.trim() && imagensPreview.length === 0) return;
+
     const novoP = {
       id: Date.now(),
       autor: meuPerfil.nome,
@@ -175,21 +189,24 @@ export default function SocialPage() {
       avatar: meuPerfil.avatar,
       bio: meuPerfil.bio,
       texto: novoTexto,
-      tipoMidia: tipoMidia,
-      urlMidia: urlMidiaInput,
+      imagens: imagensPreview,
+      proporcao: proporcaoFoto,
       tempo: 'Agora mesmo',
       likes: 0,
       curtido: false,
+      views: 1, // Visualização inicial orgânica
       perfilAssociado: meuPerfil
     };
+
     setPosts([novoP, ...posts]);
     setNovoTexto('');
-    setUrlMidiaInput('');
-    setTipoMidia('nenhuma');
+    setImagensPreview([]);
+    setProporcaoFoto('quadrada');
+
     const perfilAtualizado = {
       ...meuPerfil,
       postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 15
+      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 45
     };
     setMeuPerfil(perfilAtualizado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilAtualizado));
@@ -198,6 +215,16 @@ export default function SocialPage() {
 
   const curtirPost = (id) => {
     setPosts(posts.map(p => p.id === id ? { ...p, likes: p.curtido ? p.likes - 1 : p.likes + 1, curtido: !p.curtido } : p));
+  };
+
+  const mudarFotoCarrossel = (postId, direcao, totalImagens) => {
+    setIndiceCarrossel(prev => {
+      const atual = prev[postId] || 0;
+      let novo = atual + direcao;
+      if (novo < 0) novo = totalImagens - 1;
+      if (novo >= totalImagens) novo = 0;
+      return { ...prev, [postId]: novo };
+    });
   };
 
   const visitarPerfil = (usuario) => {
@@ -232,7 +259,7 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* MODAL AUTENTICAÇÃO (ENTRAR / CRIAR CONTA) */}
+      {/* MODAL AUTENTICAÇÃO */}
       {modalAutenticacao && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '400px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)' }}>
@@ -260,7 +287,7 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* MODAL EDIÇÃO DE PERFIL COM BIO */}
+      {/* MODAL EDIÇÃO DE PERFIL */}
       {modalEditarPerfil && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '450px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -276,10 +303,6 @@ export default function SocialPage() {
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Handle (@usuario):</label>
                 <input type="text" value={meuPerfil.handle} onChange={(e) => setMeuPerfil({...meuPerfil, handle: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Foto de Perfil (Galeria/Arquivos):</label>
-                <input type="file" accept="image/*" onChange={handleAvatarUpload} style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', backgroundColor: '#f8fafc' }} />
               </div>
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Bio (Biografia):</label>
@@ -318,7 +341,7 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* Perfil Header com Bio Corrigida */}
+        {/* Perfil Header */}
         <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
             
@@ -363,6 +386,24 @@ export default function SocialPage() {
           </div>
         </div>
 
+        {/* STORIES VERTICAIS (Estilo Instagram) */}
+        <div style={{ backgroundColor: '#ffffff', padding: '15px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
+          {[
+            { nome: 'Seu Story', avatar: meuPerfil.avatar, meu: true },
+            { nome: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+            { nome: 'Ana Paula', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+            { nome: 'Roberto Dias', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' }
+          ].map((st, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', cursor: 'pointer', minWidth: '70px' }}>
+              <div style={{ width: '64px', height: '110px', borderRadius: '12px', border: '3px solid #7c3aed', padding: '2px', backgroundColor: '#000', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <img src={st.avatar} alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
+                {st.meu && <span style={{ position: 'absolute', bottom: '4px', backgroundColor: '#7c3aed', color: '#fff', fontSize: '10px', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>+</span>}
+              </div>
+              <span style={{ fontSize: '11px', color: '#334155', fontWeight: 'bold' }}>{st.nome}</span>
+            </div>
+          ))}
+        </div>
+
         {/* Abas */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '25px' }}>
           <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
@@ -378,22 +419,39 @@ export default function SocialPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Caixa de Criação de Post */}
+              {/* Caixa de Criação de Post com Preview de Imagens e Seletor de Proporção */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
 
+                  {/* Seletor de Proporção da Foto */}
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', fontSize: '11px' }}>
+                    <span style={{ fontWeight: 'bold', color: '#64748b' }}>Formato da Foto:</span>
+                    <label><input type="radio" name="prop" checked={proporcaoFoto === 'quadrada'} onChange={() => setProporcaoFoto('quadrada')} /> Quadrada (1:1)</label>
+                    <label><input type="radio" name="prop" checked={proporcaoFoto === 'em-pe'} onChange={() => setProporcaoFoto('em-pe')} /> Em Pé (4:5)</label>
+                    <label><input type="radio" name="prop" checked={proporcaoFoto === 'deitada'} onChange={() => setProporcaoFoto('deitada')} /> Deitada (16:9)</label>
+                  </div>
+
+                  {/* Botões de Upload e Câmera */}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                     <label style={{ backgroundColor: '#f1f5f9', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', border: '1px solid #cbd5e1' }}>
-                      📁 Subir Foto (Arquivos/Galeria) <input type="file" accept="image/*" onChange={handlePostImageUpload} style={{ display: 'none' }} />
+                      📁 Subir Fotos (Carrossel / Múltiplas) <input type="file" accept="image/*" multiple onChange={handleUploadCarrossel} style={{ display: 'none' }} />
                     </label>
                     <button type="button" onClick={iniciarCamera} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
                       📷 Tirar Foto (Câmera)
                     </button>
                   </div>
 
-                  {urlMidiaInput && tipoMidia === 'imagem' && (
-                    <div style={{ fontSize: '11px', color: '#059669', marginBottom: '10px', fontWeight: 'bold' }}>✓ Imagem carregada e pronta para publicação.</div>
+                  {/* PREVIEW VISÍVEL DAS FOTOS SELECIONADAS */}
+                  {imagensPreview.length > 0 && (
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', overflowX: 'auto', paddingBottom: '6px' }}>
+                      {imagensPreview.map((imgSrc, idx) => (
+                        <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', border: '2px solid #7c3aed', flexShrink: 0 }}>
+                          <img src={imgSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <button type="button" onClick={() => removerFotoPreview(idx)} style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(239,68,68,0.9)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>✕</button>
+                        </div>
+                      ))}
+                    </div>
                   )}
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -402,39 +460,61 @@ export default function SocialPage() {
                 </form>
               </div>
 
-              {/* Posts */}
-              {posts.map((p) => (
-                <div key={p.id} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden' }}>
-                  <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', backgroundColor: '#faf5ff' }}>
-                    <div onClick={() => visitarPerfil(p.perfilAssociado || { nome: p.autor, handle: p.handle, avatar: p.avatar, bio: p.bio, cargo: p.cargo })} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
-                      <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
-                      <div>
-                        <b style={{ color: '#0f172a', fontSize: '14px' }}>{p.autor} <span style={{ fontSize: '11px', color: '#7c3aed' }}>{p.handle}</span></b>
-                        <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • Visitar perfil ↗️</span>
-                      </div>
-                    </div>
-                    <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
-                      🔗 Copiar Link
-                    </button>
-                  </div>
-                  <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
-                  
-                  {p.tipoMidia === 'imagem' && p.urlMidia && (
-                    <div style={{ width: '100%', maxHeight: '400px', backgroundColor: '#000', overflow: 'hidden' }}>
-                      <img src={p.urlMidia} alt="Mídia Post" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                    </div>
-                  )}
+              {/* Feed Posts (Com Carrossel e Proporções Corretas) */}
+              {posts.map((p) => {
+                const imgAtualIdx = indiceCarrossel[p.id] || 0;
+                const temVariasFotos = p.imagens && p.imagens.length > 1;
 
-                  <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0', fontSize: '12px' }}>
-                    <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#dc2626' : '#64748b', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
-                      {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
-                    </button>
+                let estiloProporcao = { width: '100%', height: '400px' };
+                if (p.proporcao === 'em-pe') estiloProporcao = { width: '100%', height: '500px' };
+                if (p.proporcao === 'deitada') estiloProporcao = { width: '100%', height: '280px' };
+
+                return (
+                  <div key={p.id} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden' }}>
+                    <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', backgroundColor: '#faf5ff' }}>
+                      <div onClick={() => visitarPerfil(p.perfilAssociado || { nome: p.autor, handle: p.handle, avatar: p.avatar, bio: p.bio, cargo: p.cargo })} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                        <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                        <div>
+                          <b style={{ color: '#0f172a', fontSize: '14px' }}>{p.autor} <span style={{ fontSize: '11px', color: '#7c3aed' }}>{p.handle}</span></b>
+                          <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • Visitar perfil ↗️</span>
+                        </div>
+                      </div>
+                      <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
+                        🔗 Copiar Link
+                      </button>
+                    </div>
+
+                    <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
+                    
+                    {/* Exibição de Imagens / Carrossel */}
+                    {p.imagens && p.imagens.length > 0 && (
+                      <div style={{ ...estiloProporcao, backgroundColor: '#000', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <img src={p.imagens[imgAtualIdx]} alt="Post Mídia" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+
+                        {temVariasFotos && (
+                          <>
+                            <button onClick={() => mudarFotoCarrossel(p.id, -1, p.imagens.length)} style={{ position: 'absolute', left: '10px', backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight: 'bold' }}>‹</button>
+                            <button onClick={() => mudarFotoCarrossel(p.id, 1, p.imagens.length)} style={{ position: 'absolute', right: '10px', backgroundColor: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontWeight: 'bold' }}>›</button>
+                            <div style={{ position: 'absolute', bottom: '10px', backgroundColor: 'rgba(0,0,0,0.7)', color: '#fff', padding: '2px 8px', borderRadius: '10px', fontSize: '11px' }}>
+                              {imgAtualIdx + 1} / {p.imagens.length}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', borderTop: '1px solid #e2e8f0', fontSize: '12px' }}>
+                      <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#dc2626' : '#64748b', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
+                        {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
+                      </button>
+                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 120} visualizações</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Coluna Direita (Top Traders Top 10 Semanal) */}
+            {/* Coluna Direita (Top Traders) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🏆 Top Traders (Semanal)</h3>
@@ -457,11 +537,10 @@ export default function SocialPage() {
           </div>
         )}
 
-        {/* 2. ABA RANKING COMPLETO TOP 10 SEMANAL */}
+        {/* 2. ABA RANKING */}
         {abaAtiva === 'ranking' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>🏆 Ranking Oficial Top 10 (Semanal)</h2>
-            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px' }}>Disputa semanal dos melhores operadores da plataforma Jenios. Clique em qualquer operador para visitar o perfil completo.</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {rankingOperadores.map((op) => (
                 <div key={op.pos} onClick={() => visitarPerfil(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
@@ -482,7 +561,7 @@ export default function SocialPage() {
           </div>
         )}
 
-        {/* 3. PÁGINA DE PERFIL DEDICADA (ESTILO INSTAGRAM) */}
+        {/* 3. PERFIL DEDICADO */}
         {abaAtiva === 'perfil-visita' && perfilVisitado && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -500,9 +579,6 @@ export default function SocialPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '8px', flexWrap: 'wrap' }}>
                   <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{perfilVisitado.nome}</h2>
                   <span style={{ fontSize: '14px', color: '#7c3aed', fontWeight: 'bold' }}>{perfilVisitado.handle}</span>
-                  <button onClick={() => alert(`Você agora está seguindo ${perfilVisitado.nome}!`)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                    Seguir ⚡
-                  </button>
                 </div>
                 <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 10px 0' }}>{perfilVisitado.cargo} • {perfilVisitado.bio}</p>
                 <div style={{ display: 'flex', gap: '25px', fontSize: '13px' }}>

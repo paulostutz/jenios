@@ -11,7 +11,9 @@ export default function MesaOperacoesPage() {
   // Estados de Conta e Modo
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [modoOperacao, setModoOperacao] = useState('reversa'); // 'manual' ou 'reversa'
-  const [bancaTotalConta] = useState(100000.00); // Exemplo de banca total para o cálculo de 5%
+  
+  // Saldo Fictício Customizável para a Conta Simulada
+  const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
 
   // Estados de Ativos e Categoria
   const [categoria, setCategoria] = useState('b3');
@@ -25,8 +27,8 @@ export default function MesaOperacoesPage() {
   const [capitalAlocar, setCapitalAlocar] = useState(10000);
   const [contratos, setContratos] = useState(5);
   
-  // Limite máximo de 5% da banca total
-  const limiteMaximoRiscoPermitido = bancaTotalConta * 0.05;
+  // Limite máximo de 5% calculado dinamicamente com base no saldo simulado
+  const limiteMaximoRiscoPermitido = saldoSimulado * 0.05;
 
   // Listas de Atalhos Rápidos por Categoria
   const atalhosPorMercado = {
@@ -131,14 +133,14 @@ export default function MesaOperacoesPage() {
     }
 
     if (capitalAlocar > limiteMaximoRiscoPermitido) {
-      alert(`⚠️ TRAVA DE SEGURANÇA ATIVADA: O capital alocado (R$ ${capitalAlocar}) ultrapassa o limite de 5% da sua banca recomendada (R$ ${limiteMaximoRiscoPermitido.toFixed(2)}). Reduza o valor para operar.`);
+      alert(`⚠️ TRAVA DE SEGURANÇA ATIVADA: O capital alocado (R$ ${capitalAlocar}) ultrapassa o limite de 5% da sua banca simulada (R$ ${limiteMaximoRiscoPermitido.toFixed(2)}). Reduza o valor para operar.`);
       return;
     }
 
     const riscoCalculado = capitalAlocar * 0.02; 
     const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
+    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
@@ -169,6 +171,19 @@ export default function MesaOperacoesPage() {
               Conta Real
             </button>
           </div>
+
+          {/* Input para Saldo Fictício Customizável (Visível apenas na conta simulada) */}
+          {tipoConta === 'simulada' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#f8fafc', padding: '4px 10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+              <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Saldo Fictício (R$):</span>
+              <input 
+                type="number" 
+                value={saldoSimulado} 
+                onChange={(e) => setSaldoSimulado(Number(e.target.value))}
+                style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 6px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none' }}
+              />
+            </div>
+          )}
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', fontSize: '12px', fontFamily: 'monospace' }}>
@@ -367,7 +382,7 @@ export default function MesaOperacoesPage() {
             </div>
 
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido por sessão: <b>R$ {limiteMaximoRiscoPermitido.toFixed(2)}</b>.</span>
+              <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido com base no saldo simulado atual: <b>R$ {limiteMaximoRiscoPermitido.toFixed(2)}</b>.</span>
               <span>🎯 <b>Relação Risco/Retorno:</b> Alvo travado automaticamente em <b>1.5x</b> o valor do risco estipulado.</span>
             </div>
 

@@ -6,10 +6,10 @@ export default function DashboardPage() {
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
   
-  // Estados de Mercado, Busca e Ativo Selecionado
+  // Estado do Ativo Selecionado (Armazena o símbolo oficial do TradingView)
+  const [ativoSelecionado, setativoSelecionado] = useState('BMFBOVESPA:WIN1!');
+  const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
   const [mercadoCategoria, setMercadoCategoria] = useState('b3');
-  const [buscaAtivo, setBuscaAtivo] = useState('');
-  const [ativoSelecionado, setAtivoSelecionado] = useState('MINI-INDICE (WINJ26)');
   
   // Estados de Gestão de Capital e Risco
   const [capitalAlocado, setCapitalAlocado] = useState(10000);
@@ -35,56 +35,27 @@ export default function DashboardPage() {
     { nome: '$NEXUS (Multichain)', status: 'Nova Listagem | Alta Retenção de LP' }
   ]);
 
-  // Lista de Ativos Separados por Mercado com Símbolos Oficiais do TradingView
-  const ativosPorMercado = {
+  // Lista de Atalhos Rápidos por Categoria
+  const atalhosPorMercado = {
     b3: [
-      { nome: 'MINI-INDICE (WINJ26)', simbolo: 'BMFBOVESPA:WIN1!' },
-      { nome: 'MINI-DOLAR (WDOJ26)', simbolo: 'BMFBOVESPA:WDO1!' },
-      { nome: 'PETROBRAS (PETR4)', simbolo: 'BMFBOVESPA:PETR4' },
-      { nome: 'VALE (VALE3)', simbolo: 'BMFBOVESPA:VALE3' },
-      { nome: 'ITAU (ITUB4)', simbolo: 'BMFBOVESPA:ITUB4' }
+      { nome: 'Mini-Índice (WIN1!)', simbolo: 'BMFBOVESPA:WIN1!' },
+      { nome: 'Mini-Dólar (WDO1!)', simbolo: 'BMFBOVESPA:WDO1!' },
+      { nome: 'Petrobras (PETR4)', simbolo: 'BMFBOVESPA:PETR4' },
+      { nome: 'Vale (VALE3)', simbolo: 'BMFBOVESPA:VALE3' },
+      { nome: 'Itaú (ITUB4)', simbolo: 'BMFBOVESPA:ITUB4' }
     ],
     cripto: [
-      { nome: 'BITCOIN (BTC/USDT)', simbolo: 'BINANCE:BTCUSDT' },
-      { nome: 'SOLANA (SOL/USDT)', simbolo: 'BINANCE:SOLUSDT' },
-      { nome: 'ETHEREUM (ETH/USDT)', simbolo: 'BINANCE:ETHUSDT' },
-      { nome: 'RIPPLE (XRP/USDT)', simbolo: 'BINANCE:XRPUSDT' }
+      { nome: 'Bitcoin (BTC/USDT)', simbolo: 'BINANCE:BTCUSDT' },
+      { nome: 'Solana (SOL/USDT)', simbolo: 'BINANCE:SOLUSDT' },
+      { nome: 'Ethereum (ETH/USDT)', simbolo: 'BINANCE:ETHUSDT' },
+      { nome: 'Ripple (XRP/USDT)', simbolo: 'BINANCE:XRPUSDT' }
     ],
     global: [
       { nome: 'S&P 500 (SPX)', simbolo: 'SP:SPX' },
-      { nome: 'NASDAQ 100 (NDX)', simbolo: 'NASDAQ:NDX' },
+      { nome: 'Nasdaq 100 (NDX)', simbolo: 'NASDAQ:NDX' },
       { nome: 'EUR/USD (Forex)', simbolo: 'FX:EURUSD' },
-      { nome: 'OURO (XAU/USD)', simbolo: 'OANDA:XAUUSD' }
+      { nome: 'Ouro (XAU/USD)', simbolo: 'OANDA:XAUUSD' }
     ]
-  };
-
-  // Função para mudar categoria sem travar e atualizar o ativo inicial
-  const selecionarCategoria = (cat) => {
-    setMercadoCategoria(cat);
-    setBuscaAtivo('');
-    if (ativosPorMercado[cat] && ativosPorMercado[cat].length > 0) {
-      setAtivoSelecionado(ativosPorMercado[cat][0].nome);
-    }
-  };
-
-  // Filtra os ativos da categoria selecionada com base na barra de pesquisa (lupa)
-  const ativosDaCategoria = ativosPorMercado[mercadoCategoria] || [];
-  const ativosFiltrados = ativosDaCategoria.filter(item =>
-    item.nome.toLowerCase().includes(buscaAtivo.toLowerCase())
-  );
-
-  // Garante que o valor selecionado é sempre válido para evitar congelamento no select
-  const valorSelectValido = ativosFiltrados.some(item => item.nome === ativoSelecionado)
-    ? ativoSelecionado
-    : (ativosFiltrados[0] ? ativosFiltrados[0].nome : ativoSelecionado);
-
-  // Função para mapear o ativo selecionado para o símbolo exato do TradingView
-  const obterSimboloTradingView = (nomeAtivo) => {
-    for (const cat in ativosPorMercado) {
-      const encontrado = ativosPorMercado[cat].find(a => a.nome === nomeAtivo);
-      if (encontrado) return encontrado.simbolo;
-    }
-    return 'BMFBOVESPA:WIN1!';
   };
 
   // ⚡ UseEffect para carregar e atualizar o Gráfico Real do TradingView dinamicamente
@@ -96,7 +67,7 @@ export default function DashboardPage() {
       if (window.TradingView) {
         new window.TradingView.widget({
           "autosize": true,
-          "symbol": obterSimboloTradingView(ativoSelecionado),
+          "symbol": ativoSelecionado,
           "interval": "5",
           "timezone": "America/Sao_Paulo",
           "theme": "dark",
@@ -104,7 +75,7 @@ export default function DashboardPage() {
           "locale": "br",
           "toolbar_bg": "#1e293b",
           "enable_publishing": false,
-          "hide_top_toolbar": false,
+          "hide_top_toolbar": false, // Mantém a barra superior do TradingView ativa com a busca nativa de ativos
           "save_image": false,
           "container_id": "tradingview_widget_container"
         });
@@ -147,7 +118,7 @@ export default function DashboardPage() {
       alert('⚠️ Operação bloqueada pelo Botão Antifúria ativo!');
       return;
     }
-    alert(`Ordem de ${direcao} enviada para ${ativoSelecionado}!\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
+    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
   };
 
   return (
@@ -249,30 +220,30 @@ export default function DashboardPage() {
           {/* COLUNA ESQUERDA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             
-            {/* SELETOR DE ATIVO AVANÇADO COM MERCADOS E LUPA DE BUSCA */}
+            {/* PAINEL DE SELEÇÃO RÁPIDA DE MERCADOS E ATALHOS */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                 <div>
-                  <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase' }}>SELECIONAR ATIVO PARA OPERAR</span>
-                  <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '2px 0 0 0' }}>{ativoSelecionado}</h3>
+                  <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase' }}>ATIVO ATUAL EM OPERAÇÃO</span>
+                  <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: '2px 0 0 0' }}>{nomeAtivoExibicao} <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'normal' }}>({ativoSelecionado})</span></h3>
                 </div>
 
-                {/* Categorias de Mercado (B3, Cripto, Global) */}
+                {/* Abas de Categoria de Mercado */}
                 <div style={{ display: 'flex', gap: '6px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                   <button 
-                    onClick={() => selecionarCategoria('b3')}
+                    onClick={() => setMercadoCategoria('b3')}
                     style={{ backgroundColor: mercadoCategoria === 'b3' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     B3 (Brasil)
                   </button>
                   <button 
-                    onClick={() => selecionarCategoria('cripto')}
+                    onClick={() => setMercadoCategoria('cripto')}
                     style={{ backgroundColor: mercadoCategoria === 'cripto' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     Cripto
                   </button>
                   <button 
-                    onClick={() => selecionarCategoria('global')}
+                    onClick={() => setMercadoCategoria('global')}
                     style={{ backgroundColor: mercadoCategoria === 'global' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'global' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     Global / Forex
@@ -280,44 +251,46 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Barra de Pesquisa com Lupa 🔍 */}
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px 14px', gap: '10px' }}>
-                <span style={{ fontSize: '14px' }}>🔍</span>
-                <input 
-                  type="text" 
-                  placeholder={`Pesquisar ativo em ${mercadoCategoria.toUpperCase()} (ex: WIN, Bitcoin, S&P)...`} 
-                  value={buscaAtivo}
-                  onChange={(e) => setBuscaAtivo(e.target.value)}
-                  style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
-                />
+              {/* Botões de Atalho Rápido por Categoria + Aviso da Busca Nativa */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais (ou pesquise qualquer ativo diretamente na lupa no topo esquerdo do gráfico abaixo):</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {(atalhosPorMercado[mercadoCategoria] || []).map((item, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setAtivoSelecionado(item.simbolo);
+                        setNomeAtivoExibicao(item.nome);
+                      }}
+                      style={{
+                        backgroundColor: ativoSelecionado === item.simbolo ? '#7c3aed' : '#f8fafc',
+                        color: ativoSelecionado === item.simbolo ? '#ffffff' : '#334155',
+                        border: '1px solid #cbd5e1',
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        fontSize: '11px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {item.nome}
+                    </button>
+                  ))}
+                </div>
               </div>
-
-              {/* Dropdown / Seletor Filtrado com os Ativos da Categoria */}
-              <select 
-                value={valorSelectValido} 
-                onChange={(e) => setAtivoSelecionado(e.target.value)} 
-                style={{ backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '12px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', outline: 'none', width: '100%', cursor: 'pointer' }}
-              >
-                {ativosFiltrados.length > 0 ? (
-                  ativosFiltrados.map((item, idx) => (
-                    <option key={idx} value={item.nome}>{item.nome}</option>
-                  ))
-                ) : (
-                  <option disabled>Nenhum ativo encontrado para esta pesquisa</option>
-                )}
-              </select>
             </div>
 
-            {/* GRÁFICO REAL DO TRADINGVIEW EM TEMPO REAL */}
-            <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '480px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+            {/* GRÁFICO REAL DO TRADINGVIEW COM BUSCA GLOBAL NATIVA */}
+            <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '520px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div>
-                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView</span>
-                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {ativoSelecionado} • Conectado</span>
+                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView (Busque qualquer ativo na lupa do gráfico)</span>
+                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {nomeAtivoExibicao} • Tempo Real Conectado</span>
                 </div>
               </div>
 
-              {/* Container onde o script injeta o iframe do TradingView */}
+              {/* Container onde o script injeta o iframe do TradingView com busca global nativa */}
               <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
                 <div id="tradingview_widget_container" style={{ width: '100%', height: '100%' }}></div>
               </div>

@@ -2,73 +2,108 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main style={{ backgroundColor: '#090d16', color: '#fff', minHeight: '100vh', padding: '40px 20px', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+    <main style={{ 
+      backgroundColor: '#090d16', 
+      color: '#fff', 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      padding: '40px 20px', 
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' 
+    }}>
+      <div style={{ maxWidth: '800px', width: '100%', textAlign: 'center' }}>
         
-        {/* Cabeçalho */}
-        <div style={{ marginBottom: '40px' }}>
-          <span style={{ backgroundColor: '#1a233a', color: '#8b5cf6', padding: '6px 16px', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold' }}>
+        {/* Cabeçalho Oficial Jenios */}
+        <div style={{ marginBottom: '45px' }}>
+          <div style={{ 
+            display: 'inline-block', 
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)', 
+            color: '#fff', 
+            padding: '8px 20px', 
+            borderRadius: '30px', 
+            fontSize: '13px', 
+            fontWeight: '650', 
+            letterSpacing: '1px',
+            marginBottom: '20px',
+            boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)'
+          }}>
             JENIOS ECOSSISTEMA HFT
-          </span>
-          <h1 style={{ fontSize: '36px', marginTop: '15px', fontWeight: 'bold' }}>
-            O Shopping do Crédito Seguro e Inteligente
+          </div>
+          <h1 style={{ fontSize: '42px', fontWeight: '800', margin: '0 0 12px 0', letterSpacing: '-0.5px' }}>
+            JENIOS
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '16px', marginTop: '10px' }}>
-            Selecione o módulo desejado para iniciar a operação.
+          <p style={{ fontSize: '18px', color: '#a1a1aa', margin: 0, fontWeight: '400' }}>
+            A plataforma que transforma o seu erro em lucro.
           </p>
         </div>
 
-        {/* Grelha de Acessos / Módulos */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', textAlign: 'left' }}>
+        {/* Pergunta de Direcionamento */}
+        <div style={{ marginBottom: '35px' }}>
+          <h2 style={{ fontSize: '20px', color: '#e4e4e7', fontWeight: '500', margin: 0 }}>
+            Onde você deseja acessar?
+          </h2>
+        </div>
+
+        {/* Seletores Principais: Plataforma vs Social */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', marginBottom: '35px' }}>
           
-          {/* Card Plataforma / Dashboard */}
-          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', transition: 'border-color 0.2s', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>🚀 Plataforma Principal</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Aceder ao painel operacional e de monitoramento HFT.</p>
+          {/* Card Jenios Plataforma */}
+          <Link href="/login" style={{ textDecoration: 'none' }}>
+            <div style={{ 
+              backgroundColor: '#111827', 
+              border: '1px solid #1f2937', 
+              borderRadius: '16px', 
+              padding: '36px 28px', 
+              transition: 'all 0.3s ease', 
+              cursor: 'pointer',
+              textAlign: 'left'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '16px' }}>⚡</div>
+              <h3 style={{ color: '#fff', fontSize: '22px', fontWeight: '700', margin: '0 0 10px 0' }}>
+                Jenios Plataforma
+              </h3>
+              <p style={{ color: '#9ca3af', fontSize: '14px', margin: '0 0 20px 0', lineHeight: '1.5' }}>
+                Aceda ao motor HFT, engenharia reversa comportamental e painel de ordens.
+              </p>
+              <span style={{ color: '#8b5cf6', fontSize: '14px', fontWeight: '600' }}>
+                Fazer Login &rarr;
+              </span>
             </div>
           </Link>
 
-          {/* Card Social */}
-          <Link href="/social" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>🌐 Comunidade Social</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Interaja com outros operadores e visualize feeds.</p>
+          {/* Card Jenios Social */}
+          <Link href="/login" style={{ textDecoration: 'none' }}>
+            <div style={{ 
+              backgroundColor: '#111827', 
+              border: '1px solid #1f2937', 
+              borderRadius: '16px', 
+              padding: '36px 28px', 
+              transition: 'all 0.3s ease', 
+              cursor: 'pointer',
+              textAlign: 'left'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '16px' }}>🌐</div>
+              <h3 style={{ color: '#fff', fontSize: '22px', fontWeight: '700', margin: '0 0 10px 0' }}>
+                Jenios Social
+              </h3>
+              <p style={{ color: '#9ca3af', fontSize: '14px', margin: '0 0 20px 0', lineHeight: '1.5' }}>
+                Conecte-se com a comunidade de operadores, feeds de desempenho e salas.
+              </p>
+              <span style={{ color: '#8b5cf6', fontSize: '14px', fontWeight: '600' }}>
+                Fazer Login &rarr;
+              </span>
             </div>
           </Link>
 
-          {/* Card Ranking */}
-          <Link href="/ranking" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>🏆 Ranking de Performance</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Consulte a tabela de classificação dos traders.</p>
-            </div>
-          </Link>
+        </div>
 
-          {/* Card Suporte */}
-          <Link href="/suporte" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>💬 Suporte Técnico</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Canais de atendimento e ajuda especializada.</p>
-            </div>
+        {/* Acesso Opcional à Apresentação / LP */}
+        <div>
+          <Link href="/lp" style={{ color: '#71717a', fontSize: '14px', textDecoration: 'none' }}>
+            Ver Apresentação Comercial (LP) &rarr;
           </Link>
-
-          {/* Card Landing Page */}
-          <Link href="/lp" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>📊 Apresentação (LP)</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Ver a página de vendas e conversão do ecossistema.</p>
-            </div>
-          </Link>
-
-          {/* Card Planos */}
-          <Link href="/planos" style={{ textDecoration: 'none' }}>
-            <div style={{ backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '12px', padding: '24px', cursor: 'pointer' }}>
-              <h3 style={{ color: '#fff', fontSize: '20px', marginBottom: '8px' }}>💎 Planos e Assinaturas</h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Escolha o seu plano de escalabilidade operacional.</p>
-            </div>
-          </Link>
-
         </div>
 
       </div>

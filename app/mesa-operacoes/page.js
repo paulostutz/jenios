@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function MesaOperacoesPage() {
   const [modalBrokerAberto, setModalBrokerAberto] = useState(false);
@@ -25,21 +25,21 @@ export default function MesaOperacoesPage() {
   // Listas de Ativos por Categoria com Busca
   const ativosDisponiveis = {
     b3: [
-      { id: 'WINZ26', nome: 'WINZ26 (B3 - Mini-Índice Futuro)' },
-      { id: 'WDOF26', nome: 'WDOF26 (B3 - Mini-Dólar Futuro)' },
-      { id: 'PETR4', nome: 'PETR4 (B3 - Ações A Vista)' },
-      { id: 'VALE3', nome: 'VALE3 (B3 - Ações A Vista)' },
-      { id: 'ITUB4', nome: 'ITUB4 (B3 - Ações A Vista)' }
+      { id: 'WINZ26', nome: 'WINZ26 (B3 - Mini-Índice Futuro)', simboloTV: 'BMFBOVESPA:WIN1!' },
+      { id: 'WDOF26', nome: 'WDOF26 (B3 - Mini-Dólar Futuro)', simboloTV: 'BMFBOVESPA:WDO1!' },
+      { id: 'PETR4', nome: 'PETR4 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:PETR4' },
+      { id: 'VALE3', nome: 'VALE3 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:VALE3' },
+      { id: 'ITUB4', nome: 'ITUB4 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:ITUB4' }
     ],
     cripto: [
-      { id: 'BTCUSD', nome: 'BTCUSD (Cripto - Bitcoin Perpétuo)' },
-      { id: 'ETHUSD', nome: 'ETHUSD (Cripto - Ethereum Perpétuo)' },
-      { id: 'SOLUSDT', nome: 'SOLUSDT (Cripto - Solana)' }
+      { id: 'BTCUSD', nome: 'BTCUSD (Cripto - Bitcoin Perpétuo)', simboloTV: 'BINANCE:BTCUSDT' },
+      { id: 'ETHUSD', nome: 'ETHUSD (Cripto - Ethereum Perpétuo)', simboloTV: 'BINANCE:ETHUSDT' },
+      { id: 'SOLUSDT', nome: 'SOLUSDT (Cripto - Solana)', simboloTV: 'BINANCE:SOLUSDT' }
     ],
     forex: [
-      { id: 'EURUSD', nome: 'EURUSD (Global - Forex Major)' },
-      { id: 'GBPUSD', nome: 'GBPUSD (Global - Forex Major)' },
-      { id: 'XAUUSD', nome: 'XAUUSD (Global - Ouro Spot)' }
+      { id: 'EURUSD', nome: 'EURUSD (Global - Forex Major)', simboloTV: 'FX:EURUSD' },
+      { id: 'GBPUSD', nome: 'GBPUSD (Global - Forex Major)', simboloTV: 'FX:GBPUSD' },
+      { id: 'XAUUSD', nome: 'XAUUSD (Global - Ouro Spot)', simboloTV: 'OANDA:XAUUSD' }
     ]
   };
 
@@ -47,17 +47,59 @@ export default function MesaOperacoesPage() {
     item.nome.toLowerCase().includes(buscaAtiva.toLowerCase())
   );
 
+  // Mapeia o ativo selecionado para o símbolo exato do TradingView
+  const obterSimboloTradingView = () => {
+    const listaCompleta = [...ativosDisponiveis.b3, ...ativosDisponiveis.cripto, ...ativosDisponiveis.forex];
+    const encontrado = listaCompleta.find(item => item.nome === ativoSelecionado);
+    return encontrado ? encontrado.simboloTV : 'BMFBOVESPA:WIN1!';
+  };
+
+  // ⚡ UseEffect para carregar e atualizar dinamicamente o Gráfico Real do TradingView na Mesa de Operações
+  useEffect(() => {
+    const carregarGrafico = () => {
+      const container = document.getElementById('tradingview_mesa_container');
+      if (container) container.innerHTML = '';
+
+      if (window.TradingView) {
+        new window.TradingView.widget({
+          "autosize": true,
+          "symbol": obterSimboloTradingView(),
+          "interval": "5",
+          "timezone": "America/Sao_Paulo",
+          "theme": "dark",
+          "style": "1",
+          "locale": "br",
+          "toolbar_bg": "#1e293b",
+          "enable_publishing": false,
+          "hide_top_toolbar": false,
+          "save_image": false,
+          "container_id": "tradingview_mesa_container"
+        });
+      }
+    };
+
+    if (!document.getElementById('tradingview-widget-script')) {
+      const script = document.createElement('script');
+      script.id = 'tradingview-widget-script';
+      script.src = 'https://s3.tradingview.com/tv.js';
+      script.async = true;
+      script.onload = carregarGrafico;
+      document.head.appendChild(script);
+    } else {
+      carregarGrafico();
+    }
+  }, [ativoSelecionado]);
+
   const executarOrdem = (direcao) => {
-    // Validação da Trava de Risco de 5%
     if (capitalAlocar > limiteMaximoRiscoPermitido) {
       alert(`⚠️ TRAVA DE SEGURANÇA ATIVADA: O capital alocado (R$ ${capitalAlocar}) ultrapassa o limite de 5% da sua banca recomendada (R$ ${limiteMaximoRiscoPermitido.toFixed(2)}). Reduza o valor para operar.`);
       return;
     }
 
-    const riscoCalculado = capitalAlocar * 0.02; // Exemplo de risco de 2%
-    const alvoCalculado = riscoCalculado * 1.5; // Alvo = 1.5x o risco (Regra de Ouro)
+    const riscoCalculado = capitalAlocar * 0.02; 
+    const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${ativoSelecionado}\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvocalculado.toFixed(2)}`);
+    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${ativoSelecionado}\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
   };
 
   return (
@@ -71,7 +113,6 @@ export default function MesaOperacoesPage() {
             JENIOS DESK •
           </span>
 
-          {/* Seletor de Conta (Simulada vs Real) */}
           <div style={{ display: 'flex', backgroundColor: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
             <button 
               onClick={() => setTipoConta('simulada')} 
@@ -113,19 +154,18 @@ export default function MesaOperacoesPage() {
       {/* ÁREA PRINCIPAL: SELETOR DE ATIVOS + GRÁFICO + PAINEL */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px', flex: 1 }}>
         
-        {/* COLUNA ESQUERDA: SELETOR DE ATIVOS AVANÇADO + GRÁFICO TRADINGVIEW */}
+        {/* COLUNA ESQUERDA: SELETOR DE ATIVOS + GRÁFICO REAL TRADINGVIEW */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '16px', boxSizing: 'border-box' }}>
           
-          {/* SELETOR DE ATIVOS (B3, CRIPTOS, FOREX COM BUSCA) */}
+          {/* SELETOR DE ATIVOS */}
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <button onClick={() => setCategoria('b3')} style={{ backgroundColor: categoria === 'b3' ? '#7c3aed' : '#e2e8f0', color: categoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>B3 (Brasil)</button>
                 <button onClick={() => setCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos</button>
-                <button onClick={() => setCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex</button>
+                <button onClick={() => setCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#e2e8f0' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex</button>
               </div>
 
-              {/* Caixa de Pesquisa com Lupa */}
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '4px 10px', width: '220px' }}>
                 <span style={{ fontSize: '12px', marginRight: '6px' }}>🔍</span>
                 <input 
@@ -138,7 +178,6 @@ export default function MesaOperacoesPage() {
               </div>
             </div>
 
-            {/* Lista Dropdown ou Seletor do Ativo Filtrado */}
             <select 
               value={ativoSelecionado}
               onChange={(e) => setAtivoSelecionado(e.target.value)}
@@ -154,17 +193,14 @@ export default function MesaOperacoesPage() {
             </select>
           </div>
 
-          {/* Gráfico TradingView */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
             <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Gráfico em Tempo Real ({ativoSelecionado})</span>
-            <span style={{ fontSize: '10px', color: '#94a3b8', fontFamily: 'monospace' }}>1m • 5m • 15m • 1H • Diário</span>
+            <span style={{ fontSize: '10px', color: '#059669', fontFamily: 'monospace', fontWeight: 'bold' }}>● Conectado ao TradingView</span>
           </div>
           
-          <div style={{ flex: 1, minHeight: '380px', backgroundColor: '#0f172a', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', color: '#64748b', fontFamily: 'monospace', fontSize: '12px' }}>
-            <div style={{ textAlign: 'center', zIndex: 10, padding: '20px' }}>
-              <span style={{ color: '#c084fc', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>[ Widget Oficial TradingView Integrado ]</span>
-              <span style={{ fontSize: '10px', color: '#94a3b8' }}>Fluxo Institucional & Execução HFT • Ativo Protegido pelo Motor Adaptativo</span>
-            </div>
+          {/* CONTAINER DO GRÁFICO REAL TRADINGVIEW */}
+          <div style={{ flex: 1, minHeight: '420px', backgroundColor: '#0b0f19', borderRadius: '12px', overflow: 'hidden', border: '1px solid #334155', position: 'relative' }}>
+            <div id="tradingview_mesa_container" style={{ width: '100%', height: '100%' }}></div>
           </div>
         </div>
 
@@ -177,7 +213,6 @@ export default function MesaOperacoesPage() {
               <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>● Proteção Algorítmica Ativa</span>
             </div>
 
-            {/* ESCOLHA DO MODO DE OPERAÇÃO (Manual vs Engenharia Reversa) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155', fontFamily: 'monospace' }}>Modo Operacional</label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>

@@ -1,24 +1,30 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 
 export default function SocialPage() {
-  const [abaAtiva, setAbaAtiva] = useState('feed');
+  const [abaAtiva, setAbaAtiva] = useState('feed'); // 'feed', 'ranking'
   const [novoTexto, setNovoTexto] = useState('');
   const [imagemInput, setImagemInput] = useState('');
   const [tickerSelecionado, setTickerSelecionado] = useState(null);
   
-  const [perfilSelecionado, setPerfilSelecionado] = useState(null);
+  // Estado para abrir a Página de Perfil Completa do Operador
+  const [perfilAtivo, setPerfilAtivo] = useState(null);
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
 
-  // Simulação de autenticação (pode alternar para testar)
+  // Controle de Sessão e Conta
   const [usuarioLogado, setUsuarioLogado] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
   const [usuarioAssinado, setUsuarioAssinado] = useState(true);
 
-  const verificarAcessoRestrito = (acaoNome) => {
+  const verificarAcessoOperacional = (acaoNome) => {
+    if (!usuarioLogado) {
+      alert('🔒 É necessário criar uma conta ou fazer login para operar este sinal.');
+      window.location.href = '/login';
+      return false;
+    }
     if (!usuarioAssinado) {
-      const confirmar = confirm(`⚡ Para ${acaoNome}, você precisa ativar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos e iniciar o seu teste?`);
+      const confirmar = confirm(`⚡ Para ${acaoNome}, você precisa ativar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos e abrir/ativar sua conta?`);
       if (confirmar) {
         window.location.href = '/planos';
       }
@@ -36,28 +42,46 @@ export default function SocialPage() {
     }
   };
 
+  // Tickers Multichain (Solana, Ethereum, TRON, B3)
   const tickerMacro = [
     { 
       id: 1, 
+      rede: 'B3',
       tipo: '📊 MEGAPULSE', 
       titulo: 'Ibovespa (IBOV): ▲ Alta Institucional (+1.2%)', 
-      detalhes: 'O fluxo de ordens institucionais nas últimas 2 horas indica forte acumulação nos principais papéis do setor financeiro e de commodities.' 
+      detalhes: 'Fluxo de ordens institucionais indica forte acumulação no setor financeiro e commodities. Entrada de capital estrangeiro de R$ 1.2B.' 
     },
     { 
       id: 2, 
-      tipo: '🐋 BALEIA B3', 
-      titulo: 'Aporte detectado em VALE3 (+R$ 45M em lotes)', 
-      detalhes: 'Grande player posicionado no suporte de curto prazo. Movimento típico de realocação de carteira institucional.' 
+      rede: 'SOLANA',
+      tipo: '🚀 TOKEN HFT', 
+      titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', 
+      detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade com execução automática de contratos inteligentes validados.' 
     },
     { 
       id: 3, 
-      tipo: '🚀 TOKEN', 
-      titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', 
-      detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade com execução automática de contratos inteligentes.' 
+      rede: 'ETHEREUM',
+      tipo: '🐋 BALEIA ETH', 
+      titulo: 'Acumulação de 15,000 ETH em carteira institucional', 
+      detalhes: 'Movimento de alocação de longo prazo detetado por smart contracts de custódia institucional.' 
+    },
+    { 
+      id: 4, 
+      rede: 'TRON',
+      tipo: '⚡ USDT FLOW', 
+      titulo: 'Transferência maciça de US$ 85M para DEX de alta frequência', 
+      detalhes: 'Elevada liquidez cruzando redes com taxas otimizadas para arbitragem.' 
     }
   ];
 
   const tickerDuplicado = [...tickerMacro, ...tickerMacro];
+
+  // Canal de Notícias Macro em Tempo Real
+  const [noticiasMacro] = useState([
+    { id: 1, hora: 'Há 5 mins', cat: 'GEOPOLÍTICA', titulo: 'Estreito de Ormuz: Ajuste no tráfego de petroleiros gera volatilidade nas commodities', impacto: 'Alto Impacto no Petróleo' },
+    { id: 2, hora: 'Há 25 mins', cat: 'COMMODITIES', titulo: 'Petróleo Brent registra alta acentuada com novos relatórios de oferta global', impacto: 'Positivo para Papéis de Energia' },
+    { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA BRASIL', titulo: 'Novas diretrizes fiscais anunciadas pelo Banco Central impactam curva de juros', impacto: 'Ajuste em Renda Fixa e Ibovespa' }
+  ]);
 
   const [posts, setPosts] = useState([
     { 
@@ -71,25 +95,36 @@ export default function SocialPage() {
       likes: 34, 
       curtido: false,
       estrategiaCopiada: false
-    },
-    { 
-      id: 2, 
-      autor: 'Ana Paula S. (Institucional)', 
-      cargo: 'VIP GLOBAL', 
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      texto: 'Radar de baleias indicou acumulação pesada na VALE3. Mantive o Botão Antifúria armado e evitei entrar contra a tendência macro.', 
-      imagem: '',
-      tempo: 'Há 45 mins', 
-      likes: 51, 
-      curtido: false,
-      estrategiaCopiada: false
     }
   ]);
 
   const [rankingOperadores] = useState([
-    { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar • Mensalidade Abonada' },
-    { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar • Mensalidade Abonada' },
-    { pos: 3, nome: 'Roberto Dias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: '🥉 3º Lugar • Mensalidade Abonada' }
+    { 
+      id: 1, 
+      pos: 1, 
+      nome: 'Carlos M.', 
+      cargo: 'Trader Pro', 
+      rentabilidade: '+ R$ 14.850', 
+      assertividade: '94%', 
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
+      status: '🏆 1º Lugar • Mensalidade Abonada', 
+      bio: 'Especialista em robôs HFT para Mini-Índice e Mini-Dólar com foco em proteção de drawdown.', 
+      seguidores: '1.4k',
+      operacoesMes: 412 
+    },
+    { 
+      id: 2, 
+      pos: 2, 
+      nome: 'Ana Paula S.', 
+      cargo: 'Institucional', 
+      rentabilidade: '+ R$ 11.200', 
+      assertividade: '91%', 
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 
+      status: '🥈 2º Lugar • Mensalidade Abonada', 
+      bio: 'Gestora de capital e arbitragem algorítmica em ativos multi-rede na Solana e B3.', 
+      seguidores: '1.2k',
+      operacoesMes: 350 
+    }
   ]);
 
   const publicarPost = (e) => {
@@ -121,13 +156,6 @@ export default function SocialPage() {
     alert('⚡ Estratégia de Copy Trading copiada com sucesso para o seu Robô HFT!');
   };
 
-  const alternarSeguir = (nome) => {
-    setSeguindoPerfis(prev => ({
-      ...prev,
-      [nome]: !prev[nome]
-    }));
-  };
-
   return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', position: 'relative' }}>
       
@@ -143,14 +171,14 @@ export default function SocialPage() {
         }
         .ticker-track {
           display: inline-flex;
-          animation: marquee 25s linear infinite;
+          animation: marquee 30s linear infinite;
         }
         .ticker-track:hover {
           animation-play-state: paused;
         }
       ` }} />
 
-      {/* Ticker Rotativo de Mercado */}
+      {/* Ticker Rotativo de Mercado Multichain */}
       <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: '#0f172a', borderBottom: '1px solid #334155', padding: '10px 0', width: '100%', boxSizing: 'border-box' }} className="ticker-container">
         <div className="ticker-track">
           {tickerDuplicado.map((item, index) => (
@@ -159,20 +187,21 @@ export default function SocialPage() {
               onClick={() => setTickerSelecionado(item)}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', cursor: 'pointer', padding: '0 30px', whiteSpace: 'nowrap' }}
             >
+              <span style={{ backgroundColor: '#334155', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold' }}>{item.rede}</span>
               <span style={{ color: '#34d399', fontWeight: 'bold', fontFamily: 'monospace' }}>{item.tipo}:</span>
               <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>{item.titulo}</span>
-              <span style={{ fontSize: '11px', color: '#c084fc', marginLeft: '6px', fontWeight: 'bold' }}>[Ver Detalhes 🔍]</span>
+              <span style={{ fontSize: '11px', color: '#c084fc', marginLeft: '6px', fontWeight: 'bold' }}>[Ver Sinal 🔍]</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Modal Detalhes do Ticker */}
+      {/* Modal de Detalhes do Sinal / Ticker */}
       {tickerSelecionado && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '25px', boxShadow: '0 25px 50px rgba(0,0,0,0.15)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#059669', fontFamily: 'monospace' }}>{tickerSelecionado.tipo}</span>
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#059669', fontFamily: 'monospace' }}>{tickerSelecionado.tipo} ({tickerSelecionado.rede})</span>
               <button onClick={() => setTickerSelecionado(null)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
             <h3 style={{ fontSize: '16px', color: '#0f172a', marginBottom: '12px', fontWeight: 'bold' }}>{tickerSelecionado.titulo}</h3>
@@ -180,7 +209,7 @@ export default function SocialPage() {
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button 
                 onClick={() => {
-                  if (verificarAcessoRestrito('operar com base neste sinal')) {
+                  if (verificarAcessoOperacional('operar com base neste sinal')) {
                     window.location.href = '/mesa-operacao';
                   }
                 }}
@@ -196,51 +225,62 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* Modal de Perfil de Usuário */}
-      {perfilSelecionado && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', boxSizing: 'border-box' }}>
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '16px', maxWidth: '550px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Página de Perfil Completa do Operador */}
+      {perfilAtivo && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', boxSizing: 'border-box' }}>
+          <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', maxWidth: '650px', width: '100%', padding: '35px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>PERFIL DO ESTRATEGISTA</span>
-              <button onClick={() => setPerfilSelecionado(null)} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: 'none', width: '32px', height: '32px', borderRadius: '50%', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>✕</button>
+              <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>PERFIL OFICIAL DO ESTRATEGISTA</span>
+              <button onClick={() => setPerfilAtivo(null)} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: 'none', width: '36px', height: '36px', borderRadius: '50%', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }}>✕</button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <img src={perfilSelecionado.avatar} alt="Avatar" style={{ width: '75px', height: '75px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <img src={perfilAtivo.avatar} alt="Avatar" style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed' }} />
               <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{perfilSelecionado.nome}</h2>
-                <span style={{ fontSize: '12px', color: '#7c3aed', fontWeight: 'bold' }}>{perfilSelecionado.cargo || perfilSelecionado.status}</span>
-                <div style={{ display: 'flex', gap: '15px', marginTop: '8px', fontSize: '12px', color: '#64748b' }}>
-                  <span><b>142</b> Publicações</span>
-                  <span><b>1.2k</b> Seguidores</span>
-                  <span style={{ color: '#059669', fontWeight: 'bold' }}>{perfilSelecionado.rentabilidade || '+R$ 14.850'}</span>
-                </div>
+                <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{perfilAtivo.nome}</h2>
+                <span style={{ fontSize: '13px', color: '#7c3aed', fontWeight: 'bold' }}>{perfilAtivo.cargo || perfilAtivo.status}</span>
+                <p style={{ fontSize: '12px', color: '#64748b', marginTop: '6px', margin: 0 }}>{perfilAtivo.bio}</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+              <div>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>RENTABILIDADE</span>
+                <b style={{ fontSize: '16px', color: '#059669' }}>{perfilAtivo.rentabilidade}</b>
+              </div>
+              <div>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>ASSERTIVIDADE</span>
+                <b style={{ fontSize: '16px', color: '#0284c7' }}>{perfilAtivo.assertividade}</b>
+              </div>
+              <div>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>SEGUIDORES</span>
+                <b style={{ fontSize: '16px', color: '#7c3aed' }}>{perfilAtivo.seguidores}</b>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px' }}>
               <button 
-                onClick={() => alternarSeguir(perfilSelecionado.nome)}
-                style={{ flex: 1, backgroundColor: seguindoPerfis[perfilSelecionado.nome] ? '#64748b' : '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
+                onClick={() => setSeguindoPerfis(prev => ({ ...prev, [perfilAtivo.nome]: !prev[perfilAtivo.nome] }))}
+                style={{ flex: 1, backgroundColor: seguindoPerfis[perfilAtivo.nome] ? '#64748b' : '#7c3aed', color: '#fff', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}
               >
-                {seguindoPerfis[perfilSelecionado.nome] ? 'Seguindo ✓' : 'Seguir Estrategista'}
+                {seguindoPerfis[perfilAtivo.nome] ? 'Seguindo Estrategista ✓' : 'Seguir Estrategista'}
               </button>
               <button 
                 onClick={() => {
                   if (verificarAcessoRestrito('copiar estratégia automaticamente')) {
-                    alert(`Estratégia de ${perfilSelecionado.nome} copiada para o seu Copy Trading automático!`);
-                    setPerfilSelecionado(null);
+                    alert(`Estratégia de ${perfilAtivo.nome} copiada para o seu Copy Trading automático!`);
+                    setPerfilAtivo(null);
                   }
                 }}
-                style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
+                style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}
               >
-                ⚡ Copiar Estratégia
+                ⚡ Copiar Estratégia (Copy)
               </button>
             </div>
             
             <button 
-              onClick={() => setPerfilSelecionado(null)} 
-              style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', marginTop: '10px' }}
+              onClick={() => setPerfilAtivo(null)} 
+              style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
             >
               ← Voltar ao Feed Principal
             </button>
@@ -248,9 +288,9 @@ export default function SocialPage() {
         </div>
       )}
 
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
+      <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* Cabeçalho Limpo e Claro (Harmônico com a Foto 3) */}
+        {/* Cabeçalho */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', padding: '18px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -264,12 +304,10 @@ export default function SocialPage() {
           </div>
 
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-            {/* Botão de Início apontando para o Dashboard / Perfil do Usuário */}
             <Link href="/dashboard-logado" style={{ backgroundColor: '#f1f5f9', color: '#334155', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', whiteSpace: 'nowrap' }}>
               👤 Meu Perfil / Início
             </Link>
 
-            {/* Sala de Controle protegida */}
             <button onClick={irParaSalaDeControle} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
               Sala de Controle
             </button>
@@ -289,37 +327,76 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* Abas */}
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '25px' }}>
+        {/* Abas Principais (Com Botão TENDÊNCIAS) */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '25px', flexWrap: 'wrap' }}>
           <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: abaAtiva === 'feed' ? '#ffffff' : '#f1f5f9', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             📱 Feed Contínuo
           </button>
+          
+          <Link href="/tendencias" style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#059669', fontWeight: 'bold', fontSize: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            🚀 Hub de Tendências & Ativos
+          </Link>
+
           <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #cbd5e1', backgroundColor: abaAtiva === 'ranking' ? '#ffffff' : '#f1f5f9', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             🏆 Ranking Top 10
           </button>
         </div>
 
-        {abaAtiva === 'feed' ? (
+        {/* CONTEÚDO DA ABA FEED */}
+        {abaAtiva === 'feed' && (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
+              {/* Stories / Status (Estilo Instagram) */}
+              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px 20px', display: 'flex', gap: '15px', overflowX: 'auto', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '64px' }} onClick={() => alert('Abrir Story: Transmissão ao vivo do Robô HFT em execução!')}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150" alt="Story" style={{ width: '52px', height: '52px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff' }} />
+                  </div>
+                  <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#0f172a', marginTop: '4px' }}>Paulo (CEO)</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '64px' }} onClick={() => alert('Abrir Story: Análise de Rompimento Mini-Dólar')}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #7c3aed 0%, #ec4899 100%)', padding: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Story" style={{ width: '52px', height: '52px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff' }} />
+                  </div>
+                  <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#0f172a', marginTop: '4px' }}>Carlos M.</span>
+                </div>
+              </div>
+
+              {/* Caixa de Criação de Post (Câmera, Lives, YouTube e Impulsionamento) */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
                 <form onSubmit={publicarPost}>
                   <textarea 
                     value={novoTexto} 
                     onChange={(e) => setNovoTexto(e.target.value)} 
-                    placeholder="O que está vendo no mercado agora? Compartilhe com a rede..." 
+                    placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." 
                     style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', color: '#0f172a', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', resize: 'none', marginBottom: '12px' }} 
                   />
-                  <input 
-                    type="text" 
-                    value={imagemInput} 
-                    onChange={(e) => setImagemInput(e.target.value)} 
-                    placeholder="Link de imagem ou gráfico (opcional)..." 
-                    style={{ width: '100%', backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '12px 14px', borderRadius: '8px', fontSize: '12px', outline: 'none', marginBottom: '15px', boxSizing: 'border-box' }} 
-                  />
-                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '15px', flexWrap: 'wrap' }}>
+                    <input 
+                      type="text" 
+                      value={imagemInput} 
+                      onChange={(e) => setImagemInput(e.target.value)} 
+                      placeholder="Link de imagem ou gráfico..." 
+                      style={{ flex: 1, backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', outline: 'none', boxSizing: 'border-box' }} 
+                    />
+                    <button type="button" onClick={() => alert('📸 Câmera ativada: Tire uma foto diretamente do seu dispositivo para postar!')} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      📷 Tirar Foto
+                    </button>
+                    <button type="button" onClick={() => alert('🔴 Transmissão ao vivo (Live) iniciada para a rede Jenios!')} style={{ backgroundColor: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      🔴 Iniciar Live
+                    </button>
+                    <button type="button" onClick={() => alert('▶️ Vídeo do YouTube anexado com sucesso!')} style={{ backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      ▶️ Subir YouTube
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <button type="button" onClick={() => alert('🚀 Publicação enviada para o programa de Impulsionamento Master!')} style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', border: 'none', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                      ⭐ Impulsionar Post
+                    </button>
                     <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)' }}>
                       Publicar Análise 🚀
                     </button>
@@ -327,12 +404,13 @@ export default function SocialPage() {
                 </form>
               </div>
 
+              {/* FEED */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {posts.map((p) => (
                   <div key={p.id} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
                     
                     <div 
-                      onClick={() => setPerfilSelecionado({ nome: p.autor, cargo: p.cargo, avatar: p.avatar })}
+                      onClick={() => setPerfilAtivo(rankingOperadores[0])}
                       style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid #e2e8f0', cursor: 'pointer', backgroundColor: '#ffffff' }}
                     >
                       <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
@@ -341,7 +419,7 @@ export default function SocialPage() {
                           <b style={{ color: '#0f172a', fontSize: '14px' }}>{p.autor}</b>
                           <span style={{ fontSize: '9px', color: '#7c3aed', backgroundColor: '#f3e8ff', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', fontFamily: 'monospace' }}>{p.cargo}</span>
                         </div>
-                        <span style={{ fontSize: '11px', color: '#64748b' }}>{p.tempo} • Ver Perfil 🔍</span>
+                        <span style={{ fontSize: '11px', color: '#64748b' }}>{p.tempo} • Ver Perfil Completo 🔍</span>
                       </div>
                     </div>
 
@@ -374,16 +452,38 @@ export default function SocialPage() {
 
             </div>
 
+            {/* Coluna Direita: Notícias Macro em Tempo Real & Top Traders */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
-                <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: 0, marginBottom: '6px' }}>🏆 Top Traders da Semana</h3>
-                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 16px 0' }}>Clique num operador para visitar o perfil e seguir.</p>
+              
+              {/* Notícias Macro em Tempo Real */}
+              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: 0, marginBottom: '6px' }}>🌐 Canal Oficial de Notícias Macro</h3>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Atualizações em tempo real com impacto direto no mercado.</p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {noticiasMacro.map((n) => (
+                    <div key={n.id} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#7c3aed', backgroundColor: '#f3e8ff', padding: '2px 6px', borderRadius: '4px' }}>{n.cat}</span>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>{n.hora}</span>
+                      </div>
+                      <h4 style={{ fontSize: '12px', color: '#0f172a', margin: '0 0 6px 0', fontWeight: 'bold' }}>{n.titulo}</h4>
+                      <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>Impacto: {n.impacto}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top Traders */}
+              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: 0, marginBottom: '6px' }}>🏆 Top Traders da Semana</h3>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Clique num operador para abrir o perfil oficial.</p>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {rankingOperadores.map((op) => (
                     <div 
                       key={op.pos} 
-                      onClick={() => setPerfilSelecionado(op)}
+                      onClick={() => setPerfilAtivo(op)}
                       style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -398,19 +498,23 @@ export default function SocialPage() {
                   ))}
                 </div>
               </div>
+
             </div>
 
           </div>
-        ) : (
+        )}
+
+        {/* CONTEÚDO DA ABA RANKING */}
+        {abaAtiva === 'ranking' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>Ranking Completo Top 10</h2>
-            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px' }}>Clique em qualquer operador para inspecionar métricas e seguir.</p>
+            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px' }}>Clique em qualquer operador para abrir o perfil oficial.</p>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {rankingOperadores.map((op) => (
                 <div 
                   key={op.pos} 
-                  onClick={() => setPerfilSelecionado(op)}
+                  onClick={() => setPerfilAtivo(op)}
                   style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

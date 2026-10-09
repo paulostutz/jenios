@@ -23,7 +23,7 @@ export default function DashboardLogado() {
       return;
     }
 
-    alert(`⚡ Acesso liberado para: ${acao}! Redirecionando para o motor HFT...`);
+    alert(`⚡ Acesso liberado para: ${acao}! A redirecionar para o motor HFT...`);
   };
 
   return (
@@ -37,7 +37,7 @@ export default function DashboardLogado() {
             JENIOS HFT
           </h2>
           <span style={{ fontSize: '11px', color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>
-            SALA DE CONTROLE OFICIAL
+            SALA DE CONTROLO OFICIAL
           </span>
         </div>
 
@@ -51,17 +51,17 @@ export default function DashboardLogado() {
           <Link href="/diagnostico" style={{ padding: '10px 14px', borderRadius: '8px', color: '#0284c7', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
             🧠 Diagnóstico Obrigatório
           </Link>
-          <a onClick={() => validarAcessoOperacional('configurar conexões e APIs')} style={{ padding: '10px 14px', borderRadius: '8px', color: '#334155', textDecoration: 'none', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
-            🔌 APIs & Conexões
-          </a>
+          <Link href="/tendencias" style={{ padding: '10px 14px', borderRadius: '8px', color: '#059669', textDecoration: 'none', fontSize: '14px', fontWeight: '700' }}>
+            🚀 Hub de Tendências
+          </Link>
+          <Link href="/social" style={{ padding: '10px 14px', borderRadius: '8px', color: '#334155', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
+            🌐 Jenios Social
+          </Link>
           <Link href="/copiar-mestre" style={{ padding: '10px 14px', borderRadius: '8px', color: '#334155', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
             📋 Copiar Mestre (Copy)
           </Link>
           <Link href="/risco" style={{ padding: '10px 14px', borderRadius: '8px', color: '#334155', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
             🛡️ Risco & Blindagem
-          </Link>
-          <Link href="/social" style={{ padding: '10px 14px', borderRadius: '8px', color: '#334155', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>
-            🌐 Jenios Social
           </Link>
         </nav>
 
@@ -80,7 +80,7 @@ export default function DashboardLogado() {
       {/* Conteúdo Principal */}
       <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
         
-        {/* Topo do Usuário (Estilo Foto 3) */}
+        {/* Topo do Utilizador */}
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', flexWrap: 'wrap', gap: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px', color: '#fff' }}>
@@ -96,8 +96,8 @@ export default function DashboardLogado() {
             <Link href="/social" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
               Feed Social
             </Link>
-            <Link href="/ranking" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-              Ranking
+            <Link href="/tendencias" style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #d8b4fe' }}>
+              🚀 Hub de Tendências
             </Link>
             <a onClick={() => validarAcessoOperacional('abrir a mesa de operações')} style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}>
               ⚡ Mesa de Operações
@@ -105,7 +105,7 @@ export default function DashboardLogado() {
           </div>
         </div>
 
-        {/* Blocos de Resumo Financeiro e de Proteção */}
+        {/* Blocos de Resumo Financeiro */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
@@ -117,13 +117,13 @@ export default function DashboardLogado() {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Índice de Frieza Emocional</span>
             <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0284c7', margin: '0 0 4px 0' }}>92 / 100</h3>
-            <span style={{ fontSize: '11px', color: '#64748b' }}>Excelente autocontrole mensal</span>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>Excelente autocontrolo mensal</span>
           </div>
 
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Rentabilidade (Outubro)</span>
             <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#059669', margin: '0 0 4px 0' }}>+14.2% (IPJ)</h3>
-            <span style={{ fontSize: '11px', color: '#64748b' }}>14º lugar no Ranking Geral</span>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>14.º lugar no Ranking Geral</span>
           </div>
 
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>

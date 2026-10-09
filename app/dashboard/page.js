@@ -6,8 +6,11 @@ export default function DashboardPage() {
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
   
-  // Estado do Ativo Selecionado (Armazena o símbolo oficial do TradingView)
-  const [ativoSelecionado, setativoSelecionado] = useState('BMFBOVESPA:WIN1!');
+  // Estados de Plano e Assinatura do Usuário
+  const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
+
+  // Estado do Ativo Selecionado e Categoria
+  const [ativoSelecionado, setAtivoSelecionado] = useState('BMFBOVESPA:WIN1!');
   const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
   const [mercadoCategoria, setMercadoCategoria] = useState('b3');
   
@@ -58,6 +61,16 @@ export default function DashboardPage() {
     ]
   };
 
+  // Função para mudar de mercado com validação de plano
+  const mudarMercado = (categoria) => {
+    if (planoUsuario === 'basico' && (categoria === 'cripto' || categoria === 'global')) {
+      alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
+      window.location.href = '/checkout';
+      return;
+    }
+    setMercadoCategoria(categoria);
+  };
+
   // ⚡ UseEffect para carregar e atualizar o Gráfico Real do TradingView dinamicamente
   useEffect(() => {
     const carregarGrafico = () => {
@@ -75,7 +88,7 @@ export default function DashboardPage() {
           "locale": "br",
           "toolbar_bg": "#1e293b",
           "enable_publishing": false,
-          "hide_top_toolbar": false, // Mantém a barra superior do TradingView ativa com a busca nativa de ativos
+          "hide_top_toolbar": false,
           "save_image": false,
           "container_id": "tradingview_widget_container"
         });
@@ -118,7 +131,15 @@ export default function DashboardPage() {
       alert('⚠️ Operação bloqueada pelo Botão Antifúria ativo!');
       return;
     }
-    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
+
+    // Trava de segurança por plano na execução
+    if (planoUsuario === 'basico' && mercadoCategoria !== 'b3') {
+      alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
+      window.location.href = '/checkout';
+      return;
+    }
+
+    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
   };
 
   return (
@@ -134,16 +155,28 @@ export default function DashboardPage() {
             <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#0f172a', margin: '5px 0 0 0' }}>Olá, Operador</h1>
             <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>{statusMensagem}</p>
           </div>
+
+          {/* Simulador de Plano e Navegação */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            
+            {/* Seletor de Teste de Plano */}
+            <div style={{ backgroundColor: '#e2e8f0', padding: '4px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Plano Atual:</span>
+              <select 
+                value={planoUsuario} 
+                onChange={(e) => setPlanoUsuario(e.target.value)}
+                style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="basico">Plano Básico (Apenas B3)</option>
+                <option value="completo">Plano Completo (B3 + Cripto + Global)</option>
+              </select>
+            </div>
+
             <a href="/mesa-operacoes" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '8px 16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(124, 58, 237, 0.3)' }}>⚡ Operação Simplificada</a>
             <a href="/market" style={{ backgroundColor: '#ffffff', color: '#0f172a', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>📊 Market</a>
             <a href="/social" style={{ backgroundColor: '#ffffff', color: '#0f172a', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>🌐 Social</a>
             <a href="/broker" style={{ backgroundColor: '#ffffff', color: '#0f172a', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>🔌 Broker</a>
             <a href="/checkout" style={{ backgroundColor: '#ffffff', color: '#0f172a', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>💳 Planos</a>
-            <span style={{ fontSize: '12px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace' }}>● Ativo</span>
-            <a href="/dashboard-logado" style={{ backgroundColor: '#ffffff', color: '#0f172a', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px', padding: '8px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-              Voltar à Dashboard
-            </a>
           </div>
         </div>
 
@@ -228,30 +261,30 @@ export default function DashboardPage() {
                   <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: '2px 0 0 0' }}>{nomeAtivoExibicao} <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'normal' }}>({ativoSelecionado})</span></h3>
                 </div>
 
-                {/* Abas de Categoria de Mercado */}
+                {/* Abas de Categoria de Mercado com Validação de Plano */}
                 <div style={{ display: 'flex', gap: '6px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                   <button 
-                    onClick={() => setMercadoCategoria('b3')}
+                    onClick={() => mudarMercado('b3')}
                     style={{ backgroundColor: mercadoCategoria === 'b3' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     B3 (Brasil)
                   </button>
                   <button 
-                    onClick={() => setMercadoCategoria('cripto')}
+                    onClick={() => mudarMercado('cripto')}
                     style={{ backgroundColor: mercadoCategoria === 'cripto' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
-                    Cripto
+                    Cripto {planoUsuario === 'basico' && '🔒'}
                   </button>
                   <button 
-                    onClick={() => setMercadoCategoria('global')}
+                    onClick={() => mudarMercado('global')}
                     style={{ backgroundColor: mercadoCategoria === 'global' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'global' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
-                    Global / Forex
+                    Global / Forex {planoUsuario === 'basico' && '🔒'}
                   </button>
                 </div>
               </div>
 
-              {/* Botões de Atalho Rápido por Categoria + Aviso da Busca Nativa */}
+              {/* Botões de Atalho Rápido por Categoria */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais (ou pesquise qualquer ativo diretamente na lupa no topo esquerdo do gráfico abaixo):</span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -290,7 +323,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Container onde o script injeta o iframe do TradingView com busca global nativa */}
               <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
                 <div id="tradingview_widget_container" style={{ width: '100%', height: '100%' }}></div>
               </div>

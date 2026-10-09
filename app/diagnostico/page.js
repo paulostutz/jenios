@@ -1,196 +1,138 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 
-export default function DiagnosticoPlatformPage() {
-  const [scores, setScores] = useState({ impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 });
+export default function DiagnosticoPage() {
   const [etapa, setEtapa] = useState(0);
-  const [timelineSelecionada, setTimelineSelecionada] = useState('');
+  const [respostas, setRespostas] = useState({});
+  const [concluido, setConcluido] = useState(false);
 
+  // As 6 Perguntas de Perfil Comportamental
   const perguntas = [
     {
-      q: "Passo 1: Como reage imediatamente após sofrer um Stop Loss inesperado em um ativo?",
-      a: [
-        { t: "Sinto raiva, abro outra operação na hora com o dobro do lote para recuperar rápido (Viés de Vingança).", p: "impulsivo", v: 2 },
-        { t: "Fico arrasado e encerro o computador por hoje com receio de perder o capital restante.", p: "ansioso", v: 2 },
-        { t: "Recuso-me a aceitar o erro. Arrasto o Stop Loss para baixo, afinal o mercado vai voltar.", p: "teimoso", v: 2 },
-        { t: "Fico paralisado o resto do dia refazendo cálculos sem coragem de clicar novamente.", p: "hesitante", v: 2 }
+      id: 1,
+      titulo: "1. Como reage habitualmente perante uma perda consecutiva de 3 ordens no intraday?",
+      opcoes: [
+        "A. Mantenho a serenidade e confio estritamente na regra matemática.",
+        "B. Sinto frustração mas evito operar por impulso.",
+        "C. Tento recuperar imediatamente o valor perdido (risco de viés emocional)."
       ]
     },
     {
-      q: "Passo 2: Gestão de Alvo — Quando uma operação atinge R$ 100 de lucro de um alvo de R$ 500, o que faz?",
-      a: [
-        { t: "Aumento a mão na operação para tentar arrancar R$ 1.000 de forma agressiva.", p: "impulsivo", v: 2 },
-        { t: "Fecho o trade imediatamente e embolso os R$ 100 por medo de devolver (Mão de Alface).", p: "ansioso", v: 2 },
-        { t: "Deixo o trade correr ignorando qual quer sinal técnico de reversão gráfica.", p: "teimoso", v: 2 },
-        { t: "Fico monitorando segundo a segundo, mudando de ideia a cada oscilação.", p: "hesitante", v: 2 }
+      id: 2,
+      titulo: "2. Qual é a sua principal expectativa ao utilizar um robô de Alta Frequência (HFT)?",
+      opcoes: [
+        "A. Blindar o capital contra os meus próprios erros emocionais.",
+        "B. Automatizar estratégias de arbitragem multi-rede.",
+        "C. Obter ganhos rápidos sem análise de risco."
       ]
     },
     {
-      q: "Passo 3: Megatendência — O mercado entra em queda livre violenta. Como se posiciona originalmente?",
-      a: [
-        { t: "Clico em comprar repetidamente de forma furiosa, tentando adivinhar o fundo exato.", p: "impulsivo", v: 2 },
-        { t: "Fico olhando a tela com o coração acelerado e a mente congelada, sem coragem de executar.", p: "ansioso", v: 2 },
-        { t: "Abro novas compras a cada queda (Preço Médio), convicto de que o ativo está barato demais.", p: "teimoso", v: 2 },
-        { t: "Espero cair por horas. Quando decido entrar vendido, o mercado subitamente inverte.", p: "hesitante", v: 2 }
+      id: 3,
+      titulo: "3. Como avalia o seu nível de tolerância ao risco em ativos de alta volatilidade?",
+      opcoes: [
+        "A. Moderado/Baixo, priorizo a preservação de capital com drawdown máximo restrito.",
+        "B. Equilibrado, aceito volatilidade se houver margem de lucro calculada.",
+        "C. Agressivo, busco alavancagem máxima sem blindagem."
       ]
     },
     {
-      q: "Passo 4: Histórico Mensal — Como é o seu fechamento de faturamento de trade no final do mês?",
-      a: [
-        { t: "Passo semanas ganhando, mas perco absolutamente tudo e quebro a conta em um único dia de fúria.", p: "impulsivo", v: 2 },
-        { t: "Minha conta sangra aos poucos porque meus ganhos são minúsculos e minhas perdas são longas.", p: "ansioso", v: 2 },
-        { t: "Tenho dias de lucros estrondosos, seguidos por perdas catastróficas que zeram meu patrimônio.", p: "teimoso", v: 2 },
-        { t: "Meus ganhos e perdas se equivalem, e meu saldo negativo real são apenas as taxas da corretora.", p: "hesitante", v: 2 }
+      id: 4,
+      titulo: "4. Compreende a função do 'Modo Reverso' na proteção de drawdown?",
+      opcoes: [
+        "A. Sim, compreendo que ele inverte cliques emocionais para proteger o meu património.",
+        "B. Tenho dúvidas parciais sobre a execução algorítmica.",
+        "C. Não estou familiarizado com a inversão de sinal."
       ]
     },
     {
-      q: "Passo 5: Gargalo Operacional — O que mais te incomoda na sua rotina atual no mercado?",
-      a: [
-        { t: "A raiva incontrolável e o arrependimento devastador após fechar um dia de fúria.", p: "impulsivo", v: 2 },
-        { t: "A ansiedade crônica e a dor no estômago toda vez que vejo o saldo oscilar na tela.", p: "ansioso", v: 2 },
-        { t: "A sensação de que o mercado me persegue e que os grandes bancos sabem meu stop.", p: "teimoso", v: 2 },
-        { t: "A frustração de estudar centenas de horas de teoria e não conseguir sair do lugar.", p: "hesitante", v: 2 }
+      id: 5,
+      titulo: "5. Qual o seu grau de familiaridade com o monitoramento adaptativo de 15 operações?",
+      opcoes: [
+        "A. Sei que o robô monitora padrões para evitar perdas em sequências de alta assertividade correta.",
+        "B. Compreendo vagamente.",
+        "C. Desconheço."
+      ]
+    },
+    {
+      id: 6,
+      titulo: "6. Está pronto para seguir rigorosamente os parâmetros definidos na Sala de Controlo?",
+      opcoes: [
+        "A. Sim, comprometo-me a seguir a disciplina operacional.",
+        "B. Depende das condições de mercado.",
+        "C. Prefiro operar totalmente à parte das regras."
       ]
     }
   ];
 
-  const responder = (pIndex, aIndex) => {
-    const alt = perguntas[pIndex].a[aIndex];
-    setScores(prev => ({ ...prev, [alt.p]: prev[alt.p] + alt.v }));
-    setEtapa(prev => prev + 1);
-  };
+  const selecionarOpcao = (perguntaId, opcao) => {
+    const novasRespostas = { ...respostas, [perguntaId]: opcao };
+    setRespostas(novasRespostas);
 
-  const voltarEtapa = () => {
-    if (etapa > 0) {
-      setEtapa(prev => prev - 1);
+    if (etapa < perguntas.length - 1) {
+      setEtapa(etapa + 1);
+    } else {
+      setConcluido(true);
     }
   };
 
-  const finalizarTimeline = (tipo) => {
-    setTimelineSelecionada(tipo);
-    setScores(prev => {
-      const s = { ...prev };
-      if (tipo === 'RAPIDO') { s.impulsivo += 3; s.ansioso += 3; }
-      if (tipo === 'ESTRUTURADO') { s.hesitante += 3; s.ansioso += 1; }
-      if (tipo === 'SWING') { s.teimoso += 4; s.tecnico_positivo += 2; }
-      return s;
-    });
-    setEtapa(prev => prev + 1);
+  const concluirEEntrarNaMesa = () => {
+    alert('🧠 Diagnóstico Concluído com Sucesso! Perfil validado pelo algoritmo HFT. A redirecionar para a Mesa de Operações...');
+    window.location.href = '/mesa-operacao';
   };
 
-  // Cálculo do laudo
-  let maiorVicio = "impulsivo", maiorScore = scores.impulsivo;
-  if (scores.ansioso > maiorScore) { maiorVicio = "ansioso"; maiorScore = scores.ansioso; }
-  if (scores.teimoso > maiorScore) { maiorVicio = "teimoso"; maiorScore = scores.teimoso; }
-  if (scores.hesitante > maiorScore) { maiorVicio = "hesitante"; maiorScore = scores.hesitante; }
-
-  let aptidao = Math.min(100, (scores.tecnico_positivo / 10) * 100);
-
   return (
-    <main style={{ backgroundColor: '#0f172a', color: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%' }}>
-      <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '30px', maxWidth: '600px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)', boxSizing: 'border-box' }}>
+    <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+      
+      <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '20px', maxWidth: '650px', width: '100%', padding: '40px', boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}>
         
-        {/* FASE 1: Perguntas */}
-        {etapa < perguntas.length && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', borderBottom: '1px solid #e2e8f0', paddingBottom: '15px' }}>
           <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              Onboarding Platform • Etapa {etapa + 1} de 6
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              {perguntas[etapa].q}
-            </h2>
-            <div>
-              {perguntas[etapa].a.map((alt, idx) => (
+            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', letterSpacing: '1px', textTransform: 'uppercase' }}>PROTOCOLO DE ENGENHARIA REVERSA</span>
+            <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: '4px 0 0 0' }}>Diagnóstico Comportamental (15 Operações / 6 Perguntas)</h1>
+          </div>
+          <Link href="/dashboard-logado" style={{ backgroundColor: '#f1f5f9', color: '#334155', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+            ← Voltar
+          </Link>
+        </div>
+
+        {!concluido ? (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', fontSize: '12px', fontWeight: 'bold', color: '#64748b' }}>
+              <span>Pergunta {etapa + 1} de {perguntas.length}</span>
+              <span>{Math.round(((etapa + 1) / perguntas.length) * 100)}% concluído</span>
+            </div>
+
+            <h3 style={{ fontSize: '16px', color: '#0f172a', marginBottom: '20px', lineHeight: '1.5', fontWeight: 'bold' }}>
+              {perguntas[etapa].titulo}
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {perguntas[etapa].opcoes.map((opcao, idx) => (
                 <button
                   key={idx}
-                  onClick={() => responder(etapa, idx)}
-                  style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block', transition: 'all 0.2s' }}
+                  onClick={() => selecionarOpcao(perguntas[etapa].id, opcao)}
+                  style={{ textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '16px 20px', fontSize: '13px', color: '#0f172a', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
                 >
-                  {alt.t}
+                  {opcao}
                 </button>
               ))}
             </div>
-            {etapa > 0 && (
-              <button
-                onClick={voltarEtapa}
-                style={{ width: '100%', background: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '12px', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '12px', textAlign: 'center', display: 'block' }}
-              >
-                ← Voltar à questão anterior
-              </button>
-            )}
           </div>
-        )}
-
-        {/* FASE 2: Timeline */}
-        {etapa === perguntas.length && (
-          <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              Etapa Final • Frequência Operacional
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              Qual é a sua janela de tempo principal de exposição ao mercado?
-            </h2>
-            <div>
-              <button onClick={() => finalizarTimeline('RAPIDO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Day Trade Rápido</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 1 a 5 minutos (Alta frequência)</span>
-              </button>
-              <button onClick={() => finalizarTimeline('ESTRUTURADO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Day Trade Estruturado</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 15 min a 1h (Ciclos e regras)</span>
-              </button>
-              <button onClick={() => finalizarTimeline('SWING')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Swing Trade / Position</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos Diários ou Semanais (Macro)</span>
-              </button>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 20px auto' }}>
+              ✓
             </div>
-            <button
-              onClick={voltarEtapa}
-              style={{ width: '100%', background: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '12px', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '12px', textAlign: 'center', display: 'block' }}
-            >
-              ← Voltar à questão anterior
-            </button>
-          </div>
-        )}
-
-        {/* FASE 3: Laudo */}
-        {etapa > perguntas.length && (
-          <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              🎯 Calibração Adaptativa Concluída
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              Relatório de Configuração Inicial
-            </h2>
-            <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-              Score de Disciplina Técnica: <b>{aptidao.toFixed(0)}%</b>
+            <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Perfil Comportamental Validado!</h2>
+            <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', marginBottom: '25px' }}>
+              O seu perfil foi registado com sucesso no sistema de monitoramento adaptativo. O robô irá gerir as 15 operações e o Modo Reverso, garantindo proteção contra falsos sinais e assegurando que, caso acerte 3 tendências consecutivas corretamente, o sistema ajusta-se para não inverter o seu lucro.
             </p>
-
-            {aptidao >= 60 ? (
-              <>
-                <p style={{ color: '#059669', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil: Mestre Disciplinado (Baixo Risco)</p>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  A tecnologia adaptativa configurou seu ambiente no <b>Modo Espelho Direto</b>, replicando suas ordens com precisão HFT sem inversão de cliques.
-                </p>
-              </>
-            ) : maiorVicio === 'impulsivo' ? (
-              <>
-                <p style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil: Impulsivo Vingativo (Risco Crítico)</p>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  O motor ativou automaticamente a <b>Tecnologia Reversa Ativa</b> para interceptar seus cliques de fúria e transformá-los em lucros institucionais.
-                </p>
-              </>
-            ) : (
-              <>
-                <p style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil Vulnerável / Ansioso ou Teimoso</p>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  O sistema acoplou a <b>Gestão OCO Inviolável e o Filtro de Megatendência</b> para blindar seu capital contra vieses comportamentais.
-                </p>
-              </>
-            )}
-
             <button
-              onClick={() => alert('Parâmetros gravados! Redirecionando para a Mesa de Operações...')}
-              style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block' }}
+              onClick={concluirEEntrarNaMesa}
+              style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: '12px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}
             >
-              Gravar Parâmetros & Aceder à Mesa de Operações →
+              🚀 Entrar na Mesa de Operações
             </button>
           </div>
         )}
@@ -199,4 +141,3 @@ export default function DiagnosticoPlatformPage() {
     </main>
   );
 }
-

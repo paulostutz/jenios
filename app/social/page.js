@@ -3,50 +3,33 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 
 export default function SocialPage() {
-  const [abaAtiva, setAbaAtiva] = useState('feed'); // 'feed', 'ranking'
+  const [abaAtiva, setAbaAtiva] = useState('feed');
   const [novoTexto, setNovoTexto] = useState('');
   const [imagemInput, setImagemInput] = useState('');
-  const [tickerSelecionado, setTickerSelecionado] = useState(null);
-  
   const [perfilAtivo, setPerfilAtivo] = useState(null);
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
   const [storyAtivo, setStoryAtivo] = useState(null);
 
   const [usuarioLogado, setUsuarioLogado] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
-  const [usuarioAssinado, setUsuarioAssinado] = useState(true);
-
-  const fileInputRef = useRef(null);
-
-  const verificarAcessoOperacional = (acaoNome) => {
-    if (!usuarioLogado) {
-      alert('🔒 É necessário criar uma conta ou fazer login para operar este sinal.');
-      window.location.href = '/login';
-      return false;
-    }
-    if (!usuarioAssinado) {
-      const confirmar = confirm(`⚡ Para ${acaoNome}, você precisa ativar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos e abrir/ativar sua conta?`);
-      if (confirmar) {
-        window.location.href = '/planos';
-      }
-      return false;
-    }
-    return true;
-  };
 
   const irParaSalaDeControle = () => {
     if (!usuarioLogado) {
-      alert('🔒 Acesso restrito! Por favor, faça login ou crie a sua conta para aceder à Sala de Controlo.');
+      alert('🔒 Acesso restrito! Por favor, faça login ou crie sua conta para acessar a Sala de Controle.');
       window.location.href = '/login';
     } else {
       window.location.href = '/dashboard-logado';
     }
   };
 
+  const irParaTendencias = (item) => {
+    window.location.href = '/tendencias';
+  };
+
   const tickerMacro = [
     { id: 1, rede: 'B3', tipo: '📊 MEGAPULSE', titulo: 'Ibovespa (IBOV): ▲ Alta Institucional (+1.2%)', detalhes: 'Fluxo de ordens institucionais indica forte acumulação no setor financeiro e commodities.' },
-    { id: 2, rede: 'SOLANA', tipo: '🚀 TOKEN HFT', titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade com execução automática.' },
-    { id: 3, rede: 'ETHEREUM', tipo: '🐋 BALEIA ETH', titulo: 'Acumulação de 15,000 ETH em carteira institucional', detalhes: 'Movimento de alocação de longo prazo detetado por smart contracts de custódia.' },
+    { id: 2, rede: 'SOLANA', tipo: '🚀 TOKEN HFT', titulo: '$LTR-Prop: Volume +450% | Influxo Institucional', detalhes: 'Pools de liquidez na rede Solana registraram alta volatilidade.' },
+    { id: 3, rede: 'ETHEREUM', tipo: '🐋 BALEIA ETH', titulo: 'Acumulação de 15,000 ETH em carteira institucional', detalhes: 'Movimento de alocação de longo prazo detetado por smart contracts.' },
     { id: 4, rede: 'TRON', tipo: '⚡ USDT FLOW', titulo: 'Transferência maciça de US$ 85M para DEX de alta frequência', detalhes: 'Elevada liquidez cruzando redes com taxas otimizadas para arbitragem.' }
   ];
 
@@ -68,7 +51,7 @@ export default function SocialPage() {
     { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar • Mensalidade Abonada', bio: 'Especialista em robôs HFT para Mini-Índice e Mini-Dólar com foco em proteção de drawdown.', seguidores: '1.4k', operacoesMes: 412 },
     { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar • Mensalidade Abonada', bio: 'Gestora de capital e arbitragem algorítmica em ativos multi-rede na Solana e B3.', seguidores: '1.2k', operacoesMes: 350 },
     { pos: 3, nome: 'Roberto Dias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', status: '🥉 3º Lugar • Mensalidade Abonada', bio: 'Focado em tendências de médio prazo e ações.', seguidores: '950', operacoesMes: 280 },
-    { pos: 4, nome: 'Beatriz Lima', cargo: '@bialima', rentabilidade: '+28.9%', assertividade: '90%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', status: 'Frieza: 90/100', bio: 'Especialista em controlo emocional e robôs de proteção.', seguidores: '820', operacoesMes: 210 },
+    { pos: 4, nome: 'Beatriz Lima', cargo: '@bialima', rentabilidade: '+28.9%', assertividade: '90%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', status: 'Frieza: 90/100', bio: 'Especialista em controle emocional e robôs de proteção.', seguidores: '820', operacoesMes: 210 },
     { pos: 5, nome: 'Lucas Invest', cargo: '@lucasinv', rentabilidade: '+26.2%', assertividade: '89%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', status: 'Frieza: 88/100', bio: 'Foco em criptoativos e tokens multi-rede.', seguidores: '740', operacoesMes: 190 },
     { pos: 6, nome: 'Renata Tech', cargo: '@renatatech', rentabilidade: '+24.0%', assertividade: '87%', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150', status: 'Frieza: 87/100', bio: 'Desenvolvedora de estratégias HFT.', seguidores: '690', operacoesMes: 175 },
     { pos: 7, nome: 'Gabriel B3', cargo: '@gabrielb3', rentabilidade: '+21.8%', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150', status: 'Frieza: 85/100', bio: 'Operador de minicontratos na B3.', seguidores: '610', operacoesMes: 160 },
@@ -86,7 +69,7 @@ export default function SocialPage() {
     if (!novoTexto.trim() && !imagemInput.trim()) return;
     setPosts([{ 
       id: Date.now(), 
-      autor: usuarioLogado ? nomeUsuario : 'Visitante Anônimo', 
+      autor: nomeUsuario, 
       cargo: 'MEMBRO', 
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
       texto: novoTexto, 
@@ -105,7 +88,6 @@ export default function SocialPage() {
   };
 
   const copiarEstrategia = (id) => {
-    if (!verificarAcessoOperacional('copiar esta estratégia')) return;
     setPosts(posts.map(p => p.id === id ? { ...p, estrategiaCopiada: true } : p));
     alert('⚡ Estratégia copiada com sucesso para o seu Robô HFT!');
   };return (
@@ -118,35 +100,21 @@ export default function SocialPage() {
         .ticker-track:hover { animation-play-state: paused; }
       ` }} />
 
-      {/* Ticker Rotativo */}
+      {/* Ticker Superior Rotativo (Ao clicar, vai para o Hub de Tendências) */}
       <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: '#0f172a', borderBottom: '1px solid #334155', padding: '10px 0', width: '100%', boxSizing: 'border-box' }} className="ticker-container">
         <div className="ticker-track">
           {tickerDuplicado.map((item, index) => (
-            <div key={index} onClick={() => setTickerSelecionado(item)} style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', cursor: 'pointer', padding: '0 30px', whiteSpace: 'nowrap' }}>
+            <div key={index} onClick={() => irParaTendencias(item)} style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', cursor: 'pointer', padding: '0 30px', whiteSpace: 'nowrap' }} title="Clique para abrir no Hub de Tendências">
               <span style={{ backgroundColor: '#334155', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold' }}>{item.rede}</span>
               <span style={{ color: '#34d399', fontWeight: 'bold', fontFamily: 'monospace' }}>{item.tipo}:</span>
               <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>{item.titulo}</span>
-              <span style={{ fontSize: '11px', color: '#c084fc', marginLeft: '6px', fontWeight: 'bold' }}>[Ver Sinal 🔍]</span>
+              <span style={{ fontSize: '11px', color: '#c084fc', marginLeft: '6px', fontWeight: 'bold' }}>[Ver no Hub 🚀]</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Modal Ticker */}
-      {tickerSelecionado && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', zIndex: 10000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '25px', boxShadow: '0 25px 50px rgba(0,0,0,0.15)' }}>
-            <h3 style={{ fontSize: '16px', color: '#0f172a', marginBottom: '12px', fontWeight: 'bold' }}>{tickerSelecionado.titulo}</h3>
-            <p style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}>{tickerSelecionado.detalhes}</p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button onClick={() => { if (verificarAcessoOperacional('operar sinal')) window.location.href = '/mesa-operacao'; }} style={{ backgroundColor: '#10b981', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>⚡ Operar este Sinal</button>
-              <button onClick={() => setTickerSelecionado(null)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Fechar</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Visualizador de Stories (Estilo Instagram - Tela Cheia) */}
+      {/* Visualizador de Stories */}
       {storyAtivo && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.9)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ maxWidth: '420px', width: '100%', height: '80vh', backgroundColor: '#111827', borderRadius: '20px', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative', border: '1px solid #334155' }}>
@@ -209,10 +177,8 @@ export default function SocialPage() {
               </button>
               <button 
                 onClick={() => {
-                  if (verificarAcessoOperacional('copiar estratégia automaticamente')) {
-                    alert(`Estratégia de ${perfilAtivo.nome} copiada para o seu Copy Trading automático!`);
-                    setPerfilAtivo(null);
-                  }
+                  alert(`Estratégia de ${perfilAtivo.nome} copiada para o seu Copy Trading automático!`);
+                  setPerfilAtivo(null);
                 }}
                 style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '14px', borderRadius: '10px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer' }}
               >
@@ -243,7 +209,7 @@ export default function SocialPage() {
               🏠 Início
             </button>
             <button onClick={irParaSalaDeControle} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}>
-              Sala de Controlo
+              Sala de Controle
             </button>
           </div>
         </div>
@@ -253,9 +219,6 @@ export default function SocialPage() {
           <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             📱 Feed Contínuo
           </button>
-          <Link href="/tendencias" style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#059669', fontWeight: 'bold', fontSize: '12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            🚀 Hub de Tendências
-          </Link>
           <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
             🏆 Ranking Top 10
           </button>
@@ -282,16 +245,7 @@ export default function SocialPage() {
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
-                  
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '15px', flexWrap: 'wrap' }}>
-                    <input type="text" value={imagemInput} onChange={(e) => setImagemInput(e.target.value)} placeholder="Link de imagem ou gráfico..." style={{ flex: 1, backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', outline: 'none' }} />
-                    <button type="button" onClick={() => alert('📸 Câmera ativada: Tire uma foto diretamente do seu dispositivo para postar!')} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>📷 Tirar Foto</button>
-                    <button type="button" onClick={() => alert('🔴 Transmissão ao vivo (Live) iniciada para a rede Jenios!')} style={{ backgroundColor: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>🔴 Iniciar Live</button>
-                    <button type="button" onClick={() => alert('▶️ Vídeo do YouTube anexado com sucesso!')} style={{ backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>▶️ Subir YouTube</button>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button type="button" onClick={() => alert('🚀 Publicação enviada para o programa de Impulsionamento Master!')} style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', border: 'none', padding: '10px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>⭐ Impulsionar Post</button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>Publicar Análise 🚀</button>
                   </div>
                 </form>

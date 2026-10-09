@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
@@ -30,6 +30,51 @@ export default function DashboardPage() {
     { nome: '$LTR-Prop (Ativo Proprietário)', status: 'Volume +450% | Influxo Institucional' },
     { nome: '$NEXUS (Multichain)', status: 'Nova Listagem | Alta Retenção de LP' }
   ]);
+
+  // Função para mapear o ativo selecionado para o símbolo oficial do TradingView
+  const obterSimboloTradingView = (ativo) => {
+    if (ativo.includes('MINI-INDICE')) return 'BMFBOVESPA:WIN1!';
+    if (ativo.includes('MINI-DOLAR')) return 'BMFBOVESPA:WDO1!';
+    if (ativo.includes('SOLANA')) return 'BINANCE:SOLUSDT';
+    if (ativo.includes('BITCOIN')) return 'BINANCE:BTCUSDT';
+    return 'BMFBOVESPA:WIN1!';
+  };
+
+  // ⚡ UseEffect para carregar e atualizar o Gráfico Real do TradingView dinamicamente
+  useEffect(() => {
+    const carregarGrafico = () => {
+      const container = document.getElementById('tradingview_widget_container');
+      if (container) container.innerHTML = '';
+
+      if (window.TradingView) {
+        new window.TradingView.widget({
+          "autosize": true,
+          "symbol": obterSimboloTradingView(ativoSelecionado),
+          "interval": "5",
+          "timezone": "America/Sao_Paulo",
+          "theme": "dark",
+          "style": "1",
+          "locale": "br",
+          "toolbar_bg": "#1e293b",
+          "enable_publishing": false,
+          "hide_top_toolbar": false,
+          "save_image": false,
+          "container_id": "tradingview_widget_container"
+        });
+      }
+    };
+
+    if (!document.getElementById('tradingview-widget-script')) {
+      const script = document.createElement('script');
+      script.id = 'tradingview-widget-script';
+      script.src = 'https://s3.tradingview.com/tv.js';
+      script.async = true;
+      script.onload = carregarGrafico;
+      document.head.appendChild(script);
+    } else {
+      carregarGrafico();
+    }
+  }, [ativoSelecionado]);
 
   const ativarModoReverso = () => {
     setModoReversoAtivo(!modoReversoAtivo);
@@ -170,47 +215,22 @@ export default function DashboardPage() {
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>Cotação Atual</span>
-                <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669' }}>128.450,00 pts</span>
+                <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669' }}>Tempo Real</span>
               </div>
             </div>
 
-            {/* Gráfico de Área Suave */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', height: '350px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* GRÁFICO REAL DO TRADINGVIEW EM TEMPO REAL */}
+            <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '480px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div>
-                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', display: 'block' }}>📈 Fluxo de Cotação em Tempo Real</span>
-                  <span style={{ fontSize: '11px', color: '#059669', fontFamily: 'monospace' }}>● {ativoSelecionado} • Servidor HFT Conectado</span>
-                </div>
-                <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: '#64748b' }}>
-                  <span style={{ backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '6px' }}>1M</span>
-                  <span style={{ backgroundColor: '#7c3aed', color: '#fff', padding: '4px 10px', borderRadius: '6px', fontWeight: 'bold' }}>5M</span>
-                  <span style={{ backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '6px' }}>15M</span>
-                  <span style={{ backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: '6px' }}>1H</span>
+                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView</span>
+                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {ativoSelecionado} • Conectado</span>
                 </div>
               </div>
 
-              <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '10px 0' }}>
-                <svg viewBox="0 0 600 160" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-                  <defs>
-                    <linearGradient id="gradLinha" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
-                  <line x1="0" y1="30" x2="600" y2="30" stroke="#e2e8f0" strokeDasharray="3" />
-                  <line x1="0" y1="80" x2="600" y2="80" stroke="#e2e8f0" strokeDasharray="3" />
-                  <line x1="0" y1="130" x2="600" y2="130" stroke="#e2e8f0" strokeDasharray="3" />
-                  <path d="M 0,110 Q 75,70 150,90 T 300,50 T 450,40 T 600,20 L 600,160 L 0,160 Z" fill="url(#gradLinha)" />
-                  <path d="M 0,110 Q 75,70 150,90 T 300,50 T 450,40 T 600,20" fill="none" stroke="#059669" strokeWidth="3" strokeLinecap="round" />
-                  <circle cx="600" cy="20" r="5" fill="#059669" />
-                  <circle cx="600" cy="20" r="10" fill="#059669" opacity="0.2" />
-                </svg>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#64748b', borderTop: '1px solid #e2e8f0', paddingTop: '10px' }}>
-                <span>Mínima: 127.890</span>
-                <span>Vol: R$ 4.2B</span>
-                <span style={{ color: '#059669' }}>Máxima: 128.920</span>
+              {/* Container onde o script injeta o iframe do TradingView */}
+              <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
+                <div id="tradingview_widget_container" style={{ width: '100%', height: '100%' }}></div>
               </div>
             </div>
 

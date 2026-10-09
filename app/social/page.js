@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 
 export default function SocialPage() {
@@ -10,8 +10,24 @@ export default function SocialPage() {
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
   const [storyAtivo, setStoryAtivo] = useState(null);
 
+  // Estados do Simulador HFT (Isca de Conversão)
+  const [capitalSimulado, setCapitalSimulado] = useState(10000);
+  const [diasSimulados, setDiasSimulados] = useState(30);
+
   const [usuarioLogado, setUsuarioLogado] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
+
+  // Perfil do próprio usuário logado
+  const meuPerfil = {
+    nome: 'Paulo Stutz Netto',
+    cargo: 'CEO & Fundador • Letter Franqueadora',
+    rentabilidade: '+ R$ 18.400',
+    assertividade: '95%',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+    bio: 'Desenvolvedor da infraestrutura de pagamentos AsaaS e operador de alta frequência com protocolos de engenharia reversa.',
+    seguidores: '2.1k',
+    status: '🏆 Conta Master Verificada'
+  };
 
   const irParaSalaDeControle = () => {
     if (!usuarioLogado) {
@@ -22,7 +38,7 @@ export default function SocialPage() {
     }
   };
 
-  const irParaTendencias = (item) => {
+  const irParaTendencias = () => {
     window.location.href = '/tendencias';
   };
 
@@ -42,9 +58,9 @@ export default function SocialPage() {
   ]);
 
   const [noticiasMacro] = useState([
-    { id: 1, hora: 'Há 5 mins', cat: 'GEOPOLÍTICA', titulo: 'Estreito de Ormuz: Ajuste no tráfego de petroleiros gera volatilidade', impacto: 'Alto Impacto no Petróleo' },
-    { id: 2, hora: 'Há 25 mins', cat: 'COMMODITIES', titulo: 'Petróleo Brent registra alta acentuada com novos relatórios de oferta', impacto: 'Positivo para Energia' },
-    { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA BRASIL', titulo: 'Novas diretrizes fiscais anunciadas pelo Banco Central impactam juros', impacto: 'Ajuste em Renda Fixa e Ibovespa' }
+    { id: 1, hora: 'Há 5 mins', cat: 'GEOPOLÍTICA', titulo: 'Estreito de Ormuz: Ajuste no tráfego de petroleiros gera volatilidade', impacto: 'Alto Impacto no Petróleo', url: 'https://www.reuters.com' },
+    { id: 2, hora: 'Há 25 mins', cat: 'COMMODITIES', titulo: 'Petróleo Brent registra alta acentuada com novos relatórios de oferta', impacto: 'Positivo para Energia', url: 'https://www.infomoney.com.br' },
+    { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA BRASIL', titulo: 'Novas diretrizes fiscais anunciadas pelo Banco Central impactam juros', impacto: 'Ajuste em Renda Fixa e Ibovespa', url: 'https://valor.globo.com' }
   ]);
 
   const [rankingOperadores] = useState([
@@ -90,7 +106,9 @@ export default function SocialPage() {
   const copiarEstrategia = (id) => {
     setPosts(posts.map(p => p.id === id ? { ...p, estrategiaCopiada: true } : p));
     alert('⚡ Estratégia copiada com sucesso para o seu Robô HFT!');
-  };return (
+  };const lucroEstimado = (Number(capitalSimulado) * 0.18 * Number(diasSimulados) / 30).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       <style dangerouslySetInnerHTML={{ __html: `
@@ -100,11 +118,11 @@ export default function SocialPage() {
         .ticker-track:hover { animation-play-state: paused; }
       ` }} />
 
-      {/* Ticker Superior Rotativo (Ao clicar, vai para o Hub de Tendências) */}
+      {/* Ticker Superior Rotativo */}
       <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: '#0f172a', borderBottom: '1px solid #334155', padding: '10px 0', width: '100%', boxSizing: 'border-box' }} className="ticker-container">
         <div className="ticker-track">
           {tickerDuplicado.map((item, index) => (
-            <div key={index} onClick={() => irParaTendencias(item)} style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', cursor: 'pointer', padding: '0 30px', whiteSpace: 'nowrap' }} title="Clique para abrir no Hub de Tendências">
+            <div key={index} onClick={irParaTendencias} style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', cursor: 'pointer', padding: '0 30px', whiteSpace: 'nowrap' }} title="Clique para abrir no Hub de Tendências">
               <span style={{ backgroundColor: '#334155', color: '#34d399', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold' }}>{item.rede}</span>
               <span style={{ color: '#34d399', fontWeight: 'bold', fontFamily: 'monospace' }}>{item.tipo}:</span>
               <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>{item.titulo}</span>
@@ -195,13 +213,13 @@ export default function SocialPage() {
 
       <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* Cabeçalho */}
+        {/* Cabeçalho (Clicável para ver o próprio perfil) */}
         <div style={{ backgroundColor: '#ffffff', padding: '18px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#7c3aed', color: '#fff', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>J</div>
+          <div onClick={() => setPerfilAtivo(meuPerfil)} style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }} title="Clique para ver o seu perfil">
+            <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
             <div>
               <span style={{ fontSize: '13px', fontWeight: '800', color: '#0f172a', display: 'block' }}>JENIOS SOCIAL</span>
-              <span style={{ fontSize: '10.5px', color: '#7c3aed', fontWeight: '700' }}>Olá, {nomeUsuario}</span>
+              <span style={{ fontSize: '10.5px', color: '#7c3aed', fontWeight: '700' }}>Olá, {nomeUsuario} (Ver Meu Perfil 🔍)</span>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -279,23 +297,23 @@ export default function SocialPage() {
               ))}
             </div>
 
-            {/* Coluna Direita (Notícias Macro & Top Traders) */}
+            {/* Coluna Direita (Notícias Clicáveis, Top Traders e Simulador HFT) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Notícias Macro */}
+              {/* Notícias Macro (Links Externos Clicáveis) */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🌐 Canal Oficial de Notícias Macro</h3>
-                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Atualizações em tempo real com impacto direto no mercado.</p>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '0 0 14px 0' }}>Clique na notícia para ler no site oficial.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {noticiasMacro.map((n) => (
-                    <div key={n.id} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px' }}>
+                    <a key={n.id} href={n.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '12px', display: 'block', transition: 'all 0.2s' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                         <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#7c3aed', backgroundColor: '#f3e8ff', padding: '2px 6px', borderRadius: '4px' }}>{n.cat}</span>
-                        <span style={{ fontSize: '10px', color: '#64748b' }}>{n.hora}</span>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>{n.hora} ↗️</span>
                       </div>
                       <h4 style={{ fontSize: '12px', color: '#0f172a', margin: '0 0 6px 0', fontWeight: 'bold' }}>{n.titulo}</h4>
                       <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>Impacto: {n.impacto}</span>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -314,9 +332,52 @@ export default function SocialPage() {
                           <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>{op.rentabilidade}</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: '10px', color: '#7c3aed', backgroundColor: '#ede9fe', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>Ver →</span>
+                      <span style={{ fontSize: '10px', color: '#7c3aed', backgroundColor: '#ede9fe', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold' }}>Visitar 🔍</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* SIMULADOR HFT (Isca de Conversão) */}
+              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxSizing: 'border-box' }}>
+                <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>⚡ Simulador HFT • Isca Pro</span>
+                <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 12px 0' }}>Calcule seu Lucro Estimado</h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', boxSizing: 'border-box' }}>
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Capital Inicial (R$):</label>
+                    <input 
+                      type="number" 
+                      value={capitalSimulado} 
+                      onChange={(e) => setCapitalSimulado(e.target.value)} 
+                      style={{ width: '100%', padding: '10px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Período (Dias):</label>
+                    <input 
+                      type="number" 
+                      value={diasSimulados} 
+                      onChange={(e) => setDiasSimulados(e.target.value)} 
+                      style={{ width: '100%', padding: '10px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
+                    />
+                  </div>
+
+                  <div style={{ backgroundColor: '#f3e8ff', border: '1px solid #d8b4fe', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
+                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', display: 'block' }}>LUCRO ESTIMADO COM MODO REVERSO:</span>
+                    <strong style={{ fontSize: '18px', color: '#059669' }}>{lucroEstimado}</strong>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      const assinar = confirm(`⚡ Deseja ativar o Plano Pro para desbloquear o robô HFT com capital de R$ ${Number(capitalSimulado).toLocaleString('pt-BR')}?`);
+                      if (assinar) window.location.href = '/planos';
+                    }}
+                    style={{ width: '100%', backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124,58,237,0.3)' }}
+                  >
+                    🚀 Assinar Plano e Operar Robô
+                  </button>
                 </div>
               </div>
 

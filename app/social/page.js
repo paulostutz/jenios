@@ -10,6 +10,21 @@ export default function SocialPage() {
   const [perfilSelecionado, setPerfilSelecionado] = useState(null);
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
 
+  // Simulação de status do usuário (false = não assinou plano ainda, true = assinado)
+  const [usuarioAssinado, setUsuarioAssinado] = useState(false);
+
+  // Função para checar acesso a ações restritas (operar / copiar / APIs)
+  const verificarAcessoRestrito = (acaoNome) => {
+    if (!usuarioAssinado) {
+      const confirmar = confirm(`⚡ Para ${acaoNome}, você precisa ativar um dos planos profissionais (com 7 dias de teste grátis).\n\nDeseja ir para a página de planos e iniciar o seu teste?`);
+      if (confirmar) {
+        window.location.href = '/planos';
+      }
+      return false;
+    }
+    return true;
+  };
+
   const tickerMacro = [
     { 
       id: 1, 
@@ -90,6 +105,7 @@ export default function SocialPage() {
   };
 
   const copiarEstrategia = (id) => {
+    if (!verificarAcessoRestrito('copiar esta estratégia e automatizar no seu robô')) return;
     setPosts(posts.map(p => p.id === id ? { ...p, estrategiaCopiada: true } : p));
     alert('⚡ Estratégia de Copy Trading copiada com sucesso para o seu Robô HFT!');
   };
@@ -150,9 +166,19 @@ export default function SocialPage() {
             </div>
             <h3 style={{ fontSize: '16px', color: '#fff', marginBottom: '12px', fontWeight: 'bold' }}>{tickerSelecionado.titulo}</h3>
             <p style={{ fontSize: '13px', color: '#cbd5e1', lineHeight: '1.6', marginBottom: '20px' }}>{tickerSelecionado.detalhes}</p>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button 
+                onClick={() => {
+                  if (verificarAcessoRestrito('operar com base neste relatório')) {
+                    window.location.href = '/mesa-operacao';
+                  }
+                }}
+                style={{ backgroundColor: '#10b981', color: '#000', border: 'none', padding: '10px 18px', borderRadius: '10px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                ⚡ Operar este Sinal
+              </button>
               <button onClick={() => setTickerSelecionado(null)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '10px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                Fechar Relatório
+                Fechar
               </button>
             </div>
           </div>
@@ -189,18 +215,16 @@ export default function SocialPage() {
                 {seguindoPerfis[perfilSelecionado.nome] ? 'Seguindo ✓' : 'Seguir Estrategista'}
               </button>
               <button 
-                onClick={() => { alert(`Estratégia de ${perfilSelecionado.nome} copiada para o seu Copy Trading automático!`); setPerfilSelecionado(null); }}
+                onClick={() => {
+                  if (verificarAcessoRestrito('copiar estratégia automaticamente')) {
+                    alert(`Estratégia de ${perfilSelecionado.nome} copiada para o seu Copy Trading automático!`);
+                    setPerfilSelecionado(null);
+                  }
+                }}
                 style={{ flex: 1, backgroundColor: '#059669', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
               >
                 ⚡ Copiar Estratégia
               </button>
-            </div>
-
-            <div style={{ borderTop: '1px solid #1e293b', paddingTop: '16px' }}>
-              <h4 style={{ fontSize: '13px', color: '#fff', marginBottom: '10px' }}>Últimas Análises do Operador</h4>
-              <div style={{ backgroundColor: '#0b1120', padding: '14px', borderRadius: '12px', border: '1px solid #1e293b', fontSize: '12px', color: '#cbd5e1', lineHeight: '1.5' }}>
-                &ldquo;Operação de fluxo institucional concluída com sucesso no Mini-Dólar. O Modo Reverso garantiu proteção total contra as armadilhas do mercado.&rdquo;
-              </div>
             </div>
           </div>
         </div>
@@ -220,8 +244,8 @@ export default function SocialPage() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <a href="/dashboard" style={{ backgroundColor: '#1e293b', color: '#f8fafc', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', border: '1px solid #334155' }}>Sala de Controle</a>
-            <a href="/market" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)' }}>JENIOS Market</a>
+            <a href="/dashboard-logado" style={{ backgroundColor: '#1e293b', color: '#f8fafc', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', border: '1px solid #334155' }}>Sala de Controle</a>
+            <a href="/planos" style={{ backgroundColor: '#10b981', color: '#000', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}>Assinar Plano (7 Dias Grátis)</a>
           </div>
         </div>
 

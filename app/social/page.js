@@ -98,7 +98,6 @@ export default function SocialPage() {
     { id: 3, hora: 'Há 50 mins', cat: 'POLÍTICA', titulo: 'Novas diretrizes fiscais do Banco Central impactam juros', impacto: 'Ajuste', url: 'https://valor.globo.com' }
   ]);
 
-  // LISTA COMPLETA DOS 10 OPERADORES COM ASSERTIVIDADE E RENTABILIDADE DETALHADAS
   const [rankingOperadores] = useState([
     { pos: 1, nome: 'Carlos M.', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', status: '🏆 1º Lugar', bio: 'Especialista em robôs HFT para Mini-Índice e Mini-Dólar com foco em proteção de drawdown.', seguidores: '1.4k', postsCount: '32', visualizacoes30Dias: '28.4k' },
     { pos: 2, nome: 'Ana Paula S.', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', status: '🥈 2º Lugar', bio: 'Gestora de capital e arbitragem algorítmica em ativos multi-rede na Solana e B3.', seguidores: '1.2k', postsCount: '25', visualizacoes30Dias: '21.0k' },
@@ -189,7 +188,7 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* MODAL DE PERFIL COM RENTABILIDADE, ASSERTIVIDADE E SEGUIDORES RESTAURADOS */}
+      {/* MODAL DE PERFIL */}
       {perfilAtivo && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 15000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '650px', width: '100%', padding: '35px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '20px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -207,7 +206,6 @@ export default function SocialPage() {
               </div>
             </div>
 
-            {/* CAIXA COM AS MÉTRICAS (Rentabilidade, Assertividade e Seguidores) */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0', textAlign: 'center' }}>
               <div>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>RENTABILIDADE</span>
@@ -241,7 +239,6 @@ export default function SocialPage() {
               </button>
             </div>
 
-            {/* Publicações deste perfil */}
             <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px', marginTop: '5px' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px' }}>Publicações de {perfilAtivo.nome}</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '250px', overflowY: 'auto' }}>
@@ -318,7 +315,8 @@ export default function SocialPage() {
               ) : (
                 <>
                   <a href="/login" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>Entrar</a>
-                  <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px' }}>Criar Conta 🚀</a>
+                  {/* CORRIGIDO: Aponta diretamente para a página unificada de login e criação de conta (/login) */}
+                  <a href="/login" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px' }}>Criar Conta 🚀</a>
                 </>
               )}
             </div>
@@ -435,7 +433,7 @@ export default function SocialPage() {
           </div>
         )}
 
-        {/* ABA RANKING COMPLETO (EXIBE OS 10 OPERADORES COM RENTABILIDADE E ASSERTIVIDADE) */}
+        {/* ABA RANKING COMPLETO */}
         {abaAtiva === 'ranking' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>Ranking Completo Top 10</h2>

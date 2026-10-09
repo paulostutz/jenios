@@ -1,11 +1,19 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function DiagnosticoPlatformPage() {
+  const [jaFezAntes, setJaFezAntes] = useState(false);
   const [scores, setScores] = useState({ impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 });
   const [etapa, setEtapa] = useState(0);
   const [timelineSelecionada, setTimelineSelecionada] = useState('');
+
+  useEffect(() => {
+    const status = localStorage.getItem('jenios_diagnostico_realizado');
+    if (status === 'true') {
+      setJaFezAntes(true);
+    }
+  }, []);
 
   const perguntas = [
     {
@@ -62,9 +70,7 @@ export default function DiagnosticoPlatformPage() {
   };
 
   const voltarEtapa = () => {
-    if (etapa > 0) {
-      setEtapa(prev => prev - 1);
-    }
+    if (etapa > 0) setEtapa(prev => prev - 1);
   };
 
   const finalizarTimeline = (tipo) => {
@@ -79,21 +85,14 @@ export default function DiagnosticoPlatformPage() {
     setEtapa(prev => prev + 1);
   };
 
-  // Cálculo do laudo
-  let maiorVicio = "impulsivo", maiorScore = scores.impulsivo;
-  if (scores.ansioso > maiorScore) { maiorVicio = "ansioso"; maiorScore = scores.ansioso; }
-  if (scores.teimoso > maiorScore) { maiorVicio = "teimoso"; maiorScore = scores.teimoso; }
-  if (scores.hesitante > maiorScore) { maiorVicio = "hesitante"; maiorScore = scores.hesitante; }
-
   let aptidao = Math.min(100, (scores.tecnico_positivo / 10) * 100);
 
   const concluirEEntrarDiretoNaMesa = (modoDefinido) => {
-    // Grava no localStorage que o diagnóstico foi feito e qual o modo operacional inicial
     if (typeof window !== 'undefined') {
       localStorage.setItem('jenios_diagnostico_realizado', 'true');
+      localStorage.setItem('jenios_diagnostico_data', new Date().toISOString());
       localStorage.setItem('jenios_modo_operacional', modoDefinido);
     }
-    // Redireciona diretamente para a Mesa de Operações sem passar por telas de escolha
     window.location.href = '/mesa-operacao';
   };
 
@@ -101,107 +100,90 @@ export default function DiagnosticoPlatformPage() {
     <main style={{ backgroundColor: '#0f172a', color: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '30px', maxWidth: '600px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)', boxSizing: 'border-box' }}>
         
-        {/* FASE 1: Perguntas */}
-        {etapa < perguntas.length && (
-          <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              Onboarding Platform • Etapa {etapa + 1} de 6
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              {perguntas[etapa].q}
-            </h2>
-            <div>
-              {perguntas[etapa].a.map((alt, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => responder(etapa, idx)}
-                  style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block', transition: 'all 0.2s' }}
-                >
-                  {alt.t}
-                </button>
-              ))}
+        {jaFezAntes ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#fef2f2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 20px auto', fontWeight: 'bold' }}>
+              ⚠️
             </div>
-            {etapa > 0 && (
-              <button
-                onClick={voltarEtapa}
-                style={{ width: '100%', background: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '12px', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '12px', textAlign: 'center', display: 'block' }}
-              >
-                ← Voltar à questão anterior
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* FASE 2: Timeline */}
-        {etapa === perguntas.length && (
-          <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              Etapa Final • Frequência Operacional
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              Qual é a sua janela de tempo principal de exposição ao mercado?
-            </h2>
-            <div>
-              <button onClick={() => finalizarTimeline('RAPIDO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Day Trade Rápido</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 1 a 5 minutos (Alta frequência)</span>
-              </button>
-              <button onClick={() => finalizarTimeline('ESTRUTURADO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Day Trade Estruturado</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 15 min a 1h (Ciclos e regras)</span>
-              </button>
-              <button onClick={() => finalizarTimeline('SWING')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}>
-                <b>Swing Trade / Position</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos Diários ou Semanais (Macro)</span>
-              </button>
-            </div>
-            <button
-              onClick={voltarEtapa}
-              style={{ width: '100%', background: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '12px', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '12px', textAlign: 'center', display: 'block' }}
-            >
-              ← Voltar à questão anterior
-            </button>
-          </div>
-        )}
-
-        {/* FASE 3: Laudo e Redirecionamento Direto */}
-        {etapa > perguntas.length && (
-          <div>
-            <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-              🎯 Calibração Adaptativa Concluída
-            </span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-              Relatório de Configuração Inicial
-            </h2>
-            <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-              Score de Disciplina Técnica: <b>{aptidao.toFixed(0)}%</b>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px' }}>Diagnóstico Já Realizado</h2>
+            <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', marginBottom: '25px' }}>
+              Você já concluiu o seu Diagnóstico Comportamental anteriormente. Por questões de segurança algorítmica e compliance, <b>não é permitido realizar novos testes no momento</b>. O próximo diagnóstico estará disponível somente após 90 dias da última calibração.
             </p>
-
-            {aptidao >= 60 ? (
-              <>
-                <p style={{ color: '#059669', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil: Mestre Disciplinado (Baixo Risco)</p>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  O ambiente foi configurado para o <b>Modo Manual / Autónomo</b> inicial. Você poderá alternar os modos a qualquer momento dentro da mesa de operações.
-                </p>
-                <button
-                  onClick={() => concluirEEntrarDiretoNaMesa('manual')}
-                  style={{ width: '100%', background: '#059669', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block', boxShadow: '0 4px 15px rgba(5,150,105,0.3)' }}
-                >
-                  Entrar Diretamente na Mesa de Operações →
-                </button>
-              </>
-            ) : (
-              <>
-                <p style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil Vulnerável / Requer Blindagem Adaptativa</p>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  O <b>Modo Reversão Adaptativa</b> foi ativado (com monitoramento de 15 operações e proteção contra 3 acertos em sequência). Você poderá gerenciar os modos diretamente na mesa.
-                </p>
-                <button
-                  onClick={() => concluirEEntrarDiretoNaMesa('reversao')}
-                  style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block', boxShadow: '0 4px 15px rgba(124,58,237,0.3)' }}
-                >
-                  Entrar Diretamente na Mesa de Operações →
-                </button>
-              </>
-            )}
+            <Link href="/dashboard-logado" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', padding: '12px 24px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', display: 'inline-block' }}>
+              ← Voltar para a Sala de Controle
+            </Link>
           </div>
+        ) : (
+          <>
+            {etapa < perguntas.length && (
+              <div>
+                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
+                  Onboarding Platform • Etapa {etapa + 1} de 6
+                </span>
+                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
+                  {perguntas[etapa].q}
+                </h2>
+                <div>
+                  {perguntas[etapa].a.map((alt, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => responder(etapa, idx)}
+                      style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer', display: 'block' }}
+                    >
+                      {alt.t}
+                    </button>
+                  ))}
+                </div>
+                {etapa > 0 && (
+                  <button onClick={voltarEtapa} style={{ width: '100%', background: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '12px', padding: '10px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '12px' }}>
+                    ← Voltar à questão anterior
+                  </button>
+                )}
+              </div>
+            )}
+
+            {etapa === perguntas.length && (
+              <div>
+                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
+                  Etapa Final • Frequência Operacional
+                </span>
+                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
+                  Qual é a sua janela de tempo principal de exposição ao mercado?
+                </h2>
+                <div>
+                  <button onClick={() => finalizarTimeline('RAPIDO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer' }}>
+                    <b>Day Trade Rápido</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 1 a 5 minutos (Alta frequência)</span>
+                  </button>
+                  <button onClick={() => finalizarTimeline('ESTRUTURADO')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer' }}>
+                    <b>Day Trade Estruturado</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos de 15 min a 1h (Ciclos e regras)</span>
+                  </button>
+                  <button onClick={() => finalizarTimeline('SWING')} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '14px', borderRadius: '10px', fontSize: '13px', marginBottom: '10px', cursor: 'pointer' }}>
+                    <b>Swing Trade / Position</b><br /><span style={{ fontSize: '11px', color: '#64748b' }}>Gráficos Diários ou Semanais (Macro)</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {etapa > perguntas.length && (
+              <div>
+                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
+                  🎯 Calibração Adaptativa Concluída
+                </span>
+                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
+                  Relatório de Configuração Inicial
+                </h2>
+                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
+                  Score de Disciplina Técnica: <b>{aptidao.toFixed(0)}%</b>
+                </p>
+                <button
+                  onClick={() => concluirEEntrarDiretoNaMesa(aptidao >= 60 ? 'manual' : 'reversao')}
+                  style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center' }}
+                >
+                  Entrar Diretamente na Mesa de Operações →
+                </button>
+              </div>
+            )}
+          </>
         )}
 
       </div>

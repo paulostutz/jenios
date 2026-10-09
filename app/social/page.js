@@ -10,11 +10,54 @@ export default function SocialPage() {
   const [seguindoPerfis, setSeguindoPerfis] = useState({});
   const [storyAtivo, setStoryAtivo] = useState(null);
 
-  // Simulador HFT (Isca de Conversão)
-  const [capitalSimulado, setCapitalSimulado] = useState(10000);
-  const [diasSimulados, setDiasSimulados] = useState(30);
+  // Estados do Simulador / Diagnóstico Psicológico da LP (incorporado na lateral)
+  const [scores, setScores] = useState({ impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 });
+  const [etapaAtual, setEtapaAtual] = useState(0);
+  const [tradeAtual, setTradeAtual] = useState(0);
+  const [leadFeito, setLeadFeito] = useState(false);
+  const [dadosLead, setDadosLead] = useState({ nome: '', email: '', whatsapp: '' });
 
-  // Estado de Autenticação (Alternar entre Logado e Visitante para teste)
+  const perguntas = [
+    { q: "Você passa horas estudando um ativo. Assim que clica em 'Comprar', o preço vira instantaneamente e esmaga o seu Stop Loss. Qual sua reação imediata?", a: [{ t: "Sinto o sangue ferver. Dobro o lote na operação seguinte para recuperar o prejuízo na marra (Trade de Vingança).", p: "impulsivo", v: 2 }, { t: "Fico em pânico total, fecho a corretora e encerro o dia com um nó no estômago.", p: "ansioso", v: 2 }, { t: "Recuso-me a aceitar o erro. Arrasto o Stop Loss para baixo, rezando para o mercado voltar.", p: "teimoso", v: 2 }, { t: "Fico paralisado, olhando para a tela por horas, refazendo contas sem coragem de clicar de novo.", p: "hesitante", v: 2 }] },
+    { q: "Você está a ganhar R$ 100, mas o seu alvo técnico era R$ 500. O mercado dá uma oscilação rápida contra si. O que faz?", a: [{ t: "Entro em fúria, aumento a mão para tentar buscar o triplo e acabo devolvendo tudo o que ganhei.", p: "impulsivo", v: 2 }, { t: "Encerro imediatamente com medo de perder os R$ 100. Minha mão é de alface crônica.", p: "ansioso", v: 2 }, { t: "Deixo o trade correr cego, ignorando qualquer sinal claro de reversão institucional.", p: "teimoso", v: 2 }, { t: "Fico oscilando entre fechar e manter, mudando de ideia a cada segundo até perder o timing perfeito.", p: "hesitante", v: 2 }] },
+    { q: "O mercado entra em queda livre (Megatendência de Baixa). Como você se posiciona originalmente?", a: [{ t: "Clico em comprar repetidamente de forma agressiva, tentando adivinhar o fundo à força.", p: "impulsivo", v: 2 }, { t: "Fico com o coração acelerado e a mente travada, sem conseguir executar uma única ordem de defesa.", p: "ansioso", v: 2 }, { t: "Faço preço médio contra a tendência, convicto de que o ativo está 'barato demais' para cair mais.", p: "teimoso", v: 2 }, { t: "Espero horas. Quando decido finalmente entrar vendido, o mercado faz o fundo exato e explode para cima.", p: "hesitante", v: 2 }] },
+    { q: "Como termina o seu mês operando no mercado financeiro?", a: [{ t: "Passo semanas a lucrar com disciplina, mas bastam 10 minutos de fúria para quebrar a conta inteira.", p: "impulsivo", v: 2 }, { t: "Minha conta sangra lentamente dia após dia: meus ganhos são migalhas e minhas perdas são monstros.", p: "ansioso", v: 2 }, { t: "Tenho dias de lucros brilhantes seguidos por catástrofes financeiras que zeram o meu patrimônio.", p: "teimoso", v: 2 }, { t: "Empato o mês e o meu único saldo real negativo são as taxas brutas pagas à corretora e taxas operacionais.", p: "hesitante", v: 2 }] },
+    { q: "O que mais te atormenta na sua rotina atual de trading?", a: [{ t: "O ódio e o arrependimento profundo de saber que eu mesmo destruí a minha conta por pura falta de controle emocional.", p: "impulsivo", v: 2 }, { t: "A ansiedade crónica e o pavor de abrir o Home Broker e ver o capital evaporar.", p: "ansioso", v: 2 }, { t: "A sensação nítida de que os grandes players (as baleias) monitoram o meu stop e me caçam de propósito.", p: "teimoso", v: 2 }, { t: "A frustração de já ter estudado dezenas de teorias e não conseguir sair do lugar de perdedor.", p: "hesitante", v: 2 }] }
+  ];
+
+  const cenariosTrades = [
+    { id: 1, titulo: "TRADE 1: O Teste do Pânico", msg: "O mercado virou contra si. O stop técnico era -R$ 100, mas já vai em -R$ 180. O que faz?", btn1: "Estopar curto", btn2: "Arrastar o Stop", path: "M5,10 Q50,15 100,25 T200,45 T300,55 T400,65", cor: "#ef4444", label: "QUEDA VERTICAL" },
+    { id: 2, titulo: "TRADE 2: Mão de Alface", msg: "Alvo era R$ 400, mas está a ganhar R$ 100 com oscilação contrária. Vai arregar?", btn1: "Garantir trocados", btn2: "Manter até o Alvo", path: "M5,55 Q50,45 100,50 T200,30 T300,25 T400,15", cor: "#10b981", label: "OSCILAÇÃO TÁTICA" },
+    { id: 3, titulo: "TRADE 3: Falso Rompimento", msg: "As instituições romperam o topo e despencaram o preço. Ação:", btn1: "Estopar imediato", btn2: "Vender o triplo na raiva", path: "M5,40 Q50,10 100,12 T200,35 T300,55 T400,60", cor: "#ef4444", label: "FALSO ROMPIMENTO" },
+    { id: 4, titulo: "TRADE 4: Paralisia na Oportunidade", msg: "Setup perfeito HFT acendeu. Vai hesitar de novo?", btn1: "EXECUTAR ORDEM", btn2: "Ficar a ver navios", path: "M5,60 Q50,50 100,45 T200,30 T300,20 T400,10", cor: "#10b981", label: "TENDÊNCIA CLARA" },
+    { id: 5, titulo: "TRADE 5: Dia de Fúria Definitivo", msg: "Conta a -R$ 300 após stops. O dedo treme no botão de compra. O que faz?", btn1: "Clicar furioso", btn2: "Ativar Modo Reverso", path: "M5,30 Q50,60 100,20 T200,55 T300,15 T400,50", cor: "#f59e0b", label: "ZONA DE PERIGO" }
+  ];
+
+  const processarResposta = (idx) => {
+    setScores(prev => {
+      const p = perguntas[etapaAtual].a[idx].p;
+      const v = perguntas[etapaAtual].a[idx].v;
+      return { ...prev, [p]: prev[p] + v };
+    });
+    setEtapaAtual(prev => prev + 1);
+  };
+
+  const processarTrade = (id, opcao) => {
+    setScores(prev => {
+      let s = { ...prev };
+      if (id === 1) { if(opcao===1) s.tecnico_positivo += 3; else s.teimoso += 5; }
+      if (id === 2) { if(opcao===1) s.ansioso += 5; else s.tecnico_positivo += 4; }
+      if (id === 3) { if(opcao===1) s.tecnico_positivo += 2; else s.impulsivo += 5; }
+      if (id === 4) { if(opcao===1) s.tecnico_positivo += 3; else s.hesitante += 4; }
+      if (id === 5) { if(opcao===1) s.impulsivo += 6; else s.tecnico_positivo += 5; }
+      return s;
+    });
+    setTradeAtual(prev => prev + 1);
+  };
+
+  let percentual = Math.min(100, (scores.tecnico_positivo / 17) * 100);
+
+  // Estado de Autenticação na Social
   const [usuarioLogado, setUsuarioLogado] = useState(true);
   const [nomeUsuario, setNomeUsuario] = useState('Paulo Stutz Netto');
 
@@ -97,9 +140,7 @@ export default function SocialPage() {
   const copiarEstrategia = (id) => {
     setPosts(posts.map(p => p.id === id ? { ...p, estrategiaCopiada: true } : p));
     alert('⚡ Estratégia copiada com sucesso para o seu Robô HFT!');
-  };const lucroEstimado = (Number(capitalSimulado) * 0.18 * Number(diasSimulados) / 30).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-  return (
+  };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       <style dangerouslySetInnerHTML={{ __html: `
@@ -204,10 +245,8 @@ export default function SocialPage() {
 
       <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
-        {/* Cabeçalho com Verificação Dinâmica (Logado vs Visitante) */}
+        {/* Cabeçalho */}
         <div style={{ backgroundColor: '#ffffff', padding: '18px 24px', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', flexWrap: 'wrap', gap: '15px' }}>
-          
-          {/* Esquerda: Perfil ou Identificação */}
           {usuarioLogado ? (
             <div onClick={() => setPerfilAtivo(meuPerfil)} style={{ display: 'flex', alignItems: 'center', gap: '14px', cursor: 'pointer' }} title="Clique para ver o seu perfil">
               <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
@@ -226,7 +265,6 @@ export default function SocialPage() {
             </div>
           )}
 
-          {/* Direita: Botões de Ação (Entrar / Criar Conta vs Sala de Controle) */}
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <button onClick={() => setAbaAtiva('feed')} style={{ backgroundColor: '#f1f5f9', color: '#334155', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer' }}>
               🏠 Início
@@ -237,7 +275,7 @@ export default function SocialPage() {
                 <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer' }}>
                   Sala de Controle
                 </button>
-                <button onClick={() => setUsuarioLogado(false)} style={{ backgroundColor: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontSize: '11px', fontWeight: 'bold', padding: '8px 10px', borderRadius: '8px', cursor: 'pointer' }} title="Simular saída para modo visitante">
+                <button onClick={() => setUsuarioLogado(false)} style={{ backgroundColor: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', fontSize: '11px', fontWeight: 'bold', padding: '8px 10px', borderRadius: '8px', cursor: 'pointer' }}>
                   Sair
                 </button>
               </>
@@ -246,12 +284,9 @@ export default function SocialPage() {
                 <a href="/login" style={{ backgroundColor: '#f1f5f9', color: '#0f172a', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
                   Entrar
                 </a>
-                <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(124,58,237,0.3)' }}>
+                <a href="/onboarding" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '8px 14px', borderRadius: '8px' }}>
                   Criar Conta 🚀
                 </a>
-                <button onClick={() => setUsuarioLogado(true)} style={{ backgroundColor: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0', fontSize: '10px', fontWeight: 'bold', padding: '8px 8px', borderRadius: '8px', cursor: 'pointer' }} title="Entrar como Paulo">
-                  Simular Login ✓
-                </button>
               </>
             )}
           </div>
@@ -322,7 +357,7 @@ export default function SocialPage() {
               ))}
             </div>
 
-            {/* Coluna Direita (Notícias Clicáveis, Top Traders e Simulador HFT) */}
+            {/* Coluna Direita (Notícias Clicáveis, Top Traders e SIMULADOR DA LP EMBARCADO) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
               {/* Notícias Macro (Links Externos Clicáveis) */}
@@ -363,47 +398,80 @@ export default function SocialPage() {
                 </div>
               </div>
 
-              {/* SIMULADOR HFT (Isca de Conversão) */}
+              {/* SIMULADOR / DIAGNÓSTICO DA LP (Encaixado perfeitamente na largura da coluna) */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxSizing: 'border-box' }}>
-                <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>⚡ Simulador HFT • Isca Pro</span>
-                <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 12px 0' }}>Calcule seu Lucro Estimado</h3>
                 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', boxSizing: 'border-box' }}>
+                {etapaAtual < perguntas.length && (
                   <div>
-                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Capital Inicial (R$):</label>
-                    <input 
-                      type="number" 
-                      value={capitalSimulado} 
-                      onChange={(e) => setCapitalSimulado(e.target.value)} 
-                      style={{ width: '100%', padding: '10px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
-                    />
+                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>🧠 DIAGNÓSTICO DE RISCO: {etapaAtual + 1}/5</span>
+                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px', lineHeight: '1.4' }}>{perguntas[etapaAtual].q}</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {perguntas[etapaAtual].a.map((alt, idx) => (
+                        <button key={idx} onClick={() => processarResposta(idx)} style={{ width: '100%', textAlign: 'left', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', color: '#334155', padding: '10px', borderRadius: '8px', fontSize: '11px', cursor: 'pointer', fontWeight: '500' }}>{alt.t}</button>
+                      ))}
+                    </div>
+                    {etapaAtual > 0 && (
+                      <button onClick={() => setEtapaAtual(etapaAtual - 1)} style={{ width: '100%', backgroundColor: '#e2e8f0', color: '#475569', fontWeight: 'bold', fontSize: '10px', padding: '8px', borderRadius: '8px', border: 'none', cursor: 'pointer', marginTop: '10px' }}>← Voltar</button>
+                    )}
                   </div>
+                )}
 
+                {etapaAtual >= perguntas.length && tradeAtual < cenariosTrades.length && (
                   <div>
-                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Período (Dias):</label>
-                    <input 
-                      type="number" 
-                      value={diasSimulados} 
-                      onChange={(e) => setDiasSimulados(e.target.value)} 
-                      style={{ width: '100%', padding: '10px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a', boxSizing: 'border-box' }} 
-                    />
+                    {(() => {
+                      const c = cenariosTrades[tradeAtual];
+                      return (
+                        <div>
+                          <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>⚡ TESTE DE ESTRESSE ({c.id}/5)</span>
+                          <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}>{c.titulo}</p>
+                          <div style={{ backgroundColor: '#0f172a', border: '1px solid #334155', borderRadius: '8px', height: '80px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '10px', padding: '8px' }}>
+                            <svg viewBox="0 0 400 70" preserveAspectRatio="none" style={{ width: '100%', height: '50px' }}>
+                              <path d={c.path} fill="none" stroke={c.cor} strokeWidth="3" strokeLinecap="round" />
+                            </svg>
+                            <span style={{ color: '#94a3b8', fontSize: '9px', fontFamily: 'monospace', textTransform: 'uppercase' }}>● {c.label}</span>
+                          </div>
+                          <p style={{ fontSize: '11px', color: '#334155', lineHeight: '1.4', marginBottom: '12px' }}>{c.msg}</p>
+                          <button onClick={() => processarTrade(c.id, 1)} style={{ width: '100%', backgroundColor: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: 'none', cursor: 'pointer', marginBottom: '6px', textTransform: 'uppercase' }}>{c.btn1}</button>
+                          <button onClick={() => processarTrade(c.id, 2)} style={{ width: '100%', backgroundColor: '#f1f5f9', color: '#334155', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', cursor: 'pointer', marginBottom: '6px', textTransform: 'uppercase' }}>{c.btn2}</button>
+                        </div>
+                      );
+                    })()}
                   </div>
+                )}
 
-                  <div style={{ backgroundColor: '#f3e8ff', border: '1px solid #d8b4fe', borderRadius: '10px', padding: '12px', textAlign: 'center' }}>
-                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', display: 'block' }}>LUCRO ESTIMADO COM MODO REVERSO:</span>
-                    <strong style={{ fontSize: '18px', color: '#059669' }}>{lucroEstimado}</strong>
+                {etapaAtual >= perguntas.length && tradeAtual >= cenariosTrades.length && !leadFeito && (
+                  <div>
+                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>🔒 LAUDO DE VIÉS</span>
+                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '8px' }}>Receba seu Diagnóstico Completo</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <input type="text" id="nomeLead" placeholder="Seu Nome" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
+                      <input type="email" id="emailLead" placeholder="Seu E-mail" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
+                      <input type="text" id="wppLead" placeholder="WhatsApp" style={{ padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '11px', backgroundColor: '#f8fafc', outline: 'none' }} />
+                      <button onClick={() => {
+                        const nome = document.getElementById("nomeLead").value;
+                        const email = document.getElementById("emailLead").value;
+                        const whatsapp = document.getElementById("wppLead").value;
+                        if (!nome || !email || !whatsapp) { alert("Preencha todos os campos."); return; }
+                        setDadosLead({ nome, email, whatsapp });
+                        setLeadFeito(true);
+                      }} style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '11px', padding: '10px', borderRadius: '8px', border: 'none', cursor: 'pointer', textTransform: 'uppercase' }}>🔓 Revelar Laudo</button>
+                    </div>
                   </div>
+                )}
 
-                  <button 
-                    onClick={() => {
-                      const assinar = confirm(`⚡ Deseja ativar o Plano Pro para desbloquear o robô HFT com capital de R$ ${Number(capitalSimulado).toLocaleString('pt-BR')}?`);
-                      if (assinar) window.location.href = '/planos';
-                    }}
-                    style={{ width: '100%', backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(124,58,237,0.3)' }}
-                  >
-                    🚀 Assinar Plano e Operar Robô
-                  </button>
-                </div>
+                {leadFeito && (
+                  <div style={{ textAlign: 'center' }}>
+                    <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>✅ LAUDO GERADO</span>
+                    <h3 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>Disciplina: {percentual.toFixed(0)}%</h3>
+                    <p style={{ fontSize: '11px', color: '#64748b', marginBottom: '12px', lineHeight: '1.4' }}>
+                      {percentual >= 65 ? "Perfil Moderado. Robô pronto para modo espelho." : "⚠️ Alerta: Vulnerabilidade a rage trading detectada."}
+                    </p>
+                    <a href="/login" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontWeight: 'bold', fontSize: '11px', padding: '10px 14px', borderRadius: '8px', display: 'inline-block', textTransform: 'uppercase' }}>
+                      🚀 Ativar 7 Dias Grátis
+                    </a>
+                  </div>
+                )}
+
               </div>
 
             </div>

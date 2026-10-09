@@ -9,7 +9,7 @@ export default function DashboardLogado() {
   // Dados do Plano e Permissões de Mercado
   const [dadosFinanceiros] = useState({
     plano: 'Plano Institucional Global (B3 + Cripto + Forex)',
-    tipoPlanoEnum: 'institucional', // 'starter', 'trader_pro', 'institucional'
+    tipoPlanoEnum: 'institucional', 
     statusAssinatura: 'Ativa (Renovação em 18/11/2026)',
     valorFatura: 'R$ 199,90',
     ganhosAfiliados: 'R$ 3.450,00',
@@ -37,7 +37,8 @@ export default function DashboardLogado() {
     }
   }, []);
 
-  const abrirMesaOperacao = () => {
+  // O fluxo correto: Dashboard ➔ Mesa de Operação (Seleção de Modo) ➔ Mesa de Operações (Execução)
+  const irParaMesaOperacao = () => {
     const jaFez = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
     if (!jaFez && !diagnosticoFeito) {
       alert('⚠️ Protocolo Obrigatório: Você precisa concluir o Diagnóstico Comportamental antes de operar.');
@@ -63,7 +64,6 @@ export default function DashboardLogado() {
     alert(`🚀 Tecnologia JENIOS HFT plugada com sucesso em ${corretoraSelecionada}! As ordens já consomem o saldo real da sua conta.`);
   };
 
-  // Manuais detalhados para cada plataforma/corretora
   const manuaisIntegracao = {
     'Nelogica Profit Pro / Plus': {
       titulo: 'Manual de Integração: Nelogica Profit (B3)',
@@ -124,7 +124,7 @@ export default function DashboardLogado() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f1f5f9', color: '#0f172a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
-      {/* Sidebar */}
+      {/* Sidebar da Dashboard */}
       <aside style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
         <div style={{ marginBottom: '30px', textAlign: 'center' }}>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>JENIOS HFT</h2>
@@ -135,7 +135,7 @@ export default function DashboardLogado() {
           <button onClick={() => setAbaAtiva('geral')} style={{ textAlign: 'left', background: abaAtiva === 'geral' ? '#f3e8ff' : 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: abaAtiva === 'geral' ? '#7c3aed' : '#334155', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
             📊 Visão Geral
           </button>
-          <button onClick={abrirMesaOperacao} style={{ textAlign: 'left', background: 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: '#334155', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
+          <button onClick={irParaMesaOperacao} style={{ textAlign: 'left', background: 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: '#334155', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
             ⚡ Mesa de Operação
           </button>
           <Link href="/diagnostico" style={{ padding: '10px 14px', borderRadius: '8px', color: '#0284c7', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
@@ -168,7 +168,7 @@ export default function DashboardLogado() {
         </div>
       </aside>
 
-      {/* Conteúdo Principal */}
+      {/* Conteúdo Principal da Dashboard */}
       <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
         
         {/* Topo do Usuário */}
@@ -190,7 +190,7 @@ export default function DashboardLogado() {
             <Link href="/tendencias" style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #d8b4fe' }}>
               🚀 Hub de Tendências
             </Link>
-            <button onClick={abrirMesaOperacao} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}>
+            <button onClick={irParaMesaOperacao} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}>
               ⚡ Mesa de Operações
             </button>
           </div>
@@ -286,7 +286,7 @@ export default function DashboardLogado() {
           </div>
         )}
 
-        {/* ABA: GATEWAY HFT & APIS (Com Manuais Dinâmicos e Filtro por Plano) */}
+        {/* ABA: GATEWAY HFT & APIS */}
         {abaAtiva === 'apis' && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Gateway HFT & Conexões (Filtrado pelo seu Plano)</h2>
@@ -294,7 +294,6 @@ export default function DashboardLogado() {
               O seu plano atual (<b>{dadosFinanceiros.plano}</b>) libera acesso aos mercados de <b>B3, Criptoativos e Forex Global</b>. Siga o manual de cada integração abaixo para conectar a sua conta.
             </p>
 
-            {/* Nossa API Key Bridge HFT */}
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', marginBottom: '25px' }}>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', display: 'block', marginBottom: '6px', fontFamily: 'monospace' }}>🔑 SUA API KEY DO GATEWAY JENIOS (BRIDGE HFT)</span>
               <p style={{ fontSize: '11px', color: '#64748b', marginBottom: '10px' }}>Utilizada para comunicação direta com o nosso motor de reversão.</p>
@@ -304,7 +303,6 @@ export default function DashboardLogado() {
               </div>
             </div>
             
-            {/* Contas Conectadas */}
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', marginBottom: '25px' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Contas Ativas no Gateway</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -321,13 +319,11 @@ export default function DashboardLogado() {
               </div>
             </div>
 
-            {/* FORMULÁRIO DE CONEXÃO + MANUAL DINÂMICO LOGO ACIMA */}
             <form onSubmit={conectarCorretora} style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Nova Conexão & Manual de Configuração</h3>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px', marginBottom: '20px' }}>
                 
-                {/* Seleção de Mercado (Restrita pelo Plano) */}
                 <div>
                   <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>MERCADO DISPONÍVEL NO SEU PLANO:</label>
                   <select 
@@ -341,19 +337,12 @@ export default function DashboardLogado() {
                     }}
                     style={{ width: '100%', padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '13px', color: '#0f172a' }}
                   >
-                    {(dadosFinanceiros.tipoPlanoEnum === 'starter' || dadosFinanceiros.tipoPlanoEnum === 'institucional') && (
-                      <option value="B3">B3 (Mini-Índice / Mini-Dólar / Ações)</option>
-                    )}
-                    {(dadosFinanceiros.tipoPlanoEnum === 'trader_pro' || dadosFinanceiros.tipoPlanoEnum === 'institucional') && (
-                      <option value="Cripto">Criptoativos (Binance Futures)</option>
-                    )}
-                    {dadosFinanceiros.tipoPlanoEnum === 'institucional' && (
-                      <option value="Forex">Forex Global & Índices (MT5)</option>
-                    )}
+                    <option value="B3">B3 (Mini-Índice / Mini-Dólar / Ações)</option>
+                    <option value="Cripto">Criptoativos (Binance Futures)</option>
+                    <option value="Forex">Forex Global & Índices (MT5)</option>
                   </select>
                 </div>
 
-                {/* Seleção de Corretora / Plataforma */}
                 <div>
                   <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CORRETORA / PLATAFORMA:</label>
                   <select 
@@ -377,7 +366,6 @@ export default function DashboardLogado() {
                   </select>
                 </div>
 
-                {/* MANUAL DETALHADO EXIBIDO LOGO ACIMA DA INTEGRAÇÃO */}
                 <div style={{ backgroundColor: '#f3e8ff', border: '1px solid #d8b4fe', borderRadius: '10px', padding: '16px' }}>
                   <b style={{ fontSize: '12px', color: '#6b21a8', display: 'block', marginBottom: '8px' }}>📖 {manualAtual.titulo}</b>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>

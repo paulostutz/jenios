@@ -14,6 +14,9 @@ export default function DashboardPage() {
   const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
   const [mercadoCategoria, setMercadoCategoria] = useState('b3');
   
+  // Input de busca personalizada
+  const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
+  
   // Estados de Gestão de Capital e Risco
   const [capitalAlocado, setCapitalAlocado] = useState(10000);
   const [alavancagem, setAlavancagem] = useState('10x');
@@ -69,6 +72,31 @@ export default function DashboardPage() {
       return;
     }
     setMercadoCategoria(categoria);
+  };
+
+  // Função para buscar ativo customizado digitado
+  const handleBuscaCustomizada = (e) => {
+    e.preventDefault();
+    if (!inputBuscaCustomizada.trim()) return;
+
+    let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
+    
+    // Se o usuário digitar apenas o ticker da B3 sem o prefixo, adicionamos automaticamente
+    if (!simboloFormatado.includes(':')) {
+      if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
+        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
+        if (simboloFormatado === 'BMFBOVESPA:WIN') simboloFormatado = 'BMFBOVESPA:WIN1!';
+        if (simboloFormatado === 'BMFBOVESPA:WDO') simboloFormatado = 'BMFBOVESPA:WDO1!';
+      } else if (['BTCUSDT', 'ETHUSDT', 'SOLUSDT'].includes(simboloFormatado)) {
+        simboloFormatado = `BINANCE:${simboloFormatado}`;
+      } else {
+        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
+      }
+    }
+
+    setAtivoSelecionado(simboloFormatado);
+    setNomeAtivoExibicao(inputBuscaCustomizada.toUpperCase());
+    setInputBuscaCustomizada('');
   };
 
   // ⚡ UseEffect para carregar e atualizar o Gráfico Real do TradingView dinamicamente
@@ -132,7 +160,6 @@ export default function DashboardPage() {
       return;
     }
 
-    // Trava de segurança por plano na execução
     if (planoUsuario === 'basico' && mercadoCategoria !== 'b3') {
       alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
       window.location.href = '/checkout';
@@ -156,7 +183,6 @@ export default function DashboardPage() {
             <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>{statusMensagem}</p>
           </div>
 
-          {/* Simulador de Plano e Navegação */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             
             {/* Seletor de Teste de Plano */}
@@ -253,7 +279,7 @@ export default function DashboardPage() {
           {/* COLUNA ESQUERDA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             
-            {/* PAINEL DE SELEÇÃO RÁPIDA DE MERCADOS E ATALHOS */}
+            {/* PAINEL DE SELEÇÃO RÁPIDA DE MERCADOS E BUSCA PERSONALIZADA */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                 <div>
@@ -284,9 +310,26 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              {/* BARRA DE PESQUISA CUSTOMIZADA PARA QUALQUER ATIVO */}
+              <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
+                  <span>🔍</span>
+                  <input 
+                    type="text" 
+                    placeholder="Digite qualquer ativo (ex: PETR4, VALE3, BTCUSDT, AAPL)..."
+                    value={inputBuscaCustomizada}
+                    onChange={(e) => setInputBuscaCustomizada(e.target.value)}
+                    style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
+                  />
+                </div>
+                <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  Buscar Ativo
+                </button>
+              </form>
+
               {/* Botões de Atalho Rápido por Categoria */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais (ou pesquise qualquer ativo diretamente na lupa no topo esquerdo do gráfico abaixo):</span>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {(atalhosPorMercado[mercadoCategoria] || []).map((item, idx) => (
                     <button
@@ -314,11 +357,11 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* GRÁFICO REAL DO TRADINGVIEW COM BUSCA GLOBAL NATIVA */}
+            {/* GRÁFICO REAL DO TRADINGVIEW */}
             <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '520px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div>
-                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView (Busque qualquer ativo na lupa do gráfico)</span>
+                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView</span>
                   <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {nomeAtivoExibicao} • Tempo Real Conectado</span>
                 </div>
               </div>

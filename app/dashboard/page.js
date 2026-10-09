@@ -5,6 +5,10 @@ export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
+  
+  // Estados de Mercado, Busca e Ativo Selecionado
+  const [mercadoCategoria, setMercadoCategoria] = useState('b3');
+  const [buscaAtivo, setBuscaAtivo] = useState('');
   const [ativoSelecionado, setAtivoSelecionado] = useState('MINI-INDICE (WINJ26)');
   
   // Estados de Gestão de Capital e Risco
@@ -31,12 +35,40 @@ export default function DashboardPage() {
     { nome: '$NEXUS (Multichain)', status: 'Nova Listagem | Alta Retenção de LP' }
   ]);
 
-  // Função para mapear o ativo selecionado para o símbolo oficial do TradingView
-  const obterSimboloTradingView = (ativo) => {
-    if (ativo.includes('MINI-INDICE')) return 'BMFBOVESPA:WIN1!';
-    if (ativo.includes('MINI-DOLAR')) return 'BMFBOVESPA:WDO1!';
-    if (ativo.includes('SOLANA')) return 'BINANCE:SOLUSDT';
-    if (ativo.includes('BITCOIN')) return 'BINANCE:BTCUSDT';
+  // Lista de Ativos Separados por Mercado com Símbolos Oficiais do TradingView
+  const ativosPorMercado = {
+    b3: [
+      { nome: 'MINI-INDICE (WINJ26)', simbolo: 'BMFBOVESPA:WIN1!' },
+      { nome: 'MINI-DOLAR (WDOJ26)', simbolo: 'BMFBOVESPA:WDO1!' },
+      { nome: 'PETROBRAS (PETR4)', simbolo: 'BMFBOVESPA:PETR4' },
+      { nome: 'VALE (VALE3)', simbolo: 'BMFBOVESPA:VALE3' },
+      { nome: 'ITAU (ITUB4)', simbolo: 'BMFBOVESPA:ITUB4' }
+    ],
+    cripto: [
+      { nome: 'BITCOIN (BTC/USDT)', simbolo: 'BINANCE:BTCUSDT' },
+      { nome: 'SOLANA (SOL/USDT)', simbolo: 'BINANCE:SOLUSDT' },
+      { nome: 'ETHEREUM (ETH/USDT)', simbolo: 'BINANCE:ETHUSDT' },
+      { nome: 'RIPPLE (XRP/USDT)', simbolo: 'BINANCE:XRPUSDT' }
+    ],
+    global: [
+      { nome: 'S&P 500 (SPX)', simbolo: 'SP:SPX' },
+      { nome: 'NASDAQ 100 (NDX)', simbolo: 'NASDAQ:NDX' },
+      { nome: 'EUR/USD (Forex)', simbolo: 'FX:EURUSD' },
+      { nome: 'OURO (XAU/USD)', simbolo: 'OANDA:XAUUSD' }
+    ]
+  };
+
+  // Filtra os ativos da categoria selecionada com base na barra de pesquisa (lupa)
+  const ativosFiltrados = (ativosPorMercado[mercadoCategoria] || []).filter(item =>
+    item.nome.toLowerCase().includes(buscaAtivo.toLowerCase())
+  );
+
+  // Função para mapear o ativo selecionado para o símbolo exato do TradingView
+  const obterSimboloTradingView = (nomeAtivo) => {
+    for (const cat in ativosPorMercado) {
+      const encontrado = ativosPorMercado[cat].find(a => a.nome === nomeAtivo);
+      if (encontrado) return encontrado.simbolo;
+    }
     return 'BMFBOVESPA:WIN1!';
   };
 
@@ -202,21 +234,63 @@ export default function DashboardPage() {
           {/* COLUNA ESQUERDA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             
-            {/* Seletor de Ativo */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>ATIVO EM OPERAÇÃO</span>
-                <select value={ativoSelecionado} onChange={(e) => setAtivoSelecionado(e.target.value)} style={{ display: 'block', marginTop: '6px', backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '8px 12px', borderRadius: '8px', fontSize: '13px', outline: 'none' }}>
-                  <option value="MINI-INDICE (WINJ26)">Mini-Índice (WINJ26)</option>
-                  <option value="MINI-DOLAR (WDOJ26)">Mini-Dólar (WDOJ26)</option>
-                  <option value="SOLANA (SOL/USDT)">Solana (SOL/USDT)</option>
-                  <option value="BITCOIN (BTC/USDT)">Bitcoin (BTC/USDT)</option>
-                </select>
+            {/* SELETOR DE ATIVO AVANÇADO COM MERCADOS E LUPA DE BUSCA */}
+            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase' }}>SELECIONAR ATIVO PARA OPERAR</span>
+                  <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '2px 0 0 0' }}>{ativoSelecionado}</h3>
+                </div>
+
+                {/* Categorias de Mercado (B3, Cripto, Global) */}
+                <div style={{ display: 'flex', gap: '6px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
+                  <button 
+                    onClick={() => { setMercadoCategoria('b3'); setBuscaAtivo(''); }}
+                    style={{ backgroundColor: mercadoCategoria === 'b3' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    B3 (Brasil)
+                  </button>
+                  <button 
+                    onClick={() => { setMercadoCategoria('cripto'); setBuscaAtivo(''); }}
+                    style={{ backgroundColor: mercadoCategoria === 'cripto' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    Cripto
+                  </button>
+                  <button 
+                    onClick={() => { setMercadoCategoria('global'); setBuscaAtivo(''); }}
+                    style={{ backgroundColor: mercadoCategoria === 'global' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'global' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    Global / Forex
+                  </button>
+                </div>
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>Cotação Atual</span>
-                <span style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669' }}>Tempo Real</span>
+
+              {/* Barra de Pesquisa com Lupa 🔍 */}
+              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px 14px', gap: '10px' }}>
+                <span style={{ fontSize: '14px' }}>🔍</span>
+                <input 
+                  type="text" 
+                  placeholder={`Pesquisar ativo em ${mercadoCategoria.toUpperCase()} (ex: WIN, Bitcoin, S&P)...`} 
+                  value={buscaAtivo}
+                  onChange={(e) => setBuscaAtivo(e.target.value)}
+                  style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
+                />
               </div>
+
+              {/* Dropdown / Seletor Filtrado com os Ativos da Categoria */}
+              <select 
+                value={ativoSelecionado} 
+                onChange={(e) => setAtivoSelecionado(e.target.value)} 
+                style={{ backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '12px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', outline: 'none', width: '100%', cursor: 'pointer' }}
+              >
+                {ativosFiltrados.length > 0 ? (
+                  ativosFiltrados.map((item, idx) => (
+                    <option key={idx} value={item.nome}>{item.nome}</option>
+                  ))
+                ) : (
+                  <option disabled>Nenhum ativo encontrado para esta pesquisa</option>
+                )}
+              </select>
             </div>
 
             {/* GRÁFICO REAL DO TRADINGVIEW EM TEMPO REAL */}

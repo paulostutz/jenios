@@ -87,12 +87,13 @@ export default function DiagnosticoPlatformPage() {
 
   let aptidao = Math.min(100, (scores.tecnico_positivo / 10) * 100);
 
-  const irParaMesa = (modoSugerido) => {
-    // Guarda o modo sugerido pelo diagnóstico para a Mesa de Operações
+  const concluirEEntrarDiretoNaMesa = (modoDefinido) => {
+    // Grava no localStorage que o diagnóstico foi feito e qual o modo operacional inicial
     if (typeof window !== 'undefined') {
-      localStorage.setItem('jenios_modo_operacional', modoSugerido);
       localStorage.setItem('jenios_diagnostico_realizado', 'true');
+      localStorage.setItem('jenios_modo_operacional', modoDefinido);
     }
+    // Redireciona diretamente para a Mesa de Operações sem passar por telas de escolha
     window.location.href = '/mesa-operacao';
   };
 
@@ -160,7 +161,7 @@ export default function DiagnosticoPlatformPage() {
           </div>
         )}
 
-        {/* FASE 3: Laudo */}
+        {/* FASE 3: Laudo e Redirecionamento Direto */}
         {etapa > perguntas.length && (
           <div>
             <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
@@ -177,26 +178,26 @@ export default function DiagnosticoPlatformPage() {
               <>
                 <p style={{ color: '#059669', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil: Mestre Disciplinado (Baixo Risco)</p>
                 <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  A tecnologia adaptativa configurou seu ambiente no <b>Modo Autónomo / Manual</b>, permitindo total liberdade operacional com alocação direta.
+                  O ambiente foi configurado para o <b>Modo Manual / Autónomo</b> inicial. Você poderá alternar os modos a qualquer momento dentro da mesa de operações.
                 </p>
                 <button
-                  onClick={() => irParaMesa('manual')}
-                  style={{ width: '100%', background: '#059669', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block' }}
+                  onClick={() => concluirEEntrarDiretoNaMesa('manual')}
+                  style={{ width: '100%', background: '#059669', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block', boxShadow: '0 4px 15px rgba(5,150,105,0.3)' }}
                 >
-                  Gravar & Aceder à Mesa (Modo Manual Ativo) →
+                  Entrar Diretamente na Mesa de Operações →
                 </button>
               </>
             ) : (
               <>
                 <p style={{ color: '#dc2626', fontWeight: 'bold', marginBottom: '12px', fontSize: '13px' }}>Perfil Vulnerável / Requer Blindagem Adaptativa</p>
                 <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  O sistema ativou o <b>Modo Reversão Adaptativa</b> (com monitoramento de 15 operações / 3 acertos em sequência) para proteger o seu capital contra vieses emocionais.
+                  O <b>Modo Reversão Adaptativa</b> foi ativado (com monitoramento de 15 operações e proteção contra 3 acertos em sequência). Você poderá gerenciar os modos diretamente na mesa.
                 </p>
                 <button
-                  onClick={() => irParaMesa('reversao')}
-                  style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block' }}
+                  onClick={() => concluirEEntrarDiretoNaMesa('reversao')}
+                  style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center', display: 'block', boxShadow: '0 4px 15px rgba(124,58,237,0.3)' }}
                 >
-                  Gravar & Aceder à Mesa (Reversão Adaptativa Ativa) →
+                  Entrar Diretamente na Mesa de Operações →
                 </button>
               </>
             )}

@@ -37,15 +37,15 @@ export default function DashboardLogado() {
     }
   }, []);
 
-  // O fluxo correto: Dashboard ➔ Mesa de Operação (Seleção de Modo) ➔ Mesa de Operações (Execução)
-  const irParaMesaOperacao = () => {
+  // Direcionamento para a Dashboard após validar o Diagnóstico
+  const irParaDashboardOuOperar = () => {
     const jaFez = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
     if (!jaFez && !diagnosticoFeito) {
       alert('⚠️ Protocolo Obrigatório: Você precisa concluir o Diagnóstico Comportamental antes de operar.');
       window.location.href = '/diagnostico';
       return;
     }
-    window.location.href = '/mesa-operacao';
+    window.location.href = '/dashboard-logado';
   };
 
   const pagarFaturaAtual = () => {
@@ -135,8 +135,8 @@ export default function DashboardLogado() {
           <button onClick={() => setAbaAtiva('geral')} style={{ textAlign: 'left', background: abaAtiva === 'geral' ? '#f3e8ff' : 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: abaAtiva === 'geral' ? '#7c3aed' : '#334155', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
             📊 Visão Geral
           </button>
-          <button onClick={irParaMesaOperacao} style={{ textAlign: 'left', background: 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: '#334155', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
-            ⚡ Mesa de Operação
+          <button onClick={irParaDashboardOuOperar} style={{ textAlign: 'left', background: 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: '#334155', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
+            ⚡ Operar
           </button>
           <Link href="/diagnostico" style={{ padding: '10px 14px', borderRadius: '8px', color: '#0284c7', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
             🧠 Diagnóstico Comportamental
@@ -190,8 +190,8 @@ export default function DashboardLogado() {
             <Link href="/tendencias" style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', textDecoration: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '8px', border: '1px solid #d8b4fe' }}>
               🚀 Hub de Tendências
             </Link>
-            <button onClick={irParaMesaOperacao} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}>
-              ⚡ Mesa de Operações
+            <button onClick={irParaDashboardOuOperar} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '12px', fontWeight: 'bold', padding: '10px 18px', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.3)' }}>
+              ⚡ Operar
             </button>
           </div>
         </div>

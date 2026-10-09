@@ -1,10 +1,18 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function DashboardLogado() {
   const [usuarioAssinado, setUsuarioAssinado] = useState(true);
   const [diagnosticoRealizado, setDiagnosticoRealizado] = useState(false);
+
+  useEffect(() => {
+    // Verifica se o diagnóstico já foi concluído anteriormente
+    const statusDiagnostico = localStorage.getItem('jenios_diagnostico_realizado');
+    if (statusDiagnostico === 'true') {
+      setDiagnosticoRealizado(true);
+    }
+  }, []);
 
   const validarAcessoOperacional = (acao) => {
     if (!usuarioAssinado) {
@@ -13,7 +21,10 @@ export default function DashboardLogado() {
       return;
     }
 
-    if (!diagnosticoRealizado) {
+    // Reconfere no localStorage no momento do clique
+    const jaFezDiagnostico = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
+
+    if (!jaFezDiagnostico && !diagnosticoRealizado) {
       const fazerDiag = confirm(`⚠️ Protocolo de Engenharia Reversa: O Diagnóstico Comportamental de perfil (6 perguntas) deve ser concluído antes da primeira execução na Mesa.\n\nIr para o Diagnóstico agora?`);
       if (fazerDiag) {
         window.location.href = '/diagnostico';
@@ -21,6 +32,7 @@ export default function DashboardLogado() {
       return;
     }
 
+    // Se já fez o diagnóstico, entra direto na Mesa de Operações!
     window.location.href = '/mesa-operacao';
   };
 
@@ -86,7 +98,7 @@ export default function DashboardLogado() {
           </div>
         </div>
 
-        {/* Resumo com Indicadores Adaptativos e Monitoramento */}
+        {/* Resumo com Indicadores Adaptativos */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
             <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Capital Protegido</span>

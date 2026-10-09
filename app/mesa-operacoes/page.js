@@ -13,10 +13,13 @@ export default function MesaOperacoesPage() {
   const [modoOperacao, setModoOperacao] = useState('reversa'); // 'manual' ou 'reversa'
   const [bancaTotalConta] = useState(100000.00); // Exemplo de banca total para o cálculo de 5%
 
-  // Estados de Ativos e Busca
+  // Estados de Ativos e Categoria
   const [categoria, setCategoria] = useState('b3');
-  const [buscaAtiva, setBuscaAtiva] = useState('');
-  const [ativoSelecionado, setAtivoSelecionado] = useState('Mini-Índice (WIN1!)');
+  const [ativoSelecionado, setAtivoSelecionado] = useState('BMFBOVESPA:WIN1!');
+  const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
+  
+  // Input de busca personalizada
+  const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
 
   // Gestão de Risco e Alocação
   const [capitalAlocar, setCapitalAlocar] = useState(10000);
@@ -25,24 +28,24 @@ export default function MesaOperacoesPage() {
   // Limite máximo de 5% da banca total
   const limiteMaximoRiscoPermitido = bancaTotalConta * 0.05;
 
-  // Listas de Ativos por Categoria com Símbolos TradingView
-  const ativosDisponiveis = {
+  // Listas de Atalhos Rápidos por Categoria
+  const atalhosPorMercado = {
     b3: [
-      { id: 'WINZ26', nome: 'Mini-Índice (WIN1!)', simboloTV: 'BMFBOVESPA:WIN1!' },
-      { id: 'WDOF26', nome: 'Mini-Dólar (WDO1!)', simboloTV: 'BMFBOVESPA:WDO1!' },
-      { id: 'PETR4', nome: 'Petrobras (PETR4)', simboloTV: 'BMFBOVESPA:PETR4' },
-      { id: 'VALE3', nome: 'Vale (VALE3)', simboloTV: 'BMFBOVESPA:VALE3' },
-      { id: 'ITUB4', nome: 'Itaú (ITUB4)', simboloTV: 'BMFBOVESPA:ITUB4' }
+      { nome: 'Mini-Índice (WIN1!)', simbolo: 'BMFBOVESPA:WIN1!' },
+      { nome: 'Mini-Dólar (WDO1!)', simbolo: 'BMFBOVESPA:WDO1!' },
+      { nome: 'Petrobras (PETR4)', simbolo: 'BMFBOVESPA:PETR4' },
+      { nome: 'Vale (VALE3)', simbolo: 'BMFBOVESPA:VALE3' },
+      { nome: 'Itaú (ITUB4)', simbolo: 'BMFBOVESPA:ITUB4' }
     ],
     cripto: [
-      { id: 'BTCUSD', nome: 'Bitcoin (BTC/USDT)', simboloTV: 'BINANCE:BTCUSDT' },
-      { id: 'ETHUSD', nome: 'Ethereum (ETH/USDT)', simboloTV: 'BINANCE:ETHUSDT' },
-      { id: 'SOLUSDT', nome: 'Solana (SOL/USDT)', simboloTV: 'BINANCE:SOLUSDT' }
+      { nome: 'Bitcoin (BTC/USDT)', simbolo: 'BINANCE:BTCUSDT' },
+      { nome: 'Ethereum (ETH/USDT)', simbolo: 'BINANCE:ETHUSDT' },
+      { nome: 'Solana (SOL/USDT)', simbolo: 'BINANCE:SOLUSDT' }
     ],
     forex: [
-      { id: 'EURUSD', nome: 'EUR/USD (Forex)', simboloTV: 'FX:EURUSD' },
-      { id: 'GBPUSD', nome: 'GBP/USD (Forex)', simboloTV: 'FX:GBPUSD' },
-      { id: 'XAUUSD', nome: 'Ouro (XAU/USD)', simboloTV: 'OANDA:XAUUSD' }
+      { nome: 'EUR/USD (Forex)', simbolo: 'FX:EURUSD' },
+      { nome: 'GBP/USD (Forex)', simbolo: 'FX:GBPUSD' },
+      { nome: 'Ouro (XAU/USD)', simbolo: 'OANDA:XAUUSD' }
     ]
   };
 
@@ -54,21 +57,34 @@ export default function MesaOperacoesPage() {
       return;
     }
     setCategoria(cat);
-    setBuscaAtiva('');
-    if (ativosDisponiveis[cat] && ativosDisponiveis[cat].length > 0) {
-      setAtivoSelecionado(ativosDisponiveis[cat][0].nome);
+    if (atalhosPorMercado[cat] && atalhosPorMercado[cat].length > 0) {
+      setAtivoSelecionado(atalhosPorMercado[cat][0].simbolo);
+      setNomeAtivoExibicao(atalhosPorMercado[cat][0].nome);
     }
   };
 
-  const listaFiltrada = (ativosDisponiveis[categoria] || []).filter(item => 
-    item.nome.toLowerCase().includes(buscaAtiva.toLowerCase())
-  );
+  // Função para buscar ativo customizado digitado
+  const handleBuscaCustomizada = (e) => {
+    e.preventDefault();
+    if (!inputBuscaCustomizada.trim()) return;
 
-  // Mapeia o ativo selecionado para o símbolo exato do TradingView
-  const obterSimboloTradingView = () => {
-    const listaCompleta = [...ativosDisponiveis.b3, ...ativosDisponiveis.cripto, ...ativosDisponiveis.forex];
-    const encontrado = listaCompleta.find(item => item.nome === ativoSelecionado);
-    return encontrado ? encontrado.simboloTV : 'BMFBOVESPA:WIN1!';
+    let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
+    
+    if (!simboloFormatado.includes(':')) {
+      if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
+        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
+        if (simboloFormatado === 'BMFBOVESPA:WIN') simboloFormatado = 'BMFBOVESPA:WIN1!';
+        if (simboloFormatado === 'BMFBOVESPA:WDO') simboloFormatado = 'BMFBOVESPA:WDO1!';
+      } else if (['BTCUSDT', 'ETHUSDT', 'SOLUSDT'].includes(simboloFormatado)) {
+        simboloFormatado = `BINANCE:${simboloFormatado}`;
+      } else {
+        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
+      }
+    }
+
+    setAtivoSelecionado(simboloFormatado);
+    setNomeAtivoExibicao(inputBuscaCustomizada.toUpperCase());
+    setInputBuscaCustomizada('');
   };
 
   // ⚡ UseEffect para carregar e atualizar dinamicamente o Gráfico Real do TradingView na Mesa de Operações
@@ -80,7 +96,7 @@ export default function MesaOperacoesPage() {
       if (window.TradingView) {
         new window.TradingView.widget({
           "autosize": true,
-          "symbol": obterSimboloTradingView(),
+          "symbol": ativoSelecionado,
           "interval": "5",
           "timezone": "America/Sao_Paulo",
           "theme": "dark",
@@ -122,10 +138,8 @@ export default function MesaOperacoesPage() {
     const riscoCalculado = capitalAlocar * 0.02; 
     const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${ativoSelecionado}\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
-  };
-
-  return (
+    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
+  };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
       {/* BARRA SUPERIOR DE CONTROLE */}
@@ -199,44 +213,65 @@ export default function MesaOperacoesPage() {
         {/* COLUNA ESQUERDA: SELETOR DE ATIVOS + GRÁFICO REAL TRADINGVIEW */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '16px', boxSizing: 'border-box' }}>
           
-          {/* SELETOR DE ATIVOS */}
-          <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {/* SELETOR DE ATIVOS E BUSCA */}
+          <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <button onClick={() => mudarCategoria('b3')} style={{ backgroundColor: categoria === 'b3' ? '#7c3aed' : '#e2e8f0', color: categoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>B3 (Brasil)</button>
                 <button onClick={() => mudarCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos {planoUsuario === 'basico' && '🔒'}</button>
                 <button onClick={() => mudarCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex {planoUsuario === 'basico' && '🔒'}</button>
               </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '4px 10px', width: '220px' }}>
-                <span style={{ fontSize: '12px', marginRight: '6px' }}>🔍</span>
-                <input 
-                  type="text" 
-                  placeholder="Pesquisar ativo..." 
-                  value={buscaAtiva}
-                  onChange={(e) => setBuscaAtiva(e.target.value)}
-                  style={{ border: 'none', outline: 'none', fontSize: '11px', width: '100%', background: 'transparent' }}
-                />
-              </div>
             </div>
 
-            <select 
-              value={ativoSelecionado}
-              onChange={(e) => setAtivoSelecionado(e.target.value)}
-              style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', fontWeight: 'bold', color: '#0f172a', outline: 'none', width: '100%' }}
-            >
-              {listaFiltrada.length > 0 ? (
-                listaFiltrada.map(item => (
-                  <option key={item.id} value={item.nome}>{item.nome}</option>
-                ))
-              ) : (
-                <option disabled>Nenhum ativo encontrado</option>
-              )}
-            </select>
+            {/* BARRA DE PESQUISA CUSTOMIZADA PARA QUALQUER ATIVO */}
+            <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
+                <span>🔍</span>
+                <input 
+                  type="text" 
+                  placeholder="Digite qualquer ativo (ex: PETR4, VALE3, BTCUSDT, AAPL)..."
+                  value={inputBuscaCustomizada}
+                  onChange={(e) => setInputBuscaCustomizada(e.target.value)}
+                  style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
+                />
+              </div>
+              <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                Buscar Ativo
+              </button>
+            </form>
+
+            {/* Botões de Atalho Rápido por Categoria */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                {(atalhosPorMercado[categoria] || []).map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setAtivoSelecionado(item.simbolo);
+                      setNomeAtivoExibicao(item.nome);
+                    }}
+                    style={{
+                      backgroundColor: ativoSelecionado === item.simbolo ? '#7c3aed' : '#ffffff',
+                      color: ativoSelecionado === item.simbolo ? '#ffffff' : '#334155',
+                      border: '1px solid #cbd5e1',
+                      padding: '6px 12px',
+                      borderRadius: '8px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {item.nome}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Gráfico em Tempo Real ({ativoSelecionado})</span>
+            <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Gráfico em Tempo Real ({nomeAtivoExibicao})</span>
             <span style={{ fontSize: '10px', color: '#059669', fontFamily: 'monospace', fontWeight: 'bold' }}>● Conectado ao TradingView</span>
           </div>
           

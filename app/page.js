@@ -46,10 +46,10 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Grelha de Acessos com Cartões Claros (Sinergia com o Projeto) */}
+        {/* Grelha de Acessos com Cartões */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(390px, 1fr))', gap: '24px', marginBottom: '40px', textAlign: 'left' }}>
           
-          {/* Card Jenios Social (Fundo Claro Inspirado na Referência) */}
+          {/* Card Jenios Social */}
           <div style={{ 
             backgroundColor: '#f8fafc', 
             color: '#0f172a',
@@ -102,7 +102,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Card Plataforma & Motor HFT (Fundo Claro Inspirado na Referência) */}
+          {/* Card Plataforma & Motor HFT (Corrigido para /market) */}
           <div style={{ 
             backgroundColor: '#f8fafc', 
             color: '#0f172a',
@@ -136,7 +136,7 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <Link href="/lp" style={{ 
+              <Link href="/market" style={{ 
                 display: 'block',
                 backgroundColor: '#10b981', 
                 color: '#fff', 

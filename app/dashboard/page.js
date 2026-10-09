@@ -58,10 +58,25 @@ export default function DashboardPage() {
     ]
   };
 
+  // Função para mudar categoria sem travar e atualizar o ativo inicial
+  const selecionarCategoria = (cat) => {
+    setMercadoCategoria(cat);
+    setBuscaAtivo('');
+    if (ativosPorMercado[cat] && ativosPorMercado[cat].length > 0) {
+      setAtivoSelecionado(ativosPorMercado[cat][0].nome);
+    }
+  };
+
   // Filtra os ativos da categoria selecionada com base na barra de pesquisa (lupa)
-  const ativosFiltrados = (ativosPorMercado[mercadoCategoria] || []).filter(item =>
+  const ativosDaCategoria = ativosPorMercado[mercadoCategoria] || [];
+  const ativosFiltrados = ativosDaCategoria.filter(item =>
     item.nome.toLowerCase().includes(buscaAtivo.toLowerCase())
   );
+
+  // Garante que o valor selecionado é sempre válido para evitar congelamento no select
+  const valorSelectValido = ativosFiltrados.some(item => item.nome === ativoSelecionado)
+    ? ativoSelecionado
+    : (ativosFiltrados[0] ? ativosFiltrados[0].nome : ativoSelecionado);
 
   // Função para mapear o ativo selecionado para o símbolo exato do TradingView
   const obterSimboloTradingView = (nomeAtivo) => {
@@ -245,19 +260,19 @@ export default function DashboardPage() {
                 {/* Categorias de Mercado (B3, Cripto, Global) */}
                 <div style={{ display: 'flex', gap: '6px', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
                   <button 
-                    onClick={() => { setMercadoCategoria('b3'); setBuscaAtivo(''); }}
+                    onClick={() => selecionarCategoria('b3')}
                     style={{ backgroundColor: mercadoCategoria === 'b3' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     B3 (Brasil)
                   </button>
                   <button 
-                    onClick={() => { setMercadoCategoria('cripto'); setBuscaAtivo(''); }}
+                    onClick={() => selecionarCategoria('cripto')}
                     style={{ backgroundColor: mercadoCategoria === 'cripto' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     Cripto
                   </button>
                   <button 
-                    onClick={() => { setMercadoCategoria('global'); setBuscaAtivo(''); }}
+                    onClick={() => selecionarCategoria('global')}
                     style={{ backgroundColor: mercadoCategoria === 'global' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'global' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     Global / Forex
@@ -279,7 +294,7 @@ export default function DashboardPage() {
 
               {/* Dropdown / Seletor Filtrado com os Ativos da Categoria */}
               <select 
-                value={ativoSelecionado} 
+                value={valorSelectValido} 
                 onChange={(e) => setAtivoSelecionado(e.target.value)} 
                 style={{ backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '12px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', outline: 'none', width: '100%', cursor: 'pointer' }}
               >

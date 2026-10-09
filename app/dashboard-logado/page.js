@@ -37,7 +37,7 @@ export default function DashboardLogado() {
     }
   }, []);
 
-  // Direcionamento para a Dashboard após validar o Diagnóstico
+  // Direcionamento corrigido para a Dashboard oficial após validar o Diagnóstico
   const irParaDashboardOuOperar = () => {
     const jaFez = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
     if (!jaFez && !diagnosticoFeito) {
@@ -45,7 +45,7 @@ export default function DashboardLogado() {
       window.location.href = '/diagnostico';
       return;
     }
-    window.location.href = '/dashboard-logado';
+    window.location.href = '/dashboard';
   };
 
   const pagarFaturaAtual = () => {

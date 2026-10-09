@@ -165,22 +165,60 @@ export default function DiagnosticoPlatformPage() {
             )}
 
             {etapa > perguntas.length && (
-              <div>
-                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-                  🎯 Calibração Adaptativa Concluída
-                </span>
-                <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
-                  Relatório de Configuração Inicial
-                </h2>
-                <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', marginBottom: '15px' }}>
-                  Score de Disciplina Técnica: <b>{aptidao.toFixed(0)}%</b>
-                </p>
-                <button
-                  onClick={() => concluirEEntrarDiretoNaMesa(aptidao >= 60 ? 'manual' : 'reversao')}
-                  style={{ width: '100%', background: '#7c3aed', color: 'white', fontWeight: 'bold', fontSize: '13px', padding: '14px', borderRadius: '10px', border: 'none', cursor: 'pointer', marginTop: '15px', textAlign: 'center' }}
-                >
-                  Entrar Diretamente na Mesa de Operações →
-                </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>
+                    JENIOS DESK • MOTOR DE EXECUÇÃO
+                  </span>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>
+                    Escolha o seu Modo Operacional
+                  </h2>
+                  <p style={{ fontSize: '12px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
+                    Selecione como o ecossistema JENIOS vai gerir as suas entradas e a proteção do seu capital nesta sessão.
+                  </p>
+                </div>
+
+                {/* Opção 1: Reversão Adaptativa */}
+                <div style={{ border: '2px solid #7c3aed', borderRadius: '16px', padding: '20px', backgroundColor: '#fcf8ff', display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative' }}>
+                  <span style={{ position: 'absolute', top: '-10px', left: '16px', backgroundColor: '#e9d5ff', color: '#7c3aed', fontSize: '9px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '9999px', textTransform: 'uppercase' }}>
+                    Recomendado
+                  </span>
+                  <div>
+                    <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>
+                      Modo Reversão Adaptativa
+                    </h3>
+                    <p style={{ fontSize: '11.5px', color: '#475569', margin: 0, lineHeight: '1.5' }}>
+                      O robô protege contra perdas e fúria. <b>Diferencial:</b> Ao detetar sequência de acertos consistentes, o sistema promove-o automaticamente para operar <i>sem reversão</i> (surfando a tendência livremente).
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => concluirEEntrarDiretoNaMesa('reversao')}
+                    style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textAlign: 'center', textTransform: 'uppercase', width: '100%' }}
+                  >
+                    Ativar Reversão Adaptativa
+                  </button>
+                </div>
+
+                {/* Opção 2: Modo Autónomo / Manual */}
+                <div style={{ border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <span style={{ fontSize: '9px', backgroundColor: '#e2e8f0', color: '#334155', padding: '2px 8px', borderRadius: '9999px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                      Controlo Total
+                    </span>
+                    <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '6px 0 6px 0' }}>
+                      Modo Autónomo / Manual
+                    </h3>
+                    <p style={{ fontSize: '11.5px', color: '#475569', margin: 0, lineHeight: '1.5' }}>
+                      Sem interferência do robô adaptativo. O operador define tudo: entradas, saídas, alvos e lotes de forma independente, discricionária ou puramente quantitativa.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => concluirEEntrarDiretoNaMesa('manual')}
+                    style={{ backgroundColor: '#0f172a', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textAlign: 'center', textTransform: 'uppercase', width: '100%' }}
+                  >
+                    Ativar Modo Autónomo
+                  </button>
+                </div>
               </div>
             )}
           </>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Central de Suporte e Atendimento</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex justify-between items-center">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS HELP DESK • Atendimento Técnico
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Central de Suporte</h1>
+                <p class="text-xs text-slate-600">Abra um ticket para resolver dúvidas de sincronização ou suporte operacional.</p>
+            </div>
+            <button onclick="alert('Formulário de novo ticket ativado.')" class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-4 py-3 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer">
+                + Novo Ticket
+            </button>
+        </div>
+
+        <!-- Formulário para Abrir Ticket -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl space-y-4">
+            <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider">Abrir Solicitação de Suporte</h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Assunto / Categoria</label>
+                    <select class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                        <option>Sincronização de API (Binance / ProfitChart)</option>
+                        <option>Dúvidas sobre o Modo Reverso</option>
+                        <option>Questões de Faturamento e Pix</option>
+                        <option>Outros Assuntos Técnicos</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-700 mb-1">Descrição Detalhada do Problema</label>
+                    <textarea rows="4" placeholder="Descreva o que está a acontecer para que a nossa equipa técnica possa ajudar..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] resize-none"></textarea>
+                </div>
+
+                <button onclick="alert('Ticket de suporte enviado com sucesso! Responderemos em breve.')" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg uppercase tracking-wide cursor-pointer">
+                    Enviar Ticket para a Equipa Técnica
+                </button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

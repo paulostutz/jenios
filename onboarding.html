@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Platform - Onboarding e Calibração</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Card de Onboarding -->
+    <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+        
+        <!-- Identificação da Marca / Módulo -->
+        <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-2 block">
+            JENIOS PLATFORM • Onboarding & Calibração
+        </span>
+        
+        <h1 class="text-2xl font-black mb-2 text-slate-900">Bem-vindo à Fase de Calibração</h1>
+        <p class="text-xs text-slate-600 mb-6 leading-relaxed">
+            A sua assinatura foi ativada com sucesso. Para que o motor algorítmico aprenda o seu padrão exato, precisamos de sincronizar a sua conta de operações.
+        </p>
+
+        <!-- Etapas do Onboarding -->
+        <div class="space-y-4 mb-6">
+            
+            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start space-x-3">
+                <div class="bg-[#7c3aed] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-900 mb-1">Selecionar Corretora / Exchange</h4>
+                    <p class="text-[11px] text-slate-600">Escolha onde executa as suas ordens para ligar a ponte API de milissegundos.</p>
+                    <select class="mt-2 w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                        <option>ProfitChart / Nelogica (B3)</option>
+                        <option>Binance / Bybit (Cripto Futuros)</option>
+                        <option>MetaTrader 5 / MT5 (Global)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 flex items-start space-x-3">
+                <div class="bg-slate-300 text-slate-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-900 mb-1">Fase de Diagnóstico Real (15 Operações)</h4>
+                    <p class="text-[11px] text-slate-600">O sistema monitorará as suas próximas 15 execuções em ambiente real para calibrar o modo de retificação de viés.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <button 
+            onclick="concluirOnboarding()" 
+            class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg shadow-purple-600/20 uppercase tracking-wide cursor-pointer"
+        >
+            Iniciar Sincronização e Ir para o Painel
+        </button>
+
+    </div>
+
+    <!-- Script de Ação -->
+    <script>
+        function concluirOnboarding() {
+            alert('Sincronização iniciada! Este bloco HTML está pronto para salvar como onboarding.html no Bloco de Notas.');
+        }
+    </script>
+</body>
+</html>

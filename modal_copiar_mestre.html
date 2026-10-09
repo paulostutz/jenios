@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Confirmação de Cópia de Mestre</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Modal Container -->
+    <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl space-y-6 relative">
+        
+        <!-- Cabeçalho do Modal -->
+        <div>
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                JENIOS SOCIAL • Copy-Trading
+            </span>
+            <h2 class="text-xl font-black text-slate-900">Ativar Cópia Automática</h2>
+            <p class="text-xs text-slate-600 mt-1">
+                Está prestes a conectar a sua mesa de operações às ordens de um Trader Mestre verificado.
+            </p>
+        </div>
+
+        <!-- Resumo do Mestre Selecionado -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-700 text-white font-black text-sm flex items-center justify-center shrink-0">
+                CQ
+            </div>
+            <div>
+                <h4 class="text-xs font-black text-slate-900">Carlos Quant (@carlosq)</h4>
+                <span class="text-[10px] text-slate-500 font-mono">Estratégia: B3 Mini-Índice (WIN)</span>
+                <div class="text-[10px] text-emerald-600 font-bold mt-0.5">● Assre. Ativa: 84.2% de Acerto</div>
+            </div>
+        </div>
+
+        <!-- Detalhes Financeiros (R$ 49,90) -->
+        <div class="border-t border-b border-slate-200 py-4 space-y-2 text-xs text-slate-700">
+            <div class="flex justify-between items-center">
+                <span>Subscrição do Mestre:</span>
+                <span class="font-black text-slate-900">R$ 49,90 / mês</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-500 text-[11px]">
+                <span>Cobrança recorrente separada do plano base</span>
+                <span>Split automático</span>
+            </div>
+        </div>
+
+        <!-- Termos Rápidos -->
+        <p class="text-[10px] text-slate-500 leading-relaxed">
+            Ao confirmar, autoriza a cobrança mensal de R$ 49,90 via o seu método de pagamento principal (Pix/Cartão) e o espelhamento imediato das ordens na sua conta de operações.
+        </p>
+
+        <!-- Botões de Ação -->
+        <div class="space-y-2">
+            <button 
+                onclick="confirmarSubscricaoMestre()" 
+                class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg shadow-purple-600/20 uppercase tracking-wide cursor-pointer"
+            >
+                Confirmar e Ativar Cópia (R$ 49,90/mês)
+            </button>
+            <button 
+                onclick="alert('Ação cancelada.')" 
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer"
+            >
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Script de Simulação -->
+    <script>
+        function confirmarSubscricaoMestre() {
+            alert('Subscrição do Mestre ativada com sucesso! As ordens agora estão sincronizadas na sua mesa.');
+        }
+    </script>
+</body>
+</html>

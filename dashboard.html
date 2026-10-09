@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Platform - Painel de Controlo</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <!-- Container Principal do Dashboard -->
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho do Painel -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                    JENIOS PLATFORM • Sala de Controlo HFT
+                </span>
+                <h1 class="text-2xl font-black text-slate-900">Olá, Operador</h1>
+                <p class="text-xs text-slate-600">Plano Ativo: <b class="text-[#7c3aed]">Global Crypto (B3 + Cripto)</b></p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                    ● Motor Algorítmico Ativo
+                </span>
+                <button onclick="alert('Sessão encerrada com segurança.')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer">
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <!-- Grade de Estatísticas e Estado do Robô -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Card 1: Estado do Modo -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+                <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Modo de Retificação</span>
+                <h3 class="text-base font-black text-slate-900 mb-2">Modo Reverso Automático</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    O sistema está a interceptar impulsos de raiva e a inverter ordens em 3 milissegundos.
+                </p>
+                <div class="w-full bg-purple-100 text-[#7c3aed] text-xs font-bold text-center py-2 rounded-xl">
+                    Sincronizado com Binance Futuros
+                </div>
+            </div>
+
+            <!-- Card 2: Proteção de Capital (Dinamizada em Tempo Real) -->
+            <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-wider block mb-1">Estatísticas em Tempo Real</span>
+                    <h3 class="text-base font-black text-slate-900 mb-2">Losses Neutralizados</h3>
+                    <div id="valorLosses" class="text-3xl font-black text-emerald-600 mb-2">R$ 1.450,00</div>
+                    <p id="textoContador" class="text-xs text-slate-600">
+                        3 operações impulsivas evitadas com sucesso pelo Botão Antifúria.
+                    </p>
+                </div>
+                <button onclick="simularProtecaoExtra()" class="mt-4 w-full bg-purple-100 hover:bg-purple-200 text-[#7c3aed] font-bold text-[11px] py-2 rounded-xl transition-all cursor-pointer">
+                    ⚡ Simular Proteção de Trade ao Vivo
+                </button>
+            </div>
+
+            <!-- Card 3: Ações de Emergência -->
+            <div class="bg-slate-900 text-white border border-slate-700 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
+                <div>
+                    <span class="text-[10px] font-bold font-mono text-purple-400 uppercase tracking-wider block mb-1">Controlo de Emergência</span>
+                    <h3 class="text-base font-black text-white mb-2">Trava Manual</h3>
+                    <p class="text-xs text-slate-300 mb-4">
+                        Bloqueia imediatamente todos os cliques e fecha posições em aberto na corretora.
+                    </p>
+                </div>
+                <button onclick="alert('ATENÇÃO: Trava de emergência acionada. Ordens protegidas na corretora.')" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-lg uppercase tracking-wide cursor-pointer">
+                    🚨 Bloquear e Zerar Tudo
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Script de Dinamismo em Tempo Real -->
+    <script>
+        let valorAtual = 1450.00;
+        let qtdOperacoes = 3;
+
+        function simularProtecaoExtra() {
+            // Incrementa valores reais de forma dinâmica ao simular a atividade do mercado
+            let ganho = Math.floor(Math.random() * 300) + 150;
+            valorAtual += ganho;
+            qtdOperacoes += 1;
+
+            document.getElementById('valorLosses').innerText = 'R$ ' + valorAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('textoContador').innerText = `${qtdOperacoes} operações impulsivas evitadas com sucesso pelo Botão Antifúria.`;
+        }
+
+        // Simulação automática leve a cada 12 segundos para dar vida ao painel
+        setInterval(() => {
+            simularProtecaoExtra();
+        }, 12000);
+    </script>
+</body>
+</html>

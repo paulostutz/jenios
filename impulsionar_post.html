@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Ads - Gestor de Tráfego Profissional</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-xl w-full space-y-6">
+        
+        <!-- Cartão de Impulsionamento Profissional -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+            
+            <!-- Cabeçalho -->
+            <div class="flex justify-between items-start">
+                <div>
+                    <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                        JENIOS ADS • Gestor de Anúncios
+                    </span>
+                    <h1 class="text-xl font-black text-slate-900">Impulsionar Publicação</h1>
+                </div>
+                <span class="text-[10px] bg-purple-100 text-[#7c3aed] font-bold px-2.5 py-1 rounded-full uppercase">Pro Mode</span>
+            </div>
+
+            <!-- 1. Selecionar o Post do Perfil -->
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold uppercase text-slate-700">Publicação do Perfil a Impulsionar</label>
+                <div class="bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-700 font-medium flex justify-between items-center">
+                    <span>📊 Análise de Fluxo Institucional - Mini-Índice (WIN)</span>
+                    <span class="text-[10px] text-[#7c3aed] font-bold cursor-pointer hover:underline">Trocar post</span>
+                </div>
+            </div>
+
+            <!-- 2. Escolher o Objetivo -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase text-slate-700">Qual é o objetivo da campanha?</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="border-2 border-[#7c3aed] bg-purple-50/50 rounded-xl p-3 cursor-pointer">
+                        <span class="text-xs font-bold text-slate-900 block mb-0.5">⚡ Cliques para Copiar</span>
+                        <span class="text-[10px] text-slate-500">Direciona para o espelhamento</span>
+                    </div>
+                    <div class="border border-slate-300 bg-slate-50 rounded-xl p-3 cursor-pointer hover:border-slate-400">
+                        <span class="text-xs font-bold text-slate-800 block mb-0.5">🌐 Redirecionar para Site</span>
+                        <span class="text-[10px] text-slate-500">Leva tráfego para link externo</span>
+                    </div>
+                    <div class="border border-slate-300 bg-slate-50 rounded-xl p-3 cursor-pointer hover:border-slate-400">
+                        <span class="text-xs font-bold text-slate-800 block mb-0.5">💬 Chamar no WhatsApp</span>
+                        <span class="text-[10px] text-slate-500">Inicia conversa direta</span>
+                    </div>
+                    <div class="border border-slate-300 bg-slate-50 rounded-xl p-3 cursor-pointer hover:border-slate-400">
+                        <span class="text-xs font-bold text-slate-800 block mb-0.5">👤 Visitas ao Perfil / Alcance</span>
+                        <span class="text-[10px] text-slate-500">Foco em autoridade e seguidores</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Segmentação Geográfica (Com Autocompletar de Países e Brasil pré-salvo) -->
+            <div class="space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <label class="block text-xs font-bold uppercase text-slate-800">📍 Segmentação Geográfica</label>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <span class="block text-[10px] font-mono text-slate-500 uppercase mb-1">País (Comece a digitar)</span>
+                        <input type="text" list="lista-paises" value="Brasil" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                        <datalist id="lista-paises">
+                            <option value="Brasil">
+                            <option value="Portugal">
+                            <option value="Estados Unidos">
+                            <option value="Espanha">
+                            <option value="Reino Unido">
+                            <option value="França">
+                            <option value="Alemanha">
+                            <option value="Argentina">
+                            <option value="Canadá">
+                            <option value="Japão">
+                        </datalist>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Estado / Região</span>
+                        <input type="text" placeholder="Ex: São Paulo, Bahia..." class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Cidade</span>
+                        <input type="text" placeholder="Ex: Salvador, Rio..." class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed]">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Perfil Demográfico -->
+            <div class="space-y-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <label class="block text-xs font-bold uppercase text-slate-800">👥 Perfil Demográfico</label>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <span class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Faixa Etária</span>
+                        <div class="flex items-center gap-2">
+                            <input type="number" value="21" min="18" max="80" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 text-center focus:outline-none">
+                            <span class="text-xs text-slate-500">até</span>
+                            <input type="number" value="60" min="18" max="80" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 text-center focus:outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-mono text-slate-500 uppercase mb-1">Gênero / Público</span>
+                        <select class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-900 focus:outline-none">
+                            <option>Todos os Gêneros</option>
+                            <option>Masculino</option>
+                            <option>Feminino</option>
+                            <option>LGBTQIA+ / Diversidade</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Orçamento Diário e Duração Manual -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold uppercase text-slate-700">Orçamento Diário (Mín. R$ 10,00)</label>
+                    <input type="number" min="10" step="1.00" value="25.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold uppercase text-slate-700">Duração (Nº de Dias)</label>
+                    <input type="number" min="1" value="7" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+                </div>
+            </div>
+
+            <!-- Resumo e Pagamento -->
+            <div class="border-t border-slate-200 pt-4 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-600">Investimento Total Estimado:</span>
+                    <span class="font-black text-lg text-[#7c3aed]">R$ 175,00 <span class="text-xs text-slate-500 font-normal">(7 dias x R$ 25,00)</span></span>
+                </div>
+
+                <button 
+                    onclick="alert('Campanha configurada com sucesso! A gerar Pix para pagamento do anúncio...')" 
+                    class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg shadow-purple-600/20 uppercase tracking-wide cursor-pointer"
+                >
+                    🚀 Lançar Anúncio (Gerar Pix)
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

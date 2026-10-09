@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Validador de Segurança & Anti-Golpe</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                JENIOS SECURITY • Auditoria Anti-Golpe
+            </span>
+            <h1 class="text-2xl font-black text-slate-900 mb-2">Validador de Carteiras e Hash</h1>
+            <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                Cole o endereço de uma carteira, hash de transação ou contrato de token abaixo para obter um laudo instantâneo de segurança e identificar a titularidade.
+            </p>
+
+            <!-- Caixa de Pesquisa / Input -->
+            <div class="space-y-3">
+                <input 
+                    type="text" 
+                    id="inputHash" 
+                    placeholder="Ex: 0x71C... ou Endereço da Carteira / Hash do Contrato" 
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3.5 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] font-mono"
+                >
+                <button 
+                    onclick="executarAuditoria()" 
+                    class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3.5 rounded-xl transition-all shadow-lg shadow-purple-600/20 uppercase tracking-wide cursor-pointer"
+                >
+                    🔍 Auditar Carteira / Hash Agora
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado da Auditoria (Oculto inicialmente, aparece ao clicar) -->
+        <div id="resultadoAuditoria" class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl" style="display: none;">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-200 pb-3">
+                <span class="text-xs font-bold font-mono text-slate-500 uppercase">Laudo de Auditoria JENIOS</span>
+                <span id="badgeSeguranca" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Seguro / Verificado</span>
+            </div>
+
+            <div class="space-y-3 text-xs text-slate-700">
+                <p><b>Tipo de Titularidade Identificada:</b> <span id="txtTitular" class="text-slate-900 font-bold">Instituição Financeira / Market Maker (Binance Cold Storage)</span></p>
+                <p><b>Risco de Golpe / Scam:</b> <span class="text-emerald-600 font-bold">0% (Zero risco detetado)</span></p>
+                <p><b>Histórico de Transações:</b> <span class="text-slate-900">Mais de 45.000 operações limpas registadas na blockchain.</span></p>
+                
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4">
+                    <h4 class="text-xs font-black text-slate-900 mb-1 uppercase">Parecer Técnico JENIOS:</h4>
+                    <p id="txtParecer" class="text-slate-600 leading-relaxed">
+                        Esta carteira pertence a uma entidade regulada e validada. Não existem indícios de honeypot, funções maliciosas ou ligações a esquemas fraudulentos. Pode interagir com total segurança.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script de Simulação da Auditoria -->
+    <script>
+        function executarAuditoria() {
+            const valor = document.getElementById('inputHash').value;
+            if (!valor) {
+                alert('Por favor, insira um endereço de carteira ou hash para auditar.');
+                return;
+            }
+            // Exibe o painel de resultado simulado com sucesso
+            document.getElementById('resultadoAuditoria').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

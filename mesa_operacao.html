@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS - Seleção de Modo Operacional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-3xl mx-auto space-y-6">
+        
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl">
+            <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase mb-1 block">
+                JENIOS DESK • Motor de Execução
+            </span>
+            <h1 class="text-2xl font-black text-slate-900 mb-2">Escolha o seu Modo Operacional</h1>
+            <p class="text-xs text-slate-600 leading-relaxed mb-6">
+                Selecione como o ecossistema JENIOS vai gerir as suas entradas e a proteção do seu capital nesta sessão.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Opção 1: Modo Reversão Adaptativa -->
+                <div class="border-2 border-[#7c3aed] bg-purple-50/40 rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold font-mono bg-purple-100 text-[#7c3aed] px-2 py-0.5 rounded uppercase mb-2 inline-block">Recomendado</span>
+                        <h3 class="text-sm font-black text-slate-900 mb-1">Modo Reversão Adaptativa</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            O robô protege contra perdas e fúria. <b>Diferencial:</b> Ao detetar sequência de acertos consistentes, o sistema promove-o automaticamente para operar <i>sem reversão</i> (surfando a tendência livremente).
+                        </p>
+                    </div>
+                    <button onclick="alert('Modo Reversão Adaptativa ativado com sucesso!')" class="w-full bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                        Ativar Reversão Adaptativa
+                    </button>
+                </div>
+
+                <!-- Opção 2: Modo Autónomo / Manual -->
+                <div class="border border-slate-300 bg-white rounded-2xl p-5 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded uppercase mb-2 inline-block">Controlo Total</span>
+                        <h3 class="text-sm font-black text-slate-900 mb-1">Modo Autónomo / Manual</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Sem interferência do robô adaptativo. O operador define tudo: entradas, saídas, alvos e lotes de forma independente, discricionária ou puramente quantitativa.
+                        </p>
+                    </div>
+                    <button onclick="alert('Modo Autónomo / Manual ativado com sucesso!')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl transition-all uppercase tracking-wide cursor-pointer">
+                        Ativar Modo Autónomo
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

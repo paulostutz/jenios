@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Platform - Diagnóstico Onboarding Interno</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #0f172a; color: #1e293b; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .card { background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 20px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        .tag { font-size: 11px; color: #7c3aed; font-weight: bold; font-family: monospace; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: block; }
+        h2 { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.4; color: #0f172a; }
+        p { font-size: 13px; color: #334155; line-height: 1.5; margin-bottom: 15px; }
+        .btn-opcao { width: 100%; text-align: left; background-color: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 14px; border-radius: 10px; font-size: 13px; margin-bottom: 10px; cursor: pointer; display: block; transition: all 0.2s; }
+        .btn-opcao:hover { border-color: #7c3aed; background-color: #f3e8ff; color: #581c87; }
+        .btn-acao { width: 100%; background: #7c3aed; color: white; font-weight: bold; font-size: 13px; padding: 14px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; text-align: center; display: block; }
+        .btn-acao:hover { background: #6d28d9; }
+        .btn-voltar { width: 100%; background: #e2e8f0; color: #475569; font-weight: bold; font-size: 12px; padding: 10px; border-radius: 10px; border: none; cursor: pointer; margin-top: 12px; text-align: center; display: block; }
+        .btn-voltar:hover { background: #cbd5e1; color: #334155; }
+    </style>
+</head>
+<body>
+    <main id="app-diagnostico" class="card"></main>
+
+    <script>
+        let scores = { impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 };
+        let etapa = 0;
+        let timelineSelecionada = "";
+
+        const perguntas = [
+            {
+                q: "Passo 1: Como reage imediatamente após sofrer um Stop Loss inesperado em um ativo?",
+                a: [
+                    { t: "Sinto raiva, abro outra operação na hora com o dobro do lote para recuperar rápido (Viés de Vingança).", p: "impulsivo", v: 2 },
+                    { t: "Fico arrasado e encerro o computador por hoje com receio de perder o capital restante.", p: "ansioso", v: 2 },
+                    { t: "Recuso-me a aceitar o erro. Arrasto o Stop Loss para baixo, afinal o mercado vai voltar.", p: "teimoso", v: 2 },
+                    { t: "Fico paralisado o resto do dia refazendo cálculos sem coragem de clicar novamente.", p: "hesitante", v: 2 }
+                ]
+            },
+            {
+                q: "Passo 2: Gestão de Alvo — Quando uma operação atinge R$ 100 de lucro de um alvo de R$ 500, o que faz?",
+                a: [
+                    { t: "Aumento a mão na operação para tentar arrancar R$ 1.000 de forma agressiva.", p: "impulsivo", v: 2 },
+                    { t: "Fecho o trade imediatamente e embolso os R$ 100 por medo de devolver (Mão de Alface).", p: "ansioso", v: 2 },
+                    { t: "Deixo o trade correr ignorando qualquer sinal técnico de reversão gráfica.", p: "teimoso", v: 2 },
+                    { t: "Fico monitorando segundo a segundo, mudando de ideia a cada oscilação.", p: "hesitante", v: 2 }
+                ]
+            },
+            {
+                q: "Passo 3: Megatendência — O mercado entra em queda livre violenta. Como se posiciona originalmente?",
+                a: [
+                    { t: "Clico em comprar repetidamente de forma furiosa, tentando adivinhar o fundo exato.", p: "impulsivo", v: 2 },
+                    { t: "Fico olhando a tela com o coração acelerado e a mente congelada, sem coragem de executar.", p: "ansioso", v: 2 },
+                    { t: "Abro novas compras a cada queda (Preço Médio), convicto de que o ativo está barato demais.", p: "teimoso", v: 2 },
+                    { t: "Espero cair por horas. Quando decido entrar vendido, o mercado subitamente inverte.", p: "hesitante", v: 2 }
+                ]
+            },
+            {
+                q: "Passo 4: Histórico Mensal — Como é o seu fechamento de faturamento de trade no final do mês?",
+                a: [
+                    { t: "Passo semanas ganhando, mas perco absolutamente tudo e quebro a conta em um único dia de fúria.", p: "impulsivo", v: 2 },
+                    { t: "Minha conta sangra aos poucos porque meus ganhos são minúsculos e minhas perdas são longas.", p: "ansioso", v: 2 },
+                    { t: "Tenho dias de lucros estrondosos, seguidos por perdas catastróficas que zeram meu patrimônio.", p: "teimoso", v: 2 },
+                    { t: "Meus ganhos e perdas se equivalem, e meu saldo negativo real são apenas as taxas da corretora.", p: "hesitante", v: 2 }
+                ]
+            },
+            {
+                q: "Passo 5: Gargalo Operacional — O que mais te incomoda na sua rotina atual no mercado?",
+                a: [
+                    { t: "A raiva incontrolável e o arrependimento devastador após fechar um dia de fúria.", p: "impulsivo", v: 2 },
+                    { t: "A ansiedade crônica e a dor no estômago toda vez que vejo o saldo oscilar na tela.", p: "ansioso", v: 2 },
+                    { t: "A sensação de que o mercado me persegue e que os grandes bancos sabem meu stop.", p: "teimoso", v: 2 },
+                    { t: "A frustração de estudar centenas de horas de teoria e não conseguir sair do lugar.", p: "hesitante", v: 2 }
+                ]
+            }
+        ];
+
+        function renderizar() {
+            const container = document.getElementById("app-diagnostico");
+            if (!container) return;
+
+            if (etapa < perguntas.length) {
+                const p = perguntas[etapa];
+                let html = `<span class="tag">Onboarding Platform • Etapa ${etapa + 1} de 6</span>`;
+                html += `<h2>${p.q}</h2><div>`;
+                p.a.forEach((alt, idx) => {
+                    html += `<button class="btn-opcao" onclick="responder(${idx})">${alt.t}</button>`;
+                });
+                html += `</div>`;
+                if (etapa > 0) {
+                    html += `<button class="btn-voltar" onclick="voltarEtapa()">← Voltar à questão anterior</button>`;
+                }
+                container.innerHTML = html;
+                return;
+            }
+
+            if (etapa === perguntas.length) {
+                let html = `<span class="tag">Etapa Final • Frequência Operacional</span>`;
+                html += `<h2>Qual é a sua janela de tempo principal de exposição ao mercado?</h2><div>`;
+                html += `<button class="btn-opcao" onclick="finalizarTimeline('RAPIDO')"><b>Day Trade Rápido</b><br><span style="font-size:11px; color:#64748b;">Gráficos de 1 a 5 minutos (Alta frequência)</span></button>`;
+                html += `<button class="btn-opcao" onclick="finalizarTimeline('ESTRUTURADO')"><b>Day Trade Estruturado</b><br><span style="font-size:11px; color:#64748b;">Gráficos de 15 min a 1h (Ciclos e regras)</span></button>`;
+                html += `<button class="btn-opcao" onclick="finalizarTimeline('SWING')"><b>Swing Trade / Position</b><br><span style="font-size:11px; color:#64748b;">Gráficos Diários ou Semanais (Macro)</span></button>`;
+                html += `</div>`;
+                html += `<button class="btn-voltar" onclick="voltarEtapa()">← Voltar à questão anterior</button>`;
+                container.innerHTML = html;
+                return;
+            }
+
+            gerarLaudo();
+        }
+
+        function responder(idx) {
+            const alt = perguntas[etapa].a[idx];
+            scores[alt.p] += alt.v;
+            etapa++;
+            renderizar();
+        }
+
+        function voltarEtapa() {
+            if (etapa > 0) {
+                etapa--;
+                renderizar();
+            }
+        }
+
+        function finalizarTimeline(tipo) {
+            timelineSelecionada = tipo;
+            if (tipo === 'RAPIDO') { scores.impulsivo += 3; scores.ansioso += 3; }
+            if (tipo === 'ESTRUTURADO') { scores.hesitante += 3; scores.ansioso += 1; }
+            if (tipo === 'SWING') { scores.teimoso += 4; scores.tecnico_positivo += 2; }
+            etapa++;
+            renderizar();
+        }
+
+        function gerarLaudo() {
+            const container = document.getElementById("app-diagnostico");
+            let maiorVicio = "impulsivo", maiorScore = scores.impulsivo;
+            if (scores.ansioso > maiorScore) { maiorVicio = "ansioso"; maiorScore = scores.ansioso; }
+            if (scores.teimoso > maiorScore) { maiorVicio = "teimoso"; maiorScore = scores.teimoso; }
+            if (scores.hesitante > maiorScore) { maiorVicio = "hesitante"; maiorScore = scores.hesitante; }
+
+            let aptidao = Math.min(100, (scores.tecnico_positivo / 10) * 100);
+
+            let html = `<span class="tag">🎯 Calibração Adaptativa Concluída</span>`;
+            html += `<h2>Relatório de Configuração Inicial</h2>`;
+            html += `<p>Score de Disciplina Técnica: <b>${aptidao.toFixed(0)}%</b></p>`;
+
+            if (aptidao >= 60) {
+                html += `<p style="color: #059669; font-weight: bold; margin-bottom: 12px;">Perfil: Mestre Disciplinado (Baixo Risco)</p><p style="margin-bottom: 15px;">A tecnologia adaptativa configurou seu ambiente no <b>Modo Espelho Direto</b>, replicando suas ordens com precisão HFT sem inversão de cliques.</p>`;
+            } else if (maiorVicio === 'impulsivo') {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 12px;">Perfil: Impulsivo Vingativo (Risco Crítico)</p><p style="margin-bottom: 15px;">O motor ativou automaticamente a <b>Tecnologia Reversa Ativa</b> para interceptar seus cliques de fúria e transformá-los em lucros institucionais.</p>`;
+            } else {
+                html += `<p style="color: #dc2626; font-weight: bold; margin-bottom: 12px;">Perfil Vulnerável / Ansioso ou Teimoso</p><p style="margin-bottom: 15px;">O sistema acoplou a <b>Gestão OCO Inviolável e o Filtro de Megatendência</b> para blindar seu capital contra vieses comportamentais.</p>`;
+            }
+
+            html += `<button class="btn-acao" onclick="alert('Parâmetros gravados! Redirecionando para a Mesa de Operações...')">Gravar Parâmetros & Aceder à Mesa de Operações →</button>`;
+            container.innerHTML = html;
+        }
+
+        renderizar();
+    </script>
+</body>
+</html>

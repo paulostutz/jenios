@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JENIOS Social - Criar Publicação e Mídia</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <!-- Caixa de Criar Post & Multimédia -->
+        <div class="bg-white text-slate-900 border border-slate-300 rounded-2xl p-6 shadow-xl space-y-4">
+            
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <span class="text-xs text-[#7c3aed] font-bold font-mono tracking-widest uppercase">
+                    JENIOS SOCIAL • Publicação & Transmissão
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Diretrizes Ativas 🛡️</span>
+            </div>
+
+            <!-- Área de Texto -->
+            <div>
+                <textarea 
+                    rows="3" 
+                    placeholder="Partilhe a sua análise, setup ou visão institucional..." 
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3.5 text-xs text-slate-900 focus:outline-none focus:border-[#7c3aed] resize-none"
+                ></textarea>
+            </div>
+
+            <!-- Campo para Inserir Link do YouTube -->
+            <div class="space-y-1.5">
+                <label class="block text-[10px] font-bold uppercase text-slate-500 font-mono">Incorporar Vídeo do YouTube</label>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Cole o link do YouTube aqui (ex: https://youtube.com/watch?v=...)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono focus:outline-none focus:border-[#7c3aed]">
+                    <button onclick="alert('Vídeo do YouTube incorporado com sucesso!')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shrink-0 cursor-pointer">Adicionar</button>
+                </div>
+            </div>
+
+            <!-- Botões de Multimédia (Foto, Câmera e Live) -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="alertModalFoto()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
+                        📷 Tirar Foto / Subir Arquivo
+                    </button>
+                    <button onclick="alertModalLive()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold px-3 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
+                        🔴 Iniciar Live (Transmissão)
+                    </button>
+                </div>
+
+                <button 
+                    onclick="alert('Publicação enviada com sucesso para o Feed Global!')" 
+                    class="bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-bold text-xs px-6 py-2.5 rounded-xl transition-all shadow-md uppercase tracking-wide cursor-pointer"
+                >
+                    Publicar no Feed
+                </button>
+            </div>
+
+            <!-- Aviso de Regras da Comunidade (Anti-Pornografia) -->
+            <div class="bg-purple-50/50 border border-purple-200 rounded-xl p-3 text-[11px] text-slate-600">
+                <b>Regra da Comunidade:</b> É estritamente proibida a partilha de conteúdos pornográficos, material impróprio ou spam. Violações resultam no banimento permanente do JENIOS ID.
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts de Simulação -->
+    <script>
+        function alertModalFoto() {
+            alert('A abrir ferramenta de captura de foto / gestor de ficheiros da plataforma...');
+        }
+        function alertModalLive() {
+            alert('A preparar sala de transmissão ao vivo (Live Streaming)...');
+        }
+    </script>
+</body>
+</html>

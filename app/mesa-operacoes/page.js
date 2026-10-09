@@ -5,15 +5,18 @@ export default function MesaOperacoesPage() {
   const [modalBrokerAberto, setModalBrokerAberto] = useState(false);
   const [modalRiscoAberto, setModalRiscoAberto] = useState(false);
   
+  // Estados de Plano e Assinatura
+  const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
+
   // Estados de Conta e Modo
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [modoOperacao, setModoOperacao] = useState('reversa'); // 'manual' ou 'reversa'
-  const [bancaTotalConta] = useState(100000.00); // Exemplo de banca total do usuário para o cálculo de 5%
+  const [bancaTotalConta] = useState(100000.00); // Exemplo de banca total para o cálculo de 5%
 
   // Estados de Ativos e Busca
   const [categoria, setCategoria] = useState('b3');
   const [buscaAtiva, setBuscaAtiva] = useState('');
-  const [ativoSelecionado, setAtivoSelecionado] = useState('WINZ26 (B3 - Mini-Índice Futuro)');
+  const [ativoSelecionado, setAtivoSelecionado] = useState('Mini-Índice (WIN1!)');
 
   // Gestão de Risco e Alocação
   const [capitalAlocar, setCapitalAlocar] = useState(10000);
@@ -22,25 +25,39 @@ export default function MesaOperacoesPage() {
   // Limite máximo de 5% da banca total
   const limiteMaximoRiscoPermitido = bancaTotalConta * 0.05;
 
-  // Listas de Ativos por Categoria com Busca
+  // Listas de Ativos por Categoria com Símbolos TradingView
   const ativosDisponiveis = {
     b3: [
-      { id: 'WINZ26', nome: 'WINZ26 (B3 - Mini-Índice Futuro)', simboloTV: 'BMFBOVESPA:WIN1!' },
-      { id: 'WDOF26', nome: 'WDOF26 (B3 - Mini-Dólar Futuro)', simboloTV: 'BMFBOVESPA:WDO1!' },
-      { id: 'PETR4', nome: 'PETR4 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:PETR4' },
-      { id: 'VALE3', nome: 'VALE3 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:VALE3' },
-      { id: 'ITUB4', nome: 'ITUB4 (B3 - Ações A Vista)', simboloTV: 'BMFBOVESPA:ITUB4' }
+      { id: 'WINZ26', nome: 'Mini-Índice (WIN1!)', simboloTV: 'BMFBOVESPA:WIN1!' },
+      { id: 'WDOF26', nome: 'Mini-Dólar (WDO1!)', simboloTV: 'BMFBOVESPA:WDO1!' },
+      { id: 'PETR4', nome: 'Petrobras (PETR4)', simboloTV: 'BMFBOVESPA:PETR4' },
+      { id: 'VALE3', nome: 'Vale (VALE3)', simboloTV: 'BMFBOVESPA:VALE3' },
+      { id: 'ITUB4', nome: 'Itaú (ITUB4)', simboloTV: 'BMFBOVESPA:ITUB4' }
     ],
     cripto: [
-      { id: 'BTCUSD', nome: 'BTCUSD (Cripto - Bitcoin Perpétuo)', simboloTV: 'BINANCE:BTCUSDT' },
-      { id: 'ETHUSD', nome: 'ETHUSD (Cripto - Ethereum Perpétuo)', simboloTV: 'BINANCE:ETHUSDT' },
-      { id: 'SOLUSDT', nome: 'SOLUSDT (Cripto - Solana)', simboloTV: 'BINANCE:SOLUSDT' }
+      { id: 'BTCUSD', nome: 'Bitcoin (BTC/USDT)', simboloTV: 'BINANCE:BTCUSDT' },
+      { id: 'ETHUSD', nome: 'Ethereum (ETH/USDT)', simboloTV: 'BINANCE:ETHUSDT' },
+      { id: 'SOLUSDT', nome: 'Solana (SOL/USDT)', simboloTV: 'BINANCE:SOLUSDT' }
     ],
     forex: [
-      { id: 'EURUSD', nome: 'EURUSD (Global - Forex Major)', simboloTV: 'FX:EURUSD' },
-      { id: 'GBPUSD', nome: 'GBPUSD (Global - Forex Major)', simboloTV: 'FX:GBPUSD' },
-      { id: 'XAUUSD', nome: 'XAUUSD (Global - Ouro Spot)', simboloTV: 'OANDA:XAUUSD' }
+      { id: 'EURUSD', nome: 'EUR/USD (Forex)', simboloTV: 'FX:EURUSD' },
+      { id: 'GBPUSD', nome: 'GBP/USD (Forex)', simboloTV: 'FX:GBPUSD' },
+      { id: 'XAUUSD', nome: 'Ouro (XAU/USD)', simboloTV: 'OANDA:XAUUSD' }
     ]
+  };
+
+  // Função para mudar de categoria com validação de plano
+  const mudarCategoria = (cat) => {
+    if (planoUsuario === 'basico' && (cat === 'cripto' || cat === 'forex')) {
+      alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
+      window.location.href = '/checkout';
+      return;
+    }
+    setCategoria(cat);
+    setBuscaAtiva('');
+    if (ativosDisponiveis[cat] && ativosDisponiveis[cat].length > 0) {
+      setAtivoSelecionado(ativosDisponiveis[cat][0].nome);
+    }
   };
 
   const listaFiltrada = (ativosDisponiveis[categoria] || []).filter(item => 
@@ -91,6 +108,12 @@ export default function MesaOperacoesPage() {
   }, [ativoSelecionado]);
 
   const executarOrdem = (direcao) => {
+    if (planoUsuario === 'basico' && categoria !== 'b3') {
+      alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
+      window.location.href = '/checkout';
+      return;
+    }
+
     if (capitalAlocar > limiteMaximoRiscoPermitido) {
       alert(`⚠️ TRAVA DE SEGURANÇA ATIVADA: O capital alocado (R$ ${capitalAlocar}) ultrapassa o limite de 5% da sua banca recomendada (R$ ${limiteMaximoRiscoPermitido.toFixed(2)}). Reduza o valor para operar.`);
       return;
@@ -99,7 +122,7 @@ export default function MesaOperacoesPage() {
     const riscoCalculado = capitalAlocar * 0.02; 
     const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${ativoSelecionado}\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
+    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()}\n• Ativo: ${ativoSelecionado}\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
   };
 
   return (
@@ -109,10 +132,15 @@ export default function MesaOperacoesPage() {
       <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxSizing: 'border-box' }}>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <a href="/dashboard" style={{ backgroundColor: '#f1f5f9', color: '#334155', textDecoration: 'none', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold' }}>
+            ← Voltar
+          </a>
+
           <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase' }}>
             JENIOS DESK •
           </span>
 
+          {/* Seletor de Conta (Simulada vs Real) */}
           <div style={{ display: 'flex', backgroundColor: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
             <button 
               onClick={() => setTipoConta('simulada')} 
@@ -130,6 +158,20 @@ export default function MesaOperacoesPage() {
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', fontSize: '12px', fontFamily: 'monospace' }}>
+          
+          {/* Seletor de Teste de Plano */}
+          <div style={{ backgroundColor: '#f1f5f9', padding: '4px 8px', borderRadius: '8px', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Plano:</span>
+            <select 
+              value={planoUsuario} 
+              onChange={(e) => setPlanoUsuario(e.target.value)}
+              style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none', cursor: 'pointer' }}
+            >
+              <option value="basico">Plano Básico (B3)</option>
+              <option value="completo">Plano Completo (B3 + Cripto + Global)</option>
+            </select>
+          </div>
+
           {tipoConta === 'real' && (
             <button 
               onClick={() => setModalBrokerAberto(true)}
@@ -161,9 +203,9 @@ export default function MesaOperacoesPage() {
           <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <button onClick={() => setCategoria('b3')} style={{ backgroundColor: categoria === 'b3' ? '#7c3aed' : '#e2e8f0', color: categoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>B3 (Brasil)</button>
-                <button onClick={() => setCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos</button>
-                <button onClick={() => setCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#e2e8f0' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex</button>
+                <button onClick={() => mudarCategoria('b3')} style={{ backgroundColor: categoria === 'b3' ? '#7c3aed' : '#e2e8f0', color: categoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>B3 (Brasil)</button>
+                <button onClick={() => mudarCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos {planoUsuario === 'basico' && '🔒'}</button>
+                <button onClick={() => mudarCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex {planoUsuario === 'basico' && '🔒'}</button>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '4px 10px', width: '220px' }}>

@@ -8,6 +8,7 @@ function SocialContent() {
 
   const [abaAtiva, setAbaAtiva] = useState('feed');
   const [novoTexto, setNovoTexto] = useState('');
+  const [youtubeLink, setYoutubeLink] = useState('');
   const [proporcaoFoto, setProporcaoFoto] = useState('quadrada');
   const [imagensPreview, setImagensPreview] = useState([]);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
@@ -24,11 +25,11 @@ function SocialContent() {
   const [authEmail, setAuthEmail] = useState('');
   const [authSenha, setAuthSenha] = useState('');
 
-  // Câmara
+  // Câmera
   const [modalCamera, setModalCamera] = useState(false);
   const videoRef = useRef(null);
 
-  // Perfil do Utilizador
+  // Perfil do Usuário
   const [meuPerfil, setMeuPerfil] = useState({
     nome: 'Paulo Stutz Netto',
     handle: '@paulostutz',
@@ -36,7 +37,7 @@ function SocialContent() {
     rentabilidade: 'R$ 0,00',
     assertividade: '0%',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    bio: 'Pastor, empresário, escritor e palestrante.\nCEO-Founder da Letter e da Jenios Social e Plataforma de negociações.\n+14 anos de experiência no mercado financeiro.',
+    bio: 'Pastor, empresário, escritor e palestrante.\nCEO-Founder da Letter e da Jenios Social.\n+14 anos de experiência no mercado financeiro.',
     seguidoresLista: ['@carlosm', '@anapaula', '@robertodias', '@julianac'],
     seguindoLista: ['@carlosm', '@anapaula', '@fernandal'],
     postsCount: 2,
@@ -45,7 +46,7 @@ function SocialContent() {
     autenticado: true
   });
 
-  // Ranking Top 10 Semanal Completo com os 10 Operadores
+  // Ranking Top 10 Semanal Completo
   const [rankingOperadores] = useState([
     { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em robôs HFT e Mini-Índice.', seguidoresLista: ['@paulostutz', '@anapaula'], seguindoLista: ['@paulostutz'], postsCount: 12, visualizacoes30Dias: '28.4k' },
     { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica multi-rede na Solana.', seguidoresLista: ['@paulostutz', '@carlosm'], seguindoLista: ['@paulostutz'], postsCount: 9, visualizacoes30Dias: '21.0k' },
@@ -59,14 +60,12 @@ function SocialContent() {
     { pos: 10, nome: 'Camila Martins', handle: '@camilam', cargo: 'Iniciante Pro', rentabilidade: '+ R$ 1.800', assertividade: '74%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Evoluindo no método Jenios.', seguidores: [], seguindoLista: [], postsCount: 2, visualizacoes30Dias: '3.0k' }
   ]);
 
-  // Canal de Notícias Macro (3 Fontes Síncronas)
   const [noticiasMacro] = useState([
     { id: 1, fonte: 'Bloomberg', cat: 'GLOBAL', titulo: 'Bancos centrais avaliam corte agressivo na taxa de juros global', impacto: '🟢 Positivo p/ Risco', hora: 'Há 5 mins' },
     { id: 2, fonte: 'Reuters', cat: 'COMMODITIES', titulo: 'Fluxo institucional estrangeiro dispara na B3 com alta do minério', impacto: '🟢 Alta Liquidez', hora: 'Há 12 mins' },
     { id: 3, fonte: 'InfoMoney', cat: 'HFT & MERCADO', titulo: 'Volatilidade no Mini-Índice atinge pico recorde no trimestre', impacto: '🔴 Alerta Volatilidade', hora: 'Há 25 mins' }
   ]);
 
-  // Estado de Posts Perpétuos no LocalStorage
   const [posts, setPosts] = useState([
     { 
       id: 1, 
@@ -77,6 +76,7 @@ function SocialContent() {
       bio: 'Especialista em robôs HFT e Mini-Índice.',
       texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', 
       imagens: ['https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800'], 
+      youtubeUrl: '',
       proporcao: 'quadrada',
       tempo: 'Há 15 mins', 
       likes: 34, 
@@ -89,20 +89,15 @@ function SocialContent() {
   useEffect(() => {
     const perfilSalvo = localStorage.getItem('jenios_social_perfil');
     if (perfilSalvo) {
-      try { 
-        const parsed = JSON.parse(perfilSalvo);
-        const historicoLucro = localStorage.getItem('jenios_lucro_total');
-        if (historicoLucro) {
-          parsed.rentabilidade = `+ R$ ${Number(historicoLucro).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-          parsed.assertividade = '95.4%';
-        }
-        setMeuPerfil(parsed); 
-      } catch(e) {}
+      try { setMeuPerfil(JSON.parse(perfilSalvo)); } catch(e) {}
     }
 
-    const postsSalvos = localStorage.getItem('jenios_social_posts_v3');
+    const postsSalvos = localStorage.getItem('jenios_social_posts_v4');
     if (postsSalvos) {
       try { setPosts(JSON.parse(postsSalvos)); } catch(e) {}
+    } else {
+      const atualizados = posts.map(p => ({ ...p, views: p.views + 1 }));
+      setPosts(atualizados);
     }
 
     const directSalvo = localStorage.getItem('jenios_social_directs');
@@ -119,7 +114,14 @@ function SocialContent() {
 
   const salvarPostsNoStorage = (novosPosts) => {
     setPosts(novosPosts);
-    localStorage.setItem('jenios_social_posts_v3', JSON.stringify(novosPosts));
+    localStorage.setItem('jenios_social_posts_v4', JSON.stringify(novosPosts));
+  };
+
+  const extrairEmbedYoutube = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
   };
 
   const salvarEdicaoPerfil = (e) => {
@@ -127,6 +129,17 @@ function SocialContent() {
     localStorage.setItem('jenios_social_perfil', JSON.stringify(meuPerfil));
     setModalEditarPerfil(false);
     alert('✅ Perfil e Bio atualizados com sucesso!');
+  };
+
+  const handleUploadAvatar = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMeuPerfil(prev => ({ ...prev, avatar: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const fazerLogout = () => {
@@ -138,21 +151,7 @@ function SocialContent() {
 
   const processarAuth = (e) => {
     e.preventDefault();
-    const nomeUser = modoAuth === 'cadastro' ? 'Novo Trader' : 'Paulo Stutz Netto';
-    const handleUser = modoAuth === 'cadastro' ? '@novotrader' : '@paulostutz';
-    
-    const perfilLogado = {
-      ...meuPerfil,
-      nome: nomeUser,
-      handle: handleUser,
-      autenticado: true,
-      seguidoresLista: ['@paulostutz'],
-      seguindoLista: ['@paulostutz'],
-      postsCount: 0,
-      visualizacoes30Dias: 120,
-      bio: modoAuth === 'cadastro' ? 'Trader iniciante na plataforma Jenios HFT.' : meuPerfil.bio
-    };
-
+    const perfilLogado = { ...meuPerfil, autenticado: true };
     setMeuPerfil(perfilLogado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilLogado));
     setModalAutenticacao(false);
@@ -169,7 +168,6 @@ function SocialContent() {
           reader.readAsDataURL(file);
         });
       });
-
       Promise.all(leitores).then(resultados => {
         setImagensPreview(prev => [...prev, ...resultados]);
       });
@@ -199,7 +197,6 @@ function SocialContent() {
     ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
     const fotoUrl = canvas.toDataURL('image/png');
     setImagensPreview(prev => [...prev, fotoUrl]);
-    
     const stream = videoRef.current.srcObject;
     if (stream) stream.getTracks().forEach(t => t.stop());
     setModalCamera(false);
@@ -208,7 +205,7 @@ function SocialContent() {
 
   const publicarPost = (e) => {
     e.preventDefault();
-    if (!novoTexto.trim() && imagensPreview.length === 0) return;
+    if (!novoTexto.trim() && imagensPreview.length === 0 && !youtubeLink.trim()) return;
 
     const novoP = {
       id: Date.now(),
@@ -219,37 +216,60 @@ function SocialContent() {
       bio: meuPerfil.bio,
       texto: novoTexto,
       imagens: imagensPreview,
+      youtubeUrl: youtubeLink.trim(),
       proporcao: proporcaoFoto,
       tempo: 'Agora mesmo',
       likes: 0,
       curtido: false,
-      views: 12,
+      views: 1,
       perfilAssociado: meuPerfil
     };
 
     const atualizados = [novoP, ...posts];
     salvarPostsNoStorage(atualizados);
-
     setNovoTexto('');
+    setYoutubeLink('');
     setImagensPreview([]);
     setProporcaoFoto('quadrada');
 
     const perfilAtualizado = {
       ...meuPerfil,
       postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 35
+      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 15
     };
     setMeuPerfil(perfilAtualizado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilAtualizado));
-    alert('🚀 Publicação realizada e fixada permanentemente na rede!');
+    alert('🚀 Publicação realizada com sucesso!');
+  };
+
+  const repostarPost = (postOriginal) => {
+    const novoP = {
+      id: Date.now(),
+      autor: meuPerfil.nome,
+      handle: meuPerfil.handle,
+      cargo: meuPerfil.cargo,
+      avatar: meuPerfil.avatar,
+      bio: meuPerfil.bio,
+      texto: `🔄 Repost de ${postOriginal.handle}: "${postOriginal.texto}"`,
+      imagens: postOriginal.imagens || [],
+      youtubeUrl: postOriginal.youtubeUrl || '',
+      proporcao: postOriginal.proporcao || 'quadrada',
+      tempo: 'Agora mesmo',
+      likes: 0,
+      curtido: false,
+      views: 1,
+      perfilAssociado: meuPerfil
+    };
+    const atualizados = [novoP, ...posts];
+    salvarPostsNoStorage(atualizados);
+    alert('🚀 Post repostado com sucesso no seu feed!');
   };
 
   const curtirPost = (id) => {
     const atualizados = posts.map(p => p.id === id ? { 
       ...p, 
       likes: p.curtido ? p.likes - 1 : p.likes + 1, 
-      curtido: !p.curtido,
-      views: p.views + 1 
+      curtido: !p.curtido 
     } : p);
     salvarPostsNoStorage(atualizados);
   };
@@ -327,57 +347,51 @@ function SocialContent() {
         </div>
       )}
 
-      {modalAutenticacao && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '400px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{modoAuth === 'login' ? '🔑 Entrar' : '✨ Criar Nova Conta'}</h3>
-              <button onClick={() => setModalAutenticacao(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
-            </div>
-            <form onSubmit={processarAuth} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>E-mail:</label>
-                <input type="email" placeholder="seu@email.com" value={authEmail} onChange={(e) => setAuthEmail(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
-              </div>
-              <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Senha:</label>
-                <input type="password" placeholder="••••••••" value={authSenha} onChange={(e) => setAuthSenha(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
-              </div>
-              <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', marginTop: '8px' }}>
-                {modoAuth === 'login' ? 'Entrar' : 'Criar Conta (Métricas Zeradas 0)'}
-              </button>
-              <button type="button" onClick={() => setModoAuth(modoAuth === 'login' ? 'cadastro' : 'login')} style={{ background: 'none', border: 'none', color: '#7c3aed', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', marginTop: '4px' }}>
-                {modoAuth === 'login' ? 'Não tem conta? Criar nova' : 'Já tem conta? Fazer login'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
+      {/* MODAL EDITAR PERFIL COM SUPORTE A FOTO / AVATAR */}
       {modalEditarPerfil && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '450px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '450px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>⚙️ Editar Perfil & Bio Fixada</h3>
+              <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>⚙️ Editar Perfil & Foto</h3>
               <button onClick={() => setModalEditarPerfil(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
             <form onSubmit={salvarEdicaoPerfil} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              
+              <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                <img src={meuPerfil.avatar} alt="Avatar Atual" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed', marginBottom: '8px' }} />
+                <div>
+                  <label style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', display: 'inline-block' }}>
+                    📁 Carregar Nova Foto do Dispositivo
+                    <input type="file" accept="image/*" onChange={handleUploadAvatar} style={{ display: 'none' }} />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Ou Link da Foto (URL):</label>
+                <input type="text" value={meuPerfil.avatar} onChange={(e) => setMeuPerfil({...meuPerfil, avatar: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} />
+              </div>
+
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Nome:</label>
-                <input type="text" value={meuPerfil.nome} onChange={(e) => setMeuPerfil({...meuPerfil, nome: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
+                <input type="text" value={meuPerfil.nome} onChange={(e) => setMeuPerfil({...meuPerfil, nome: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} required />
               </div>
+
               <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Handle (@usuario):</label>
-                <input type="text" value={meuPerfil.handle} onChange={(e) => setMeuPerfil({...meuPerfil, handle: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Handle (@usuário):</label>
+                <input type="text" value={meuPerfil.handle} onChange={(e) => setMeuPerfil({...meuPerfil, handle: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} required />
               </div>
+
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Cargo / Título:</label>
-                <input type="text" value={meuPerfil.cargo} onChange={(e) => setMeuPerfil({...meuPerfil, cargo: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} />
+                <input type="text" value={meuPerfil.cargo} onChange={(e) => setMeuPerfil({...meuPerfil, cargo: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} />
               </div>
+
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Bio Completa (Fixada no Perfil):</label>
-                <textarea value={meuPerfil.bio} onChange={(e) => setMeuPerfil({...meuPerfil, bio: e.target.value})} style={{ width: '100%', height: '90px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} />
+                <textarea value={meuPerfil.bio} onChange={(e) => setMeuPerfil({...meuPerfil, bio: e.target.value})} style={{ width: '100%', height: '80px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} />
               </div>
+
               <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', marginTop: '8px' }}>Salvar Alterações</button>
             </form>
           </div>
@@ -402,7 +416,7 @@ function SocialContent() {
               </>
             ) : (
               <button onClick={() => setModalAutenticacao(true)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>
-                🔑 Entrar / Criar Conta
+                🔑 Entrar
               </button>
             )}
           </div>
@@ -448,29 +462,11 @@ function SocialContent() {
                 ⚙️ Editar Perfil
               </button>
               <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>
-                Sala de Controlo
+                Sala de Controle
               </button>
             </div>
 
           </div>
-        </div>
-
-        {/* STORIES */}
-        <div style={{ backgroundColor: '#ffffff', padding: '15px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
-          {[
-            { nome: 'Seu Story', avatar: meuPerfil.avatar, meu: true },
-            { nome: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-            { nome: 'Ana Paula', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-            { nome: 'Roberto Dias', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' }
-          ].map((st, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', cursor: 'pointer', minWidth: '70px' }}>
-              <div style={{ width: '64px', height: '110px', borderRadius: '12px', border: '3px solid #7c3aed', padding: '2px', backgroundColor: '#000', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <img src={st.avatar} alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
-                {st.meu && <span style={{ position: 'absolute', bottom: '4px', backgroundColor: '#7c3aed', color: '#fff', fontSize: '10px', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>+</span>}
-              </div>
-              <span style={{ fontSize: '11px', color: '#334155', fontWeight: 'bold' }}>{st.nome}</span>
-            </div>
-          ))}
         </div>
 
         {/* Abas */}
@@ -492,6 +488,10 @@ function SocialContent() {
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
 
+                  <div style={{ marginBottom: '12px' }}>
+                    <input type="text" placeholder="🔗 Link de vídeo do YouTube (Opcional)" value={youtubeLink} onChange={(e) => setYoutubeLink(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', boxSizing: 'border-box' }} />
+                  </div>
+
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', fontSize: '11px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 'bold', color: '#64748b' }}>Formato da Foto:</span>
                     <label><input type="radio" name="prop" checked={proporcaoFoto === 'quadrada'} onChange={() => setProporcaoFoto('quadrada')} /> Quadrada (1:1)</label>
@@ -501,7 +501,7 @@ function SocialContent() {
 
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                     <button type="button" onClick={iniciarCamera} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
-                      📷 Tirar Foto (Câmara)
+                      📷 Tirar Foto (Câmera)
                     </button>
                   </div>
 
@@ -529,6 +529,7 @@ function SocialContent() {
               {posts.map((p) => {
                 const imgAtualIdx = indiceCarrossel[p.id] || 0;
                 const temVariasFotos = p.imagens && p.imagens.length > 1;
+                const embedYoutubeUrl = extrairEmbedYoutube(p.youtubeUrl);
 
                 let estiloProporcao = { width: '100%', minHeight: '350px', maxHeight: '550px' };
                 if (p.proporcao === 'em-pe') estiloProporcao = { width: '100%', minHeight: '450px', maxHeight: '600px' };
@@ -544,12 +545,21 @@ function SocialContent() {
                           <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • Visitar perfil ↗️</span>
                         </div>
                       </div>
-                      <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔗 Copiar Link</button>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button onClick={() => repostarPost(p)} style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', border: '1px solid #d8b4fe', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔄 Repostar</button>
+                        <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔗 Copiar Link</button>
+                      </div>
                     </div>
 
                     <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
                     
-                    {p.imagens && p.imagens.length > 0 && (
+                    {embedYoutubeUrl && (
+                      <div style={{ width: '100%', height: '360px', backgroundColor: '#000' }}>
+                        <iframe src={embedYoutubeUrl} title="YouTube video player" style={{ width: '100%', height: '100%', border: 'none' }} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                      </div>
+                    )}
+
+                    {p.imagens && p.imagens.length > 0 && !embedYoutubeUrl && (
                       <div style={{ ...estiloProporcao, backgroundColor: '#000', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img src={p.imagens[imgAtualIdx]} alt="Post Mídia" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
 
@@ -569,7 +579,7 @@ function SocialContent() {
                       <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#dc2626' : '#64748b', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
                         {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
                       </button>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 12} visualizações</span>
+                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 1} visualizações</span>
                     </div>
                   </div>
                 );
@@ -641,7 +651,7 @@ function SocialContent() {
           </div>
         )}
 
-        {/* PERFIL VISITA / DIRECT */}
+        {/* PERFIL VISITA */}
         {abaAtiva === 'perfil-visita' && perfilVisitado && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>

@@ -3,15 +3,188 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CryptoValidator from '../components/CryptoValidator';
+import SocialPostCard from '../components/SocialPostCard';
+import SocialStories from '../components/SocialStories';
+
+
+
+const JENIOS_SOCIAL_DB = 'jenios-social-db';
+const JENIOS_SOCIAL_STORE = 'social-data';
+const JENIOS_POSTS_KEY = 'posts-v1';
+
+function abrirJeniosSocialDb() {
+  return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || !window.indexedDB) {
+      reject(new Error('IndexedDB não disponível.'));
+      return;
+    }
+
+    const request = indexedDB.open(JENIOS_SOCIAL_DB, 1);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+
+      if (!db.objectStoreNames.contains(JENIOS_SOCIAL_STORE)) {
+        db.createObjectStore(JENIOS_SOCIAL_STORE);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function salvarPostsIndexedDb(posts) {
+  const db = await abrirJeniosSocialDb();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(
+      JENIOS_SOCIAL_STORE,
+      'readwrite'
+    );
+
+    const store = transaction.objectStore(
+      JENIOS_SOCIAL_STORE
+    );
+
+    store.put(posts, JENIOS_POSTS_KEY);
+
+    transaction.oncomplete = () => {
+      db.close();
+      resolve();
+    };
+
+    transaction.onerror = () => {
+      db.close();
+      reject(transaction.error);
+    };
+  });
+}
+
+async function carregarPostsIndexedDb() {
+  const db = await abrirJeniosSocialDb();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(
+      JENIOS_SOCIAL_STORE,
+      'readonly'
+    );
+
+    const store = transaction.objectStore(
+      JENIOS_SOCIAL_STORE
+    );
+
+    const request = store.get(JENIOS_POSTS_KEY);
+
+    request.onsuccess = () => {
+      db.close();
+      resolve(request.result || null);
+    };
+
+    request.onerror = () => {
+      db.close();
+      reject(request.error);
+    };
+  });
+}
 
 function SocialContent() {
+  const [abaGaleria, setAbaGaleria] = useState('posts');
+
   const searchParams = useSearchParams();
   const perfilUrl = searchParams.get('perfil');
 
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const [abaAtiva, setAbaAtiva] = useState('feed');
+  const [storiesJenios, setStoriesJenios] = useState([]);
+
+  useEffect(() => {
+    try {
+      const salvos = JSON.parse(
+        localStorage.getItem('jenios_social_stories') || '[]'
+      );
+
+      if (Array.isArray(salvos)) {
+        setStoriesJenios(
+          salvos.filter((s) =>
+            Date.now() - new Date(s.criadoEm).getTime() <
+            24 * 60 * 60 * 1000
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Erro ao carregar Stories:', error);
+    }
+  }, []);
+
+  const adicionarStoryJenios = async () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*,video/*';
+
+    input.onchange = async (evento) => {
+      const arquivo = evento.target.files?.[0];
+      if (!arquivo) return;
+
+      if (arquivo.size > 4 * 1024 * 1024) {
+        alert('Arquivo muito grande. Limite temporario: 4 MB.');
+        return;
+      }
+
+      const leitor = new FileReader();
+
+      leitor.onload = () => {
+        const novoStory = {
+          id: Date.now(),
+          autor: meuPerfil.nome,
+          handle: meuPerfil.handle,
+          avatar: meuPerfil.avatar,
+          src: leitor.result,
+          tipo: arquivo.type.startsWith('video/')
+            ? 'video'
+            : 'imagem',
+          criadoEm: new Date().toISOString(),
+        };
+
+        const atualizados = [...storiesJenios, novoStory];
+
+        try {
+          localStorage.setItem(
+            'jenios_social_stories',
+            JSON.stringify(atualizados)
+          );
+          setStoriesJenios(atualizados);
+        } catch (error) {
+          console.error(error);
+          alert('Nao foi possivel salvar o Story.');
+        }
+      };
+
+      leitor.readAsDataURL(arquivo);
+    };
+
+    input.click();
+  };
+
   const [novoTexto, setNovoTexto] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
-  const [proporcaoFoto, setProporcaoFoto] = useState('quadrada');
   const [imagensPreview, setImagensPreview] = useState([]);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
@@ -239,6 +412,8 @@ function SocialContent() {
     },
   ]);
 
+  const [postsProntos, setPostsProntos] = useState(false);
+  const [erroPosts, setErroPosts] = useState('');
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -271,20 +446,26 @@ function SocialContent() {
       } catch (e) {}
     }
 
-    const postsSalvos = localStorage.getItem('jenios_social_posts_v4');
-
-    if (postsSalvos) {
-      try {
-        setPosts(JSON.parse(postsSalvos));
-      } catch (e) {}
-    } else {
-      const atualizados = posts.map((p) => ({
-        ...p,
-        views: p.views + 1,
-      }));
-
-      setPosts(atualizados);
-    }
+    carregarPostsIndexedDb()
+      .then((dados) => {
+        if (Array.isArray(dados)) {
+          setPosts(dados);
+          setPostsProntos(true);
+        } else if (dados == null) {
+          setPosts([]);
+          setPostsProntos(true);
+        } else {
+          setErroPosts(
+            'Formato inesperado. Dados preservados.'
+          );
+        }
+      })
+      .catch((erro) => {
+        console.error('Erro ao recuperar posts:', erro);
+        setErroPosts(
+          'Não foi possível carregar as publicações.'
+        );
+      });
 
     const directSalvo = localStorage.getItem('jenios_social_directs');
 
@@ -304,12 +485,22 @@ function SocialContent() {
   }, [perfilUrl]);
 
   const salvarPostsNoStorage = (novosPosts) => {
+    if (!postsProntos || erroPosts) {
+      alert('Aguarde o carregamento das publicações.');
+      return;
+    }
     setPosts(novosPosts);
 
-    localStorage.setItem(
-      'jenios_social_posts_v4',
-      JSON.stringify(novosPosts)
-    );
+    salvarPostsIndexedDb(novosPosts).catch((error) => {
+      console.error(
+        'Erro ao salvar posts da JENIOS Social:',
+        error
+      );
+
+      alert(
+        'Não foi possível salvar esta publicação no armazenamento local.'
+      );
+    });
   };
 
   const extrairEmbedYoutube = (url) => {
@@ -476,28 +667,127 @@ function SocialContent() {
     alert('Autenticado com sucesso!');
   };
 
-  const handleUploadCarrossel = (e) => {
-    const files = Array.from(e.target.files);
+  const comprimirImagem = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
 
-    if (files.length > 0) {
-      const leitores = files.map((file) => {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
+    reader.onload = (evento) => {
+      const imagem = new Image();
 
-          reader.onloadend = () => resolve(reader.result);
+      imagem.onload = () => {
+        const larguraOriginal = imagem.naturalWidth;
+        const alturaOriginal = imagem.naturalHeight;
 
-          reader.readAsDataURL(file);
+        // Detecta automaticamente o formato original da foto
+        let orientacao = 'quadrada';
+
+        const proporcaoOriginal = larguraOriginal / alturaOriginal;
+
+        if (proporcaoOriginal > 1.08) {
+          orientacao = 'horizontal';
+        } else if (proporcaoOriginal < 0.92) {
+          orientacao = 'vertical';
+        }
+
+        // Redimensiona apenas se a imagem for muito grande.
+        // Mantém sempre a proporção original.
+        const TAMANHO_MAXIMO = 1600;
+
+        let novaLargura = larguraOriginal;
+        let novaAltura = alturaOriginal;
+
+        if (
+          larguraOriginal > TAMANHO_MAXIMO ||
+          alturaOriginal > TAMANHO_MAXIMO
+        ) {
+          const escala = Math.min(
+            TAMANHO_MAXIMO / larguraOriginal,
+            TAMANHO_MAXIMO / alturaOriginal
+          );
+
+          novaLargura = Math.round(larguraOriginal * escala);
+          novaAltura = Math.round(alturaOriginal * escala);
+        }
+
+        const canvas = document.createElement('canvas');
+
+        canvas.width = novaLargura;
+        canvas.height = novaAltura;
+
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          reject(new Error('Não foi possível processar a imagem.'));
+          return;
+        }
+
+        ctx.drawImage(
+          imagem,
+          0,
+          0,
+          novaLargura,
+          novaAltura
+        );
+
+        // Compressão para não estourar o localStorage durante o desenvolvimento
+        const imagemComprimida = canvas.toDataURL(
+          'image/jpeg',
+          0.78
+        );
+
+        resolve({
+          src: imagemComprimida,
+          largura: novaLargura,
+          altura: novaAltura,
+          larguraOriginal,
+          alturaOriginal,
+          proporcao: novaLargura / novaAltura,
+          orientacao,
         });
-      });
+      };
 
-      Promise.all(leitores).then((resultados) => {
-        setImagensPreview((prev) => [
-          ...prev,
-          ...resultados,
-        ]);
-      });
-    }
-  };
+      imagem.onerror = () => {
+        reject(new Error('Não foi possível abrir a imagem.'));
+      };
+
+      imagem.src = evento.target.result;
+    };
+
+    reader.onerror = () => {
+      reject(new Error('Não foi possível ler o arquivo.'));
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
+
+const handleUploadCarrossel = async (e) => {
+  const files = Array.from(e.target.files || []);
+
+  if (files.length === 0) {
+    return;
+  }
+
+  try {
+    const imagensProcessadas = await Promise.all(
+      files.map((file) => comprimirImagem(file))
+    );
+
+    setImagensPreview((prev) => [
+      ...prev,
+      ...imagensProcessadas,
+    ]);
+
+    // Permite selecionar novamente o mesmo arquivo depois
+    e.target.value = '';
+  } catch (error) {
+    console.error('Erro ao processar imagem:', error);
+
+    alert(
+      'Não foi possível processar uma das imagens. Tente novamente.'
+    );
+  }
+};
 
   const removerFotoPreview = (index) => {
     setImagensPreview((prev) =>
@@ -539,9 +829,34 @@ function SocialContent() {
       canvas.height
     );
 
-    const fotoUrl = canvas.toDataURL('image/png');
+    const fotoUrl = canvas.toDataURL(
+      'image/jpeg',
+      0.82
+    );
 
-    setImagensPreview((prev) => [...prev, fotoUrl]);
+    const largura = canvas.width;
+    const altura = canvas.height;
+
+    let orientacao = 'quadrada';
+
+    if (largura > altura) {
+      orientacao = 'horizontal';
+    } else if (altura > largura) {
+      orientacao = 'vertical';
+    }
+
+    setImagensPreview((prev) => [
+      ...prev,
+      {
+        src: fotoUrl,
+        largura,
+        altura,
+        larguraOriginal: largura,
+        alturaOriginal: altura,
+        proporcao: largura / altura,
+        orientacao,
+      },
+    ]);
 
     const stream = videoRef.current.srcObject;
 
@@ -575,7 +890,6 @@ function SocialContent() {
       texto: novoTexto,
       imagens: imagensPreview,
       youtubeUrl: youtubeLink.trim(),
-      proporcao: proporcaoFoto,
       tempo: 'Agora mesmo',
       likes: 0,
       curtido: false,
@@ -590,7 +904,6 @@ function SocialContent() {
     setNovoTexto('');
     setYoutubeLink('');
     setImagensPreview([]);
-    setProporcaoFoto('quadrada');
 
     const perfilAtualizado = {
       ...meuPerfil,
@@ -650,7 +963,23 @@ function SocialContent() {
 
     salvarPostsNoStorage(atualizados);
   };
+const atualizarPost = (id, alteracoes) => {
+  const atualizados = posts.map((p) =>
+    p.id === id
+      ? { ...p, ...alteracoes }
+      : p
+  );
 
+  salvarPostsNoStorage(atualizados);
+};
+
+const excluirPost = (id) => {
+  const atualizados = posts.filter(
+    (p) => p.id !== id
+  );
+
+  salvarPostsNoStorage(atualizados);
+};
   const mudarFotoCarrossel = (
     postId,
     direcao,
@@ -729,6 +1058,18 @@ function SocialContent() {
 
     alert(`🔗 Link do perfil copiado: ${url}`);
   };
+
+  if (erroPosts || !postsProntos) {
+    return (
+      <main style={{ padding: 32 }}>
+        <h2>JENIOS Social</h2>
+        <p>
+          {erroPosts ||
+            'Carregando publicações salvas...'}
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main
@@ -1349,6 +1690,7 @@ function SocialContent() {
         <div
           style={{
             backgroundColor: '#ffffff',
+            display: abaAtiva === 'perfil-visita' ? 'none' : 'block',
             padding: '24px',
             borderRadius: '16px',
             border: '1px solid #e2e8f0',
@@ -1376,6 +1718,15 @@ function SocialContent() {
             >
               <img
                 src={meuPerfil.avatar}
+                onClick={() => visitarPerfil(meuPerfil)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    visitarPerfil(meuPerfil);
+                  }
+                }}
                 alt="Avatar"
                 style={{
                   width: '85px',
@@ -1396,7 +1747,20 @@ function SocialContent() {
                     margin: '0 0 2px 0',
                   }}
                 >
-                  {meuPerfil.nome}{' '}
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => visitarPerfil(meuPerfil)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        visitarPerfil(meuPerfil);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {meuPerfil.nome}
+                  </span>{' '}
                   <span
                     style={{
                       fontSize: '14px',
@@ -1458,7 +1822,21 @@ function SocialContent() {
                 alignItems: 'center',
               }}
             >
-              <div style={{ textAlign: 'center' }}>
+              <div
+                  onClick={() => visitarPerfil(meuPerfil)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      visitarPerfil(meuPerfil);
+                    }
+                  }}
+                  style={{
+                    textAlign: 'center',
+                    cursor: 'pointer'
+                  }}
+                >
                 <span
                   style={{
                     fontSize: '10px',
@@ -1658,7 +2036,36 @@ function SocialContent() {
           </button>
         </div>
 
-        {/* ABA FEED */}
+
+        {/* JENIOS_BOTAO_SALVOS_V1 */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: '16px'
+        }}>
+          <button
+            type="button"
+            onClick={() => {
+              setPerfilVisitado(meuPerfil);
+              setAbaGaleria('salvos');
+              setAbaAtiva('perfil-visita');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            style={{
+              padding: '10px 18px',
+              backgroundColor: '#ffffff',
+              color: '#7c3aed',
+              border: '1px solid #c4b5fd',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
+            🔖 Meus Salvos
+          </button>
+        </div>
+
+{/* ABA FEED */}
         {abaAtiva === 'feed' && (
           <div
             style={{
@@ -1667,6 +2074,8 @@ function SocialContent() {
               gap: '25px',
             }}
           >
+
+
             {/* COLUNA PRINCIPAL */}
             <div
               style={{
@@ -1675,6 +2084,11 @@ function SocialContent() {
                 gap: '20px',
               }}
             >
+              <SocialStories
+                meuPerfil={meuPerfil}
+                stories={storiesJenios}
+                onAdicionarStory={adicionarStoryJenios}
+              />
               {/* CRIAR PUBLICAÇÃO */}
               <div
                 style={{
@@ -1726,58 +2140,17 @@ function SocialContent() {
 
                   <div
                     style={{
-                      display: 'flex',
-                      gap: '10px',
                       marginBottom: '12px',
-                      alignItems: 'center',
+                      padding: '9px 12px',
+                      borderRadius: '8px',
+                      backgroundColor: '#faf5ff',
+                      border: '1px solid #e9d5ff',
+                      color: '#6d28d9',
                       fontSize: '11px',
-                      flexWrap: 'wrap',
+                      fontWeight: '600',
                     }}
                   >
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        color: '#64748b',
-                      }}
-                    >
-                      Formato da Foto:
-                    </span>
-
-                    <label>
-                      <input
-                        type="radio"
-                        name="prop"
-                        checked={proporcaoFoto === 'quadrada'}
-                        onChange={() =>
-                          setProporcaoFoto('quadrada')
-                        }
-                      />{' '}
-                      Quadrada (1:1)
-                    </label>
-
-                    <label>
-                      <input
-                        type="radio"
-                        name="prop"
-                        checked={proporcaoFoto === 'em-pe'}
-                        onChange={() =>
-                          setProporcaoFoto('em-pe')
-                        }
-                      />{' '}
-                      Em Pé (4:5)
-                    </label>
-
-                    <label>
-                      <input
-                        type="radio"
-                        name="prop"
-                        checked={proporcaoFoto === 'deitada'}
-                        onChange={() =>
-                          setProporcaoFoto('deitada')
-                        }
-                      />{' '}
-                      Deitada (16:9)
-                    </label>
+                    ✨ Formato automático — cada foto mantém sua proporção original.
                   </div>
 
                   <div
@@ -1817,26 +2190,36 @@ function SocialContent() {
                       alignItems: 'center',
                     }}
                   >
-                    {imagensPreview.map((imgSrc, idx) => (
+                    {imagensPreview.map((imagem, idx) => (
                       <div
                         key={idx}
                         style={{
                           position: 'relative',
-                          width: '80px',
-                          height: '80px',
+                          width: '110px',
+                          minHeight: '80px',
                           borderRadius: '8px',
                           overflow: 'hidden',
                           border: '2px solid #7c3aed',
+                          backgroundColor: '#000',
                           flexShrink: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                       >
                         <img
-                          src={imgSrc}
+                          src={
+                            typeof imagem === 'string'
+                              ? imagem
+                              : imagem?.src
+                          }
                           alt="Preview"
                           style={{
                             width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
+                            height: 'auto',
+                            maxHeight: '150px',
+                            objectFit: 'contain',
+                            display: 'block',
                           }}
                         />
 
@@ -1938,393 +2321,33 @@ function SocialContent() {
                 </form>
               </div>
 
-              {/* POSTS - A PARTE 2B CONTINUA EXATAMENTE DAQUI */}
-             {posts.map((p) => {
-                const imgAtualIdx =
-                  indiceCarrossel[p.id] || 0;
-
-                const temVariasFotos =
-                  p.imagens && p.imagens.length > 1;
-
-                const embedYoutubeUrl =
-                  extrairEmbedYoutube(p.youtubeUrl);
-
-                let estiloProporcao = {
-                  width: '100%',
-                  minHeight: '350px',
-                  maxHeight: '550px',
-                };
-
-                if (p.proporcao === 'em-pe') {
-                  estiloProporcao = {
-                    width: '100%',
-                    minHeight: '450px',
-                    maxHeight: '600px',
-                  };
-                }
-
-                if (p.proporcao === 'deitada') {
-                  estiloProporcao = {
-                    width: '100%',
-                    minHeight: '280px',
-                    maxHeight: '400px',
-                  };
-                }
-
-                return (
-                  <div
+              {/* POSTS */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
+              >
+                {posts.map((p) => (
+                  <SocialPostCard
                     key={p.id}
-                    style={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '16px',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {/* CABEÇALHO DO POST */}
-                    <div
-                      style={{
-                        padding: '16px 20px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        borderBottom: '1px solid #e2e8f0',
-                        backgroundColor: '#faf5ff',
-                        gap: '10px',
-                      }}
-                    >
-                      <div
-                        onClick={() =>
-                          visitarPerfil(
-                            p.perfilAssociado || {
-                              nome: p.autor,
-                              handle: p.handle,
-                              avatar: p.avatar,
-                              bio: p.bio,
-                              cargo: p.cargo,
-                            }
-                          )
-                        }
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          cursor: 'pointer',
-                          minWidth: 0,
-                        }}
-                      >
-                        <img
-                          src={p.avatar}
-                          alt="Avatar"
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            objectFit: 'cover',
-                            flexShrink: 0,
-                          }}
-                        />
+                    post={p}
+                    meuPerfil={meuPerfil}
+                    indiceCarrossel={indiceCarrossel[p.id] || 0}
+                    onMudarFoto={mudarFotoCarrossel}
+                    onCurtir={curtirPost}
+                    onRepostar={repostarPost}
+                    onCompartilhar={copiarLinkPost}
+                    onVisitarPerfil={visitarPerfil}
+                    onAtualizarPost={atualizarPost}
+                    onExcluirPost={excluirPost}
+                    extrairEmbedYoutube={extrairEmbedYoutube}
+                  />
+                ))}
+              </div>
 
-                        <div style={{ minWidth: 0 }}>
-                          <b
-                            style={{
-                              color: '#0f172a',
-                              fontSize: '14px',
-                              display: 'block',
-                            }}
-                          >
-                            {p.autor}{' '}
-                            <span
-                              style={{
-                                fontSize: '11px',
-                                color: '#7c3aed',
-                              }}
-                            >
-                              {p.handle}
-                            </span>
-                          </b>
-
-                          <span
-                            style={{
-                              fontSize: '11px',
-                              color: '#64748b',
-                              display: 'block',
-                            }}
-                          >
-                            {p.tempo} • jenios.com.br/
-                            {p.handle.replace('@', '')} ↗️
-                          </span>
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '6px',
-                          flexWrap: 'wrap',
-                          justifyContent: 'flex-end',
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => repostarPost(p)}
-                          style={{
-                            backgroundColor: '#f3e8ff',
-                            color: '#7c3aed',
-                            border: '1px solid #d8b4fe',
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          🔄 Repostar
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => copiarLinkPost(p.id)}
-                          style={{
-                            backgroundColor: '#f1f5f9',
-                            color: '#0f172a',
-                            border: '1px solid #cbd5e1',
-                            padding: '6px 10px',
-                            borderRadius: '6px',
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          🔗 Compartilhar
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* TEXTO DO POST */}
-                    {p.texto && (
-                      <div style={{ padding: '20px' }}>
-                        <p
-                          style={{
-                            fontSize: '13px',
-                            color: '#334155',
-                            margin: 0,
-                            lineHeight: '1.6',
-                            whiteSpace: 'pre-line',
-                          }}
-                        >
-                          {p.texto}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* YOUTUBE */}
-                    {embedYoutubeUrl && (
-                      <div
-                        style={{
-                          width: '100%',
-                          height: '360px',
-                          backgroundColor: '#000',
-                        }}
-                      >
-                        <iframe
-                          src={embedYoutubeUrl}
-                          title={`Vídeo de ${p.autor}`}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            border: 'none',
-                          }}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      </div>
-                    )}
-
-                    {/* FOTOS / CARROSSEL */}
-                    {p.imagens &&
-                      p.imagens.length > 0 &&
-                      !embedYoutubeUrl && (
-                        <div
-                          style={{
-                            ...estiloProporcao,
-                            backgroundColor: '#000',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <img
-                            src={p.imagens[imgAtualIdx]}
-                            alt="Post"
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'contain',
-                              display: 'block',
-                            }}
-                          />
-
-                          {temVariasFotos && (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  mudarFotoCarrossel(
-                                    p.id,
-                                    -1,
-                                    p.imagens.length
-                                  )
-                                }
-                                style={{
-                                  position: 'absolute',
-                                  left: '10px',
-                                  top: '50%',
-                                  transform: 'translateY(-50%)',
-                                  backgroundColor:
-                                    'rgba(0,0,0,0.65)',
-                                  color: '#fff',
-                                  border: 'none',
-                                  borderRadius: '50%',
-                                  width: '34px',
-                                  height: '34px',
-                                  cursor: 'pointer',
-                                  fontWeight: 'bold',
-                                  fontSize: '22px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                ‹
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  mudarFotoCarrossel(
-                                    p.id,
-                                    1,
-                                    p.imagens.length
-                                  )
-                                }
-                                style={{
-                                  position: 'absolute',
-                                  right: '10px',
-                                  top: '50%',
-                                  transform: 'translateY(-50%)',
-                                  backgroundColor:
-                                    'rgba(0,0,0,0.65)',
-                                  color: '#fff',
-                                  border: 'none',
-                                  borderRadius: '50%',
-                                  width: '34px',
-                                  height: '34px',
-                                  cursor: 'pointer',
-                                  fontWeight: 'bold',
-                                  fontSize: '22px',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                ›
-                              </button>
-
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  bottom: '10px',
-                                  left: '50%',
-                                  transform: 'translateX(-50%)',
-                                  backgroundColor:
-                                    'rgba(0,0,0,0.7)',
-                                  color: '#fff',
-                                  padding: '4px 10px',
-                                  borderRadius: '12px',
-                                  fontSize: '11px',
-                                }}
-                              >
-                                {imgAtualIdx + 1} /{' '}
-                                {p.imagens.length}
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      )}
-
-                    {/* AÇÕES DO POST */}
-                    <div
-                      style={{
-                        padding: '14px 20px',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: '#f8fafc',
-                        borderTop: '1px solid #e2e8f0',
-                        fontSize: '12px',
-                        gap: '10px',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '14px',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => curtirPost(p.id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: p.curtido
-                              ? '#dc2626'
-                              : '#64748b',
-                            cursor: 'pointer',
-                            fontWeight: 'bold',
-                            fontSize: '12px',
-                            padding: 0,
-                          }}
-                        >
-                          {p.curtido ? '❤️' : '🤍'}{' '}
-                          {p.likes} Curtidas
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => copiarLinkPost(p.id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#64748b',
-                            cursor: 'pointer',
-                            fontWeight: 'bold',
-                            fontSize: '12px',
-                            padding: 0,
-                          }}
-                        >
-                          ↗️ Compartilhar
-                        </button>
-                      </div>
-
-                      <span
-                        style={{
-                          color: '#64748b',
-                          fontSize: '11px',
-                        }}
-                      >
-                        👁️ {p.views || 1} visualizações
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+              </div>
 
             {/* COLUNA DIREITA */}
             <div
@@ -3207,134 +3230,165 @@ function SocialContent() {
                   </div>
                 )}
 
-              {/* PUBLICAÇÕES DO PERFIL */}
-              <div
-                style={{
-                  borderTop: '1px solid #e2e8f0',
-                  paddingTop: '20px',
-                  marginTop: '20px',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#0f172a',
-                    margin: '0 0 15px 0',
-                  }}
-                >
-                  📸 Publicações de {perfilVisitado.nome}
+              {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
+              <div style={{
+                borderTop: '1px solid #e2e8f0',
+                paddingTop: '20px',
+                marginTop: '20px',
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  color: '#0f172a',
+                  marginBottom: '15px',
+                }}>
+                  Publicações de {perfilVisitado.nome}
                 </h3>
 
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns:
-                      'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: '15px',
-                  }}
-                >
-                  {posts.filter(
-                    (p) =>
-                      p.handle === perfilVisitado.handle
-                  ).length === 0 ? (
-                    <div
+                <div style={{
+                  display: 'flex',
+                  gap: '8px',
+                  flexWrap: 'wrap',
+                  marginBottom: '20px',
+                }}>
+                  {[
+                    ['posts', 'Posts'],
+                    ['fotos', 'Fotos'],
+                    ['videos', 'Vídeos'],
+                    ['salvos', 'Salvos'],
+                  ].filter(([tipo]) =>
+                    tipo !== 'salvos' ||
+                    perfilVisitado.handle === meuPerfil.handle
+                  ).map(([tipo, nome]) => (
+                    <button
+                      key={tipo}
+                      type="button"
+                      onClick={() => setAbaGaleria(tipo)}
                       style={{
-                        gridColumn: '1 / -1',
-                        textAlign: 'center',
-                        backgroundColor: '#f8fafc',
-                        border: '1px dashed #cbd5e1',
-                        borderRadius: '10px',
-                        padding: '30px 20px',
+                        padding: '10px 15px',
+                        borderRadius: '9px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        border: '1px solid #ddd6fe',
+                        backgroundColor:
+                          abaGaleria === tipo ? '#7c3aed' : '#fff',
+                        color:
+                          abaGaleria === tipo ? '#fff' : '#6d28d9',
                       }}
                     >
-                      <p
-                        style={{
-                          fontSize: '12px',
-                          color: '#64748b',
-                          margin: 0,
-                        }}
-                      >
-                        Este usuário ainda não possui
-                        publicações no feed.
+                      {nome}
+                    </button>
+                  ))}
+                </div>
+
+                {(() => {
+                  const publicacoes = posts.filter((p) => {
+                    const ehDoPerfil =
+                      p.handle === perfilVisitado.handle;
+
+                    if (abaGaleria === 'salvos') {
+                      return (
+                        perfilVisitado.handle === meuPerfil.handle &&
+                        Boolean(p.salvo)
+                      );
+                    }
+
+                    if (!ehDoPerfil) return false;
+
+                    if (abaGaleria === 'fotos') {
+                      return Array.isArray(p.imagens) &&
+                        p.imagens.length > 0;
+                    }
+
+                    if (abaGaleria === 'videos') {
+                      return Boolean(p.youtubeUrl || p.videoUrl);
+                    }
+
+                    return true;
+                  });
+
+                  if (publicacoes.length === 0) {
+                    return (
+                      <p style={{
+                        padding: '25px',
+                        textAlign: 'center',
+                        color: '#64748b',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '10px',
+                      }}>
+                        Nenhuma publicação nesta categoria.
                       </p>
-                    </div>
-                  ) : (
-                    posts
-                      .filter(
-                        (p) =>
-                          p.handle ===
-                          perfilVisitado.handle
-                      )
-                      .map((p) => (
-                        <div
-                          key={p.id}
-                          style={{
-                            minHeight: '180px',
+                    );
+                  }
+
+                  return (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns:
+                        'repeat(auto-fill, minmax(160px, 1fr))',
+                      gap: '12px',
+                    }}>
+                      {publicacoes.map((p) => {
+                        const primeira = p.imagens?.[0];
+                        const src = typeof primeira === 'string'
+                          ? primeira
+                          : primeira?.src;
+
+                        return (
+                          <div key={p.id} style={{
+                            border: '1px solid #e2e8f0',
                             borderRadius: '10px',
                             overflow: 'hidden',
-                            backgroundColor: '#f8fafc',
-                            border: '1px solid #e2e8f0',
-                            position: 'relative',
-                          }}
-                        >
-                          {p.imagens &&
-                          p.imagens.length > 0 ? (
-                            <img
-                              src={p.imagens[0]}
-                              alt={`Publicação de ${p.autor}`}
-                              style={{
-                                width: '100%',
-                                height: '180px',
-                                objectFit: 'cover',
-                                display: 'block',
-                              }}
-                            />
-                          ) : (
-                            <div
-                              style={{
-                                height: '180px',
-                                padding: '20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                textAlign: 'center',
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontSize: '11px',
-                                  color: '#475569',
-                                  lineHeight: '1.5',
-                                }}
-                              >
-                                {p.texto ||
-                                  'Publicação sem imagem'}
-                              </span>
-                            </div>
-                          )}
-
-                          <div
-                            style={{
-                              padding: '8px 10px',
-                              backgroundColor: '#ffffff',
-                              borderTop:
-                                '1px solid #e2e8f0',
+                            backgroundColor: '#fff',
+                          }}>
+                            <div style={{
+                              height: '180px',
                               display: 'flex',
-                              justifyContent:
-                                'space-between',
                               alignItems: 'center',
-                              fontSize: '9px',
+                              justifyContent: 'center',
+                              backgroundColor: src ? '#000' : '#f8fafc',
+                              overflow: 'hidden',
+                            }}>
+                              {src ? (
+                                <img
+                                  src={src}
+                                  alt="Publicação"
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'contain',
+                                  }}
+                                />
+                              ) : (
+                                <span style={{
+                                  padding: '12px',
+                                  fontSize: '12px',
+                                  color: '#475569',
+                                  overflowWrap: 'anywhere',
+                                }}>
+                                  {p.texto?.slice(0, 130) ||
+                                    (p.youtubeUrl || p.videoUrl
+                                      ? 'Vídeo'
+                                      : 'Publicação')}
+                                </span>
+                              )}
+                            </div>
+
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              padding: '10px',
+                              fontSize: '11px',
                               color: '#64748b',
-                            }}
-                          >
-                            <span>❤️ {p.likes}</span>
-                            <span>👁️ {p.views || 1}</span>
+                            }}>
+                              <span>❤️ {p.likes || 0}</span>
+                              <span>👁️ {p.views || 0}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))
-                  )}
-                </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           )}
@@ -3648,4 +3702,4 @@ export default function SocialPage() {
       <SocialContent />
     </Suspense>
   );
-}   
+}

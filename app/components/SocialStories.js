@@ -1,13 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function SocialStories({
   meuPerfil,
   stories = [],
   onAdicionarStory,
+  onExcluirStory,
 }) {
   const [storyAberto, setStoryAberto] = useState(null);
+
+  useEffect(() => {
+    if (!storyAberto) return;
+    const aoTeclar = (evento) => {
+      if (evento.key === 'Escape') setStoryAberto(null);
+    };
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, [storyAberto]);
 
   const storiesAtivos = stories.filter((story) => {
     if (!story.criadoEm) return false;
@@ -15,7 +25,7 @@ export default function SocialStories({
     const criado = new Date(story.criadoEm).getTime();
     const agora = Date.now();
 
-    return agora - criado < 24 * 60 * 60 * 1000;
+    return Number.isFinite(criado) && criado <= agora && agora - criado < 24 * 60 * 60 * 1000;
   });
 
   const abrirStory = (story) => {
@@ -24,6 +34,17 @@ export default function SocialStories({
 
   const fecharStory = () => {
     setStoryAberto(null);
+  };
+
+  const navegarStory = (direcao) => {
+    if (!storyAberto) return;
+    const doMesmoAutor = storiesAtivos
+      .filter(s => s.handle === storyAberto.handle)
+      .sort((a, b) => new Date(a.criadoEm) - new Date(b.criadoEm));
+    const indice = doMesmoAutor.findIndex(s => s.id === storyAberto.id);
+    const proximo = doMesmoAutor[indice + direcao];
+    if (proximo) setStoryAberto(proximo);
+    else fecharStory();
   };
 
   return (
@@ -132,6 +153,18 @@ export default function SocialStories({
             ×
           </button>
 
+          <button type="button" aria-label="Story anterior" onClick={() => navegarStory(-1)}
+            style={{position:'absolute',left:'12px',top:'50%',zIndex:2,border:0,borderRadius:'50%',padding:'12px',background:'#374151',color:'white',cursor:'pointer'}}>❮</button>
+          <button type="button" aria-label="Próximo Story" onClick={() => navegarStory(1)}
+            style={{position:'absolute',right:'12px',top:'50%',zIndex:2,border:0,borderRadius:'50%',padding:'12px',background:'#374151',color:'white',cursor:'pointer'}}>❯</button>
+          {storyAberto.handle === meuPerfil?.handle && typeof onExcluirStory === 'function' && (
+            <button type="button" onClick={() => {
+              if (window.confirm('Excluir este Story?')) {
+                onExcluirStory(storyAberto.id);
+                fecharStory();
+              }
+            }} style={{position:'absolute',top:'24px',left:'20px',border:'1px solid #64748b',borderRadius:'8px',padding:'8px 12px',background:'#111827',color:'white',cursor:'pointer'}}>Excluir meu Story</button>
+          )}
           <div
             style={{
               width: '100%',

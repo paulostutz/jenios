@@ -183,6 +183,18 @@ function SocialContent() {
     input.click();
   };
 
+  const excluirStoryJenios = (id) => {
+    setStoriesJenios((anteriores) => {
+      const atualizados = anteriores.filter((story) => story.id !== id);
+      try {
+        localStorage.setItem('jenios_social_stories', JSON.stringify(atualizados));
+      } catch (erro) {
+        console.error('Erro ao persistir exclusão do Story:', erro);
+      }
+      return atualizados;
+    });
+  };
+
   const [novoTexto, setNovoTexto] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
   const [imagensPreview, setImagensPreview] = useState([]);
@@ -908,8 +920,8 @@ const handleUploadCarrossel = async (e) => {
     const perfilAtualizado = {
       ...meuPerfil,
       postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      visualizacoes30Dias:
-        Number(meuPerfil.visualizacoes30Dias || 0) + 15,
+      // Não inventar visualizações quando um post é publicado.
+      visualizacoes30Dias: meuPerfil.visualizacoes30Dias,
     };
 
     setMeuPerfil(perfilAtualizado);
@@ -1001,8 +1013,15 @@ const excluirPost = (id) => {
   };
 
   const visitarPerfil = (usuario) => {
-    setPerfilVisitado(usuario);
+    if (!usuario?.handle) return;
+    // Resolve dados atualizados e evita abrir um perfil incompleto do post.
+    const perfil = usuario.handle === meuPerfil.handle
+      ? meuPerfil
+      : rankingOperadores.find((item) => item.handle === usuario.handle) || usuario;
+    setPerfilVisitado(perfil);
+    setAbaGaleria('posts');
     setAbaAtiva('perfil-visita');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const enviarMensagemDirect = (e) => {
@@ -2032,6 +2051,7 @@ const excluirPost = (id) => {
               <SocialStories
                 meuPerfil={meuPerfil}
                 stories={storiesJenios}
+                onExcluirStory={excluirStoryJenios}
                 onAdicionarStory={adicionarStoryJenios}
               />
               {/* CRIAR PUBLICAÇÃO */}
@@ -2993,11 +3013,8 @@ const excluirPost = (id) => {
                     </div>
 
                     <div>
-                      <b>
-                        {perfilVisitado.visualizacoes30Dias ||
-                          0}
-                      </b>{' '}
-                      views
+                      <b>—</b>{' '}
+                      views (30 dias)
                     </div>
                   </div>
                 </div>

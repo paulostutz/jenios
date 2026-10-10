@@ -9,6 +9,18 @@ export default function SocialStories({
   onExcluirStory,
 }) {
   const [storyAberto, setStoryAberto] = useState(null);
+  const [agora, setAgora] = useState(() => Date.now());
+
+  useEffect(() => {
+    const relogio = setInterval(() => setAgora(Date.now()), 30000);
+    return () => clearInterval(relogio);
+  }, []);
+
+  useEffect(() => {
+    if (!storyAberto) return;
+    const criado = new Date(storyAberto.criadoEm).getTime();
+    if (!Number.isFinite(criado) || agora - criado >= 86400000) setStoryAberto(null);
+  }, [agora, storyAberto]);
 
   useEffect(() => {
     if (!storyAberto) return;
@@ -23,8 +35,6 @@ export default function SocialStories({
     if (!story.criadoEm) return false;
 
     const criado = new Date(story.criadoEm).getTime();
-    const agora = Date.now();
-
     return Number.isFinite(criado) && criado <= agora && agora - criado < 24 * 60 * 60 * 1000;
   });
 

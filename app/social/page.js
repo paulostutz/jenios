@@ -124,11 +124,46 @@ function SocialContent() {
     return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
   };
 
+  // VERIFICAÇÃO DE DUPLICIDADE DE @HANDLE
+  const verificarHandleEmUso = (handleInformado) => {
+    const handleLimpo = handleInformado.startsWith('@') ? handleInformado.trim().toLowerCase() : `@${handleInformado.trim().toLowerCase()}`;
+    
+    // Se o handle for o mesmo do próprio usuário atual, é permitido
+    if (handleLimpo === meuPerfil.handle.toLowerCase()) return false;
+
+    // Verificar se existe no ranking de operadores
+    const existeNoRanking = rankingOperadores.some(op => op.handle.toLowerCase() === handleLimpo);
+    if (existeNoRanking) return true;
+
+    // Verificar se existe em outros usuários salvos no localStorage
+    const usuariosSalvos = JSON.parse(localStorage.getItem('jenios_social_usuarios_registrados') || '[]');
+    const existeNosSalvos = usuariosSalvos.some(u => u.handle.toLowerCase() === handleLimpo && u.handle.toLowerCase() !== meuPerfil.handle.toLowerCase());
+    
+    return existeNosSalvos;
+  };
+
   const salvarEdicaoPerfil = (e) => {
     e.preventDefault();
-    localStorage.setItem('jenios_social_perfil', JSON.stringify(meuPerfil));
+    let handleFormatado = meuPerfil.handle.trim();
+    if (!handleFormatado.startsWith('@')) handleFormatado = `@${handleFormatado}`;
+
+    // Validar duplicidade
+    if (verificarHandleEmUso(handleFormatado)) {
+      alert('❌ Este @ já está em uso por outro usuário. Escolha um identificador único.');
+      return;
+    }
+
+    const perfilAtualizado = { ...meuPerfil, handle: handleFormatado };
+    setMeuPerfil(perfilAtualizado);
+    localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilAtualizado));
+
+    // Atualizar lista geral de registrados
+    const usuariosSalvos = JSON.parse(localStorage.getItem('jenios_social_usuarios_registrados') || '[]');
+    const filtrados = usuariosSalvos.filter(u => u.email !== authEmail);
+    localStorage.setItem('jenios_social_usuarios_registrados', JSON.stringify([...filtrados, perfilAtualizado]));
+
     setModalEditarPerfil(false);
-    alert('✅ Perfil e Bio atualizados com sucesso!');
+    alert('✅ Perfil e @ atualizados com sucesso!');
   };
 
   const handleUploadAvatar = (e) => {
@@ -151,9 +186,21 @@ function SocialContent() {
 
   const processarAuth = (e) => {
     e.preventDefault();
-    const perfilLogado = { ...meuPerfil, autenticado: true };
+    let handleFormatado = meuPerfil.handle.trim();
+    if (!handleFormatado.startsWith('@')) handleFormatado = `@${handleFormatado}`;
+
+    if (verificarHandleEmUso(handleFormatado)) {
+      alert('❌ Este @ já está cadastrado. Por favor, escolha outro.');
+      return;
+    }
+
+    const perfilLogado = { ...meuPerfil, handle: handleFormatado, autenticado: true };
     setMeuPerfil(perfilLogado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilLogado));
+    
+    const usuariosSalvos = JSON.parse(localStorage.getItem('jenios_social_usuarios_registrados') || '[]');
+    localStorage.setItem('jenios_social_usuarios_registrados', JSON.stringify([...usuariosSalvos, perfilLogado]));
+
     setModalAutenticacao(false);
     alert('Autenticado com sucesso!');
   };
@@ -309,9 +356,10 @@ function SocialContent() {
   };
 
   const copiarLinkPerfil = (handle) => {
-    const url = `${window.location.origin}/social?perfil=${handle}`;
+    const handleLimpo = handle.replace('@', '');
+    const url = `jenios.com.br/${handleLimpo}`;
     navigator.clipboard.writeText(url);
-    alert(`🔗 Link do perfil ${handle} copiado!`);
+    alert(`🔗 Link do perfil copiado: ${url}`);
   };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', paddingBottom: '60px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
@@ -347,7 +395,7 @@ function SocialContent() {
         </div>
       )}
 
-      {/* MODAL EDITAR PERFIL COM SUPORTE A FOTO / AVATAR */}
+      {/* MODAL EDITAR PERFIL COM VALIDAÇÃO DE @ ÚNICO */}
       {modalEditarPerfil && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '450px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -378,8 +426,9 @@ function SocialContent() {
               </div>
 
               <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Handle (@usuário):</label>
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>@Handle (Único no sistema):</label>
                 <input type="text" value={meuPerfil.handle} onChange={(e) => setMeuPerfil({...meuPerfil, handle: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px', boxSizing: 'border-box' }} required />
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', marginTop: '2px' }}>O seu link será: jenios.com.br/{meuPerfil.handle.replace('@', '')}</span>
               </div>
 
               <div>
@@ -431,7 +480,8 @@ function SocialContent() {
               <div>
                 <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 2px 0' }}>{meuPerfil.nome} <span style={{ fontSize: '14px', color: '#7c3aed' }}>{meuPerfil.handle}</span></h2>
                 <span style={{ fontSize: '12px', color: '#7c3aed', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>{meuPerfil.cargo}</span>
-                <p style={{ fontSize: '12px', color: '#334155', margin: 0, whiteSpace: 'pre-line', lineHeight: '1.4' }}>{meuPerfil.bio}</p>
+                <p style={{ fontSize: '12px', color: '#334155', margin: '0 0 8px 0', whiteSpace: 'pre-line', lineHeight: '1.4' }}>{meuPerfil.bio}</p>
+                <span style={{ fontSize: '11px', color: '#64748b', backgroundColor: '#f1f5f9', padding: '3px 8px', borderRadius: '6px', fontWeight: 'bold' }}>🔗 jenios.com.br/{meuPerfil.handle.replace('@', '')}</span>
               </div>
             </div>
 
@@ -542,12 +592,12 @@ function SocialContent() {
                         <img src={p.avatar} alt="Avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                         <div>
                           <b style={{ color: '#0f172a', fontSize: '14px' }}>{p.autor} <span style={{ fontSize: '11px', color: '#7c3aed' }}>{p.handle}</span></b>
-                          <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • Visitar perfil ↗️</span>
+                          <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • jenios.com.br/{p.handle.replace('@', '')} ↗️</span>
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: '6px' }}>
                         <button onClick={() => repostarPost(p)} style={{ backgroundColor: '#f3e8ff', color: '#7c3aed', border: '1px solid #d8b4fe', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔄 Repostar</button>
-                        <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔗 Copiar Link</button>
+                        <button onClick={() => copiarLinkPerfil(p.handle)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔗 Copiar Link</button>
                       </div>
                     </div>
 
@@ -638,7 +688,7 @@ function SocialContent() {
                     <img src={op.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover' }} />
                     <div>
                       <b style={{ fontSize: '14px', color: '#0f172a', display: 'block' }}>#{op.pos} - {op.nome} ({op.handle})</b>
-                      <span style={{ fontSize: '11px', color: '#64748b' }}>{op.bio}</span>
+                      <span style={{ fontSize: '11px', color: '#64748b' }}>jenios.com.br/{op.handle.replace('@', '')}</span>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -659,7 +709,7 @@ function SocialContent() {
                 ← Voltar ao Feed Principal
               </button>
               <button onClick={() => copiarLinkPerfil(perfilVisitado.handle)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
-                🔗 Copiar Link deste Perfil
+                🔗 Copiar Link ({`jenios.com.br/${perfilVisitado.handle.replace('@', '')}`})
               </button>
             </div>
 

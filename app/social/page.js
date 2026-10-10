@@ -200,6 +200,7 @@ function SocialContent() {
   const [imagensPreview, setImagensPreview] = useState([]);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
+  const [postEmFoco, setPostEmFoco] = useState(null);
   const [chatAtivo, setChatAtivo] = useState(null);
   const [textoMensagem, setTextoMensagem] = useState('');
   const [mensagensDirect, setMensagensDirect] = useState({});
@@ -1011,6 +1012,23 @@ const excluirPost = (id) => {
       };
     });
   };
+
+  // Abre uma publicação selecionada na galeria, inclusive em Salvos.
+  const abrirPostDaGaleria = (postId) => {
+    setPostEmFoco(postId);
+    setAbaAtiva('feed');
+  };
+
+  useEffect(() => {
+    if (abaAtiva !== 'feed' || postEmFoco == null) return;
+    const timer = setTimeout(() => {
+      document.getElementById(`jenios-post-${postEmFoco}`)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [abaAtiva, postEmFoco]);
 
   const visitarPerfil = (usuario) => {
     if (!usuario?.handle) return;
@@ -2295,8 +2313,9 @@ const excluirPost = (id) => {
                 }}
               >
                 {posts.map((p) => (
+                  <div key={p.id} id={`jenios-post-${p.id}`}
+                    style={{outline: postEmFoco === p.id ? '2px solid #7c3aed' : 'none', borderRadius:'16px'}}>
                   <SocialPostCard
-                    key={p.id}
                     post={p}
                     meuPerfil={meuPerfil}
                     indiceCarrossel={indiceCarrossel[p.id] || 0}
@@ -2309,6 +2328,7 @@ const excluirPost = (id) => {
                     onExcluirPost={excluirPost}
                     extrairEmbedYoutube={extrairEmbedYoutube}
                   />
+                  </div>
                 ))}
               </div>
 
@@ -3296,7 +3316,13 @@ const excluirPost = (id) => {
                           : primeira?.src;
 
                         return (
-                          <div key={p.id} style={{
+                          <button key={p.id} type="button"
+                            onClick={() => abrirPostDaGaleria(p.id)}
+                            aria-label={`Abrir publicação de ${p.autor || p.handle || 'usuário'}`}
+                            style={{
+                            padding: 0,
+                            textAlign: 'left',
+                            cursor: 'pointer',
                             border: '1px solid #e2e8f0',
                             borderRadius: '10px',
                             overflow: 'hidden',
@@ -3345,7 +3371,7 @@ const excluirPost = (id) => {
                               <span>❤️ {p.likes || 0}</span>
                               <span>👁️ {p.views || 0}</span>
                             </div>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>

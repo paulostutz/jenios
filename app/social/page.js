@@ -2037,7 +2037,39 @@ const excluirPost = (id) => {
         </div>
 
 
-        {/* JENIOS_BOTAO_SALVOS_V1 */}
+
+        {/* JENIOS_BOTAO_MEU_PERFIL_V3 */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: '12px'
+        }}>
+          <button
+            type="button"
+            onClick={() => {
+              setPerfilVisitado(meuPerfil);
+              setAbaGaleria('posts');
+              setAbaAtiva('perfil-visita');
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            }}
+            style={{
+              padding: '10px 18px',
+              backgroundColor: '#7c3aed',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+          >
+            👤 Meu Perfil
+          </button>
+        </div>
+
+{/* JENIOS_BOTAO_SALVOS_V1 */}
         <div style={{
           display: 'flex',
           justifyContent: 'flex-end',

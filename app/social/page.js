@@ -200,6 +200,7 @@ function SocialContent() {
   const [imagensPreview, setImagensPreview] = useState([]);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
+  const [seguindoLocal, setSeguindoLocal] = useState([]);
   const [postEmFoco, setPostEmFoco] = useState(null);
   const [chatAtivo, setChatAtivo] = useState(null);
   const [textoMensagem, setTextoMensagem] = useState('');
@@ -479,6 +480,16 @@ function SocialContent() {
           'Não foi possível carregar as publicações.'
         );
       });
+
+    // V6: relações de seguimento locais (protótipo, não compartilhadas entre usuários).
+    try {
+      const seguindoSalvo = JSON.parse(localStorage.getItem('jenios_social_seguindo_v6') || '[]');
+      if (Array.isArray(seguindoSalvo)) {
+        setSeguindoLocal(seguindoSalvo.filter((h) => typeof h === 'string'));
+      }
+    } catch (error) {
+      console.warn('Não foi possível ler a lista de seguindo:', error);
+    }
 
     const directSalvo = localStorage.getItem('jenios_social_directs');
 
@@ -1029,6 +1040,21 @@ const excluirPost = (id) => {
     }, 100);
     return () => clearTimeout(timer);
   }, [abaAtiva, postEmFoco]);
+
+  const alternarSeguir = (handle) => {
+    if (!handle || handle === meuPerfil.handle) return;
+    setSeguindoLocal((anterior) => {
+      const proximo = anterior.includes(handle)
+        ? anterior.filter((item) => item !== handle)
+        : [...anterior, handle];
+      try {
+        localStorage.setItem('jenios_social_seguindo_v6', JSON.stringify(proximo));
+      } catch (error) {
+        console.error('Não foi possível salvar seguindo:', error);
+      }
+      return proximo;
+    });
+  };
 
   const visitarPerfil = (usuario) => {
     if (!usuario?.handle) return;
@@ -2928,6 +2954,25 @@ const excluirPost = (id) => {
                       {perfilVisitado.handle}
                     </span>
 
+                    {perfilVisitado.handle !== meuPerfil.handle && (
+                      <button
+                        type="button"
+                        aria-pressed={seguindoLocal.includes(perfilVisitado.handle)}
+                        onClick={() => alternarSeguir(perfilVisitado.handle)}
+                        style={{
+                          backgroundColor: seguindoLocal.includes(perfilVisitado.handle) ? '#f5f3ff' : '#7c3aed',
+                          color: seguindoLocal.includes(perfilVisitado.handle) ? '#6d28d9' : '#fff',
+                          border: '1px solid #7c3aed',
+                          padding: '8px 16px',
+                          borderRadius: '8px',
+                          fontWeight: 'bold',
+                          fontSize: '11px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {seguindoLocal.includes(perfilVisitado.handle) ? '✓ Seguindo' : '+ Seguir'}
+                      </button>
+                    )}
                     {perfilVisitado.handle !==
                       meuPerfil.handle && (
                       <button
@@ -3025,8 +3070,9 @@ const excluirPost = (id) => {
                     <div>
                       <b>
                         {(
-                          perfilVisitado.seguindoLista ||
-                          []
+                          perfilVisitado.handle === meuPerfil.handle
+                            ? seguindoLocal
+                            : (perfilVisitado.seguindoLista || [])
                         ).length}
                       </b>{' '}
                       seguindo
@@ -3212,6 +3258,11 @@ const excluirPost = (id) => {
                   </div>
                 )}
 
+              {perfilVisitado.handle !== meuPerfil.handle && (
+                <p style={{fontSize:'11px', color:'#64748b', margin:'0 0 12px'}}>
+                  Seguir e mensagens estão em modo de demonstração local até a integração das contas.
+                </p>
+              )}
               {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
               <div style={{
                 borderTop: '1px solid #e2e8f0',

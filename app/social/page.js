@@ -1933,15 +1933,13 @@ const excluirPost = (id) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  VIEWS
+                  VIEWS (30 DIAS)
                 </span>
 
                 <b style={{ fontSize: '15px', color: '#059669' }}>
-                  {posts.reduce(
-                    (acc, p) => acc + (p.views || 0),
-                    meuPerfil.visualizacoes30Dias
-                  )}
+                  {'—'}
                 </b>
+                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span>
               </div>
             </div>
 
@@ -1989,121 +1987,36 @@ const excluirPost = (id) => {
           </div>
         </div>
 
-        {/* ABAS */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            marginBottom: '25px',
-          }}
-        >
-          <button
-            onClick={() => setAbaAtiva('feed')}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '8px',
-              border:
-                abaAtiva === 'feed'
-                  ? '2px solid #7c3aed'
-                  : '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#0f172a',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              cursor: 'pointer',
-            }}
-          >
-            📱 Feed Contínuo
-          </button>
+        {/* JENIOS V4: navegacao compacta */}
+        <nav aria-label="Navegação da JENIOS Social" style={{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap',margin:'12px 0 14px'}}>
+          {[
+            ['feed','🏠 Feed'],
+            ['ranking','🏆 Ranking'],
+            ['perfil','👤 Meu Perfil'],
+            ['salvos','🔖 Salvos']
+          ].map(([destino,rotulo]) => (
+            <button key={destino} type="button" onClick={() => {
+              if (destino === 'perfil' || destino === 'salvos') {
+                setPerfilVisitado(meuPerfil);
+                setAbaGaleria(destino === 'salvos' ? 'salvos' : 'posts');
+                setAbaAtiva('perfil-visita');
+              } else {
+                setAbaAtiva(destino);
+              }
+              window.scrollTo({top:0,behavior:'smooth'});
+            }} style={{padding:'9px 13px',borderRadius:'9px',cursor:'pointer',fontSize:'12px',fontWeight:700,
+              border:'1px solid #ddd6fe',backgroundColor:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#7c3aed' : '#fff',
+              color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
+          ))}
+        </nav>
 
-          <button
-            onClick={() => setAbaAtiva('ranking')}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '8px',
-              border:
-                abaAtiva === 'ranking'
-                  ? '2px solid #f59e0b'
-                  : '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#0f172a',
-              fontWeight: 'bold',
-              fontSize: '12px',
-              cursor: 'pointer',
-            }}
-          >
-            🏆 Ranking Top 10 Semanal
-          </button>
-        </div>
-
-
-
-        {/* JENIOS_BOTAO_MEU_PERFIL_V3 */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '12px'
-        }}>
-          <button
-            type="button"
-            onClick={() => {
-              setPerfilVisitado(meuPerfil);
-              setAbaGaleria('posts');
-              setAbaAtiva('perfil-visita');
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-            }}
-            style={{
-              padding: '10px 18px',
-              backgroundColor: '#7c3aed',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
-          >
-            👤 Meu Perfil
-          </button>
-        </div>
-
-{/* JENIOS_BOTAO_SALVOS_V1 */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          marginBottom: '16px'
-        }}>
-          <button
-            type="button"
-            onClick={() => {
-              setPerfilVisitado(meuPerfil);
-              setAbaGaleria('salvos');
-              setAbaAtiva('perfil-visita');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            style={{
-              padding: '10px 18px',
-              backgroundColor: '#ffffff',
-              color: '#7c3aed',
-              border: '1px solid #c4b5fd',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}
-          >
-            🔖 Meus Salvos
-          </button>
-        </div>
-
-{/* ABA FEED */}
+        {/* ABA FEED */}
         {abaAtiva === 'feed' && (
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: '2fr 1fr',
-              gap: '25px',
+              gridTemplateColumns: 'minmax(0, 2fr) minmax(260px, 1fr)',
+              gap: '14px',
             }}
           >
 

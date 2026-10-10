@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function SocialPage() {
+function SocialContent() {
   const searchParams = useSearchParams();
   const perfilUrl = searchParams.get('perfil');
 
@@ -16,19 +16,12 @@ export default function SocialPage() {
   const [textoMensagem, setTextoMensagem] = useState('');
   const [mensagensDirect, setMensagensDirect] = useState({});
 
-  // Modais
   const [modalEditarPerfil, setModalEditarPerfil] = useState(false);
   const [modalAutenticacao, setModalAutenticacao] = useState(false);
   const [modalLista, setModalLista] = useState(null);
-  const [modoAuth, setModoAuth] = useState('login');
-  const [authEmail, setAuthEmail] = useState('');
-  const [authSenha, setAuthSenha] = useState('');
-
-  // Câmara
   const [modalCamera, setModalCamera] = useState(false);
   const videoRef = useRef(null);
 
-  // Perfil do Utilizador com Bio Fixada
   const [meuPerfil, setMeuPerfil] = useState({
     nome: 'Paulo Stutz Netto',
     handle: '@paulostutz',
@@ -45,23 +38,17 @@ export default function SocialPage() {
     autenticado: true
   });
 
-  // Ranking Top 10
   const [rankingOperadores] = useState([
     { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em robôs HFT e Mini-Índice.', seguidoresLista: ['@paulostutz', '@anapaula'], seguindoLista: ['@paulostutz'], postsCount: 12, visualizacoes30Dias: '28.4k' },
-    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica multi-rede na Solana.', seguidoresLista: ['@paulostutz', '@carlosm'], seguindoLista: ['@paulostutz'], postsCount: 9, visualizacoes30Dias: '21.0k' },
-    { pos: 3, nome: 'Roberto Dias', handle: '@robertodias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', bio: 'Foco em tendências de médio prazo.', seguidoresLista: ['@paulostutz'], seguindoLista: ['@carlosm'], postsCount: 7, visualizacoes30Dias: '15.8k' },
-    { pos: 4, nome: 'Juliana Costa', handle: '@julianac', cargo: 'Scalper', rentabilidade: '+ R$ 7.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Operações de alta frequência no Dólar.', seguidoresLista: [], seguindoLista: [], postsCount: 14, visualizacoes30Dias: '12.1k' },
-    { pos: 5, nome: 'Marcos Vinicius', handle: '@marcosv', cargo: 'Quant Dev', rentabilidade: '+ R$ 6.500', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', bio: 'Desenvolvedor de estratégias matemáticas.', seguidores: [], seguindoLista: [], postsCount: 5, visualizacoes30Dias: '9.4k' }
+    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica multi-rede na Solana.', seguidoresLista: ['@paulostutz', '@carlosm'], seguindoLista: ['@paulostutz'], postsCount: 9, visualizacoes30Dias: '21.0k' }
   ]);
 
-  // Canal de Notícias Macro (3 Fontes Simultâneas Síncronas)
   const [noticiasMacro] = useState([
     { id: 1, fonte: 'Bloomberg', cat: 'GLOBAL', titulo: 'Bancos centrais avaliam corte agressivo na taxa de juros global', impacto: '🟢 Positivo p/ Risco', hora: 'Há 5 mins' },
     { id: 2, fonte: 'Reuters', cat: 'COMMODITIES', titulo: 'Fluxo institucional estrangeiro dispara na B3 com alta do minério', impacto: '🟢 Alta Liquidez', hora: 'Há 12 mins' },
     { id: 3, fonte: 'InfoMoney', cat: 'HFT & MERCADO', titulo: 'Volatilidade no Mini-Índice atinge pico recorde no trimestre', impacto: '🔴 Alerta Volatilidade', hora: 'Há 25 mins' }
   ]);
 
-  // Posts Perpétuos no LocalStorage
   const [posts, setPosts] = useState([
     { 
       id: 1, 
@@ -82,20 +69,14 @@ export default function SocialPage() {
   ]);
 
   useEffect(() => {
-    const perfilSalvo = localStorage.getItem('jenios_social_perfil_v5');
-    if (perfilSalvo) {
-      try { setMeuPerfil(JSON.parse(perfilSalvo)); } catch(e) {}
-    }
+    const perfilSalvo = localStorage.getItem('jenios_social_perfil_v6');
+    if (perfilSalvo) { try { setMeuPerfil(JSON.parse(perfilSalvo)); } catch(e) {} }
 
-    const postsSalvos = localStorage.getItem('jenios_social_posts_v5');
-    if (postsSalvos) {
-      try { setPosts(JSON.parse(postsSalvos)); } catch(e) {}
-    }
+    const postsSalvos = localStorage.getItem('jenios_social_posts_v6');
+    if (postsSalvos) { try { setPosts(JSON.parse(postsSalvos)); } catch(e) {} }
 
-    const directSalvo = localStorage.getItem('jenios_social_directs_v5');
-    if (directSalvo) {
-      try { setMensagensDirect(JSON.parse(directSalvo)); } catch(e) {}
-    }
+    const directSalvo = localStorage.getItem('jenios_social_directs_v6');
+    if (directSalvo) { try { setMensagensDirect(JSON.parse(directSalvo)); } catch(e) {} }
 
     if (perfilUrl) {
       const encontrado = rankingOperadores.find(op => op.handle === perfilUrl) || meuPerfil;
@@ -106,12 +87,12 @@ export default function SocialPage() {
 
   const salvarPostsNoStorage = (novosPosts) => {
     setPosts(novosPosts);
-    localStorage.setItem('jenios_social_posts_v5', JSON.stringify(novosPosts));
+    localStorage.setItem('jenios_social_posts_v6', JSON.stringify(novosPosts));
   };
 
   const salvarEdicaoPerfil = (e) => {
     e.preventDefault();
-    localStorage.setItem('jenios_social_perfil_v5', JSON.stringify(meuPerfil));
+    localStorage.setItem('jenios_social_perfil_v6', JSON.stringify(meuPerfil));
     setModalEditarPerfil(false);
     alert('✅ Perfil e Bio atualizados com sucesso!');
   };
@@ -119,17 +100,8 @@ export default function SocialPage() {
   const fazerLogout = () => {
     const perfilSair = { ...meuPerfil, autenticado: false, nome: 'Visitante', handle: '@visitante' };
     setMeuPerfil(perfilSair);
-    localStorage.setItem('jenios_social_perfil_v5', JSON.stringify(perfilSair));
+    localStorage.setItem('jenios_social_perfil_v6', JSON.stringify(perfilSair));
     alert('Sessão encerrada.');
-  };
-
-  const processarAuth = (e) => {
-    e.preventDefault();
-    const perfilLogado = { ...meuPerfil, autenticado: true };
-    setMeuPerfil(perfilLogado);
-    localStorage.setItem('jenios_social_perfil_v5', JSON.stringify(perfilLogado));
-    setModalAutenticacao(false);
-    alert('Autenticado com sucesso!');
   };
 
   const handleUploadCarrossel = (e) => {
@@ -210,7 +182,7 @@ export default function SocialPage() {
       visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 35
     };
     setMeuPerfil(perfilAtualizado);
-    localStorage.setItem('jenios_social_perfil_v5', JSON.stringify(perfilAtualizado));
+    localStorage.setItem('jenios_social_perfil_v6', JSON.stringify(perfilAtualizado));
     alert('🚀 Publicação realizada e fixada permanentemente na rede!');
   };
 
@@ -248,7 +220,7 @@ export default function SocialPage() {
     const novasConversas = { ...mensagensDirect, [handleDest]: [...conversaAtual, novaMensagem] };
     
     setMensagensDirect(novasConversas);
-    localStorage.setItem('jenios_social_directs_v5', JSON.stringify(novasConversas));
+    localStorage.setItem('jenios_social_directs_v6', JSON.stringify(novasConversas));
     setTextoMensagem('');
   };
 
@@ -327,7 +299,6 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* CABEÇALHO */}
       <div style={{ maxWidth: '1050px', margin: '0 auto', padding: '30px 20px 0 20px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', background: '#ffffff', padding: '12px 20px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
@@ -339,19 +310,14 @@ export default function SocialPage() {
             {meuPerfil.autenticado ? (
               <>
                 <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#059669' }}>{meuPerfil.handle}</span>
-                <button onClick={fazerLogout} style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>
-                  🚪 Sair
-                </button>
+                <button onClick={fazerLogout} style={{ backgroundColor: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>🚪 Sair</button>
               </>
             ) : (
-              <button onClick={() => setModalAutenticacao(true)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>
-                🔑 Entrar / Criar Conta
-              </button>
+              <button onClick={() => setModalAutenticacao(true)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '11px', fontWeight: 'bold', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer' }}>🔑 Entrar</button>
             )}
           </div>
         </div>
 
-        {/* PERFIL HEADER COM BIO FIXADA */}
         <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
             
@@ -387,46 +353,18 @@ export default function SocialPage() {
             </div>
 
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <button onClick={() => setModalEditarPerfil(true)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>
-                ⚙️ Editar Perfil
-              </button>
-              <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>
-                Sala de Controlo
-              </button>
+              <button onClick={() => setModalEditarPerfil(true)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>⚙️ Editar Perfil</button>
+              <button onClick={() => window.location.href = '/dashboard-logado'} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', fontSize: '11px', fontWeight: 'bold', padding: '10px 14px', borderRadius: '8px', cursor: 'pointer' }}>Sala de Controlo</button>
             </div>
 
           </div>
         </div>
 
-        {/* STORIES VERTICAIS */}
-        <div style={{ backgroundColor: '#ffffff', padding: '15px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
-          {[
-            { nome: 'O seu Story', avatar: meuPerfil.avatar, meu: true },
-            { nome: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-            { nome: 'Ana Paula', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-            { nome: 'Roberto Dias', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' }
-          ].map((st, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', cursor: 'pointer', minWidth: '70px' }}>
-              <div style={{ width: '64px', height: '110px', borderRadius: '12px', border: '3px solid #7c3aed', padding: '2px', backgroundColor: '#000', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <img src={st.avatar} alt="Story" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }} />
-                {st.meu && <span style={{ position: 'absolute', bottom: '4px', backgroundColor: '#7c3aed', color: '#fff', fontSize: '10px', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>+</span>}
-              </div>
-              <span style={{ fontSize: '11px', color: '#334155', fontWeight: 'bold' }}>{st.nome}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Abas */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '25px' }}>
-          <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-            📱 Feed Contínuo
-          </button>
-          <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-            🏆 Ranking Top 10 Semanal
-          </button>
+          <button onClick={() => setAbaAtiva('feed')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'feed' ? '2px solid #7c3aed' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>📱 Feed Contínuo</button>
+          <button onClick={() => setAbaAtiva('ranking')} style={{ padding: '10px 20px', borderRadius: '8px', border: abaAtiva === 'ranking' ? '2px solid #f59e0b' : '1px solid #cbd5e1', backgroundColor: '#ffffff', color: '#0f172a', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>🏆 Ranking Top 10</button>
         </div>
 
-        {/* 1. ABA FEED COM CARROSSEL E BOTÃO + */}
         {abaAtiva === 'feed' && (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -443,12 +381,9 @@ export default function SocialPage() {
                   </div>
 
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <button type="button" onClick={iniciarCamera} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
-                      📷 Tirar Foto (Câmara)
-                    </button>
+                    <button type="button" onClick={iniciarCamera} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>📷 Tirar Foto (Câmara)</button>
                   </div>
 
-                  {/* PREVIEW COM BOTÃO + PARA ADICIONAR FOTOS AO CARROSSEL */}
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', overflowX: 'auto', paddingBottom: '6px', alignItems: 'center' }}>
                     {imagensPreview.map((imgSrc, idx) => (
                       <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', border: '2px solid #7c3aed', flexShrink: 0 }}>
@@ -470,7 +405,6 @@ export default function SocialPage() {
                 </form>
               </div>
 
-              {/* Feed Perpétuo sem cortes */}
               {posts.map((p) => {
                 const imgAtualIdx = indiceCarrossel[p.id] || 0;
                 const temVariasFotos = p.imagens && p.imagens.length > 1;
@@ -489,9 +423,7 @@ export default function SocialPage() {
                           <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{p.tempo} • Visitar perfil ↗️</span>
                         </div>
                       </div>
-                      <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>
-                        🔗 Copiar Link
-                      </button>
+                      <button onClick={() => copiarLinkPost(p.id)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '6px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>🔗 Copiar Link</button>
                     </div>
 
                     <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
@@ -523,9 +455,7 @@ export default function SocialPage() {
               })}
             </div>
 
-            {/* 3 Fontes de Notícias Macro & Top Traders */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 10px 0' }}>🌐 Canal de Notícias Macro (3 Fontes)</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -541,124 +471,19 @@ export default function SocialPage() {
                   ))}
                 </div>
               </div>
-
-              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🏆 Top Traders (Semanal)</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {rankingOperadores.slice(0, 5).map((op) => (
-                    <div key={op.pos} onClick={() => visitarPerfil(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <img src={op.avatar} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
-                        <div>
-                          <b style={{ fontSize: '11px', color: '#0f172a', display: 'block' }}>{op.pos}º - {op.nome}</b>
-                          <span style={{ fontSize: '9px', color: '#059669', fontWeight: 'bold' }}>{op.rentabilidade}</span>
-                        </div>
-                      </div>
-                      <span style={{ fontSize: '9px', color: '#7c3aed', fontWeight: 'bold' }}>Ver ↗️</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
             </div>
-          </div>
-        )}
-
-        {/* 2. ABA RANKING */}
-        {abaAtiva === 'ranking' && (
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '6px' }}>🏆 Ranking Oficial Top 10 (Semanal)</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {rankingOperadores.map((op) => (
-                <div key={op.pos} onClick={() => visitarPerfil(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <img src={op.avatar} alt="Avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover' }} />
-                    <div>
-                      <b style={{ fontSize: '14px', color: '#0f172a', display: 'block' }}>#{op.pos} - {op.nome} ({op.handle})</b>
-                      <span style={{ fontSize: '11px', color: '#64748b' }}>{op.bio}</span>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: '15px', fontWeight: 'bold', color: '#059669', display: 'block' }}>{op.rentabilidade}</span>
-                    <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold' }}>Assertividade: {op.assertividade}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 3. PERFIL DEDICADO COM DIRECT E GRID DE POSTS */}
-        {abaAtiva === 'perfil-visita' && perfilVisitado && (
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <button onClick={() => setAbaAtiva('feed')} style={{ background: 'none', border: 'none', color: '#7c3aed', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                ← Voltar ao Feed Principal
-              </button>
-              <button onClick={() => copiarLinkPerfil(perfilVisitado.handle)} style={{ backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
-                🔗 Copiar Link deste Perfil
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', marginBottom: '30px', flexWrap: 'wrap' }}>
-              <img src={perfilVisitado.avatar} alt="Avatar" style={{ width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed' }} />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '8px', flexWrap: 'wrap' }}>
-                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{perfilVisitado.nome}</h2>
-                  <span style={{ fontSize: '14px', color: '#7c3aed', fontWeight: 'bold' }}>{perfilVisitado.handle}</span>
-                  <button onClick={() => setChatAtivo(perfilVisitado)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                    💬 Enviar Mensagem (Direct)
-                  </button>
-                </div>
-                <p style={{ fontSize: '12px', color: '#334155', margin: '0 0 12px 0', whiteSpace: 'pre-line' }}>{perfilVisitado.bio}</p>
-                <div style={{ display: 'flex', gap: '25px', fontSize: '13px' }}>
-                  <div><b>{posts.filter(p => p.handle === perfilVisitado.handle).length || perfilVisitado.postsCount}</b> posts</div>
-                  <div><b>{(perfilVisitado.seguidoresLista || []).length || 140}</b> seguidores</div>
-                  <div><b>{perfilVisitado.visualizacoes30Dias}</b> views</div>
-                </div>
-              </div>
-            </div>
-
-            {chatAtivo && chatAtivo.handle === perfilVisitado.handle && (
-              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', marginTop: '20px' }}>
-                <h4 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>💬 Conversa Direta com {perfilVisitado.nome}</h4>
-                <div style={{ height: '150px', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px', overflowY: 'auto', marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  {(mensagensDirect[perfilVisitado.handle] || []).length === 0 ? (
-                    <span style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginTop: '50px' }}>Nenhuma mensagem enviada ainda. Inicie a conversa!</span>
-                  ) : (
-                    (mensagensDirect[perfilVisitado.handle] || []).map((msg, index) => (
-                      <div key={index} style={{ alignSelf: msg.remetente === meuPerfil.handle ? 'flex-end' : 'flex-start', backgroundColor: msg.remetente === meuPerfil.handle ? '#7c3aed' : '#e2e8f0', color: msg.remetente === meuPerfil.handle ? '#fff' : '#0f172a', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', maxWidth: '70%' }}>
-                        {msg.texto}
-                      </div>
-                    ))
-                  )}
-                </div>
-                <form onSubmit={enviarMensagemDirect} style={{ display: 'flex', gap: '8px' }}>
-                  <input type="text" placeholder="Escreva uma mensagem..." value={textoMensagem} onChange={(e) => setTextoMensagem(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }} required />
-                  <button type="submit" style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>Enviar 📨</button>
-                </form>
-              </div>
-            )}
-
-            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '20px', marginTop: '20px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>📸 Publicações de {perfilVisitado.nome}</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
-                {posts.filter(p => p.handle === perfilVisitado.handle).length === 0 ? (
-                  <p style={{ fontSize: '12px', color: '#64748b', gridColumn: 'span 3', textAlign: 'center' }}>Este operador ainda não publicou fotos no feed.</p>
-                ) : (
-                  posts.filter(p => p.handle === perfilVisitado.handle).map(p => (
-                    <div key={p.id} style={{ height: '160px', borderRadius: '10px', overflow: 'hidden', backgroundColor: '#000', border: '1px solid #e2e8f0' }}>
-                      {p.imagens && p.imagens[0] && <img src={p.imagens[0]} alt="Post" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
           </div>
         )}
 
       </div>
     </main>
+  );
+}
+
+export default function SocialPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>A carregar página social...</div>}>
+      <SocialContent />
+    </Suspense>
   );
 }

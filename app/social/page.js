@@ -1939,7 +1939,6 @@ function SocialContent() {
               </div>
 
               {/* POSTS - A PARTE 2B CONTINUA EXATAMENTE DAQUI */}
-              {posts.map((p) => {
              {posts.map((p) => {
                 const imgAtualIdx =
                   indiceCarrossel[p.id] || 0;

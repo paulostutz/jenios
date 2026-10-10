@@ -9,7 +9,7 @@ export default function SocialPage() {
   const [abaAtiva, setAbaAtiva] = useState('feed');
   const [novoTexto, setNovoTexto] = useState('');
   const [proporcaoFoto, setProporcaoFoto] = useState('quadrada'); // 'quadrada', 'em-pe', 'deitada'
-  const [imagensPreview, setImagensPreview] = useState([]); // Suporte a Carrossel (várias fotos)
+  const [imagensPreview, setImagensPreview] = useState([]); // Carrossel de múltiplas fotos
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
 
@@ -40,6 +40,39 @@ export default function SocialPage() {
     autenticado: true
   });
 
+  // Ranking Top 10 Semanal Completo
+  const [rankingOperadores] = useState([
+    { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em HFT.', seguidores: '1.4k', postsCount: 12, visualizacoes30Dias: '28.4k' },
+    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica.', seguidores: '1.2k', postsCount: 9, visualizacoes30Dias: '21.0k' },
+    { pos: 3, nome: 'Roberto Dias', handle: '@robertodias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', bio: 'Foco em tendências.', seguidores: '950', postsCount: 7, visualizacoes30Dias: '15.8k' },
+    { pos: 4, nome: 'Juliana Costa', handle: '@julianac', cargo: 'Scalper', rentabilidade: '+ R$ 7.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Alta frequência no Dólar.', seguidores: '820', postsCount: 14, visualizacoes30Dias: '12.1k' },
+    { pos: 5, nome: 'Marcos Vinicius', handle: '@marcosv', cargo: 'Quant Dev', rentabilidade: '+ R$ 6.500', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', bio: 'Estratégias matemáticas.', seguidores: '710', postsCount: 5, visualizacoes30Dias: '9.4k' },
+    { pos: 6, nome: 'Fernanda Lima', handle: '@fernandal', cargo: 'Analista Macro', rentabilidade: '+ R$ 5.200', assertividade: '82%', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', bio: 'Foco em notícias globais.', seguidores: '640', postsCount: 8, visualizacoes30Dias: '8.2k' },
+    { pos: 7, nome: 'Lucas Mendes', handle: '@lucasm', cargo: 'Crypto Trader', rentabilidade: '+ R$ 4.300', assertividade: '80%', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', bio: 'Especialista em DEX.', seguidores: '530', postsCount: 6, visualizacoes30Dias: '6.9k' },
+    { pos: 8, nome: 'Beatriz Souza', handle: '@beatrizs', cargo: 'Day Trader', rentabilidade: '+ R$ 3.800', assertividade: '78%', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150', bio: 'Price action clássico.', seguidores: '480', postsCount: 4, visualizacoes30Dias: '5.1k' },
+    { pos: 9, nome: 'Gabriel Rocha', handle: '@gabrielr', cargo: 'Position', rentabilidade: '+ R$ 2.900', assertividade: '76%', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', bio: 'Longo prazo em ações.', seguidores: '390', postsCount: 3, visualizacoes30Dias: '4.2k' },
+    { pos: 10, nome: 'Camila Martins', handle: '@camilam', cargo: 'Iniciante Pro', rentabilidade: '+ R$ 1.800', assertividade: '74%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Evoluindo no método.', seguidores: '310', postsCount: 2, visualizacoes30Dias: '3.0k' }
+  ]);
+
+  // Estado de Posts com Persistência em localStorage
+  const [posts, setPosts] = useState([
+    { 
+      id: 1, 
+      autor: 'Carlos M.', 
+      handle: '@carlosm', 
+      cargo: 'ESTRATEGISTA HFT', 
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
+      texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', 
+      imagens: ['https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800'], 
+      proporcao: 'quadrada',
+      tempo: 'Há 15 mins', 
+      likes: 34, 
+      curtido: false, 
+      views: 342,
+      perfilAssociado: rankingOperadores[0] 
+    }
+  ]);
+
   useEffect(() => {
     const perfilSalvo = localStorage.getItem('jenios_social_perfil');
     if (perfilSalvo) {
@@ -54,12 +87,25 @@ export default function SocialPage() {
       } catch(e) {}
     }
 
+    // Carrega os posts fixados do localStorage
+    const postsSalvos = localStorage.getItem('jenios_social_posts');
+    if (postsSalvos) {
+      try {
+        setPosts(JSON.parse(postsSalvos));
+      } catch(e) {}
+    }
+
     if (perfilUrl) {
       const encontrado = rankingOperadores.find(op => op.handle === perfilUrl) || meuPerfil;
       setPerfilVisitado(encontrado);
       setAbaAtiva('perfil-visita');
     }
   }, [perfilUrl]);
+
+  const salvarPostsNoStorage = (novosPosts) => {
+    setPosts(novosPosts);
+    localStorage.setItem('jenios_social_posts', JSON.stringify(novosPosts));
+  };
 
   const salvarEdicaoPerfil = (e) => {
     e.preventDefault();
@@ -87,7 +133,7 @@ export default function SocialPage() {
       autenticado: true,
       seguidores: 0,
       postsCount: 0,
-      visualizacoes30Dias: 120, // Inicial realista
+      visualizacoes30Dias: 245,
       bio: modoAuth === 'cadastro' ? 'Trader iniciante na plataforma Jenios HFT.' : 'Desenvolvedor da infraestrutura AsaaS e operador HFT.'
     };
 
@@ -97,7 +143,6 @@ export default function SocialPage() {
     alert('Autenticado com sucesso!');
   };
 
-  // Upload Múltiplo de Fotos (Carrossel) com Preview Visível
   const handleUploadCarrossel = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
@@ -142,40 +187,8 @@ export default function SocialPage() {
     const stream = videoRef.current.srcObject;
     if (stream) stream.getTracks().forEach(t => t.stop());
     setModalCamera(false);
-    alert('📸 Foto capturada e adicionada ao post!');
+    alert('📸 Foto capturada e adicionada!');
   };
-
-  // Ranking Top 10 Semanal Completo
-  const [rankingOperadores] = useState([
-    { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em HFT.', seguidores: '1.4k', postsCount: 12, visualizacoes30Dias: '28.4k' },
-    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica.', seguidores: '1.2k', postsCount: 9, visualizacoes30Dias: '21.0k' },
-    { pos: 3, nome: 'Roberto Dias', handle: '@robertodias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', bio: 'Foco em tendências.', seguidores: '950', postsCount: 7, visualizacoes30Dias: '15.8k' },
-    { pos: 4, nome: 'Juliana Costa', handle: '@julianac', cargo: 'Scalper', rentabilidade: '+ R$ 7.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Alta frequência no Dólar.', seguidores: '820', postsCount: 14, visualizacoes30Dias: '12.1k' },
-    { pos: 5, nome: 'Marcos Vinicius', handle: '@marcosv', cargo: 'Quant Dev', rentabilidade: '+ R$ 6.500', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', bio: 'Estratégias matemáticas.', seguidores: '710', postsCount: 5, visualizacoes30Dias: '9.4k' },
-    { pos: 6, nome: 'Fernanda Lima', handle: '@fernandal', cargo: 'Analista Macro', rentabilidade: '+ R$ 5.200', assertividade: '82%', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', bio: 'Foco em notícias globais.', seguidores: '640', postsCount: 8, visualizacoes30Dias: '8.2k' },
-    { pos: 7, nome: 'Lucas Mendes', handle: '@lucasm', cargo: 'Crypto Trader', rentabilidade: '+ R$ 4.300', assertividade: '80%', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', bio: 'Especialista em DEX.', seguidores: '530', postsCount: 6, visualizacoes30Dias: '6.9k' },
-    { pos: 8, nome: 'Beatriz Souza', handle: '@beatrizs', cargo: 'Day Trader', rentabilidade: '+ R$ 3.800', assertividade: '78%', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150', bio: 'Price action clássico.', seguidores: '480', postsCount: 4, visualizacoes30Dias: '5.1k' },
-    { pos: 9, nome: 'Gabriel Rocha', handle: '@gabrielr', cargo: 'Position', rentabilidade: '+ R$ 2.900', assertividade: '76%', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', bio: 'Longo prazo em ações.', seguidores: '390', postsCount: 3, visualizacoes30Dias: '4.2k' },
-    { pos: 10, nome: 'Camila Martins', handle: '@camilam', cargo: 'Iniciante Pro', rentabilidade: '+ R$ 1.800', assertividade: '74%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Evoluindo no método.', seguidores: '310', postsCount: 2, visualizacoes30Dias: '3.0k' }
-  ]);
-
-  const [posts, setPosts] = useState([
-    { 
-      id: 1, 
-      autor: 'Carlos M.', 
-      handle: '@carlosm', 
-      cargo: 'ESTRATEGISTA HFT', 
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
-      texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', 
-      imagens: ['https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800'], 
-      proporcao: 'quadrada',
-      tempo: 'Há 15 mins', 
-      likes: 34, 
-      curtido: false, 
-      views: 890,
-      perfilAssociado: rankingOperadores[0] 
-    }
-  ]);
 
   const publicarPost = (e) => {
     e.preventDefault();
@@ -194,11 +207,13 @@ export default function SocialPage() {
       tempo: 'Agora mesmo',
       likes: 0,
       curtido: false,
-      views: 1, // Visualização inicial orgânica
+      views: 1, // Contagem realista inicial
       perfilAssociado: meuPerfil
     };
 
-    setPosts([novoP, ...posts]);
+    const atualizados = [novoP, ...posts];
+    salvarPostsNoStorage(atualizados);
+
     setNovoTexto('');
     setImagensPreview([]);
     setProporcaoFoto('quadrada');
@@ -206,15 +221,21 @@ export default function SocialPage() {
     const perfilAtualizado = {
       ...meuPerfil,
       postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 45
+      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 25
     };
     setMeuPerfil(perfilAtualizado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilAtualizado));
-    alert('🚀 Publicação realizada com sucesso!');
+    alert('🚀 Publicação realizada e fixada com sucesso!');
   };
 
   const curtirPost = (id) => {
-    setPosts(posts.map(p => p.id === id ? { ...p, likes: p.curtido ? p.likes - 1 : p.likes + 1, curtido: !p.curtido } : p));
+    const atualizados = posts.map(p => p.id === id ? { 
+      ...p, 
+      likes: p.curtido ? p.likes - 1 : p.likes + 1, 
+      curtido: !p.curtido,
+      views: p.views + 1 
+    } : p);
+    salvarPostsNoStorage(atualizados);
   };
 
   const mudarFotoCarrossel = (postId, direcao, totalImagens) => {
@@ -357,7 +378,7 @@ export default function SocialPage() {
             <div style={{ display: 'flex', gap: '16px', backgroundColor: '#f8fafc', padding: '12px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', alignItems: 'center' }}>
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>POSTS</span>
-                <b style={{ fontSize: '15px', color: '#0f172a' }}>{meuPerfil.postsCount || 0}</b>
+                <b style={{ fontSize: '15px', color: '#0f172a' }}>{posts.length}</b>
               </div>
               <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
               <div style={{ textAlign: 'center' }}>
@@ -367,7 +388,7 @@ export default function SocialPage() {
               <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>VIEWS (30D)</span>
-                <b style={{ fontSize: '15px', color: '#059669' }}>{meuPerfil.visualizacoes30Dias || 0}</b>
+                <b style={{ fontSize: '15px', color: '#059669' }}>{posts.reduce((acc, p) => acc + (p.views || 0), meuPerfil.visualizacoes30Dias)}</b>
               </div>
             </div>
 
@@ -386,7 +407,7 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* STORIES VERTICAIS (Estilo Instagram) */}
+        {/* STORIES VERTICAIS */}
         <div style={{ backgroundColor: '#ffffff', padding: '15px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
           {[
             { nome: 'Seu Story', avatar: meuPerfil.avatar, meu: true },
@@ -419,20 +440,19 @@ export default function SocialPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Caixa de Criação de Post com Preview de Imagens e Seletor de Proporção */}
+              {/* Caixa de Criação de Post */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
 
                   {/* Seletor de Proporção da Foto */}
-                  <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', fontSize: '11px' }}>
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', fontSize: '11px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 'bold', color: '#64748b' }}>Formato da Foto:</span>
                     <label><input type="radio" name="prop" checked={proporcaoFoto === 'quadrada'} onChange={() => setProporcaoFoto('quadrada')} /> Quadrada (1:1)</label>
                     <label><input type="radio" name="prop" checked={proporcaoFoto === 'em-pe'} onChange={() => setProporcaoFoto('em-pe')} /> Em Pé (4:5)</label>
                     <label><input type="radio" name="prop" checked={proporcaoFoto === 'deitada'} onChange={() => setProporcaoFoto('deitada')} /> Deitada (16:9)</label>
                   </div>
 
-                  {/* Botões de Upload e Câmera */}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                     <label style={{ backgroundColor: '#f1f5f9', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', border: '1px solid #cbd5e1' }}>
                       📁 Subir Fotos (Carrossel / Múltiplas) <input type="file" accept="image/*" multiple onChange={handleUploadCarrossel} style={{ display: 'none' }} />
@@ -460,7 +480,7 @@ export default function SocialPage() {
                 </form>
               </div>
 
-              {/* Feed Posts (Com Carrossel e Proporções Corretas) */}
+              {/* Feed Posts */}
               {posts.map((p) => {
                 const imgAtualIdx = indiceCarrossel[p.id] || 0;
                 const temVariasFotos = p.imagens && p.imagens.length > 1;
@@ -486,7 +506,6 @@ export default function SocialPage() {
 
                     <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
                     
-                    {/* Exibição de Imagens / Carrossel */}
                     {p.imagens && p.imagens.length > 0 && (
                       <div style={{ ...estiloProporcao, backgroundColor: '#000', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img src={p.imagens[imgAtualIdx]} alt="Post Mídia" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
@@ -507,7 +526,7 @@ export default function SocialPage() {
                       <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#dc2626' : '#64748b', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
                         {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
                       </button>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 120} visualizações</span>
+                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 1} visualizações</span>
                     </div>
                   </div>
                 );

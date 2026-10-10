@@ -6,16 +6,20 @@ export default function SocialPage() {
   const searchParams = useSearchParams();
   const perfilUrl = searchParams.get('perfil');
 
-  const [abaAtiva, setAbaAtiva] = useState('feed');
+  const [abaAtiva, setAbaAtiva] = useState('feed'); // 'feed', 'ranking', 'perfil-visita', 'direct'
   const [novoTexto, setNovoTexto] = useState('');
   const [proporcaoFoto, setProporcaoFoto] = useState('quadrada'); // 'quadrada', 'em-pe', 'deitada'
-  const [imagensPreview, setImagensPreview] = useState([]); // Carrossel de múltiplas fotos
+  const [imagensPreview, setImagensPreview] = useState([]); // Carrossel com múltiplas fotos
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
+  const [chatAtivo, setChatAtivo] = useState(null);
+  const [textoMensagem, setTextoMensagem] = useState('');
+  const [mensagensDirect, setMensagensDirect] = useState({});
 
   // Modais
   const [modalEditarPerfil, setModalEditarPerfil] = useState(false);
   const [modalAutenticacao, setModalAutenticacao] = useState(false);
+  const [modalLista, setModalLista] = useState(null); // 'seguidores' ou 'seguindo'
   const [modoAuth, setModoAuth] = useState('login');
   const [authEmail, setAuthEmail] = useState('');
   const [authSenha, setAuthSenha] = useState('');
@@ -32,29 +36,37 @@ export default function SocialPage() {
     rentabilidade: 'R$ 0,00',
     assertividade: '0%',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    bio: 'Desenvolvedor da infraestrutura AsaaS e operador HFT.',
-    seguidores: 1280,
-    postsCount: 1,
-    visualizacoes30Dias: 4150,
+    bio: 'Pastor, empresário, escritor e palestrante.\nCEO-Founder da Letter e da Jenios Social e Plataforma de negociações.\n+14 anos de experiência no mercado financeiro.',
+    seguidoresLista: ['@carlosm', '@anapaula', '@robertodias', '@julianac'],
+    seguindoLista: ['@carlosm', '@anapaula', '@fernandal'],
+    postsCount: 2,
+    visualizacoes30Dias: 1420,
     status: '🏆 Conta Verificada',
     autenticado: true
   });
 
-  // Ranking Top 10 Semanal Completo
+  // Ranking Top 10 Semanal Completo com Bios e Listas
   const [rankingOperadores] = useState([
-    { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em HFT.', seguidores: '1.4k', postsCount: 12, visualizacoes30Dias: '28.4k' },
-    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica.', seguidores: '1.2k', postsCount: 9, visualizacoes30Dias: '21.0k' },
-    { pos: 3, nome: 'Roberto Dias', handle: '@robertodias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', bio: 'Foco em tendências.', seguidores: '950', postsCount: 7, visualizacoes30Dias: '15.8k' },
-    { pos: 4, nome: 'Juliana Costa', handle: '@julianac', cargo: 'Scalper', rentabilidade: '+ R$ 7.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Alta frequência no Dólar.', seguidores: '820', postsCount: 14, visualizacoes30Dias: '12.1k' },
-    { pos: 5, nome: 'Marcos Vinicius', handle: '@marcosv', cargo: 'Quant Dev', rentabilidade: '+ R$ 6.500', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', bio: 'Estratégias matemáticas.', seguidores: '710', postsCount: 5, visualizacoes30Dias: '9.4k' },
-    { pos: 6, nome: 'Fernanda Lima', handle: '@fernandal', cargo: 'Analista Macro', rentabilidade: '+ R$ 5.200', assertividade: '82%', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', bio: 'Foco em notícias globais.', seguidores: '640', postsCount: 8, visualizacoes30Dias: '8.2k' },
-    { pos: 7, nome: 'Lucas Mendes', handle: '@lucasm', cargo: 'Crypto Trader', rentabilidade: '+ R$ 4.300', assertividade: '80%', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', bio: 'Especialista em DEX.', seguidores: '530', postsCount: 6, visualizacoes30Dias: '6.9k' },
-    { pos: 8, nome: 'Beatriz Souza', handle: '@beatrizs', cargo: 'Day Trader', rentabilidade: '+ R$ 3.800', assertividade: '78%', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150', bio: 'Price action clássico.', seguidores: '480', postsCount: 4, visualizacoes30Dias: '5.1k' },
-    { pos: 9, nome: 'Gabriel Rocha', handle: '@gabrielr', cargo: 'Position', rentabilidade: '+ R$ 2.900', assertividade: '76%', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', bio: 'Longo prazo em ações.', seguidores: '390', postsCount: 3, visualizacoes30Dias: '4.2k' },
-    { pos: 10, nome: 'Camila Martins', handle: '@camilam', cargo: 'Iniciante Pro', rentabilidade: '+ R$ 1.800', assertividade: '74%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Evoluindo no método.', seguidores: '310', postsCount: 2, visualizacoes30Dias: '3.0k' }
+    { pos: 1, nome: 'Carlos M.', handle: '@carlosm', cargo: 'Trader Pro', rentabilidade: '+ R$ 14.850', assertividade: '94%', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Especialista em robôs HFT e Mini-Índice.', seguidoresLista: ['@paulostutz', '@anapaula'], seguindoLista: ['@paulostutz'], postsCount: 12, visualizacoes30Dias: '28.4k' },
+    { pos: 2, nome: 'Ana Paula S.', handle: '@anapaula', cargo: 'Institucional', rentabilidade: '+ R$ 11.200', assertividade: '91%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Arbitragem algorítmica multi-rede na Solana.', seguidoresLista: ['@paulostutz', '@carlosm'], seguindoLista: ['@paulostutz'], postsCount: 9, visualizacoes30Dias: '21.0k' },
+    { pos: 3, nome: 'Roberto Dias', handle: '@robertodias', cargo: 'Swing Trader', rentabilidade: '+ R$ 9.400', assertividade: '88%', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', bio: 'Foco em tendências de médio prazo.', seguidoresLista: ['@paulostutz'], seguindoLista: ['@carlosm'], postsCount: 7, visualizacoes30Dias: '15.8k' },
+    { pos: 4, nome: 'Juliana Costa', handle: '@julianac', cargo: 'Scalper', rentabilidade: '+ R$ 7.800', assertividade: '86%', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Operações de alta frequência no Dólar.', seguidoresLista: [], seguindoLista: [], postsCount: 14, visualizacoes30Dias: '12.1k' },
+    { pos: 5, nome: 'Marcos Vinicius', handle: '@marcosv', cargo: 'Quant Dev', rentabilidade: '+ R$ 6.500', assertividade: '85%', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', bio: 'Desenvolvedor de estratégias matemáticas.', seguidores: [], seguindoLista: [], postsCount: 5, visualizacoes30Dias: '9.4k' },
+    { pos: 6, nome: 'Fernanda Lima', handle: '@fernandal', cargo: 'Analista Macro', rentabilidade: '+ R$ 5.200', assertividade: '82%', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', bio: 'Foco em notícias globais e commodities.', seguidores: ['@paulostutz'], seguindoLista: ['@paulostutz'], postsCount: 8, visualizacoes30Dias: '8.2k' },
+    { pos: 7, nome: 'Lucas Mendes', handle: '@lucasm', cargo: 'Crypto Trader', rentabilidade: '+ R$ 4.300', assertividade: '80%', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', bio: 'Especialista em DEX e pools de liquidez.', seguidores: [], seguindoLista: [], postsCount: 6, visualizacoes30Dias: '6.9k' },
+    { pos: 8, nome: 'Beatriz Souza', handle: '@beatrizs', cargo: 'Day Trader', rentabilidade: '+ R$ 3.800', assertividade: '78%', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150', bio: 'Operando price action clássico.', seguidores: [], seguindoLista: [], postsCount: 4, visualizacoes30Dias: '5.1k' },
+    { pos: 9, nome: 'Gabriel Rocha', handle: '@gabrielr', cargo: 'Position', rentabilidade: '+ R$ 2.900', assertividade: '76%', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150', bio: 'Alocação de longo prazo em ações.', seguidores: [], seguindoLista: [], postsCount: 3, visualizacoes30Dias: '4.2k' },
+    { pos: 10, nome: 'Camila Martins', handle: '@camilam', cargo: 'Iniciante Pro', rentabilidade: '+ R$ 1.800', assertividade: '74%', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', bio: 'Evoluindo no método Jenios.', seguidores: [], seguindoLista: [], postsCount: 2, visualizacoes30Dias: '3.0k' }
   ]);
 
-  // Estado de Posts com Persistência em localStorage
+  // Canal de Notícias Macro (3 Fontes Síncronas)
+  const [noticiasMacro] = useState([
+    { id: 1, fonte: 'Bloomberg', cat: 'GLOBAL', titulo: 'Bancos centrais avaliam corte agressivo na taxa de juros global', impacto: '🟢 Positivo p/ Risco', hora: 'Há 5 mins' },
+    { id: 2, fonte: 'Reuters', cat: 'COMMODITIES', titulo: 'Fluxo institucional estrangeiro dispara na B3 com alta do minério', impacto: '🟢 Alta Liquidez', hora: 'Há 12 mins' },
+    { id: 3, fonte: 'InfoMoney', cat: 'HFT & MERCADO', titulo: 'Volatilidade no Mini-Índice atinge pico recorde no trimestre', impacto: '🔴 Alerta Volatilidade', hora: 'Há 25 mins' }
+  ]);
+
+  // Estado de Posts Perpétuos no LocalStorage
   const [posts, setPosts] = useState([
     { 
       id: 1, 
@@ -62,6 +74,7 @@ export default function SocialPage() {
       handle: '@carlosm', 
       cargo: 'ESTRATEGISTA HFT', 
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
+      bio: 'Especialista em robôs HFT e Mini-Índice.',
       texto: 'Modo Reverso ativado no Mini-Índice com sucesso!', 
       imagens: ['https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800'], 
       proporcao: 'quadrada',
@@ -87,12 +100,14 @@ export default function SocialPage() {
       } catch(e) {}
     }
 
-    // Carrega os posts fixados do localStorage
-    const postsSalvos = localStorage.getItem('jenios_social_posts');
+    const postsSalvos = localStorage.getItem('jenios_social_posts_v3');
     if (postsSalvos) {
-      try {
-        setPosts(JSON.parse(postsSalvos));
-      } catch(e) {}
+      try { setPosts(JSON.parse(postsSalvos)); } catch(e) {}
+    }
+
+    const directSalvo = localStorage.getItem('jenios_social_directs');
+    if (directSalvo) {
+      try { setMensagensDirect(JSON.parse(directSalvo)); } catch(e) {}
     }
 
     if (perfilUrl) {
@@ -104,14 +119,14 @@ export default function SocialPage() {
 
   const salvarPostsNoStorage = (novosPosts) => {
     setPosts(novosPosts);
-    localStorage.setItem('jenios_social_posts', JSON.stringify(novosPosts));
+    localStorage.setItem('jenios_social_posts_v3', JSON.stringify(novosPosts));
   };
 
   const salvarEdicaoPerfil = (e) => {
     e.preventDefault();
     localStorage.setItem('jenios_social_perfil', JSON.stringify(meuPerfil));
     setModalEditarPerfil(false);
-    alert('✅ Perfil atualizado com sucesso!');
+    alert('✅ Perfil e Bio atualizados com sucesso!');
   };
 
   const fazerLogout = () => {
@@ -131,10 +146,11 @@ export default function SocialPage() {
       nome: nomeUser,
       handle: handleUser,
       autenticado: true,
-      seguidores: 0,
+      seguidoresLista: ['@paulostutz'],
+      seguindoLista: ['@paulostutz'],
       postsCount: 0,
-      visualizacoes30Dias: 245,
-      bio: modoAuth === 'cadastro' ? 'Trader iniciante na plataforma Jenios HFT.' : 'Desenvolvedor da infraestrutura AsaaS e operador HFT.'
+      visualizacoes30Dias: 120,
+      bio: modoAuth === 'cadastro' ? 'Trader iniciante na plataforma Jenios HFT.' : meuPerfil.bio
     };
 
     setMeuPerfil(perfilLogado);
@@ -143,6 +159,7 @@ export default function SocialPage() {
     alert('Autenticado com sucesso!');
   };
 
+  // Upload Múltiplo de Imagens com Botão + (Carrossel Instagram)
   const handleUploadCarrossel = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
@@ -187,7 +204,7 @@ export default function SocialPage() {
     const stream = videoRef.current.srcObject;
     if (stream) stream.getTracks().forEach(t => t.stop());
     setModalCamera(false);
-    alert('📸 Foto capturada e adicionada!');
+    alert('📸 Foto capturada e adicionada ao carrossel!');
   };
 
   const publicarPost = (e) => {
@@ -198,7 +215,7 @@ export default function SocialPage() {
       id: Date.now(),
       autor: meuPerfil.nome,
       handle: meuPerfil.handle,
-      cargo: 'ESTRATEGISTA',
+      cargo: meuPerfil.cargo,
       avatar: meuPerfil.avatar,
       bio: meuPerfil.bio,
       texto: novoTexto,
@@ -207,7 +224,7 @@ export default function SocialPage() {
       tempo: 'Agora mesmo',
       likes: 0,
       curtido: false,
-      views: 1, // Contagem realista inicial
+      views: 12, // Visualização orgânica inicial realista
       perfilAssociado: meuPerfil
     };
 
@@ -221,11 +238,11 @@ export default function SocialPage() {
     const perfilAtualizado = {
       ...meuPerfil,
       postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 25
+      visualizacoes30Dias: Number(meuPerfil.visualizacoes30Dias || 0) + 35
     };
     setMeuPerfil(perfilAtualizado);
     localStorage.setItem('jenios_social_perfil', JSON.stringify(perfilAtualizado));
-    alert('🚀 Publicação realizada e fixada com sucesso!');
+    alert('🚀 Publicação realizada e fixada permanentemente na rede!');
   };
 
   const curtirPost = (id) => {
@@ -253,6 +270,19 @@ export default function SocialPage() {
     setAbaAtiva('perfil-visita');
   };
 
+  const enviarMensagemDirect = (e) => {
+    e.preventDefault();
+    if (!textoMensagem.trim() || !chatAtivo) return;
+    const handleDest = chatAtivo.handle;
+    const conversaAtual = mensagensDirect[handleDest] || [];
+    const novaMensagem = { remetente: meuPerfil.handle, texto: textoMensagem, hora: 'Agora' };
+    const novasConversas = { ...mensagensDirect, [handleDest]: [...conversaAtual, novaMensagem] };
+    
+    setMensagensDirect(novasConversas);
+    localStorage.setItem('jenios_social_directs', JSON.stringify(novasConversas));
+    setTextoMensagem('');
+  };
+
   const copiarLinkPost = (id) => {
     const url = `${window.location.origin}/social?post=${id}`;
     navigator.clipboard.writeText(url);
@@ -275,6 +305,26 @@ export default function SocialPage() {
             <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
               <button onClick={tirarFoto} style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Capturar 🟢</button>
               <button onClick={() => setModalCamera(false)} style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL LISTA SEGUIDORES / SEGUINDO */}
+      {modalLista && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 25000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '380px', width: '100%', padding: '25px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', textTransform: 'capitalize', margin: 0 }}>{modalLista}</h3>
+              <button onClick={() => setModalLista(null)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '250px', overflowY: 'auto' }}>
+              {(meuPerfil[modalLista === 'seguidores' ? 'seguidoresLista' : 'seguindoLista'] || []).map((handle, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 10px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#7c3aed' }}>{handle}</span>
+                  <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>Seguindo ⚡</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -308,12 +358,12 @@ export default function SocialPage() {
         </div>
       )}
 
-      {/* MODAL EDIÇÃO DE PERFIL */}
+      {/* MODAL EDIÇÃO DE PERFIL COM BIO */}
       {modalEditarPerfil && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.85)', zIndex: 20000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
           <div style={{ backgroundColor: '#ffffff', borderRadius: '20px', maxWidth: '450px', width: '100%', padding: '30px', boxShadow: '0 25px 50px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>⚙️ Editar Perfil & Bio</h3>
+              <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>⚙️ Editar Perfil & Bio Fixada</h3>
               <button onClick={() => setModalEditarPerfil(false)} style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
             </div>
             <form onSubmit={salvarEdicaoPerfil} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -326,8 +376,12 @@ export default function SocialPage() {
                 <input type="text" value={meuPerfil.handle} onChange={(e) => setMeuPerfil({...meuPerfil, handle: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} required />
               </div>
               <div>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Bio (Biografia):</label>
-                <textarea value={meuPerfil.bio} onChange={(e) => setMeuPerfil({...meuPerfil, bio: e.target.value})} style={{ width: '100%', height: '80px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} />
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Cargo / Título:</label>
+                <input type="text" value={meuPerfil.cargo} onChange={(e) => setMeuPerfil({...meuPerfil, cargo: e.target.value})} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} />
+              </div>
+              <div>
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Bio Completa (Fixada no Perfil):</label>
+                <textarea value={meuPerfil.bio} onChange={(e) => setMeuPerfil({...meuPerfil, bio: e.target.value})} style={{ width: '100%', height: '90px', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px', marginTop: '4px' }} />
               </div>
               <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', marginTop: '8px' }}>Salvar Alterações</button>
             </form>
@@ -362,32 +416,38 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* Perfil Header */}
+        {/* PERFIL HEADER (Estilo Instagram com Bio Fixada) */}
         <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flex: 1, minWidth: '280px' }}>
-              <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #7c3aed' }} />
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', flex: 1, minWidth: '300px' }}>
+              <img src={meuPerfil.avatar} alt="Avatar" style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed', flexShrink: 0 }} />
               <div>
-                <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 2px 0' }}>{meuPerfil.nome} <span style={{ fontSize: '13px', color: '#7c3aed' }}>{meuPerfil.handle}</span></h2>
-                <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', display: 'block' }}>{meuPerfil.cargo}</span>
-                <p style={{ fontSize: '11px', color: '#64748b', margin: '4px 0 0 0' }}>{meuPerfil.bio}</p>
+                <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 2px 0' }}>{meuPerfil.nome} <span style={{ fontSize: '14px', color: '#7c3aed' }}>{meuPerfil.handle}</span></h2>
+                <span style={{ fontSize: '12px', color: '#7c3aed', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>{meuPerfil.cargo}</span>
+                <p style={{ fontSize: '12px', color: '#334155', margin: 0, whiteSpace: 'pre-line', lineHeight: '1.4' }}>{meuPerfil.bio}</p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '16px', backgroundColor: '#f8fafc', padding: '12px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', alignItems: 'center' }}>
+            {/* Métricas e Contadores Clicáveis (Seguidores / Seguindo) */}
+            <div style={{ display: 'flex', gap: '16px', backgroundColor: '#f8fafc', padding: '14px 20px', borderRadius: '12px', border: '1px solid #e2e8f0', alignItems: 'center' }}>
               <div style={{ textAlign: 'center' }}>
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>POSTS</span>
-                <b style={{ fontSize: '15px', color: '#0f172a' }}>{posts.length}</b>
+                <b style={{ fontSize: '15px', color: '#0f172a' }}>{posts.filter(p => p.handle === meuPerfil.handle).length}</b>
               </div>
               <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
-              <div style={{ textAlign: 'center' }}>
+              <div onClick={() => setModalLista('seguidores')} style={{ textAlign: 'center', cursor: 'pointer' }} title="Ver seguidores">
                 <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>SEGUIDORES</span>
-                <b style={{ fontSize: '15px', color: '#7c3aed' }}>{meuPerfil.seguidores || 0}</b>
+                <b style={{ fontSize: '15px', color: '#7c3aed' }}>{(meuPerfil.seguidoresLista || []).length}</b>
+              </div>
+              <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
+              <div onClick={() => setModalLista('seguindo')} style={{ textAlign: 'center', cursor: 'pointer' }} title="Ver quem você segue">
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>SEGUINDO</span>
+                <b style={{ fontSize: '15px', color: '#7c3aed' }}>{(meuPerfil.seguindoLista || []).length}</b>
               </div>
               <div style={{ width: '1px', height: '24px', backgroundColor: '#cbd5e1' }}></div>
               <div style={{ textAlign: 'center' }}>
-                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>VIEWS (30D)</span>
+                <span style={{ fontSize: '10px', color: '#64748b', display: 'block', fontWeight: 'bold' }}>VIEWS</span>
                 <b style={{ fontSize: '15px', color: '#059669' }}>{posts.reduce((acc, p) => acc + (p.views || 0), meuPerfil.visualizacoes30Dias)}</b>
               </div>
             </div>
@@ -407,7 +467,7 @@ export default function SocialPage() {
           </div>
         </div>
 
-        {/* STORIES VERTICAIS */}
+        {/* STORIES VERTICAIS (Estilo Instagram) */}
         <div style={{ backgroundColor: '#ffffff', padding: '15px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', marginBottom: '25px', display: 'flex', gap: '15px', overflowX: 'auto' }}>
           {[
             { nome: 'Seu Story', avatar: meuPerfil.avatar, meu: true },
@@ -435,17 +495,17 @@ export default function SocialPage() {
           </button>
         </div>
 
-        {/* 1. ABA FEED */}
+        {/* 1. ABA FEED COM PERPETUIDADE, CARROSSEL E BOTÃO + */}
         {abaAtiva === 'feed' && (
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
-              {/* Caixa de Criação de Post */}
+              {/* Caixa de Criação de Post com Botão + para Carrossel */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
                 <form onSubmit={publicarPost}>
                   <textarea value={novoTexto} onChange={(e) => setNovoTexto(e.target.value)} placeholder="Compartilhe uma análise, setup HFT ou visão de mercado..." style={{ width: '100%', height: '80px', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', fontSize: '13px', outline: 'none', boxSizing: 'border-box', marginBottom: '12px' }} />
 
-                  {/* Seletor de Proporção da Foto */}
+                  {/* Seletor de Proporção */}
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'center', fontSize: '11px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 'bold', color: '#64748b' }}>Formato da Foto:</span>
                     <label><input type="radio" name="prop" checked={proporcaoFoto === 'quadrada'} onChange={() => setProporcaoFoto('quadrada')} /> Quadrada (1:1)</label>
@@ -454,25 +514,27 @@ export default function SocialPage() {
                   </div>
 
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    <label style={{ backgroundColor: '#f1f5f9', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer', border: '1px solid #cbd5e1' }}>
-                      📁 Subir Fotos (Carrossel / Múltiplas) <input type="file" accept="image/*" multiple onChange={handleUploadCarrossel} style={{ display: 'none' }} />
-                    </label>
                     <button type="button" onClick={iniciarCamera} style={{ backgroundColor: '#f1f5f9', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
                       📷 Tirar Foto (Câmera)
                     </button>
                   </div>
 
-                  {/* PREVIEW VISÍVEL DAS FOTOS SELECIONADAS */}
-                  {imagensPreview.length > 0 && (
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', overflowX: 'auto', paddingBottom: '6px' }}>
-                      {imagensPreview.map((imgSrc, idx) => (
-                        <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', border: '2px solid #7c3aed', flexShrink: 0 }}>
-                          <img src={imgSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          <button type="button" onClick={() => removerFotoPreview(idx)} style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(239,68,68,0.9)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>✕</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {/* PREVIEW DO CARROSSEL COM BOTÃO + PARA ADICIONAR MAIS FOTOS */}
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', overflowX: 'auto', paddingBottom: '6px', alignItems: 'center' }}>
+                    {imagensPreview.map((imgSrc, idx) => (
+                      <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '8px', overflow: 'hidden', border: '2px solid #7c3aed', flexShrink: 0 }}>
+                        <img src={imgSrc} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <button type="button" onClick={() => removerFotoPreview(idx)} style={{ position: 'absolute', top: '2px', right: '2px', backgroundColor: 'rgba(239,68,68,0.9)', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>✕</button>
+                      </div>
+                    ))}
+
+                    {/* Botão + Estilo Instagram para Acrescentar Imagens */}
+                    <label style={{ width: '80px', height: '80px', borderRadius: '8px', border: '2px dashed #7c3aed', backgroundColor: '#faf5ff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }} title="Adicionar mais fotos ao carrossel">
+                      <span style={{ fontSize: '24px', color: '#7c3aed', fontWeight: 'bold', lineHeight: 1 }}>+</span>
+                      <span style={{ fontSize: '9px', color: '#7c3aed', fontWeight: 'bold', marginTop: '2px' }}>Adicionar</span>
+                      <input type="file" accept="image/*" multiple onChange={handleUploadCarrossel} style={{ display: 'none' }} />
+                    </label>
+                  </div>
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>Publicar no Feed 🚀</button>
@@ -480,14 +542,14 @@ export default function SocialPage() {
                 </form>
               </div>
 
-              {/* Feed Posts */}
+              {/* Feed Perpétuo de Posts (Com auto-ajuste de proporção sem cortes) */}
               {posts.map((p) => {
                 const imgAtualIdx = indiceCarrossel[p.id] || 0;
                 const temVariasFotos = p.imagens && p.imagens.length > 1;
 
-                let estiloProporcao = { width: '100%', height: '400px' };
-                if (p.proporcao === 'em-pe') estiloProporcao = { width: '100%', height: '500px' };
-                if (p.proporcao === 'deitada') estiloProporcao = { width: '100%', height: '280px' };
+                let estiloProporcao = { width: '100%', minHeight: '350px', maxHeight: '550px' };
+                if (p.proporcao === 'em-pe') estiloProporcao = { width: '100%', minHeight: '450px', maxHeight: '600px' };
+                if (p.proporcao === 'deitada') estiloProporcao = { width: '100%', minHeight: '280px', maxHeight: '400px' };
 
                 return (
                   <div key={p.id} style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', overflow: 'hidden' }}>
@@ -506,9 +568,10 @@ export default function SocialPage() {
 
                     <div style={{ padding: '20px' }}><p style={{ fontSize: '13px', color: '#334155', margin: 0 }}>{p.texto}</p></div>
                     
+                    {/* Imagem com auto-ajuste sem cortes */}
                     {p.imagens && p.imagens.length > 0 && (
                       <div style={{ ...estiloProporcao, backgroundColor: '#000', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <img src={p.imagens[imgAtualIdx]} alt="Post Mídia" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                        <img src={p.imagens[imgAtualIdx]} alt="Post Mídia" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
 
                         {temVariasFotos && (
                           <>
@@ -526,19 +589,38 @@ export default function SocialPage() {
                       <button onClick={() => curtirPost(p.id)} style={{ background: 'none', border: 'none', color: p.curtido ? '#dc2626' : '#64748b', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
                         {p.curtido ? '❤️' : '🤍'} {p.likes} Curtidas
                       </button>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 1} visualizações</span>
+                      <span style={{ color: '#64748b', fontSize: '11px' }}>👁️ {p.views || 12} visualizações</span>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Coluna Direita (Top Traders) */}
+            {/* Coluna Direita (3 Fontes de Notícias e Top Traders) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              {/* Canal de Notícias Macro (3 Fontes Simultâneas Síncronas) */}
+              <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 10px 0' }}>🌐 Canal de Notícias Macro (3 Fontes)</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {noticiasMacro.map((n) => (
+                    <div key={n.id} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#7c3aed', backgroundColor: '#f3e8ff', padding: '2px 6px', borderRadius: '4px' }}>{n.fonte}</span>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>{n.hora}</span>
+                      </div>
+                      <h4 style={{ fontSize: '11px', color: '#0f172a', margin: '0 0 6px 0', fontWeight: 'bold' }}>{n.titulo}</h4>
+                      <span style={{ fontSize: '10px', fontWeight: 'bold' }}>{n.impacto}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top Traders */}
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>🏆 Top Traders (Semanal)</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {rankingOperadores.slice(0, 10).map((op) => (
+                  {rankingOperadores.slice(0, 5).map((op) => (
                     <div key={op.pos} onClick={() => visitarPerfil(op)} style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <img src={op.avatar} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
@@ -552,6 +634,7 @@ export default function SocialPage() {
                   ))}
                 </div>
               </div>
+
             </div>
           </div>
         )}
@@ -580,7 +663,7 @@ export default function SocialPage() {
           </div>
         )}
 
-        {/* 3. PERFIL DEDICADO */}
+        {/* 3. PÁGINA DE PERFIL DEDICADO COM BOTÃO "ENVIAR MENSAGEM" (DIRECT) */}
         {abaAtiva === 'perfil-visita' && perfilVisitado && (
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -592,21 +675,63 @@ export default function SocialPage() {
               </button>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '30px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', marginBottom: '30px', flexWrap: 'wrap' }}>
               <img src={perfilVisitado.avatar} alt="Avatar" style={{ width: '90px', height: '90px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #7c3aed' }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '8px', flexWrap: 'wrap' }}>
                   <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{perfilVisitado.nome}</h2>
                   <span style={{ fontSize: '14px', color: '#7c3aed', fontWeight: 'bold' }}>{perfilVisitado.handle}</span>
+                  <button onClick={() => setChatAtivo(perfilVisitado)} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '8px 18px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
+                    💬 Enviar Mensagem (Direct)
+                  </button>
                 </div>
-                <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 10px 0' }}>{perfilVisitado.cargo} • {perfilVisitado.bio}</p>
+                <p style={{ fontSize: '12px', color: '#334155', margin: '0 0 12px 0', whiteSpace: 'pre-line' }}>{perfilVisitado.bio}</p>
                 <div style={{ display: 'flex', gap: '25px', fontSize: '13px' }}>
-                  <div><b>{perfilVisitado.postsCount || 5}</b> posts</div>
-                  <div><b>{perfilVisitado.seguidores || '1.2k'}</b> seguidores</div>
-                  <div><b>{perfilVisitado.visualizacoes30Dias || '15k'}</b> views</div>
+                  <div><b>{posts.filter(p => p.handle === perfilVisitado.handle).length || perfilVisitado.postsCount}</b> posts</div>
+                  <div><b>{(perfilVisitado.seguidoresLista || []).length || 140}</b> seguidores</div>
+                  <div><b>{perfilVisitado.visualizacoes30Dias}</b> views</div>
                 </div>
               </div>
             </div>
+
+            {/* Caixa de Chat Direct se Ativa */}
+            {chatAtivo && chatAtivo.handle === perfilVisitado.handle && (
+              <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', marginTop: '20px' }}>
+                <h4 style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>💬 Conversa Direta com {perfilVisitado.nome}</h4>
+                <div style={{ height: '150px', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '10px', overflowY: 'auto', marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {(mensagensDirect[perfilVisitado.handle] || []).length === 0 ? (
+                    <span style={{ fontSize: '11px', color: '#64748b', textAlign: 'center', marginTop: '50px' }}>Nenhuma mensagem enviada ainda. Inicie a conversa!</span>
+                  ) : (
+                    (mensagensDirect[perfilVisitado.handle] || []).map((msg, index) => (
+                      <div key={index} style={{ alignSelf: msg.remetente === meuPerfil.handle ? 'flex-end' : 'flex-start', backgroundColor: msg.remetente === meuPerfil.handle ? '#7c3aed' : '#e2e8f0', color: msg.remetente === meuPerfil.handle ? '#fff' : '#0f172a', padding: '8px 12px', borderRadius: '8px', fontSize: '12px', maxWidth: '70%' }}>
+                        {msg.texto}
+                      </div>
+                    ))
+                  )}
+                </div>
+                <form onSubmit={enviarMensagemDirect} style={{ display: 'flex', gap: '8px' }}>
+                  <input type="text" placeholder="Escreva uma mensagem..." value={textoMensagem} onChange={(e) => setTextoMensagem(e.target.value)} style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '12px' }} required />
+                  <button type="submit" style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>Enviar 📨</button>
+                </form>
+              </div>
+            )}
+
+            {/* Galeria de Posts do Usuário Visitado */}
+            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '20px', marginTop: '20px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>📸 Publicações de {perfilVisitado.nome}</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
+                {posts.filter(p => p.handle === perfilVisitado.handle).length === 0 ? (
+                  <p style={{ fontSize: '12px', color: '#64748b', gridColumn: 'span 3', textAlign: 'center' }}>Este operador ainda não publicou fotos no feed.</p>
+                ) : (
+                  posts.filter(p => p.handle === perfilVisitado.handle).map(p => (
+                    <div key={p.id} style={{ height: '160px', borderRadius: '10px', overflow: 'hidden', backgroundColor: '#000', border: '1px solid #e2e8f0' }}>
+                      {p.imagens && p.imagens[0] && <img src={p.imagens[0]} alt="Post" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
           </div>
         )}
 

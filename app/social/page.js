@@ -3,8 +3,10 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CryptoValidator from '../components/CryptoValidator';
+import SocialSidebarPremium from '../components/SocialSidebarPremium';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialStories from '../components/SocialStories';
+import SocialLives from '../components/SocialLives';
 
 
 
@@ -2002,7 +2004,7 @@ const excluirPost = (id) => {
                 <b style={{ fontSize: '15px', color: '#059669' }}>
                   {'—'}
                 </b>
-                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span>
+                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span><a href="/insights" style={{display:"block",fontSize:11,color:"#7c3aed",marginTop:4,fontWeight:700}}>Abrir Insights ↗</a>
               </div>
             </div>
 
@@ -2055,6 +2057,7 @@ const excluirPost = (id) => {
           {[
             ['feed','🏠 Feed'],
             ['ranking','🏆 Ranking'],
+            ['lives','🔴 Lives'],
             ['perfil','👤 Meu Perfil'],
             ['salvos','🔖 Salvos']
           ].map(([destino,rotulo]) => (
@@ -2072,6 +2075,18 @@ const excluirPost = (id) => {
               color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
           ))}
         </nav>
+
+        <nav aria-label="Ferramentas JENIOS" style={{display:"flex",gap:8,flexWrap:"wrap",margin:"0 0 16px"}}>
+          {[
+            ["Simulador","/social/simulador"],
+            ["Hub de Tendências","/tendencias"],
+            ["BankScore","/bankscore"],
+            ["Especialistas","/especialistas"],
+            ["Insights","/insights"]
+          ].map(([titulo,url])=><a key={url} href={url} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</a>)}
+        </nav>
+        {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
+        {abaAtiva === 'lives' && <SocialLives meuPerfil={meuPerfil} />}
 
         {/* ABA FEED */}
         {abaAtiva === 'feed' && (
@@ -2368,268 +2383,7 @@ const excluirPost = (id) => {
                 gap: '20px',
               }}
             >
-              {/* NOTÍCIAS MACRO */}
-              <div
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '20px',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#0f172a',
-                    margin: '0 0 10px 0',
-                  }}
-                >
-                  🌐 Canal de Notícias Macro
-                </h3>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  {noticiasMacro.map((n) => (
-                    <div
-                      key={n.id}
-                      style={{
-                        backgroundColor: '#f8fafc',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '10px',
-                        padding: '10px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          gap: '8px',
-                          marginBottom: '5px',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            fontWeight: 'bold',
-                            color: '#7c3aed',
-                            backgroundColor: '#f3e8ff',
-                            padding: '3px 6px',
-                            borderRadius: '4px',
-                          }}
-                        >
-                          {n.fonte}
-                        </span>
-
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            color: '#64748b',
-                          }}
-                        >
-                          {n.hora}
-                        </span>
-                      </div>
-
-                      <span
-                        style={{
-                          display: 'block',
-                          fontSize: '9px',
-                          fontWeight: 'bold',
-                          color: '#94a3b8',
-                          marginBottom: '4px',
-                        }}
-                      >
-                        {n.cat}
-                      </span>
-
-                      <h4
-                        style={{
-                          fontSize: '11px',
-                          color: '#0f172a',
-                          margin: '0 0 6px 0',
-                          fontWeight: 'bold',
-                          lineHeight: '1.4',
-                        }}
-                      >
-                        {n.titulo}
-                      </h4>
-
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 'bold',
-                          color: '#334155',
-                        }}
-                      >
-                        {n.impacto}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* TOP TRADERS */}
-              <div
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '20px',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#0f172a',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  🏆 Top Traders (Semanal)
-                </h3>
-
-                <p
-                  style={{
-                    fontSize: '10px',
-                    color: '#64748b',
-                    margin: '0 0 12px 0',
-                  }}
-                >
-                  Ranking dos operadores em destaque.
-                </p>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  {rankingOperadores
-                    .slice(0, 5)
-                    .map((op) => (
-                      <div
-                        key={op.pos}
-                        onClick={() => visitarPerfil(op)}
-                        style={{
-                          backgroundColor: '#f8fafc',
-                          border: '1px solid #e2e8f0',
-                          borderRadius: '10px',
-                          padding: '10px',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          gap: '8px',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            minWidth: 0,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: '22px',
-                              height: '22px',
-                              borderRadius: '50%',
-                              backgroundColor:
-                                op.pos === 1
-                                  ? '#fef3c7'
-                                  : '#f1f5f9',
-                              color:
-                                op.pos === 1
-                                  ? '#d97706'
-                                  : '#475569',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '9px',
-                              fontWeight: '900',
-                              flexShrink: 0,
-                            }}
-                          >
-                            {op.pos}
-                          </div>
-
-                          <img
-                            src={op.avatar}
-                            alt={op.nome}
-                            style={{
-                              width: '30px',
-                              height: '30px',
-                              borderRadius: '50%',
-                              objectFit: 'cover',
-                              flexShrink: 0,
-                            }}
-                          />
-
-                          <div style={{ minWidth: 0 }}>
-                            <b
-                              style={{
-                                fontSize: '11px',
-                                color: '#0f172a',
-                                display: 'block',
-                              }}
-                            >
-                              {op.nome}
-                            </b>
-
-                            <span
-                              style={{
-                                fontSize: '9px',
-                                color: '#059669',
-                                fontWeight: 'bold',
-                              }}
-                            >
-                              {op.rentabilidade}
-                            </span>
-                          </div>
-                        </div>
-
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            color: '#7c3aed',
-                            fontWeight: 'bold',
-                            flexShrink: 0,
-                          }}
-                        >
-                          Ver ↗️
-                        </span>
-                      </div>
-                    ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setAbaAtiva('ranking')}
-                  style={{
-                    width: '100%',
-                    marginTop: '12px',
-                    padding: '9px',
-                    backgroundColor: '#faf5ff',
-                    color: '#7c3aed',
-                    border: '1px solid #d8b4fe',
-                    borderRadius: '8px',
-                    fontSize: '10px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Ver Top 10 Completo →
-                </button>
-              </div>
+              <SocialSidebarPremium />
 
               {/* VALIDADOR DE CRIPTOATIVOS */}
               <CryptoValidator />

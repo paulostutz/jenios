@@ -7,6 +7,7 @@ export default function SocialStories({
   stories = [],
   onAdicionarStory,
   onExcluirStory,
+  ocultarMeuStory = false,
 }) {
   const [storyAberto, setStoryAberto] = useState(null);
   const [agora, setAgora] = useState(() => Date.now());
@@ -42,6 +43,19 @@ export default function SocialStories({
     setStoryAberto(story);
   };
 
+  useEffect(() => {
+    const abrirMeuStory = () => {
+      const ativos = stories.filter((story) => {
+        const criado = new Date(story.criadoEm).getTime();
+        return story.handle === meuPerfil?.handle && Number.isFinite(criado) &&
+          criado <= Date.now() && Date.now() - criado < 86400000;
+      }).sort((a, b) => new Date(a.criadoEm) - new Date(b.criadoEm));
+      if (ativos.length) setStoryAberto(ativos[0]);
+    };
+    window.addEventListener('jenios:abrir-meu-story', abrirMeuStory);
+    return () => window.removeEventListener('jenios:abrir-meu-story', abrirMeuStory);
+  }, [stories, meuPerfil?.handle]);
+
   const fecharStory = () => {
     setStoryAberto(null);
   };
@@ -76,19 +90,19 @@ export default function SocialStories({
             alignItems: 'center',
           }}
         >
-          <div style={{minWidth:'76px',textAlign:'center'}}>
+          {!ocultarMeuStory && <div style={{minWidth:'76px',textAlign:'center'}}>
             <div style={{position:'relative',width:'62px',height:'62px',margin:'0 auto'}}>
               <button type="button" aria-label="Ver meus Stories" onClick={() => {
                 const meus = storiesAtivos.filter(story => story.handle === meuPerfil?.handle);
                 if (meus.length) abrirStory(meus[meus.length - 1]);
-                else alert('Você ainda não publicou Stories. Use o botão + para adicionar.');
+                // Sem Story ativo: não faz nada.
               }} style={{padding:0,border:'none',background:'transparent',cursor:'pointer',width:'100%',height:'100%'}}>
                 <img src={meuPerfil?.avatar} alt="Meus Stories" style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',border:storiesAtivos.some(story => story.handle === meuPerfil?.handle) ? '3px solid #7c3aed' : '2px solid #cbd5e1'}} />
               </button>
               <button type="button" aria-label="Adicionar Story" onClick={onAdicionarStory} style={{position:'absolute',bottom:'-3px',right:'-3px',width:'23px',height:'23px',borderRadius:'50%',border:'2px solid white',backgroundColor:'#7c3aed',color:'#fff',fontSize:'16px',fontWeight:700,cursor:'pointer',lineHeight:'18px'}}>+</button>
             </div>
             <span style={{fontSize:'11px'}}>Seu Story</span>
-          </div>
+          </div>}
 
           {storiesAtivos.filter(story => story.handle !== meuPerfil?.handle).map((story) => (
             <button

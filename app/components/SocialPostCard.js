@@ -22,6 +22,21 @@ export default function SocialPostCard({
   const [textoExpandido, setTextoExpandido] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
 
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (!menuAberto) return;
+    const fecharFora = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) setMenuAberto(false);
+    };
+    const fecharEscape = (event) => { if (event.key === 'Escape') setMenuAberto(false); };
+    document.addEventListener('pointerdown', fecharFora);
+    document.addEventListener('keydown', fecharEscape);
+    return () => {
+      document.removeEventListener('pointerdown', fecharFora);
+      document.removeEventListener('keydown', fecharEscape);
+    };
+  }, [menuAberto]);
+
   const cardRef = useRef(null);
   const visualizacaoRegistrada = useRef(false);
 
@@ -582,7 +597,7 @@ export default function SocialPostCard({
           </div>
         </div>
 
-        <div
+        <div ref={menuRef}
           style={{
             position: 'relative',
             flexShrink: 0,

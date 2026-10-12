@@ -1783,13 +1783,13 @@ const excluirPost = (id) => {
             >
               <img
                 src={meuPerfil.avatar}
-                onClick={() => visitarPerfil(meuPerfil)}
+                onClick={() => window.dispatchEvent(new Event("jenios:abrir-meu-story"))}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    visitarPerfil(meuPerfil);
+                    window.dispatchEvent(new Event("jenios:abrir-meu-story"));
                   }
                 }}
                 alt="Avatar"
@@ -1803,6 +1803,7 @@ const excluirPost = (id) => {
                 }}
               />
 
+              <button type="button" onClick={adicionarStoryJenios} aria-label="Adicionar Story" title="Adicionar Story" style={{marginLeft:-39,marginTop:64,zIndex:2,background:'#7c3aed',color:'#fff',border:'2px solid white',borderRadius:'50%',width:28,height:28,fontSize:20,cursor:'pointer',flexShrink:0}}>+</button>
               <div>
                 <h2
                   style={{
@@ -2082,7 +2083,9 @@ const excluirPost = (id) => {
             ["Hub de Tendências","/tendencias"],
             ["BankScore","/bankscore"],
             ["Especialistas","/especialistas"],
-            ["Insights","/insights"]
+            ["Insights","/insights"],
+            ["Impulsionar","/impulsionar"],
+            ["Notificações","/notifications"]
           ].map(([titulo,url])=><a key={url} href={url} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</a>)}
         </nav>
         {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
@@ -2112,6 +2115,7 @@ const excluirPost = (id) => {
                 stories={storiesJenios}
                 onExcluirStory={excluirStoryJenios}
                 onAdicionarStory={adicionarStoryJenios}
+                ocultarMeuStory={true}
               />
               {/* CRIAR PUBLICAÇÃO */}
               <div

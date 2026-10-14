@@ -12,10 +12,10 @@ test("catálogo usa preço server-side e tabela existente", () => {
   assert.doesNotMatch(products, /request\.json/);
 });
 
-test("gate financeiro falha fechado sem produto ou homologação", () => {
-  assert.match(gate, /body\.paymentsEnabled && body\.checkoutReady && product/);
-  assert.match(gate, /Produto ainda não configurado/);
-  assert.match(gate, /desativadas até homologação/);
+test("botão inicia checkout autenticado com idempotência", () => {
+  assert.match(gate, /supabase\.auth\.getSession/);
+  assert.match(gate, /idempotency-key/);
+  assert.match(gate, /window\.location\.assign/);
 });
 
 test("checkout mensal da Platform permanece separado da Social", () => {

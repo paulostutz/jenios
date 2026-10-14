@@ -1,142 +1,41 @@
 'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { supabase } from '../../lib/supabase';
 import SocialChargeButton from '../components/SocialChargeButton';
 
+const field = { padding: 12, border: '1px solid #cbd5e1', borderRadius: 10, width: '100%', boxSizing: 'border-box', color: '#172033', background: 'white' };
 export default function ImpulsionarPostPage() {
-  return (
-    <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '30px 20px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      
-      <div style={{ maxWidth: '650px', width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        
-        {/* Cartão de Impulsionamento Profissional */}
-        <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '24px', boxSizing: 'border-box' }}>
-          
-          {/* Cabeçalho */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
-            <div>
-              <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>
-                JENIOS ADS • Gestor de Anúncios
-              </span>
-              <h1 style={{ fontSize: '20px', fontWeight: '900', color: '#0f172a', margin: 0 }}>Impulsionar Publicação</h1>
-            </div>
-            <span style={{ fontSize: '10px', backgroundColor: '#f3e8ff', color: '#7c3aed', fontWeight: 'bold', padding: '6px 12px', borderRadius: '9999px', textTransform: 'uppercase' }}>
-              Pro Mode
-            </span>
-          </div>
-
-          {/* 1. Selecionar o Post do Perfil */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Publicação do Perfil a Impulsionar</label>
-            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '14px', fontSize: '12px', color: '#334155', fontWeight: '500', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>📊 Análise de Fluxo Institucional - Mini-Índice (WIN)</span>
-              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', cursor: 'pointer' }}>Trocar post</span>
-            </div>
-          </div>
-
-          {/* 2. Escolher o Objetivo */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Qual é o objetivo da campanha?</label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px' }}>
-              <div style={{ border: '2px solid #7c3aed', backgroundColor: '#faf5ff', borderRadius: '12px', padding: '12px', cursor: 'pointer' }}>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#0f172a', display: 'block', marginBottom: '2px' }}>⚡ Cliques para Copiar</span>
-                <span style={{ fontSize: '10px', color: '#64748b' }}>Direciona para o espelhamento</span>
-              </div>
-              <div style={{ border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', borderRadius: '12px', padding: '12px', cursor: 'pointer' }}>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', display: 'block', marginBottom: '2px' }}>🌐 Redirecionar para Site</span>
-                <span style={{ fontSize: '10px', color: '#64748b' }}>Leva tráfego para link externo</span>
-              </div>
-              <div style={{ border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', borderRadius: '12px', padding: '12px', cursor: 'pointer' }}>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', display: 'block', marginBottom: '2px' }}>💬 Chamar no WhatsApp</span>
-                <span style={{ fontSize: '10px', color: '#64748b' }}>Inicia conversa direta</span>
-              </div>
-              <div style={{ border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', borderRadius: '12px', padding: '12px', cursor: 'pointer' }}>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#1e293b', display: 'block', marginBottom: '2px' }}>👤 Visitas ao Perfil / Alcance</span>
-                <span style={{ fontSize: '10px', color: '#64748b' }}>Foco em autoridade e seguidores</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 3. Segmentação Geográfica */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', boxSizing: 'border-box' }}>
-            <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#1e293b' }}>📍 Segmentação Geográfica</label>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
-              <div>
-                <span style={{ display: 'block', fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>País (Comece a digitar)</span>
-                <input type="text" list="lista-paises" defaultValue="Brasil" style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', outline: 'none', boxSizing: 'border-box' }} />
-                <datalist id="lista-paises">
-                  <option value="Brasil" />
-                  <option value="Portugal" />
-                  <option value="Estados Unidos" />
-                  <option value="Espanha" />
-                  <option value="Reino Unido" />
-                  <option value="França" />
-                  <option value="Alemanha" />
-                  <option value="Argentina" />
-                  <option value="Canadá" />
-                  <option value="Japão" />
-                </datalist>
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Estado / Região</span>
-                <input type="text" placeholder="Ex: São Paulo, Bahia..." style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', outline: 'none', boxSizing: 'border-box' }} />
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Cidade</span>
-                <input type="text" placeholder="Ex: Salvador, Rio..." style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', outline: 'none', boxSizing: 'border-box' }} />
-              </div>
-            </div>
-          </div>
-
-          {/* 4. Perfil Demográfico */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', boxSizing: 'border-box' }}>
-            <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#1e293b' }}>👥 Perfil Demográfico</label>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
-              <div>
-                <span style={{ display: 'block', fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Faixa Etária</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input type="number" defaultValue="21" min="18" max="80" style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', textAlign: 'center', outline: 'none' }} />
-                  <span style={{ fontSize: '12px', color: '#64748b' }}>até</span>
-                  <input type="number" defaultValue="60" min="18" max="80" style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', textAlign: 'center', outline: 'none' }} />
-                </div>
-              </div>
-              <div>
-                <span style={{ display: 'block', fontSize: '10px', fontFamily: 'monospace', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Gênero / Público</span>
-                <select style={{ width: '100%', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '10px', fontSize: '12px', color: '#0f172a', outline: 'none' }}>
-                  <option>Todos os Gêneros</option>
-                  <option>Masculino</option>
-                  <option>Feminino</option>
-                  <option>LGBTQIA+ / Diversidade</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* 5. Orçamento Diário e Duração Manual */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Orçamento Diário (Mín. R$ 10,00)</label>
-              <input type="number" min="10" step="1.00" defaultValue="25.00" style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '12px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none', boxSizing: 'border-box' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Duração (Nº de Dias)</label>
-              <input type="number" min="1" defaultValue="7" style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '12px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none', boxSizing: 'border-box' }} />
-            </div>
-          </div>
-
-          {/* Resumo e Pagamento */}
-          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
-              <span style={{ color: '#64748b' }}>Investimento Total Estimado:</span>
-              <span style={{ fontWeight: '900', fontSize: '18px', color: '#7c3aed' }}>R$ 175,00 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'normal' }}>(7 dias x R$ 25,00)</span></span>
-            </div>
-
-            <SocialChargeButton productCode="social-boost" label="Gerar cobrança do impulsionamento" />
-          </div>
-
-        </div>
-
-      </div>
-    </main>
-  );
+  const [posts, setPosts] = useState([]), [message, setMessage] = useState(''), [postId, setPostId] = useState('');
+  const [dailyBudget, setDailyBudget] = useState('25.00'), [days, setDays] = useState(7), [objective, setObjective] = useState('profile');
+  const [country, setCountry] = useState('Brasil'), [region, setRegion] = useState(''), [city, setCity] = useState('');
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      try {
+        if (!supabase) throw new Error('Supabase não configurado.');
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Entre na sua conta para escolher uma publicação.');
+        const { data, error } = await supabase.from('posts').select('id,body,created_at').eq('author_id', user.id).order('created_at', { ascending: false }).limit(100);
+        if (error) throw new Error('Não foi possível carregar suas publicações.');
+        if (active) { setPosts(data || []); setPostId(new URLSearchParams(window.location.search).get('post') || data?.[0]?.id || ''); }
+      } catch (error) { if (active) setMessage(error.message); }
+    }
+    load(); return () => { active = false; };
+  }, []);
+  const dailyCents = Math.round(Number(dailyBudget) * 100);
+  const valid = posts.some(p => p.id === postId) && Number.isInteger(days) && days >= 1 && days <= 365 && dailyCents >= 1000 && dailyCents <= 1000000;
+  const money = cents => (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  return <main style={{ minHeight: '100vh', padding: '32px 16px', background: '#f3f2f9', color: '#172033', fontFamily: 'system-ui' }}><div style={{ maxWidth: 760, margin: 'auto' }}>
+    <Link href="/social">← Voltar à Social</Link><p style={{ color: '#6d28d9', fontWeight: 800, letterSpacing: 2, marginTop: 30 }}>JENIOS ADS</p><h1>Impulsionar publicação</h1><p>Escolha sua publicação, o público e quanto deseja investir. A campanha só será liberada após confirmação do pagamento.</p>
+    <section style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 20, padding: 24, display: 'grid', gap: 20 }}>
+      {message && <p role="alert">{message}</p>}
+      <label>Publicação<select value={postId} onChange={e => setPostId(e.target.value)} style={field}><option value="">Selecione sua publicação</option>{posts.map(p => <option key={p.id} value={p.id}>{p.body?.slice(0, 90) || 'Publicação com mídia'} · {new Date(p.created_at).toLocaleDateString('pt-BR')}</option>)}</select></label>
+      {!posts.length && <p>Nenhuma publicação própria disponível para impulsionar.</p>}
+      <label>Objetivo<select value={objective} onChange={e => setObjective(e.target.value)} style={field}><option value="profile">Visitas ao perfil / alcance</option><option value="website">Redirecionar para site</option><option value="whatsapp">Conversas no WhatsApp</option><option value="copy">Conhecer estratégia / copy</option></select></label>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14 }}>{[['País',country,setCountry],['Estado / região',region,setRegion],['Cidade',city,setCity]].map(([label,value,set]) => <label key={label}>{label}<input value={value} onChange={e => set(e.target.value)} maxLength={80} style={field}/></label>)}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14 }}><label>Orçamento diário (R$)<input type="number" min="10" max="10000" step="0.01" value={dailyBudget} onChange={e => setDailyBudget(e.target.value)} style={field}/></label><label>Duração em dias<input type="number" min="1" max="365" step="1" value={days} onChange={e => setDays(Number(e.target.value))} style={field}/></label></div>
+      <div style={{ background: '#f5f3ff', padding: 20, borderRadius: 12 }}><p style={{ margin: 0 }}>Investimento total</p><strong style={{ fontSize: 30, color: '#6d28d9' }}>{valid ? money(dailyCents * days) : 'Selecione os dados da campanha'}</strong>{valid && <p>{days} dias × {money(dailyCents)} por dia</p>}</div>
+      {valid && <SocialChargeButton productCode="social-boost" label="Continuar para pagamento" target={{ postId, dailyBudget, days, objective, country, region, city }}/>}<small>O total é recalculado no servidor. Nenhuma campanha é marcada como paga pelo navegador.</small>
+    </section></div></main>;
 }

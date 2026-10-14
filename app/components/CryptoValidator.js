@@ -110,7 +110,7 @@ export default function CryptoValidator() {
             <a href={report.explorerUrl} target="_blank" rel="noopener noreferrer" className="flex-1 rounded-xl border border-violet-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-violet-800">Abrir explorador</a>
             <button type="button" onClick={savePDF} className="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white">Baixar laudo em PDF</button>
           </div>
-          <div className="mt-3"><SocialChargeButton productCode="social-crypto-validator" label="Contratar laudo validado" /></div>
+          <div className="mt-3"><SocialChargeButton productCode="social-crypto-validator" label="Contratar consulta detalhada" target={{ network: report.network, type: report.type, identifier: report.identifier }} /></div>
         </div>
       )}
       <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">Um resultado on-chain não comprova titularidade nem elimina risco de fraude. Litecoin permanece bloqueado até homologação de um provedor.</p>

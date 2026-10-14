@@ -34,6 +34,6 @@ export default function EspecialistasPage(){
  <p style={{whiteSpace:"pre-wrap"}}>{profile.sobre||"Sua apresentação aparecerá aqui."}</p>
  <p style={{fontSize:13,color:"#64748b"}}>Certificações declaradas pelo usuário, sem validação documental. Resultados de trading e credenciais verificadas dependerão de integração segura com a JENIOS Platform.</p>
  {youtubeValid&&profile.youtube&&<a href={profile.youtube} target="_blank" rel="noopener noreferrer" style={{color:purple}}>Abrir canal / live ↗</a>}
- <div style={{marginTop:18}}><SocialChargeButton productCode="social-specialist" label="Ativar serviços profissionais" /></div>
+ <div style={{marginTop:18}}><p style={{fontSize:13,color:"#64748b"}}>Comissão JENIOS de 10% sobre vendas. Sem mensalidade fixa de ativação. A contratação de ofertas será vinculada ao especialista vendedor.</p></div>
  </aside></div></div></main>
 }

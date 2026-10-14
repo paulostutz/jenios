@@ -191,6 +191,7 @@ export default function AdminPage() {
         </div>
 
         {/* NAVEGAÇÃO DE ABAS DO ADMIN */}
+        <a href="/admin/cobrancas" style={{ background: '#6d28d9', color: 'white', padding: 16, borderRadius: 12, fontWeight: 800, textDecoration: 'none' }}>JENIOS PAY · Gerenciar preços e cobranças →</a>
         <div style={{ display: 'flex', gap: '8px', backgroundColor: '#ffffff', padding: '8px', borderRadius: '14px', border: '1px solid #cbd5e1', flexWrap: 'wrap', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
           <button 
             onClick={() => setAbaAdmin('utilizadores')}

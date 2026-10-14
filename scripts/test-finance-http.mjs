@@ -3,7 +3,7 @@ const base=process.env.TEST_BASE_URL || 'http://127.0.0.1:3010';
 for(const path of ['/api/jenios-pay/admin','/api/jenios-pay/orders']){
   const response=await fetch(base+path);assert.equal(response.status,401);console.log('PASS unauthorized '+path);
 }
-for(const path of ['/api/jenios-pay/checkout','/api/platform/checkout']){
+for(const path of ['/api/jenios-pay/checkout','/api/platform/checkout','/api/jenios-pay/access']){
   const response=await fetch(base+path,{method:'POST',headers:{'content-type':'application/json'},body:'{}'});assert.equal(response.status,401);console.log('PASS unauthorized '+path);
 }
 for(const [scope,prices] of [['social',[990,990,0,0]],['platform',[9990,14990,19990]]]){

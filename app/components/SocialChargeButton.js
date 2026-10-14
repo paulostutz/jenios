@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { saveReceipt } from '../../lib/pay/browser-receipts.mjs';
 
 export default function SocialChargeButton({ productCode, label, target = {}, scope = 'social' }) {
   const [catalog, setCatalog] = useState(null);
@@ -30,6 +31,7 @@ export default function SocialChargeButton({ productCode, label, target = {}, sc
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Não foi possível gerar a cobrança.');
       setOrderId(result.orderId);
+      if (scope === 'social') saveReceipt(window.sessionStorage, data.session.user.id, result.orderId, body);
       if (result.status === 'paid') { setMessage('Pagamento confirmado na JENIOS PAY.'); return; }
       if (!result.checkoutUrl) throw new Error('A JENIOS PAY não retornou o checkout.');
       window.location.assign(result.checkoutUrl);

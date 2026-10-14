@@ -761,6 +761,7 @@ function SocialContent() {
 
         resolve({
           src: imagemComprimida,
+          tipo: 'imagem',
           largura: novaLargura,
           altura: novaAltura,
           larguraOriginal,
@@ -788,28 +789,61 @@ function SocialContent() {
 const handleUploadCarrossel = async (e) => {
   const files = Array.from(e.target.files || []);
 
-  if (files.length === 0) {
-    return;
-  }
+  if (files.length === 0) return;
+
+  const processarVideo = (file) => new Promise((resolve, reject) => {
+    if (file.size > 50 * 1024 * 1024) {
+      reject(new Error('O vídeo deve ter no máximo 50 MB.'));
+      return;
+    }
+
+    const video = document.createElement('video');
+    const objectUrl = URL.createObjectURL(file);
+    video.preload = 'metadata';
+
+    video.onloadedmetadata = () => {
+      const duracao = video.duration;
+      URL.revokeObjectURL(objectUrl);
+
+      if (!Number.isFinite(duracao) || duracao > 90) {
+        reject(new Error('O vídeo deve ter no máximo 1 minuto e 30 segundos.'));
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => resolve({
+        src: reader.result,
+        tipo: 'video',
+        duracao
+      });
+      reader.onerror = () => reject(new Error('Não foi possível ler o vídeo.'));
+      reader.readAsDataURL(file);
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Formato de vídeo não suportado.'));
+    };
+    video.src = objectUrl;
+  });
 
   try {
-    const imagensProcessadas = await Promise.all(
-      files.map((file) => comprimirImagem(file))
-    );
+    const midiasProcessadas = await Promise.all(files.map((file) => {
+      if (file.type.startsWith('image/')) return comprimirImagem(file);
+      if (file.type.startsWith('video/')) return processarVideo(file);
+      throw new Error('Selecione apenas fotos ou vídeos.');
+    }));
 
     setImagensPreview((prev) => [
       ...prev,
-      ...imagensProcessadas,
+      ...midiasProcessadas,
     ]);
-
+  } catch (error) {
+    console.error('Erro ao processar mídia:', error);
+    alert(error.message || 'Não foi possível processar uma das mídias.');
+  } finally {
     // Permite selecionar novamente o mesmo arquivo depois
     e.target.value = '';
-  } catch (error) {
-    console.error('Erro ao processar imagem:', error);
-
-    alert(
-      'Não foi possível processar uma das imagens. Tente novamente.'
-    );
   }
 };
 
@@ -1749,6 +1783,43 @@ const excluirPost = (id) => {
           </div>
         </div>
 
+        <nav
+          aria-label="Serviços JENIOS Social"
+          style={{
+            display: 'flex',
+            gap: '9px',
+            overflowX: 'auto',
+            marginBottom: '20px',
+            paddingBottom: '4px',
+          }}
+        >
+          {[
+            ['BankScore', '/bankscore'],
+            ['Hub de Tendências', '/tendencias'],
+            ['Especialistas', '/especialistas'],
+            ['Impulsionar', '/impulsionar'],
+            ['Validador', '#validador-cripto'],
+          ].map(([label, href]) => (
+            <a
+              key={label}
+              href={href}
+              style={{
+                flexShrink: 0,
+                padding: '10px 14px',
+                border: '1px solid #ddd6fe',
+                borderRadius: '9px',
+                color: '#6d28d9',
+                background: '#fff',
+                textDecoration: 'none',
+                fontSize: '11px',
+                fontWeight: '800',
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+
         {/* PERFIL HEADER */}
         <div
           style={{
@@ -2159,7 +2230,7 @@ const excluirPost = (id) => {
                       fontWeight: '600',
                     }}
                   >
-                    ✨ Formato automático — cada foto mantém sua proporção original.
+                    ✨ Um único botão para fotos e vídeos. Vídeos de até 1 minuto e 30 segundos.
                   </div>
 
                   <div
@@ -2216,6 +2287,15 @@ const excluirPost = (id) => {
                           justifyContent: 'center',
                         }}
                       >
+                        {(imagem?.tipo === 'video' || imagem?.src?.startsWith('data:video/')) ? (
+                          <video
+                            src={imagem.src}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            style={{ width: '100%', maxHeight: '150px', display: 'block' }}
+                          />
+                        ) : (
                         <img
                           src={
                             typeof imagem === 'string'
@@ -2230,7 +2310,7 @@ const excluirPost = (id) => {
                             objectFit: 'contain',
                             display: 'block',
                           }}
-                        />
+                        />)}
 
                         <button
                           type="button"
@@ -2292,12 +2372,12 @@ const excluirPost = (id) => {
                           marginTop: '2px',
                         }}
                       >
-                        Adicionar
+                        Foto/Vídeo
                       </span>
 
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         multiple
                         onChange={handleUploadCarrossel}
                         style={{ display: 'none' }}
@@ -2632,7 +2712,9 @@ const excluirPost = (id) => {
               </div>
 
               {/* VALIDADOR DE CRIPTOATIVOS */}
-              <CryptoValidator />
+              <div id="validador-cripto" style={{ scrollMarginTop: '20px' }}>
+                <CryptoValidator />
+              </div>
             </div>
           </div>
         )}

@@ -1,4 +1,5 @@
 'use client';
+import SocialChargeButton from '../components/SocialChargeButton';
 
 export default function ImpulsionarPostPage() {
   return (
@@ -130,12 +131,7 @@ export default function ImpulsionarPostPage() {
               <span style={{ fontWeight: '900', fontSize: '18px', color: '#7c3aed' }}>R$ 175,00 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'normal' }}>(7 dias x R$ 25,00)</span></span>
             </div>
 
-            <button 
-              onClick={() => alert('Campanha configurada com sucesso! A gerar Pix para pagamento do anúncio...')} 
-              style={{ width: '100%', backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px', boxShadow: '0 10px 15px -3px rgba(124, 58, 237, 0.3)' }}
-            >
-              🚀 Lançar Anúncio (Gerar Pix)
-            </button>
+            <SocialChargeButton productCode="social-boost" label="Gerar cobrança do impulsionamento" />
           </div>
 
         </div>

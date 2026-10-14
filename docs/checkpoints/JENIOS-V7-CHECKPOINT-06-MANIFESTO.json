@@ -1,0 +1,39 @@
+{
+  "checkpoint": 6,
+  "date": "2026-10-14",
+  "repository": "paulostutz/jenios",
+  "branch": "jenios-v7-homologacao",
+  "base_commit": "3da1087",
+  "production_changed": false,
+  "supabase_writes": false,
+  "verification": {
+    "tests_passed": 52,
+    "tests_failed": 0,
+    "next_build": "passed",
+    "diff_check": "passed"
+  },
+  "completed_in_code": [
+    "bankscore_top10_report_pdf",
+    "trends_hub_verified_labels",
+    "specialist_authenticated_profile",
+    "photo_video_single_button",
+    "music_removed",
+    "crypto_server_validation_pdf",
+    "jenios_pay_catalog_fail_closed"
+  ],
+  "pending": [
+    "real_social_charges",
+    "banco_inter_pix_creation",
+    "authenticated_webhook_and_reconciliation",
+    "social_product_catalog_pricing",
+    "specialist_public_hiring",
+    "remote_video_storage",
+    "preview_browser_homologation"
+  ],
+  "not_homologated": [
+    "vercel_preview",
+    "real_payments",
+    "litecoin_provider",
+    "end_to_end_browser"
+  ]
+}

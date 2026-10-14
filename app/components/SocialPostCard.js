@@ -764,7 +764,7 @@ export default function SocialPostCard({
         </div>
       )}
 
-      {/* FOTOS */}
+      {/* FOTOS E VÍDEOS */}
     {Array.isArray(post.imagens) &&
       post.imagens.length > 0 &&
       !embedYoutubeUrl &&
@@ -780,6 +780,21 @@ export default function SocialPostCard({
             justifyContent: 'center',
           }}
         >
+          {(imagemAtual?.tipo === 'video' || srcImagemAtual.startsWith('data:video/')) ? (
+            <video
+              key={srcImagemAtual}
+              src={srcImagemAtual}
+              controls
+              playsInline
+              preload="metadata"
+              style={{
+                width: '100%',
+                maxHeight: '80vh',
+                display: 'block',
+                margin: '0 auto',
+              }}
+            />
+          ) : (
           <img
             src={srcImagemAtual}
             alt={`Publicação de ${post.autor}`}
@@ -791,7 +806,7 @@ export default function SocialPostCard({
               display: 'block',
               margin: '0 auto',
             }}
-          />
+          />)}
 
           {temVariasFotos && (
             <>

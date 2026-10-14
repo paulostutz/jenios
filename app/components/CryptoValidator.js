@@ -97,6 +97,7 @@ export default function CryptoValidator() {
         <div className={"mt-5 rounded-xl border p-4 " + (report.found ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50")}>
           <p className="font-bold">Resultado da consulta on-chain</p>
           <p className="mt-2 text-sm">{report.status}. {report.provider ? "Fonte: " + report.provider + "." : ""}</p>
+          {report.authenticity&&<div className="mt-4 rounded-lg border border-slate-200 bg-white p-3"><strong>{report.authenticity.label}</strong><p className="mt-1 text-xs text-slate-600">Catálogo limitado · referências conferidas em {report.authenticity.registryCheckedAt}. Nome e símbolo não provam autenticidade.</p>{report.authenticity.source&&<a href={report.authenticity.source} target="_blank" rel="noopener noreferrer" className="text-sm text-violet-700">Conferir fonte do emissor ↗</a>}</div>}
           <dl className="mt-4 space-y-3 text-sm">
             <div><dt className="font-semibold text-slate-600">Rede</dt><dd>{report.networkLabel}</dd></div>
             <div><dt className="font-semibold text-slate-600">Tipo</dt><dd>{TYPES.find((item) => item.value === report.type)?.label}</dd></div>

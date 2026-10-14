@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { checkoutService } from '../lib/pay/checkout.mjs';
 import { DEFAULT_PRODUCTS } from '../lib/pay/catalog.mjs';
 
-function memoryDb() {
+function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
   const orders = [];
-  const db = { orders, price: 990, from(table) {
+  const db = { orders, price: product.price_cents, from(table) {
     let operation='select', payload, filters=[];
     const query = {
       select(){return query}, eq(k,v){filters.push([k,v]);return query},
@@ -13,7 +13,8 @@ function memoryDb() {
       maybeSingle:async()=>run(), single:async()=>run(), then(resolve,reject){return Promise.resolve(run()).then(resolve,reject)},
     };
     function run() {
-      if(table==='jenios_pay_products') return {data:{...DEFAULT_PRODUCTS[0],id:'product-1',price_cents:db.price},error:null};
+      if(table==='jenios_pay_products') return {data:{...product,id:'product-1',price_cents:db.price},error:null};
+      if(table==='jenios_specialist_profiles')return {data:profile,error:null};
       if(operation==='insert') {const row={...payload,id:'order-'+(orders.length+1)};orders.push(row);return {data:row,error:null};}
       const row=orders.find(o=>filters.every(([k,v])=>o[k]===v));
       if(operation==='update'&&row)Object.assign(row,payload);
@@ -67,4 +68,15 @@ test('duas contratações do mesmo serviço têm referências financeiras distin
   await checkoutService({...base,db,gateway});
   await checkoutService({...base,db,gateway,key:'different-1234567890'});
   assert.equal(db.orders.length,2);assert.notEqual(db.orders[0].external_reference,db.orders[1].external_reference);
+});
+test('contratação de especialista usa oferta salva e calcula 10% no servidor',async()=>{
+  const specialistId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',offerId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+  const profile={user_id:specialistId,nome:'Profissional',sobre:JSON.stringify({schema:'jenios-specialist-v1',public:true,about:'Perfil público',offers:[{id:offerId,kind:'mentoria',title:'Sessão',description:'Uma sessão',price_cents:12345}]})};
+  const db=memoryDb({product:DEFAULT_PRODUCTS.find(p=>p.code==='social-specialist-offer'),profile});let sent;
+  await checkoutService({...base,db,body:{productCode:'social-specialist-offer',amount_cents:1,target:{specialistId,offerId}},gateway:async payload=>{sent=payload;return {checkoutUrl:'https://pay.example/'}}});
+  assert.equal(sent.amount_cents,12345);assert.equal(sent.commission_cents,1235);assert.equal(sent.seller_amount_cents,11110);assert.equal(sent.seller_id,specialistId);
+});
+test('ofertas privadas não podem ser contratadas por ID adivinhado',async()=>{
+  const db=memoryDb({product:DEFAULT_PRODUCTS.find(p=>p.code==='social-specialist-offer'),profile:{sobre:'Currículo privado'}});
+  await assert.rejects(()=>checkoutService({...base,db,body:{productCode:'social-specialist-offer',target:{specialistId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',offerId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}}}),e=>e.status===404);
 });

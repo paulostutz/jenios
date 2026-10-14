@@ -1,26 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-
-const page = readFileSync(new URL('../app/especialistas/page.js', import.meta.url), 'utf8');
-const social = readFileSync(new URL('../app/social/page.js', import.meta.url), 'utf8');
-
-test('área do especialista usa a tabela existente', () => {
-  assert.match(page, /jenios_specialist_profiles/);
-  assert.match(page, /upsert\(/);
-  assert.match(page, /onConflict:"user_id"/);
-});
-
-test('currículo exige conta autenticada', () => {
-  assert.match(page, /supabase\.auth\.getUser\(\)/);
-  assert.match(page, /Faça login para salvar/);
-});
-
-test('YouTube é validado e links externos são protegidos', () => {
-  assert.match(page, /youtube\\\.com\|youtu\\\.be/);
-  assert.match(page, /rel="noopener noreferrer"/);
-});
-
-test('Social oferece acesso direto à área do especialista', () => {
-  assert.match(social, /\['Especialistas', '\/especialistas'\]/);
-});
+import { specialistDetails, validateSpecialist, publicSpecialist } from '../lib/social/specialists.mjs';
+const route=readFileSync(new URL('../app/api/specialists/route.js',import.meta.url),'utf8');
+const page=readFileSync(new URL('../app/especialistas/page.js',import.meta.url),'utf8');
+const base={nome:'Profissional',about:'Minha experiência',public:true,offers:[]};
+test('área usa tabela existente e autorização server-side',()=>{assert.match(route,/jenios_specialist_profiles/);assert.match(route,/requirePayUser/);assert.match(route,/user_id:user.id/)});
+test('currículos legados são privados por padrão',()=>{assert.equal(specialistDetails('Texto legado').public,false);assert.equal(publicSpecialist({sobre:'Texto legado'}),null)});
+test('publicação exige consentimento explícito e nome',()=>{assert.throws(()=>validateSpecialist({...base,nome:''}));const row=validateSpecialist(base);assert.equal(specialistDetails(row.sobre).public,true)});
+test('perfil salvo privado não aparece em diretório',()=>{assert.equal(publicSpecialist({...validateSpecialist({...base,public:false})}),null)});
+test('perfil público não exporta campos internos ou contas bancárias',()=>{const row={...validateSpecialist(base),user_id:'u',bank_account:'never'};assert.equal(publicSpecialist(row).bank_account,undefined)});
+test('link de YouTube não aceita javascript, domínio semelhante ou credenciais',()=>{for(const youtube of ['javascript:alert(1)','https://youtube.com.evil.test/','https://user:password@youtube.com/watch?v=test'])assert.throws(()=>validateSpecialist({...base,youtube}));assert.ok(validateSpecialist({...base,youtube:'https://www.youtube.com/watch?v=abcdef'}))});
+test('ofertas têm centavos inteiros, identidade única e limite de tamanho',()=>{const offer={id:'12345678-1234-1234-1234-123456789abc',kind:'mentoria',title:'Sessão',description:'Descrição',price_cents:10000};assert.ok(validateSpecialist({...base,offers:[offer]}));assert.throws(()=>validateSpecialist({...base,offers:[{...offer,price_cents:1.2}]}));assert.throws(()=>validateSpecialist({...base,offers:[offer,offer]}))});
+test('interface identifica comissão e credenciais autodeclaradas',()=>{assert.match(page,/10%/);assert.match(page,/autodeclaradas/);assert.match(page,/rel="noopener noreferrer"/);assert.match(page,/Autorizo a publicação/)});

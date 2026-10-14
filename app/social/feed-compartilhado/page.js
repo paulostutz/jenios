@@ -3,10 +3,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { createSocialFeedClient } from '../../../lib/social/feed-client.mjs';
+import SocialMediaPicker from '../../components/SocialMediaPicker';
+import { uploadSocialMedia } from '../../../lib/social/media.mjs';
 
 const enabled = process.env.NEXT_PUBLIC_SOCIAL_SHARED_PREVIEW_ENABLED === 'true';
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const key = process.env.NEXT_PUBLIC_SUP_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export default function FeedCompartilhadoPreview() {
   const supabase = useMemo(() => enabled && url && key
@@ -18,6 +20,7 @@ export default function FeedCompartilhadoPreview() {
   const [posts, setPosts] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [draft, setDraft] = useState('');
+  const [media,setMedia]=useState([]);
   const [commentDrafts, setCommentDrafts] = useState({});
   const [comments, setComments] = useState({});
   const [likes, setLikes] = useState({});
@@ -40,7 +43,7 @@ export default function FeedCompartilhadoPreview() {
       if (!alive) return;
       if (sessionRef.current !== next?.user?.id) {
         generation.current += 1;
-        setPosts([]); setCursor(null); setComments({}); setLikes({}); setDraft(''); setCommentDrafts({});
+        setPosts([]); setCursor(null); setComments({}); setLikes({}); setDraft(''); setMedia([]); setCommentDrafts({});
       }
       sessionRef.current = next?.user?.id ?? null;
       setSession(next);
@@ -87,7 +90,8 @@ export default function FeedCompartilhadoPreview() {
       await fn();
       if (epoch !== generation.current) return;
       if (refresh) await load(false);
-    } catch (error) { if (epoch === generation.current) setMessage(error.code || 'OPERAÇÃO_NÃO_CONCLUÍDA'); }
+      return true;
+    } catch (error) { if (epoch === generation.current) setMessage(error.code || error.message || 'OPERAÇÃO_NÃO_CONCLUÍDA'); return false; }
     finally { if (epoch === generation.current) setBusy(false); }
   }
   if (!enabled) return <main style={{padding:32}}>Homologação do feed desabilitada. <Link href="/social">Voltar</Link></main>;
@@ -104,13 +108,15 @@ export default function FeedCompartilhadoPreview() {
     </form> : <>
       <p>Conta autenticada: {session.user.email}</p>
       <button disabled={busy} onClick={()=>supabase.auth.signOut()}>Sair</button>
-      <form onSubmit={e=>{e.preventDefault();act(()=>api.createPost({body:draft,media:[]})).then(()=>setDraft(''));}}>
+      <form onSubmit={e=>{e.preventDefault();act(async()=>{const uploaded=media.length?await uploadSocialMedia(media,{client:supabase,onProgress:setMedia,getAccessToken:async()=>{const {data}=await supabase.auth.getSession();return data?.session?.access_token}}):[];await api.createPost({body:draft,media:uploaded.map(item=>({url:item.src,type:item.tipo==='video'?'video':'image'}))});}).then(ok=>{if(ok){setDraft('');setMedia([]);}});}}>
         <textarea aria-label="Nova publicação" value={draft} maxLength={10000} onChange={e=>setDraft(e.target.value)}/>
-        <button type="submit" disabled={busy || !draft.trim()}>Publicar texto</button>
+        <SocialMediaPicker items={media} onChange={setMedia} disabled={busy}/>
+        <button type="submit" disabled={busy || (!draft.trim() && !media.length)}>Publicar</button>
       </form>
       <button disabled={busy} onClick={()=>load(false)}>Atualizar feed</button>
       {posts.map(post=><article key={post.id} style={{border:'1px solid #aaa',padding:12,marginTop:12}}>
         <p style={{whiteSpace:'pre-wrap'}}>{post.body}</p>
+        {(post.media||[]).map((item,index)=>item.type==='video'?<video key={index} src={item.url||item.src} controls playsInline style={{width:'100%',maxHeight:450}}/>:<img key={index} src={item.url||item.src} alt={'Mídia '+(index+1)} style={{width:'100%',maxHeight:450,objectFit:'contain'}}/>)}
         <small>{new Date(post.created_at).toLocaleString('pt-BR')}</small>
         <div>
           <button disabled={busy} onClick={()=>act(async()=>{const r=await api.getLikes(post.id);await (r.liked?api.unlikePost(post.id):api.likePost(post.id));})}>Curtir / descurtir</button>

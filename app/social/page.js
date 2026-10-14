@@ -5,6 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import CryptoValidator from '../components/CryptoValidator';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialStories from '../components/SocialStories';
+import { supabase } from '../../lib/supabase';
+import { uploadSocialMedia } from '../../lib/social/media.mjs';
+
+const REMOTE_MEDIA = process.env.NEXT_PUBLIC_SOCIAL_REMOTE_MEDIA_ENABLED === 'true';
 
 
 
@@ -198,6 +202,7 @@ function SocialContent() {
   const [novoTexto, setNovoTexto] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
   const [imagensPreview, setImagensPreview] = useState([]);
+  const [enviandoPublicacao, setEnviandoPublicacao] = useState(false);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
   const [seguindoLocal, setSeguindoLocal] = useState([]);
@@ -790,6 +795,7 @@ const handleUploadCarrossel = async (e) => {
   const files = Array.from(e.target.files || []);
 
   if (files.length === 0) return;
+  if(files.length+imagensPreview.length>10){alert('Use no máximo dez fotos e vídeos.');e.target.value='';return;}
 
   const processarVideo = (file) => new Promise((resolve, reject) => {
     if (file.size > 50 * 1024 * 1024) {
@@ -809,6 +815,8 @@ const handleUploadCarrossel = async (e) => {
         reject(new Error('O vídeo deve ter no máximo 1 minuto e 30 segundos.'));
         return;
       }
+
+      if(REMOTE_MEDIA){resolve({src:URL.createObjectURL(file),tipo:'video',duracao,_file:file});return;}
 
       const reader = new FileReader();
       reader.onload = () => resolve({
@@ -927,8 +935,9 @@ const handleUploadCarrossel = async (e) => {
     alert('📸 Foto capturada e adicionada ao carrossel!');
   };
 
-  const publicarPost = (e) => {
+  const publicarPost = async (e) => {
     e.preventDefault();
+    if(enviandoPublicacao)return;
 
     if (
       !novoTexto.trim() &&
@@ -938,6 +947,14 @@ const handleUploadCarrossel = async (e) => {
       return;
     }
 
+    let midiasPublicadas=imagensPreview;
+    if(REMOTE_MEDIA&&imagensPreview.length){
+      setEnviandoPublicacao(true);
+      try{
+        if(!supabase)throw new Error('Entre na sua conta para publicar mídia.');
+        midiasPublicadas=await uploadSocialMedia(imagensPreview,{client:supabase,onProgress:setImagensPreview,getAccessToken:async()=>{const {data}=await supabase.auth.getSession();return data?.session?.access_token;}});
+      }catch(error){alert(error.message);return;}finally{setEnviandoPublicacao(false);}
+    }
     const novoP = {
       id: Date.now(),
       autor: meuPerfil.nome,
@@ -946,7 +963,7 @@ const handleUploadCarrossel = async (e) => {
       avatar: meuPerfil.avatar,
       bio: meuPerfil.bio,
       texto: novoTexto,
-      imagens: imagensPreview,
+      imagens: midiasPublicadas,
       youtubeUrl: youtubeLink.trim(),
       tempo: 'Agora mesmo',
       likes: 0,
@@ -958,6 +975,8 @@ const handleUploadCarrossel = async (e) => {
     const atualizados = [novoP, ...posts];
 
     salvarPostsNoStorage(atualizados);
+
+    for(const item of imagensPreview)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);
 
     setNovoTexto('');
     setYoutubeLink('');
@@ -1798,6 +1817,8 @@ const excluirPost = (id) => {
             ['Hub de Tendências', '/tendencias'],
             ['Especialistas', '/especialistas'],
             ['Impulsionar', '/impulsionar'],
+            ['Minhas cobranças', '/social/cobrancas'],
+            ...(process.env.NEXT_PUBLIC_SOCIAL_SHARED_PREVIEW_ENABLED === 'true' ? [['Feed da comunidade', '/social/feed-compartilhado']] : []),
             ['Validador', '#validador-cripto'],
           ].map(([label, href]) => (
             <a

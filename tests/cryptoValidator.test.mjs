@@ -12,12 +12,15 @@ test("consulta EVM usa RPC no servidor e reconhece contrato", async () => {
   const fakeFetch = async (_url, options) => {
     const body = JSON.parse(options.body);
     calls.push(body.method);
-    return { ok: true, json: async () => ({ result: body.method === "eth_getBalance" ? "0x10" : "0x6000" }) };
+    return { ok: true, json: async () => ({ result: body.method === 'eth_chainId' ? '0x2105' : body.method === "eth_getBalance" ? "0x10" : "0x6000" }) };
   };
   const report = await validateCrypto({ network: "base", type: "token", identifier: "0x" + "1".repeat(40) }, { fetchImpl: fakeFetch, env: { BASE_RPC_URL: "https://rpc.example" } });
   assert.equal(report.found, true);
   assert.equal(report.status, "contrato encontrado");
-  assert.deepEqual(calls.sort(), ["eth_getBalance", "eth_getCode"]);
+  assert.ok(calls.includes('eth_getBalance'));
+  assert.ok(calls.includes('eth_getCode'));
+  assert.ok(calls.includes('eth_getTransactionCount'));
+  assert.equal(calls.filter(method=>method==='eth_call').length,3);
 });
 
 test("falha de provedor não vira validação positiva", async () => {

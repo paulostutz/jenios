@@ -8,12 +8,12 @@ export async function GET(request) {
   if (ctx.error) return reply({error:ctx.error},ctx.status);
   const postId = new URL(request.url).searchParams.get('postId');
   if (!validUUID(postId)) return reply({error:'INVALID_POST_ID'},400);
-  const {data: post, error: postError} = await ctx.db.from('jenios_social_posts').select('id').eq('id',postId).is('deleted_at',null).maybeSingle();
+  const {data: post, error: postError} = await ctx.db.from('posts').select('id').eq('id',postId).maybeSingle();
   if (postError) return reply({error:'LIKES_UNAVAILABLE'},503);
   if (!post) return reply({error:'POST_NOT_FOUND'},404);
-  const {count, error: countError} = await ctx.db.from('jenios_social_likes').select('post_id',{count:'exact',head:true}).eq('post_id',postId);
+  const {count, error: countError} = await ctx.db.from('post_likes').select('post_id',{count:'exact',head:true}).eq('post_id',postId);
   if (countError) return reply({error:'LIKES_UNAVAILABLE'},503);
-  const {data: own, error: ownError} = await ctx.db.from('jenios_social_likes').select('post_id').eq('post_id',postId).eq('user_id',ctx.userId).maybeSingle();
+  const {data: own, error: ownError} = await ctx.db.from('post_likes').select('post_id').eq('post_id',postId).eq('user_id',ctx.userId).maybeSingle();
   if (ownError) return reply({error:'LIKES_UNAVAILABLE'},503);
   return reply({postId,count:count ?? 0,liked:Boolean(own)});
 }
@@ -23,10 +23,10 @@ export async function POST(request) {
   let input;
   try { input=await request.json(); } catch { return reply({error:'INVALID_JSON'},400); }
   if (!input || !validUUID(input.postId)) return reply({error:'INVALID_POST_ID'},400);
-  const {data:post,error:postError} = await ctx.db.from('jenios_social_posts').select('id').eq('id',input.postId).is('deleted_at',null).maybeSingle();
+  const {data:post,error:postError} = await ctx.db.from('posts').select('id').eq('id',input.postId).maybeSingle();
   if (postError) return reply({error:'LIKES_UNAVAILABLE'},503);
   if (!post) return reply({error:'POST_NOT_FOUND'},404);
-  const {error} = await ctx.db.from('jenios_social_likes').upsert({post_id:input.postId,user_id:ctx.userId},{onConflict:'post_id,user_id',ignoreDuplicates:true});
+  const {error} = await ctx.db.from('post_likes').upsert({post_id:input.postId,user_id:ctx.userId},{onConflict:'post_id,user_id',ignoreDuplicates:true});
   return error ? reply({error:'LIKE_NOT_SAVED'},503) : reply({liked:true});
 }
 export async function DELETE(request) {
@@ -34,6 +34,6 @@ export async function DELETE(request) {
   if (ctx.error) return reply({error:ctx.error},ctx.status);
   const postId=new URL(request.url).searchParams.get('postId');
   if (!validUUID(postId)) return reply({error:'INVALID_POST_ID'},400);
-  const {error} = await ctx.db.from('jenios_social_likes').delete().eq('post_id',postId).eq('user_id',ctx.userId);
+  const {error} = await ctx.db.from('post_likes').delete().eq('post_id',postId).eq('user_id',ctx.userId);
   return error ? reply({error:'LIKE_NOT_REMOVED'},503) : reply({liked:false});
 }

@@ -1,0 +1,9 @@
+# Checkpoint interno 17 — instalação consolidada e bloqueios de ativação
+
+Adicionados scripts/check-social-installation.mjs e docs/SOCIAL-V7-INSTALACAO.md. Verificador somente leitura, sem migração automática, preços, gateway ou cobrança. Confere presença/formato de configuração e, quando configurado, disponibilidade de colunas das extensões, estruturas base e bucket. Não imprime segredos nem linhas pessoais; consultas de estrutura HEAD com limite zero, sem contagem. Falha orienta conferência, não criação de tabela duplicada. Não testa RPC de ação por existir risco de mutação de serviços reais.
+
+Executado neste ambiente: código de saída 1 esperado, apontando ausência de URL/chaves Supabase, endpoint/token PAY e flags de ativação. Inspeção remota pelo script não executada sem credenciais. Isto não contradiz a integração Inter validada pelo usuário: trata-se de configuração ausente no runtime de desenvolvimento. Não presumir ausência destas configurações na Vercel/Mac. Nenhuma alteração no banco/produção. git diff --check aprovado. Nenhuma alteração de runtime da aplicação; último build e 194 testes do checkpoint 16 permanecem a referência, não foram repetidos como se verificassem este novo script.
+
+Fluxo de instalação preserva ambiente de homologação isolado, conferência de migrações existentes e RLS antes de flags. A branch Git não isola banco. Falta ambiente configurado para executar ativação/homologação; documentação não é homologação e saída OK do verificador não conclui os requisitos funcionais.
+
+Permanecem os bloqueios funcionais anteriores (BankScore completo, fontes Hub e evidência institucional/criação, inventário completo do Validador, compartilhamento efetivo do feed legado e recorrência Platform separada). Não entregar pacote final afirmando completude. Nenhum pacote provisório gerado.

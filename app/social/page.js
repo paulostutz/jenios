@@ -1,11 +1,12 @@
 'use client';
+import Link from 'next/link';
 
 import useSocialFeed from '../components/useSocialFeed';
 import SocialDirectSession from '../components/SocialDirectSession';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase, accountDatabase } from '../../lib/supabase';
-import { visitorProfile, profileView } from '../../lib/social/feed-view.mjs';
+import { visitorProfile, profileView, postView } from '../../lib/social/feed-view.mjs';
 import { uploadSocialMedia } from '../../lib/social/media.mjs';
 const REMOTE_MEDIA = true;
 
@@ -74,6 +75,9 @@ function SocialContent() {
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
   const [profilePosts,setProfilePosts]=useState([]),[profileNext,setProfileNext]=useState(null);
+  const [followBusy,setFollowBusy]=useState(false);
+  const [publicationNotice,setPublicationNotice]=useState('');
+  const [uploadPercent,setUploadPercent]=useState(null);
   const [profileBusy,setProfileBusy]=useState(false),[profileError,setProfileError]=useState('');
   const profileRequest=useRef(0);
   const [followRows,setFollowRows]=useState([]),[followNext,setFollowNext]=useState(null),[followError,setFollowError]=useState('');
@@ -293,7 +297,7 @@ function SocialContent() {
           novaAltura
         );
 
-        // Compressão para não estourar o localStorage durante o desenvolvimento
+        // Reduz o tamanho da imagem antes do envio ao armazenamento.
         const imagemComprimida = canvas.toDataURL(
           'image/jpeg',
           0.78
@@ -327,7 +331,7 @@ function SocialContent() {
 };
 
 const handleUploadCarrossel = async (e) => {
-  const files = Array.from(e.target.files || []);
+  const files = Array.from(e.target.files || []), owner=sessionOwnerRef.current;
 
   if (files.length === 0) return;
   if(files.length+imagensPreview.length>10){alert('Use no máximo dez fotos e vídeos.');e.target.value='';return;}
@@ -342,7 +346,9 @@ const handleUploadCarrossel = async (e) => {
     const objectUrl = URL.createObjectURL(file);
     video.preload = 'metadata';
 
+    const metadataTimer=setTimeout(()=>{video.removeAttribute('src');video.load();URL.revokeObjectURL(objectUrl);reject(new Error('Não foi possível ler este vídeo. Tente um arquivo MP4 ou WebM.'));},25000);
     video.onloadedmetadata = () => {
+      clearTimeout(metadataTimer);
       const duracao = video.duration;
       URL.revokeObjectURL(objectUrl);
 
@@ -364,6 +370,7 @@ const handleUploadCarrossel = async (e) => {
     };
 
     video.onerror = () => {
+      clearTimeout(metadataTimer);
       URL.revokeObjectURL(objectUrl);
       reject(new Error('Formato de vídeo não suportado.'));
     };
@@ -377,10 +384,8 @@ const handleUploadCarrossel = async (e) => {
       throw new Error('Selecione apenas fotos ou vídeos.');
     }));
 
-    setImagensPreview((prev) => [
-      ...prev,
-      ...midiasProcessadas,
-    ]);
+    if(owner!==sessionOwnerRef.current){for(const item of midiasProcessadas)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);return;}
+    setImagensPreview((prev) => [...prev,...midiasProcessadas]);
   } catch (error) {
     console.error('Erro ao processar mídia:', error);
     alert(error.message || 'Não foi possível processar uma das mídias.');
@@ -391,6 +396,7 @@ const handleUploadCarrossel = async (e) => {
 };
 
   const removerFotoPreview = (index) => {
+    if(imagensPreview[index]?.src?.startsWith('blob:'))URL.revokeObjectURL(imagensPreview[index].src);
     setImagensPreview((prev) =>
       prev.filter((_, i) => i !== index)
     );
@@ -475,21 +481,29 @@ const handleUploadCarrossel = async (e) => {
     if(enviandoPublicacao)return;
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
     if(!novoTexto.trim()&&!imagensPreview.length&&!youtubeLink.trim())return;
-    setEnviandoPublicacao(true);
+    setEnviandoPublicacao(true);setPublicationNotice('');setUploadPercent(null);
     try {
       if(!supabase)throw Error('Entre na sua conta para publicar.');
       const {data,error}=await supabase.auth.getUser();
       if(error||!data.user?.id||data.user.is_anonymous||data.user.id!==meuPerfil.id)throw Error('Sua sessão mudou. Entre novamente.');
       const owner=data.user.id;
-      const media=imagensPreview.length?await uploadSocialMedia(imagensPreview,{client:supabase,onProgress:items=>{if(sessionOwnerRef.current===owner)setImagensPreview(items);},getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data?.session?.access_token;}}):[];
+      const media=imagensPreview.length?await uploadSocialMedia(imagensPreview,{client:supabase,onUploadProgress:percent=>{if(sessionOwnerRef.current===owner)setUploadPercent(percent);},onProgress:items=>{if(sessionOwnerRef.current===owner)setImagensPreview(items);},getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data?.session?.access_token;}}):[];
       const check=await supabase.auth.getUser();
       if(check.error||check.data?.user?.id!==owner)throw Error('Sua sessão mudou. O texto foi preservado.');
-      await feed.publish([novoTexto.trim(),youtubeLink.trim()].filter(Boolean).join('\n'),media.map(x=>({url:x.src,type:x.tipo==='video'?'video':'image'})));
+      const created=await feed.publish([novoTexto.trim(),youtubeLink.trim()].filter(Boolean).join('\n'),media.map(x=>({url:x.src,type:x.tipo==='video'?'video':'image'})));
       if(sessionOwnerRef.current!==owner)return;
+      const ownPost={...postView(created,{id:owner,display_name:meuPerfil.nome,handle:meuPerfil.handle,avatar_url:meuPerfil.avatar}),likes:0};
+      if(perfilVisitado?.id===owner){setProfilePosts(old=>[ownPost,...old.filter(p=>p.id!==created.id)]);setPerfilVisitado(p=>({...p,postsCount:(p.postsCount||0)+1}));}
+      setPublicationNotice('Publicado no feed e no seu perfil.');setPostEmFoco(created.id);
       for(const item of imagensPreview)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);
       setNovoTexto('');setYoutubeLink('');setImagensPreview([]);
     }catch(error){alert(error.message||'Não foi possível publicar. Seu texto foi preservado.');}
     finally{setEnviandoPublicacao(false);}
+  };
+  const compartilharStory = async post => {
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    await feed.createStory({postId:post.id});
+    setPublicationNotice('Publicação compartilhada nos seus Stories por 24 horas.');
   };
   const repostarPost = async (post) => {
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
@@ -547,15 +561,16 @@ const handleUploadCarrossel = async (e) => {
   }, [abaAtiva, postEmFoco]);
 
   const alternarSeguir = async () => {
-    const owner=sessionOwnerRef.current,request=profileRequest.current;
-    try{const updated=await feed.toggleFollow(perfilVisitado);if(owner===sessionOwnerRef.current&&request===profileRequest.current)setPerfilVisitado(updated);}catch(error){alert(error.message);}
+    if(followBusy||profileBusy||!perfilVisitado?.id)return;
+    setFollowBusy(true);const owner=sessionOwnerRef.current,request=profileRequest.current;
+    try{const updated=await feed.toggleFollow(perfilVisitado);if(owner===sessionOwnerRef.current&&request===profileRequest.current)setPerfilVisitado(updated);}catch(error){alert(error.message);}finally{setFollowBusy(false);}
   };
   const visitarPerfil = async (usuario,tab='posts',offset=0) => {
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
     if(!usuario?.handle&&!usuario?.id)return;
     const request=++profileRequest.current,owner=sessionOwnerRef.current;
     setProfileBusy(true);setProfileError('');setAbaGaleria(tab);setAbaAtiva('perfil-visita');
-    if(!offset){setPerfilVisitado(usuario);setProfilePosts([]);setProfileNext(null);}
+    if(!offset){setPerfilVisitado({...visitorProfile,...usuario});setProfilePosts([]);setProfileNext(null);}
     try{
       const result=await feed.visit(usuario,offset);
       if(owner!==sessionOwnerRef.current||request!==profileRequest.current)return;
@@ -1163,9 +1178,9 @@ const handleUploadCarrossel = async (e) => {
               alignItems: 'center',
             }}
           >
-            <a className="social-header-link" href="/lp">Conheça a Tecnologia JENIOS ↗</a>
-            <button className="social-header-link" onClick={() => setMensagensAberta(true)}>Mensagens</button>
-            <a className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></a>
+            <Link className="social-header-link" href="/lp">Conheça a Tecnologia JENIOS ↗</Link>
+            <button className="social-header-link" onClick={() => {setChatAtivo(abaAtiva==='perfil-visita'&&perfilVisitado?.id!==meuPerfil.id?perfilVisitado:null);setMensagensAberta(true);}}>Mensagens</button>
+            <Link className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></Link>
             {meuPerfil.autenticado ? (
               <>
                 <span
@@ -1554,7 +1569,7 @@ const handleUploadCarrossel = async (e) => {
             ["Especialistas","/especialistas"],
             ["Insights","/insights"],
             ["Impulsionar","/impulsionar"]
-          ].map(([titulo,url])=><a key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</a>)}
+          ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
         </nav>
         {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
         {abaAtiva === 'lives' && <SocialLives key={meuPerfil?.id} meuPerfil={meuPerfil} onLoad={feed.lives} onCreate={feed.createLive} onRemove={feed.deleteLive} onReport={feed.reportLive} />}
@@ -1584,6 +1599,7 @@ const handleUploadCarrossel = async (e) => {
                   <SocialStories
                 meuPerfil={meuPerfil}
                 stories={storiesJenios}
+                onOpenPost={abrirPostDaGaleria}
                 onExcluirStory={excluirStoryJenios}
                 onAdicionarStory={adicionarStoryJenios}
                 ocultarMeuStory={false}
@@ -1598,6 +1614,8 @@ const handleUploadCarrossel = async (e) => {
                 }}
               >
                 <form onSubmit={publicarPost}>
+                  {publicationNotice&&<p role="status" style={{color:'#047857'}}>{publicationNotice}</p>}
+                  {enviandoPublicacao&&<p role="status">{uploadPercent===null?'Preparando publicação…':uploadPercent<100?`Enviando mídia: ${uploadPercent}%`:'Salvando publicação…'}</p>}
                   {!meuPerfil.autenticado && <p style={{fontSize:14,color:"#475569",margin:"0 0 16px"}}>Entre na sua conta para publicar fotos, vídeos e Stories.</p>}
                   <textarea
                     value={novoTexto}
@@ -1853,6 +1871,7 @@ const handleUploadCarrossel = async (e) => {
                     onCurtir={curtirPost}
                     onRepostar={repostarPost}
                     onCompartilhar={copiarLinkPost}
+                    onShareStory={compartilharStory}
                     onVisitarPerfil={visitarPerfil}
                     onAtualizarPost={atualizarPost}
                     onExcluirPost={excluirPost}
@@ -2203,10 +2222,11 @@ const handleUploadCarrossel = async (e) => {
                       {perfilVisitado.handle}
                     </span>
 
-                    {perfilVisitado.handle !== meuPerfil.handle && (
+                    {perfilVisitado.id !== meuPerfil.id && (
                       <button
                         type="button"
                         aria-pressed={Boolean(perfilVisitado.followed)}
+                        disabled={profileBusy||followBusy||!perfilVisitado.id}
                         onClick={() => alternarSeguir()}
                         style={{
                           backgroundColor: Boolean(perfilVisitado.followed) ? '#f5f3ff' : '#7c3aed',
@@ -2222,10 +2242,10 @@ const handleUploadCarrossel = async (e) => {
                         {Boolean(perfilVisitado.followed) ? '✓ Seguindo' : '+ Seguir'}
                       </button>
                     )}
-                    {perfilVisitado.handle !==
-                      meuPerfil.handle && (
+                    {perfilVisitado.id !== meuPerfil.id && (
                       <button
                         type="button"
+                        disabled={profileBusy||!perfilVisitado.id}
                         onClick={() => {setChatAtivo(perfilVisitado);setMensagensAberta(true);}}
                         style={{
                           backgroundColor: '#7c3aed',
@@ -2319,183 +2339,6 @@ const handleUploadCarrossel = async (e) => {
                 </div>
               </div>
 
-              {/* DIRECT */}
-              {false && chatAtivo &&
-                chatAtivo.handle ===
-                  perfilVisitado.handle && (
-                  <div
-                    style={{
-                      backgroundColor: '#f8fafc',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      marginTop: '20px',
-                      marginBottom: '25px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '10px',
-                        marginBottom: '12px',
-                      }}
-                    >
-                      <h4
-                        style={{
-                          fontSize: '13px',
-                          fontWeight: 'bold',
-                          color: '#0f172a',
-                          margin: 0,
-                        }}
-                      >
-                        💬 Conversa com{' '}
-                        {perfilVisitado.nome}
-                      </h4>
-
-                      <button
-                        type="button"
-                        onClick={() => setChatAtivo(null)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '15px',
-                          fontWeight: 'bold',
-                          color: '#64748b',
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        height: '180px',
-                        backgroundColor: '#fff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        padding: '10px',
-                        overflowY: 'auto',
-                        marginBottom: '10px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '7px',
-                      }}
-                    >
-                      {(
-                        mensagensDirect[
-                          perfilVisitado.handle
-                        ] || []
-                      ).length === 0 ? (
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            color: '#64748b',
-                            textAlign: 'center',
-                            marginTop: '65px',
-                          }}
-                        >
-                          Nenhuma mensagem ainda. Inicie a
-                          conversa.
-                        </span>
-                      ) : (
-                        (
-                          mensagensDirect[
-                            perfilVisitado.handle
-                          ] || []
-                        ).map((msg, index) => (
-                          <div
-                            key={index}
-                            style={{
-                              alignSelf:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? 'flex-end'
-                                  : 'flex-start',
-                              backgroundColor:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? '#7c3aed'
-                                  : '#e2e8f0',
-                              color:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? '#fff'
-                                  : '#0f172a',
-                              padding: '8px 12px',
-                              borderRadius: '10px',
-                              fontSize: '12px',
-                              maxWidth: '75%',
-                            }}
-                          >
-                            <div>{msg.texto}</div>
-
-                            <span
-                              style={{
-                                display: 'block',
-                                marginTop: '3px',
-                                fontSize: '8px',
-                                opacity: 0.7,
-                              }}
-                            >
-                              {msg.hora}
-                            </span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    <form
-                      onSubmit={enviarMensagemDirect}
-                      style={{
-                        display: 'flex',
-                        gap: '8px',
-                      }}
-                    >
-                      <input
-                        type="text"
-                        placeholder="Escreva uma mensagem..."
-                        value={textoMensagem}
-                        onChange={(e) =>
-                          setTextoMensagem(e.target.value)
-                        }
-                        style={{
-                          flex: 1,
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          minWidth: 0,
-                        }}
-                        required
-                      />
-
-                      <button
-                        type="submit"
-                        style={{
-                          backgroundColor: '#059669',
-                          color: '#fff',
-                          border: 'none',
-                          padding: '10px 18px',
-                          borderRadius: '8px',
-                          fontWeight: 'bold',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Enviar 📨
-                      </button>
-                    </form>
-                  </div>
-                )}
-
-              {perfilVisitado.handle !== meuPerfil.handle && (
-                <p style={{fontSize:'11px', color:'#64748b', margin:'0 0 12px'}}>
-                  Seguir e mensagens estão em modo de demonstração local até a integração das contas.
-                </p>
-              )}
               {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
               <div style={{
                 borderTop: '1px solid #e2e8f0',
@@ -2551,7 +2394,7 @@ const handleUploadCarrossel = async (e) => {
                 {(() => {
                   const publicacoes = (abaGaleria==='salvos'?feed.savedPosts:profilePosts).filter((p) => {
                     const ehDoPerfil =
-                      p.handle === perfilVisitado.handle;
+                      p.authorId === perfilVisitado.id;
 
                     if (abaGaleria === 'salvos') {
                       return (
@@ -2621,7 +2464,7 @@ const handleUploadCarrossel = async (e) => {
                               backgroundColor: src ? '#000' : '#f8fafc',
                               overflow: 'hidden',
                             }}>
-                              {src && primeira?.tipo==='video' ? <video src={src} muted playsInline preload="metadata" style={{width:'100%',height:'100%',objectFit:'contain'}}/> : src ? (
+                              {src && primeira?.tipo==='video' ? <video src={src} muted playsInline preload="none" style={{width:'100%',height:'100%',objectFit:'contain'}}/> : src ? (
                                 <img
                                   src={src}
                                   alt="Publicação"

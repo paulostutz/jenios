@@ -2,8 +2,8 @@
 import {useRef} from 'react';
 const explanations={
  tokens:['Tendências de busca','Mostra ativos que despertam interesse nas buscas. Popularidade não comprova valorização ou compras de grandes investidores.'],
- megapulse:['MegaPulse · Megatendências','Procura ações, índices e criptos entrando em tendência forte, combinando direção do preço, volume e persistência. A leitura depende da cobertura e da atualização da fonte; não garante continuidade ou retorno.'],
- baleias:['Movimento das baleias','Procura grandes aquisições comprovadas. Uma transferência entre carteiras não comprova compra. É necessário verificar negociação, valor e contexto; a identidade do investidor pode não ser conhecida.'],
+ megapulse:['MegaPulse · Megatendências','Mostra fechamento e variação diária de mini Ibovespa e mini dólar. Uma variação diária não confirma tendência persistente. Ações e outras classes ainda não estão incluídas.'],
+ baleias:['Movimento das baleias','Mostra grandes saídas confirmadas em transações Bitcoin numa amostra do último bloco. Pode incluir troco e transferências entre carteiras da mesma pessoa. Não comprova compra nem identidade institucional.'],
  novos:['Tokens Explosivos','Radar de tokens recentes com compras relevantes e sinais adicionais de volume, liquidez, distribuição e segurança do contrato. Um pool novo não comprova token recém-criado. Os filtros atuais são uma triagem, não confirmação de compras de baleias ou previsão de retorno.']
 };
 export default function TrendHelp({kind}) {

@@ -45,7 +45,7 @@ export default function PaymentStatement({ embedded = false }) {
     <div style={{ maxWidth:1000, margin:'auto' }}>
       {!embedded && <Link href="/dashboard-logado">← Minha dashboard</Link>}
       <Heading>Meus pagamentos</Heading>
-      <p>Extrato dos 50 pedidos mais recentes. Confirmação e baixa automáticas pela JENIOS PAY.</p>
+      <p>Extrato dos 50 pedidos mais recentes. A confirmação Pix é consultada no banco pela tela de pagamento.</p>
       <button disabled={busy} onClick={load}>{busy ? 'Consultando…' : 'Atualizar extrato'}</button>
       {message && <p role="alert">{message}</p>}
       <div style={{overflowX:'auto',marginTop:16}}><table style={{width:'100%',borderCollapse:'collapse',textAlign:'left'}}>
@@ -61,6 +61,7 @@ export default function PaymentStatement({ embedded = false }) {
             {o.productCode==='social-specialist-offer' && <Link href="/especialistas/atendimentos">Atendimento</Link>}
             {o.productCode==='social-boost' && <Link href="/impulsionar/campanhas">Campanha</Link>}
             {o.status==='paid' && <div><button onClick={()=>verify(o.id)}>Verificar acesso</button></div>}
+            {['pending','awaiting_payment'].includes(o.status) && o.paymentMethod==='pix' && <div><Link href={'/social/pagamento?pedido='+encodeURIComponent(o.id)}>Abrir Pix e verificar pagamento</Link></div>}
             {['pending','awaiting_payment'].includes(o.status) && <small>Aguardando confirmação da cobrança original.</small>}
             {access[o.id] && <p role="status">{access[o.id]}</p>}
           </td>

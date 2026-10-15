@@ -17,13 +17,13 @@ export default function SocialDirect({user,profile,initialPerson,onLogin}){
  function chooseThread(t){selectedThread.current=t.id;messageRevision.current++;setThread(t);setBody('');setMessages([]);setError('');}
  function openPerson(person){run(async current=>{const id=await api.open(user.id,person.user_id);const rows=await api.threads(user.id);if(current()){setThreads(rows);chooseThread({id,person});}});}
  useEffect(()=>{
-  const personId=initialPerson?.userId;
+  const personId=(initialPerson?.userId||initialPerson?.id);
   if(!ready||!user?.id||!personId||personId===user.id)return;
   const key=user.id+':'+personId;
   if(initialOpened.current===key)return;
   initialOpened.current=key;
   openPerson({user_id:personId,display_name:initialPerson.nome,handle:String(initialPerson.handle||'').replace(/^@/,'')});
-},[ready,initialPerson?.userId,user?.id]);
+},[ready,(initialPerson?.userId||initialPerson?.id),user?.id]);
  if(!user)return <section style={box}><h2>Mensagens · Direct</h2><p>Entre na sua conta para conversar com outros usuários.</p><button onClick={onLogin} type="button">Entrar</button></section>;
  return <section style={box}><h2>Mensagens · Direct</h2><p style={{color:'#64748b',fontSize:12}}>Converse em particular. As mensagens são atualizadas automaticamente.</p>{error&&<p role="alert">{error}</p>}
  <form onSubmit={e=>{e.preventDefault();run(async current=>{const rows=await api.search(user.id,query);if(current())setPeople(rows);});}}><label>Buscar pelo @ <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Digite pelo menos 3 caracteres" minLength={3}/></label><button disabled={!ready||busy}>Buscar</button></form>

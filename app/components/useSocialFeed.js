@@ -5,12 +5,14 @@ import {createScopedFeedClient} from '../../lib/social/session-client.mjs';
 import {createSessionFence} from '../../lib/social/session-fence.mjs';
 import {visitorProfile,profileView,postView,commentViews} from '../../lib/social/feed-view.mjs';
 
+// Short-lived memory cache, cleared on identity changes. Never persist another account's feed.
+let feedSnapshot=null;
 export default function useSocialFeed(){
  const [profile,setProfile]=useState({...visitorProfile}),[posts,setPosts]=useState([]);
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[cursor,setCursor]=useState(null),[loading,setLoading]=useState(false);
  const [stories,setStories]=useState([]),[storiesNext,setStoriesNext]=useState(null),[storiesError,setStoriesError]=useState('');
  const [savedPosts,setSavedPosts]=useState([]),[savedNext,setSavedNext]=useState(null);
- const fence=useRef(createSessionFence()),busy=useRef(new Map()),reloadRef=useRef(null);
+ const fence=useRef(createSessionFence()),busy=useRef(new Map()),reloadRef=useRef(null),postRevision=useRef(0);
  const clientFor=ticket=>createScopedFeedClient({auth:supabase.auth,fence:fence.current,ticket});
  async function profilesFor(ids){
   if(!ids.length)return new Map();
@@ -19,21 +21,21 @@ export default function useSocialFeed(){
   return new Map((r.data||[]).map(p=>[p.id,p]));
  }
  async function present(rows,ticket){
-  const profiles=await profilesFor(rows.map(x=>x.author_id));
+  const client=clientFor(ticket),ids=rows.map(r=>r.id);
+  const [profiles,savedResult,likesResult]=await Promise.all([
+   profilesFor(rows.map(x=>x.author_id)),client.savedState(ids).catch(()=>({ids:[]})),client.likesBatch(ids).catch(()=>({stats:[]}))
+  ]);
   if(!fence.current.current(ticket))return [];
-  const client=clientFor(ticket);
-  let saved=new Set();try{saved=new Set((await client.savedState(rows.map(r=>r.id))).ids);}catch{}
-  return Promise.all(rows.map(async row=>{
-   const p={...postView(row,profiles.get(row.author_id)),salvo:saved.has(row.id)};
-   try{const likes=await client.getLikes(row.id);p.likes=likes.count;p.curtido=likes.liked;}catch{}
-   return p;
-  }));
+  const saved=new Set(savedResult.ids),likes=new Map(likesResult.stats.map(x=>[x.post_id,x]));
+  return rows.map(row=>({...postView(row,profiles.get(row.author_id)),salvo:saved.has(row.id),likes:likes.has(row.id)?Number(likes.get(row.id).count):null,curtido:likes.get(row.id)?.liked||false}));
  }
  async function load(ticket,after=null){
+  const revision=postRevision.current;
   const data=await clientFor(ticket).listPosts({cursor:after});
   if(!fence.current.current(ticket))return;
   const rows=await present(data.posts,ticket);
   if(!fence.current.current(ticket))return;
+  if(postRevision.current!==revision)return;
   setPosts(old=>after?[...old,...rows.filter(p=>!old.some(x=>x.id===p.id))]:rows);
   setCursor(data.nextBefore?{before:data.nextBefore,beforeId:data.nextBeforeId}:null);
  }
@@ -49,12 +51,18 @@ export default function useSocialFeed(){
     const user=r?.data?.user;
     if(r?.error||!user?.id||user.is_anonymous)return;
     ticket=fence.current.change(user.id);
+    if(feedSnapshot?.owner===user.id&&Date.now()-feedSnapshot.savedAt<180000){
+      setProfile(feedSnapshot.profile);setPosts(feedSnapshot.posts);setCursor(feedSnapshot.cursor);
+      setStories(feedSnapshot.stories);setStoriesNext(feedSnapshot.storiesNext);setReady(true);
+    }else feedSnapshot=null;
     const profiles=await profilesFor([user.id]);
     if(!live||!fence.current.current(ticket))return;
     setProfile(profileView(profiles.get(user.id)||{id:user.id,display_name:user.user_metadata?.full_name},true));
+    // Feed is visible as soon as posts arrive; counts and Stories load independently.
+    const extras=Promise.allSettled([refreshCounts(ticket),loadStories(0,ticket)]);
     await load(ticket);
-    await refreshCounts(ticket).catch(()=>{});
-    await loadStories(0,ticket).catch(()=>{});
+    if(live&&fence.current.current(ticket))setReady(true);
+    await extras;
    }catch{
     if(live&&fence.current.current(ticket))setError('Não foi possível carregar a Social. Tente novamente.');
    }finally{
@@ -67,11 +75,15 @@ export default function useSocialFeed(){
    if(event==='INITIAL_SESSION')return;
    // Supabase can emit SIGNED_IN again on window focus; preserve the same account's draft.
    if(session?.user?.id===fence.current.capture().owner&&['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event))return;
-   fence.current.change();setPosts([]);setProfile({...visitorProfile});setReady(false);
+   feedSnapshot=null;fence.current.change();setPosts([]);setProfile({...visitorProfile});setReady(false);
    setTimeout(()=>{if(live)void refresh();},0);
   });
   return()=>{live=false;reloadRef.current=null;fence.current.change();sub?.data?.subscription?.unsubscribe();};
  },[]);
+ useEffect(()=>{
+  const ticket=fence.current.capture();
+  if(ready&&profile.id&&ticket.owner===profile.id)feedSnapshot={owner:profile.id,profile,posts:posts.slice(0,50),cursor:posts.length>50?null:cursor,stories,storiesNext,savedAt:Date.now()};
+ },[ready,profile,posts,cursor,stories,storiesNext]);
  async function action(key,fn){
   const ticket=fence.current.capture();
   if(!ticket.owner)throw Error('Entre na sua conta para continuar.');
@@ -87,7 +99,11 @@ export default function useSocialFeed(){
  }
  async function publish(body,media){return action('publish',async(ticket,client)=>{
   const r=await client.createPost({body,media});
-  if(fence.current.current(ticket))setPosts(old=>[{...postView(r.post,{id:profile.id,display_name:profile.nome,handle:profile.handle,avatar_url:profile.avatar,bio:profile.bio}),likes:0},...old]);
+  if(fence.current.current(ticket)){
+   postRevision.current++;
+   setPosts(old=>[{...postView(r.post,{id:profile.id,display_name:profile.nome,handle:profile.handle,avatar_url:profile.avatar,bio:profile.bio}),likes:0},...old.filter(p=>p.id!==r.post.id)]);
+   setProfile(p=>({...p,postsCount:(p.postsCount||0)+1}));
+  }
   return r.post;
  });}
  async function like(post){return action('like:'+post.id,async(ticket,client)=>{
@@ -97,7 +113,7 @@ export default function useSocialFeed(){
  });}
  async function remove(id){return action('delete:'+id,async(ticket,client)=>{
   await client.deletePost(id);
-  if(fence.current.current(ticket))setPosts(old=>old.filter(p=>p.id!==id));
+  if(fence.current.current(ticket)){postRevision.current++;setPosts(old=>old.filter(p=>p.id!==id));}
  });}
  async function comments(postId,ticket=fence.current.capture()){
   const r=await clientFor(ticket).listComments(postId);
@@ -132,15 +148,15 @@ export default function useSocialFeed(){
   try{
    const result=await clientFor(ticket).stories(offset),profiles=await profilesFor(result.stories.map(x=>x.author_id));
    if(!fence.current.current(ticket))return;
-   const rows=result.stories.map(row=>{const p=profileView(profiles.get(row.author_id));return {id:row.id,authorId:row.author_id,autor:p.nome,handle:p.handle,avatar:p.avatar,src:row.media_path,tipo:row.media_type==='video'?'video':'imagem',criadoEm:row.created_at,expiresAt:row.expires_at};});
+   const rows=result.stories.map(row=>{const p=profileView(profiles.get(row.author_id));return {id:row.id,authorId:row.author_id,autor:p.nome,handle:p.handle,avatar:p.avatar,src:row.media_path,tipo:row.media_type==='video'?'video':'imagem',criadoEm:row.created_at,expiresAt:row.expires_at,sharedPost:row.sharedPost};});
    setStories(old=>offset?[...old,...rows.filter(p=>!old.some(x=>x.id===p.id))]:rows);setStoriesNext(result.nextOffset);setStoriesError('');
   }catch(error){if(fence.current.current(ticket))setStoriesError('Não foi possível carregar os Stories.');throw error;}
  }
  async function createStory(media){return action('story-publish',async(ticket,client)=>{await client.createStory(media);await loadStories(0,ticket);});}
  async function deleteStory(id){return action('story-delete:'+id,async(ticket,client)=>{await client.deleteStory(id);if(fence.current.current(ticket))setStories(old=>old.filter(s=>s.id!==id));});}
  async function refreshCounts(ticket=fence.current.capture()){
-  const counts=await clientFor(ticket).follows(ticket.owner);
-  if(fence.current.current(ticket))setProfile(p=>({...p,followersCount:counts.followers,followingCount:counts.following}));
+  const [counts,own]=await Promise.all([clientFor(ticket).follows(ticket.owner),supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',ticket.owner)]);
+  if(fence.current.current(ticket))setProfile(p=>({...p,followersCount:counts.followers,followingCount:counts.following,...(!own.error?{postsCount:own.count}: {})}));
  }
  async function save(post,wanted){return action('save:'+post.id,async(ticket,client)=>{
   await(wanted?client.save(post.id):client.unsave(post.id));
@@ -154,7 +170,7 @@ export default function useSocialFeed(){
   if(fence.current.current(ticket)){setSavedPosts(old=>offset?[...old,...rows.filter(p=>!old.some(x=>x.id===p.id))]:rows);setSavedNext(result.nextOffset);}
  });}
  async function visit(person,offset=0){return action('profile:'+person.id+':'+person.handle,async(ticket,client)=>{
-  const data=await client.profile(person,offset),counts=await client.follows(data.profile.id),rows=await present(data.posts,ticket);
+  const data=await client.profile(person,offset);const [counts,rows]=await Promise.all([client.follows(data.profile.id),present(data.posts,ticket)]);
   return {profile:{...profileView(data.profile,data.profile.id===ticket.owner),postsCount:data.postsCount,followersCount:counts.followers,followingCount:counts.following,followed:counts.followed},posts:rows,nextOffset:data.nextOffset};
  });}
  async function toggleFollow(person){return action('follow:'+person.id,async(ticket,client)=>{

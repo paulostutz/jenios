@@ -6,6 +6,13 @@ const reply = (body, status=200) => NextResponse.json(body, {status,headers:{'Ca
 export async function GET(request) {
   const ctx = await socialContext(request);
   if (ctx.error) return reply({error:ctx.error},ctx.status);
+  const ids = new URL(request.url).searchParams.get('ids');
+  if(ids!==null){
+    const list=[...new Set(ids.split(','))];
+    if(!list.length||list.length>50||list.some(id=>!validUUID(id)))return reply({error:'INVALID_POST_ID'},400);
+    const {data,error}=await ctx.db.rpc('jenios_social_post_stats',{p_ids:list});
+    return error?reply({error:'LIKES_UNAVAILABLE'},503):reply({stats:data||[]});
+  }
   const postId = new URL(request.url).searchParams.get('postId');
   if (!validUUID(postId)) return reply({error:'INVALID_POST_ID'},400);
   const {data: post, error: postError} = await ctx.db.from('posts').select('id').eq('id',postId).maybeSingle();

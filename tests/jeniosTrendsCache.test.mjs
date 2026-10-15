@@ -69,7 +69,8 @@ test('normalizer removes duplicates, invalid IDs and overlong labels', () => {
 });
 test('page guards stale responses, hidden tab polling and stale data labels', () => {
   const source = readFileSync(new URL('../app/components/TrendsHub.js', import.meta.url), 'utf8');
-  assert.match(source, /AbortController/); assert.match(source, /epoch.current/); assert.match(source, /visibilityState/); assert.match(source, /DADOS DA ÚLTIMA LEITURA/);
+  const shared=readFileSync(new URL('../app/components/useTrendsData.js',import.meta.url),'utf8');
+  assert.match(shared,/if\(live\)/);assert.match(shared,/document.hidden/);assert.match(shared,/visibilitychange/);assert.match(source,/DADOS DA ÚLTIMA LEITURA/);
   assert.doesNotMatch(source, /FONTE ONLINE/);
 });
 test('legacy dashboard no longer calls aggregate volume an institutional detection or new token', () => {

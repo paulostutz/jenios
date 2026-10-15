@@ -20,7 +20,8 @@ export async function POST(request){
     const {data,error}=await db.storage.from(bucket).createSignedUploadUrl(path,{upsert:false});
     if(error)throw error;
     const {data:publicData}=db.storage.from(bucket).getPublicUrl(path);
-    return Response.json({bucket,path,token:data.token,publicUrl:publicData.publicUrl},{headers:{'Cache-Control':'no-store'}});
+    const storageOrigin=new URL(url);if(storageOrigin.hostname.endsWith('.supabase.co'))storageOrigin.hostname=storageOrigin.hostname.replace('.supabase.co','.storage.supabase.co');
+    return Response.json({bucket,path,token:data.token,publicUrl:publicData.publicUrl,resumableEndpoint:storageOrigin.origin+'/storage/v1/upload/resumable'},{headers:{'Cache-Control':'no-store'}});
   }catch(error){return Response.json({error:error.status?error.message:'Não foi possível preparar a mídia. Confira formato, tamanho e duração.'},{status:error.status||400,headers:{'Cache-Control':'no-store'}})}
 }
 

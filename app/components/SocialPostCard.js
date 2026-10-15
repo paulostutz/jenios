@@ -10,6 +10,7 @@ export default function SocialPostCard({
   onCurtir,
   onRepostar,
   onCompartilhar,
+  onShareStory,
   onVisitarPerfil,
   onAtualizarPost,
   onExcluirPost,
@@ -21,6 +22,8 @@ export default function SocialPostCard({
   onBlock,
   extrairEmbedYoutube,
 }) {
+  const [shareOpen,setShareOpen]=useState(false),[shareBusy,setShareBusy]=useState(false),[shareError,setShareError]=useState('');
+  async function shareStory(){if(shareBusy)return;setShareBusy(true);setShareError('');try{await onShareStory(post);setShareOpen(false);}catch{setShareError('Não foi possível compartilhar. Tente novamente.');}finally{setShareBusy(false);}}
   const [reportOpen,setReportOpen]=useState(false),[reportReason,setReportReason]=useState('fraud'),[reportDetails,setReportDetails]=useState(''),[reportBusy,setReportBusy]=useState(false),[reportError,setReportError]=useState('');
   const [commentBusy,setCommentBusy]=useState(false);
   const [commentError,setCommentError]=useState('');
@@ -806,7 +809,7 @@ export default function SocialPostCard({
             backgroundColor: '#000',
           }}
         >
-          <iframe
+          <iframe loading="lazy"
             src={embedYoutubeUrl}
             title={`Vídeo de ${post.autor}`}
             style={{
@@ -821,6 +824,15 @@ export default function SocialPostCard({
         </div>
       )}
 
+      {shareOpen&&<div role="dialog" aria-modal="true" aria-label="Compartilhar publicação" style={{position:'fixed',inset:0,zIndex:50000,background:'#0f172ab8',display:'grid',placeItems:'center'}} onClick={()=>!shareBusy&&setShareOpen(false)}>
+        <section style={{background:'white',padding:24,borderRadius:16,display:'grid',gap:12,color:'#0f172a'}} onClick={e=>e.stopPropagation()}>
+          <h3>Compartilhar publicação</h3>
+          {shareError&&<p role="alert">{shareError}</p>}
+          <button autoFocus type="button" disabled={shareBusy||!meuPerfil?.autenticado} onClick={shareStory}>{shareBusy?'Compartilhando…':'Adicionar aos meus Stories'}</button>
+          <button type="button" disabled={shareBusy} onClick={()=>{onCompartilhar?.(post.id);setShareOpen(false);}}>Copiar link</button>
+          <button type="button" disabled={shareBusy} onClick={()=>setShareOpen(false)}>Cancelar</button>
+        </section>
+      </div>}
       {/* FOTOS E VÍDEOS */}
     {Array.isArray(post.imagens) &&
       post.imagens.length > 0 &&
@@ -843,7 +855,7 @@ export default function SocialPostCard({
               src={srcImagemAtual}
               controls
               playsInline
-              preload="metadata"
+              preload="none"
               style={{
                 width: '100%',
                 maxHeight: '80vh',
@@ -854,6 +866,7 @@ export default function SocialPostCard({
           ) : (
           <img
             src={srcImagemAtual}
+            loading="lazy" decoding="async"
             alt={`Publicação de ${post.autor}`}
             style={{
               width: '100%',
@@ -1006,7 +1019,7 @@ export default function SocialPostCard({
         <button
           type="button"
           onClick={() =>
-            onCompartilhar?.(post.id)
+            setShareOpen(true)
           }
           style={estiloAcao}
         >

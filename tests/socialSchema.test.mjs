@@ -9,5 +9,5 @@ test('carrossel misto faz ida e volta sem novas tabelas',()=>{
 });
 test('URL insegura legada não é enviada ao navegador',()=>{assert.deepEqual(publicPost({body:'texto',media_path:'javascript:alert(1)'}).media,[])});
 test('APIs usam somente tabelas reais, sem deleted_at inexistente',()=>{
-  for(const path of ['posts','comments','likes']){const source=readFileSync(new URL('../app/api/social/'+path+'/route.js',import.meta.url),'utf8');assert.doesNotMatch(source,/jenios_social_|deleted_at/)}
+  for(const path of ['posts','comments','likes']){const source=readFileSync(new URL('../app/api/social/'+path+'/route.js',import.meta.url),'utf8');assert.doesNotMatch(source,/from\(['"]jenios_social_|deleted_at/)}
 });

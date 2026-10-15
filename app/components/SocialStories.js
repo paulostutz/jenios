@@ -1,5 +1,6 @@
 'use client';
 
+import {storyExpiry,storyIsActive} from '../../lib/social/story-lifetime.mjs';
 import { useEffect, useState } from 'react';
 
 export default function SocialStories({
@@ -7,11 +8,13 @@ export default function SocialStories({
   stories = [],
   onAdicionarStory,
   onExcluirStory,
+  onOpenPost,
   ocultarMeuStory = false,
 }) {
   const [storyAberto, setStoryAberto] = useState(null);
   const [agora, setAgora] = useState(() => Date.now());
 
+  useEffect(()=>setAgora(Date.now()),[stories]);
   useEffect(()=>setStoryAberto(null),[meuPerfil?.id]);
   useEffect(()=>{if(storyAberto&&!stories.some(s=>s.id===storyAberto.id))setStoryAberto(null);},[stories,storyAberto]);
 
@@ -21,10 +24,12 @@ export default function SocialStories({
   }, []);
 
   useEffect(() => {
-    if (!storyAberto) return;
-    const criado = new Date(storyAberto.criadoEm).getTime();
-    if (!Number.isFinite(criado) || agora - criado >= 86400000) setStoryAberto(null);
-  }, [agora, storyAberto]);
+    if(!storyAberto)return;
+    const remaining=storyExpiry(storyAberto)-Date.now();
+    if(!Number.isFinite(remaining)||remaining<=0){setStoryAberto(null);return;}
+    const timer=setTimeout(()=>{setStoryAberto(null);setAgora(Date.now());},remaining);
+    return()=>clearTimeout(timer);
+  },[storyAberto]);
 
   useEffect(() => {
     if (!storyAberto) return;
@@ -35,23 +40,17 @@ export default function SocialStories({
     return () => window.removeEventListener('keydown', aoTeclar);
   }, [storyAberto]);
 
-  const storiesAtivos = stories.filter((story) => {
-    if (!story.criadoEm) return false;
-
-    const criado = new Date(story.criadoEm).getTime();
-    return Number.isFinite(criado) && criado <= agora && agora - criado < 24 * 60 * 60 * 1000;
-  });
+  const storiesAtivos = stories.filter(story=>storyIsActive(story,agora));
 
   const abrirStory = (story) => {
-    setStoryAberto(story);
+    if(storyIsActive(story))setStoryAberto(story);
   };
 
   useEffect(() => {
     const abrirMeuStory = () => {
       const ativos = stories.filter((story) => {
         const criado = new Date(story.criadoEm).getTime();
-        return story.authorId === meuPerfil?.id && Number.isFinite(criado) &&
-          criado <= Date.now() && Date.now() - criado < 86400000;
+        return story.authorId === meuPerfil?.id && storyIsActive(story);
       }).sort((a, b) => new Date(a.criadoEm) - new Date(b.criadoEm));
       if (ativos.length) setStoryAberto(ativos[0]);
     };
@@ -202,7 +201,15 @@ export default function SocialStories({
               backgroundColor: '#111827',
             }}
           >
-            {storyAberto.tipo === 'video' ? (
+            {storyAberto.sharedPost ? (
+              <div style={{padding:22,color:'#fff'}}>
+                <p style={{fontSize:12,color:'#c4b5fd'}}>Publicação compartilhada</p>
+                <strong>{storyAberto.sharedPost.profile?.display_name||'Usuário JENIOS'} · @{storyAberto.sharedPost.profile?.handle}</strong>
+                <p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere',maxHeight:'25vh',overflow:'auto'}}>{storyAberto.sharedPost.body}</p>
+                {storyAberto.sharedPost.media?.[0]?.type==='video'?<video src={storyAberto.sharedPost.media[0].url} controls playsInline preload="metadata" style={{width:'100%',maxHeight:'40vh'}}/>:storyAberto.sharedPost.media?.[0]?.url?<img src={storyAberto.sharedPost.media[0].url} alt="Publicação compartilhada" style={{width:'100%',maxHeight:'40vh',objectFit:'contain'}}/>:null}
+                <button type="button" onClick={()=>{const id=storyAberto.sharedPost.id;fecharStory();onOpenPost?.(id);}} style={{padding:12,border:0,borderRadius:9,background:'#7c3aed',color:'white',cursor:'pointer'}}>Ver publicação original</button>
+              </div>
+            ) : storyAberto.tipo === 'video' ? (
               <video
                 src={storyAberto.src}
                 controls

@@ -17,8 +17,8 @@ export async function GET(request) {
     if (error) throw error;
     return NextResponse.json({
       products: mergeCatalog(data).filter(p => productScope(p) === scope).map(p => withBankscoreAvailability({ ...p, configured: Boolean(p.id) })),
-      paymentsEnabled: Boolean(gatewayConfig()),
-      checkoutReady: Boolean(gatewayConfig()),
+      paymentsEnabled: Boolean(gatewayConfig() && (scope==='social'||gatewayConfig().provider!=='inter_pix')),
+      checkoutReady: Boolean(gatewayConfig() && (scope==='social'||gatewayConfig().provider!=='inter_pix')),
       checkoutScope: scope,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch {

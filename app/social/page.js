@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import CryptoValidator from '../components/CryptoValidator';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialStories from '../components/SocialStories';
@@ -10,6 +11,7 @@ import { supabase } from '../../lib/supabase';
 import { uploadSocialMedia } from '../../lib/social/media.mjs';
 
 const REMOTE_MEDIA = process.env.NEXT_PUBLIC_SOCIAL_REMOTE_MEDIA_ENABLED === 'true';
+const TrendsHub = dynamic(() => import('../components/TrendsHub'), { loading: () => <p role="status">Carregando Hub de Tendências…</p> });
 
 
 
@@ -1815,7 +1817,7 @@ const excluirPost = (id) => {
         >
           {[
             ['BankScore', '/bankscore'],
-            ['Hub de Tendências', '/tendencias'],
+            ['Hub de Tendências', '#hub-tendencias'],
             ['Especialistas', '/especialistas'],
             ['Impulsionar', '/impulsionar'],
             ['Minhas cobranças', '/social/cobrancas'],
@@ -1825,6 +1827,7 @@ const excluirPost = (id) => {
             <a
               key={label}
               href={href}
+              onClick={label === 'Hub de Tendências' ? (event) => { event.preventDefault(); setAbaAtiva('tendencias'); } : undefined}
               style={{
                 flexShrink: 0,
                 padding: '10px 14px',
@@ -2148,6 +2151,7 @@ const excluirPost = (id) => {
           {[
             ['feed','🏠 Feed'],
             ['ranking','🏆 Ranking'],
+            ['tendencias','↗ Hub de Tendências'],
             ['perfil','👤 Meu Perfil'],
             ['salvos','🔖 Salvos']
           ].map(([destino,rotulo]) => (
@@ -2165,6 +2169,8 @@ const excluirPost = (id) => {
               color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
           ))}
         </nav>
+
+        {abaAtiva === 'tendencias' && <div id="hub-tendencias"><TrendsHub embedded /></div>}
 
         {/* ABA FEED */}
         {abaAtiva === 'feed' && (

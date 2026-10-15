@@ -68,7 +68,7 @@ test('normalizer removes duplicates, invalid IDs and overlong labels', () => {
   assert.equal(result.length, 1);
 });
 test('page guards stale responses, hidden tab polling and stale data labels', () => {
-  const source = readFileSync(new URL('../app/tendencias/page.js', import.meta.url), 'utf8');
+  const source = readFileSync(new URL('../app/components/TrendsHub.js', import.meta.url), 'utf8');
   assert.match(source, /AbortController/); assert.match(source, /epoch.current/); assert.match(source, /visibilityState/); assert.match(source, /DADOS DA ÚLTIMA LEITURA/);
   assert.doesNotMatch(source, /FONTE ONLINE/);
 });

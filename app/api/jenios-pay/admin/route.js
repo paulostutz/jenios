@@ -1,6 +1,7 @@
 import { getJeniosPayAdmin } from '../../../../lib/jenios-pay-admin';
 import { requirePayUser, requirePayToken } from '../../../../lib/pay/auth.mjs';
 import { mergeCatalog, priceUpdate, SPECIALIST_COMMISSION_BPS } from '../../../../lib/pay/catalog.mjs';
+import { listAdminOrders } from '../../../../lib/pay/admin-orders.mjs';
 
 export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
@@ -11,12 +12,13 @@ export async function GET(request) {
     requirePayToken(request);
     const db = getJeniosPayAdmin();
     await requirePayUser(request, db, true);
-    const [{ data: products, error: productError }, { data: orders, error: orderError }] = await Promise.all([
+    const params = new URL(request.url).searchParams;
+    const [{ data: products, error: productError }, statement] = await Promise.all([
       db.from('jenios_pay_products').select('id,code,name,category,description,price_cents,currency,billing_type,active,updated_at').order('name'),
-      db.from('jenios_pay_orders').select('id,product_id,amount_cents,currency,status,provider,created_at').order('created_at', { ascending: false }).limit(100),
+      listAdminOrders(db, { customer: params.get('cliente') || '', status: params.get('status') || '' }),
     ]);
-    if (productError || orderError) throw productError || orderError;
-    return Response.json({ products: mergeCatalog(products), orders: orders || [], orderLimit: 100, specialistCommissionBps: SPECIALIST_COMMISSION_BPS }, { headers });
+    if (productError) throw productError;
+    return Response.json({ products: mergeCatalog(products), ...statement, specialistCommissionBps: SPECIALIST_COMMISSION_BPS }, { headers });
   } catch (error) { return failure(error); }
 }
 

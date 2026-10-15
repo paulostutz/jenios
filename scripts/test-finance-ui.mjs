@@ -8,7 +8,7 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 try {
-  for (const [path, heading] of [['/admin/cobrancas','Preços e cobranças'],['/checkout','Escolha seu plano mensal'],['/impulsionar','Impulsionar publicação'],['/social/cobrancas','Minhas cobranças']]) {
+  for (const [path, heading] of [['/admin/cobrancas','Preços e cobranças'],['/checkout','Escolha seu plano mensal'],['/impulsionar','Impulsionar publicação'],['/social/cobrancas','Meus pagamentos']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' });
     await page.getByRole('heading', { name: heading, exact: true }).waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, path + ' mobile overflow');

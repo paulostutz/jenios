@@ -11,6 +11,14 @@ npm ci
 node scripts/check-social-installation.mjs
 ```
 
+Verificação consolidada, sem instalar estruturas nem efetuar cobranças:
+
+```bash
+node scripts/verify-social-release.mjs --installation --browser
+```
+
+Executa testes, build, servidor temporário local, verificações HTTP, inspeção de configuração e os dois roteiros de navegador. Interrompe após falha de testes/build; nas demais etapas registra falhas e encerra com código 1. Fecha o servidor ao terminar. Chromium/Playwright precisam estar disponíveis para os roteiros visuais. Sem `--installation` ou `--browser`, a etapa correspondente aparece como não executada. `--skip-build` reutiliza uma compilação existente e não comprova o build do código atual. Resultado aprovado não substitui testes autenticados com duas contas nem testes reais de cobranças.
+
 O comando lê variáveis pelo mecanismo existente do Next e inspeciona apenas estruturas e buckets. Não migra, cadastra preços, concede acesso, chama gateway ou cobra. Mostra nomes das verificações e estados sem imprimir credenciais, dados dos usuários ou erros brutos. Código de saída 1 significa pendência de configuração/estrutura; saída 0 não significa homologação funcional. Não executar setup de mídia até confirmar o projeto de destino.
 
 ## Ordem de ativação em homologação

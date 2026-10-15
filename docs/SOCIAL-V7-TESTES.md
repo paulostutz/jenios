@@ -50,6 +50,14 @@ Exibição é tentativa de registro após 50% do cartão por 1 segundo em aba vi
 
 166 testes unitários/contrato/mock, 26 verificações PostgreSQL isoladas do impulsionamento, 33 verificações HTTP e build aprovados. O script scripts/test-boost-postgres.mjs usa PGlite 0.5.10 externo ao projeto. O SQL foi executado com fixtures locais; não houve campanha paga real, homologação autenticada em navegador ou teste de carga/multiconexão.
 
+## BankScore — checkpoint 13
+
+Na instância consultada, bankscore_indicadores não tem registros. O indicador prudencial da tabela de homologação continua disponível; novos dados ou métodos não foram inventados. O laudo completo permanece incompleto, e novas cobranças dele são bloqueadas no servidor, sem alterar os R$9,90 aprovados. Admin não pode liberar a venda apenas editando preço/ativo.
+
+Abrir uma instituição em /bankscore: o diagnóstico gratuito de cobertura mostra período da instituição, trimestre civil encerrado (não presume publicação do BCB), dimensões não validadas e até oito referências históricas disponíveis. Duplicatas, dados inconsistentes e ausentes não viram percentuais válidos. Inventário bruto não transforma unidades desconhecidas em valores monetários. Exportar diagnóstico PDF; laudo/PDF preliminar anteriores continuam disponíveis.
+
+174 testes unitários/contrato/mock, 35 verificações HTTP, build Next.js e git diff --check aprovados. PDF sintético de duas páginas renderizado e inspecionado. Sem cobrança real, sem importação de dados, sem novas tabelas ou alteração remota. O laudo completo e sua entrega paga não foram concluídos neste bloco.
+
 ## Validador
 
 O catálogo de identidade cobre apenas endereços de referência USDT/USDC explicitamente cadastrados, conferidos nas fontes dos emissores em 14/10/2026. Não é uma varredura de todos os tokens de uma carteira. Um ativo fora do catálogo fica inconclusivo, não é automaticamente chamado de falso.

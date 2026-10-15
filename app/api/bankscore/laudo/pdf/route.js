@@ -44,6 +44,11 @@ function splitLine(text, font, size, maxWidth) {
   const lines = [];
   let line = '';
   for (const word of words) {
+    if (font.widthOfTextAtSize(word, size) > maxWidth) {
+      if (line) { lines.push(line); line = ''; }
+      for (const char of word) { if (line && font.widthOfTextAtSize(line + char, size) > maxWidth) { lines.push(line); line = ''; } line += char; }
+      continue;
+    }
     const next = line ? `${line} ${word}` : word;
     if (font.widthOfTextAtSize(next, size) <= maxWidth || !line) line = next;
     else { lines.push(line); line = word; }
@@ -73,14 +78,14 @@ export async function createReportPdf(report) {
   const ensure = (height) => { if (y - height < margin) newPage(); };
   const paragraph = (text, { size = 10.5, font = regular, color = rgb(0.08, 0.12, 0.18), gap = 9 } = {}) => {
     const lines = splitLine(text, font, size, bodyWidth);
-    ensure(lines.length * (size + 4) + gap);
     for (const line of lines) {
+      ensure(size + 4);
       page.drawText(line, { x: margin, y, size, font, color });
       y -= size + 4;
     }
     y -= gap;
   };
-  const heading = (text) => paragraph(text, { size: 14, font: bold, color: rgb(0.08, 0.23, 0.39), gap: 8 });
+  const heading = (text) => { ensure(70); paragraph(text, { size: 14, font: bold, color: rgb(0.08, 0.23, 0.39), gap: 8 }); };
 
   newPage();
   paragraph('LAUDO DE ANALISE PRUDENCIAL', { size: 19, font: bold, color: rgb(0.08, 0.23, 0.39), gap: 14 });
@@ -106,6 +111,23 @@ export async function createReportPdf(report) {
   heading('Limitacoes e fonte');
   paragraph('Este documento descreve sinais de capitalizacao, nao preve liquidacao, nao certifica solvencia e nao constitui rating de credito ou recomendacao de investimento.');
   paragraph(`Fonte declarada: ${report.fonte}. Material experimental, sem validacao oficial do Banco Central.`, { size: 9, color: rgb(0.38, 0.46, 0.55) });
+
+  if (report.coverage) {
+    heading('Diagnostico gratuito de cobertura');
+    paragraph(report.coverage.reason);
+    paragraph('Conferido em: ' + report.coverage.checkedAt, { size: 9 });
+    paragraph('Ultimo trimestre civil encerrado: ' + report.coverage.latestClosedCalendarQuarter);
+    paragraph(report.coverage.periodNotice);
+    for (const item of report.coverage.dimensions) { heading(item.label); paragraph(item.state + ': ' + item.explanation); }
+    heading('Historico disponivel - nao e uma previsao');
+    for (const item of report.coverage.series) paragraph(item.periodo + ': ' + (item.percentual == null ? 'Sem percentual interpretavel' : item.percentual.toLocaleString('pt-BR') + '%') + ' | ' + item.revisao);
+    heading('Inventario complementar bruto');
+    if (!report.coverage.supplementalIndicators.length) paragraph('Nenhum indicador complementar disponivel para esta instituicao e periodo.');
+    for (const item of report.coverage.supplementalIndicators) paragraph(item.code + ' - ' + item.name + ': ' + (item.rawValue ?? 'nao informado') + '. Unidade: ' + item.unit + '. Fonte declarada: ' + (item.source || 'nao informada'));
+    for (const item of report.coverage.limitations) paragraph(item, { size: 9 });
+  }
+  const pages = pdf.getPages();
+  pages.forEach((p, index) => p.drawText('JENIOS BankScore | ' + (index + 1) + ' / ' + pages.length, { x: margin, y: 26, size: 8, font: regular }));
 
   pdf.setTitle(`JENIOS BankScore - ${printable(report.instituicao.nome)}`);
   pdf.setAuthor('JENIOS');

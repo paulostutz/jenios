@@ -36,7 +36,13 @@ function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
   return db;
 }
 const body={productCode:'social-bankscore-report',amount_cents:1,target:{codigo:'C123',periodo:'202606'}};
-const base={body,user:{id:'user-1'},scope:'social',key:'12345678-1234-1234-1234-123456789abc',configured:()=>true};
+const base={body,user:{id:'user-1'},scope:'social',key:'12345678-1234-1234-1234-123456789abc',configured:()=>true,bankscoreReady:()=>true};
+
+test('laudo BankScore completo indisponível não cria pedido ou chama gateway', async () => {
+  const db = memoryDb(); let calls = 0;
+  await assert.rejects(checkoutService({ ...base, bankscoreReady: undefined, db, gateway: async () => { calls++; } }), { status: 503 });
+  assert.equal(db.orders.length, 0); assert.equal(calls, 0);
+});
 
 test('não cobra por rede sem provedor homologado', async () => {
   const db = memoryDb({ product: DEFAULT_PRODUCTS[1] });

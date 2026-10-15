@@ -46,6 +46,10 @@ Impulsionamento: produto de orçamento variável, calculado pelo servidor; o cli
 
 ## Veracidade do estado
 
+Checkpoint 13: novas cobranças do BankScore completo estão bloqueadas no servidor e o catálogo retorna serviceReady=false para esse produto, independentemente do preço ativo. A tabela bankscore_indicadores está vazia na instância consultada e não existe metodologia completa validada no código. O valor aprovado R$9,90 é preservado; salvar preço/ativação no admin não contorna esse bloqueio. Não cobrar laudo completo usando apenas o indicador de homologação. Pedidos já pagos continuam identificados como pagos; não são convertidos em novas cobranças nem reembolsados por esta mudança. Cobranças eventualmente emitidas antes deste bloqueio precisam de acompanhamento financeiro específico; nenhum checkout antigo foi revogado automaticamente.
+
+Diagnóstico gratuito: /api/bankscore/cobertura e /api/bankscore/cobertura/pdf, com codigo e periodo. Usa tabelas existentes, mostra lacunas, série limitada e inventário bruto quando houver. Não é a entrega do laudo completo pago. Para disponibilizar a venda completa, ainda será necessário implementar/validar os dados complementares, unidades e método; não basta habilitar uma variável.
+
 O checkpoint 10 conecta a consulta detalhada de Criptos ao pedido pago: /social/consulta-detalhada?pedido=<UUID> e POST /api/crypto-validator/detailed. O servidor verifica titular, status paid e fingerprint do alvo antes de consultar a rede ou gerar o PDF. A listagem de cobranças expõe apenas o nome/código conhecido do produto, nunca external_reference, alvo ou fingerprint.
 
 Consulta básica e seu PDF continuam disponíveis. A consulta paga acrescenta interpretação estruturada das evidências, limites de finalidade, identidade e titularidade conforme o tipo consultado. Não inclui inventário completo de tokens, varredura patrimonial, auditoria de código ou garantia de liquidez. Não vender esses recursos como concluídos. Litecoin sem provedor homologado não pode gerar nova contratação.

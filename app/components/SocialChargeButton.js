@@ -38,7 +38,8 @@ export default function SocialChargeButton({ productCode, label, target = {}, sc
     } catch (error) { setMessage(error.message); } finally { setBusy(false); }
   }
   return <div style={{ display: 'grid', gap: 7 }}>
-    <button type="button" onClick={charge} disabled={busy || !product || product.active === false} style={{ padding: '12px 16px', border: 0, borderRadius: 10, background: '#6d28d9', color: 'white', fontWeight: 800, cursor: busy ? 'wait' : 'pointer', opacity: busy || product?.active === false ? .6 : 1 }}>{busy ? 'Preparando cobrança…' : label + (amount ? ' · ' + amount : '')}</button>
+    <button type="button" onClick={charge} disabled={busy || !product || product.active === false || product.serviceReady === false} style={{ padding: '12px 16px', border: 0, borderRadius: 10, background: '#6d28d9', color: 'white', fontWeight: 800, cursor: busy ? 'wait' : 'pointer', opacity: busy || product?.active === false ? .6 : 1 }}>{busy ? 'Preparando cobrança…' : (product?.serviceReady === false ? 'Serviço ainda indisponível' : label) + (amount ? ' · ' + amount : '')}</button>
+    {product?.unavailableReason && <small role="status">{product.unavailableReason}</small>}
     {message && <small role="status" style={{ color: '#92400e', lineHeight: 1.5 }}>{message}</small>}
     {orderId && <small>Pedido: {orderId} · <a href="/social/cobrancas">Minhas cobranças</a></small>}
     {orderId && productCode === 'social-crypto-validator' && <a href={'/social/consulta-detalhada?pedido=' + encodeURIComponent(orderId)}>Abrir consulta detalhada após a confirmação</a>}

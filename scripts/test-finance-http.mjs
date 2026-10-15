@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 const base=process.env.TEST_BASE_URL || 'http://127.0.0.1:3010';
+for(const path of ['/api/bankscore/cobertura','/api/bankscore/cobertura/pdf']){const response=await fetch(base+path);assert.equal(response.status,400);console.log('PASS invalid BankScore target '+path);}
 for(const path of ['/api/jenios-pay/admin','/api/jenios-pay/orders','/api/specialists/orders','/api/social/campaigns','/api/social/profiles']){
   const response=await fetch(base+path);assert.equal(response.status,401);console.log('PASS unauthorized '+path);
 }

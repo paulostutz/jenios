@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const base = new URL('../', import.meta.url);
+const source = readFileSync(new URL('app/bankscore/page.js',base),'utf8');
+const laudo = readFileSync(new URL('app/api/bankscore/laudo/route.js',base),'utf8');
+const pattern = /\^\(\?:\\d\{1,12\}\|C\\d\{1,12\}\)\$/;
+test('ranking aceita os dois formatos encontrados no Supabase',()=>assert.match(source,pattern));
+test('laudo aceita os dois formatos encontrados no Supabase',()=>assert.match(laudo,pattern));
+test('navegação mantém o período',()=>assert.match(source,/params\.set\("periodo"/));

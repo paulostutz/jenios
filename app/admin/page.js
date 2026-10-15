@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import SocialModeration from '../components/SocialModeration';
 
 export default function AdminPage() {
   const [abaAdmin, setAbaAdmin] = useState('utilizadores');
@@ -191,6 +192,7 @@ export default function AdminPage() {
         </div>
 
         {/* NAVEGAÇÃO DE ABAS DO ADMIN */}
+        <a href="/admin/cobrancas" style={{ background: '#6d28d9', color: 'white', padding: 16, borderRadius: 12, fontWeight: 800, textDecoration: 'none' }}>JENIOS PAY · Gerenciar preços e cobranças →</a>
         <div style={{ display: 'flex', gap: '8px', backgroundColor: '#ffffff', padding: '8px', borderRadius: '14px', border: '1px solid #cbd5e1', flexWrap: 'wrap', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
           <button 
             onClick={() => setAbaAdmin('utilizadores')}
@@ -337,31 +339,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {abaAdmin === 'moderacao' && (
-          <div style={{ backgroundColor: '#ffffff', color: '#0f172a', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: '900', margin: 0 }}>Moderação & Monitoramento da Rede Social (Total: 3,890 utilizadores)</h3>
-              <button onClick={() => exportarRelatorio('Moderação Social')} style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer' }}>📥 Exportar Relatório Social</button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {postsSociais.map((p) => (
-                <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                  <div>
-                    <span style={{ fontSize: '13px', fontWeight: 'bold', display: 'block' }}>{p.autor}</span>
-                    <p style={{ fontSize: '12px', color: '#334155', margin: '4px 0' }}>{p.conteudo}</p>
-                    <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold' }}>Estado: {p.status}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    {p.status === 'Pendente' && (
-                      <button onClick={() => aprovarPost(p.id)} style={{ backgroundColor: '#d1fae5', color: '#065f46', border: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer' }}>Aprovar</button>
-                    )}
-                    <button onClick={() => removerPost(p.id)} style={{ backgroundColor: '#fee2e2', color: '#991b1b', border: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer' }}>Remover</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {abaAdmin === 'moderacao' && <SocialModeration/>}
 
         {abaAdmin === 'financeiro' && (
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #cbd5e1', display: 'flex', flexDirection: 'column', gap: '16px' }}>

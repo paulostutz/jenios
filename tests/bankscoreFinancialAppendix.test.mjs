@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import snapshot from '../data/bankscore/financial-snapshot.mjs';
+import {buildFinancialAppendix as build} from '../lib/bankscore/financial-appendix.mjs';
+const target={codigo:'04804353',periodo:'202606'};
+test('real official four-period collection yields three contracted periods and correct quarter income',()=>{const r=build(snapshot,target);assert.equal(r.available,true);assert.deepEqual(r.rows.map(x=>x.period),[202606,202603,202512]);assert.equal(r.rows[0].values.equity,8810101.01);assert.equal(r.rows[0].values.netIncomeQuarter,101213.21);assert.equal(r.rows[2].values.netIncomeQuarter,56074.44);assert.equal(r.scoreReady,false);assert.ok(r.missing.length);});
+test('BC code changes retain historical identity only via internal identifier',()=>{const r=build(snapshot,{codigo:'C0080075',periodo:'202606'});assert.equal(r.available,true);assert.equal(r.rows[1].code,'00080075');assert.equal(r.rows[0].internalId,r.rows[1].internalId);});
+test('unknown institution or mismatched period cannot return another institution or more recent data',()=>{assert.equal(build(snapshot,{codigo:'99999999',periodo:'202606'}).available,false);assert.equal(build(snapshot,{codigo:'04804353',periodo:'202609'}).available,false);const r=build(snapshot,{codigo:'04804353',periodo:'202603'});assert.ok(r.rows.every(x=>x.period<=202603));});
+test('duplicates fail closed; consolidation changes prevent trends and quarter derivation',()=>{const s=structuredClone(snapshot);s.periods[0].records.push(s.periods[0].records.find(x=>x.code===target.codigo));assert.throws(()=>build(s,target));const changed=structuredClone(snapshot);changed.periods[1].records.find(x=>x.code===target.codigo).consolidationType='C';const r=build(changed,target);assert.equal(r.comparable,false);assert.equal(r.rows[0].values.netIncomeQuarter,null);});
+test('missing money never turns into zero',()=>{const s=structuredClone(snapshot);s.periods[0].records.find(x=>x.code===target.codigo).values.equity=null;const r=build(s,target);assert.equal(r.rows[0].values.equity,null);assert.equal(r.changes.equity,null);});

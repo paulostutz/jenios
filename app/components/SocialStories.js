@@ -7,9 +7,13 @@ export default function SocialStories({
   stories = [],
   onAdicionarStory,
   onExcluirStory,
+  ocultarMeuStory = false,
 }) {
   const [storyAberto, setStoryAberto] = useState(null);
   const [agora, setAgora] = useState(() => Date.now());
+
+  useEffect(()=>setStoryAberto(null),[meuPerfil?.id]);
+  useEffect(()=>{if(storyAberto&&!stories.some(s=>s.id===storyAberto.id))setStoryAberto(null);},[stories,storyAberto]);
 
   useEffect(() => {
     const relogio = setInterval(() => setAgora(Date.now()), 30000);
@@ -41,6 +45,19 @@ export default function SocialStories({
   const abrirStory = (story) => {
     setStoryAberto(story);
   };
+
+  useEffect(() => {
+    const abrirMeuStory = () => {
+      const ativos = stories.filter((story) => {
+        const criado = new Date(story.criadoEm).getTime();
+        return story.authorId === meuPerfil?.id && Number.isFinite(criado) &&
+          criado <= Date.now() && Date.now() - criado < 86400000;
+      }).sort((a, b) => new Date(a.criadoEm) - new Date(b.criadoEm));
+      if (ativos.length) setStoryAberto(ativos[0]);
+    };
+    window.addEventListener('jenios:abrir-meu-story', abrirMeuStory);
+    return () => window.removeEventListener('jenios:abrir-meu-story', abrirMeuStory);
+  }, [stories, meuPerfil?.handle]);
 
   const fecharStory = () => {
     setStoryAberto(null);
@@ -76,21 +93,21 @@ export default function SocialStories({
             alignItems: 'center',
           }}
         >
-          <div style={{minWidth:'76px',textAlign:'center'}}>
+          {!ocultarMeuStory && <div style={{minWidth:'76px',textAlign:'center'}}>
             <div style={{position:'relative',width:'62px',height:'62px',margin:'0 auto'}}>
               <button type="button" aria-label="Ver meus Stories" onClick={() => {
-                const meus = storiesAtivos.filter(story => story.handle === meuPerfil?.handle);
+                const meus = storiesAtivos.filter(story => story.authorId === meuPerfil?.id);
                 if (meus.length) abrirStory(meus[meus.length - 1]);
-                else alert('Você ainda não publicou Stories. Use o botão + para adicionar.');
+                // Sem Story ativo: não faz nada.
               }} style={{padding:0,border:'none',background:'transparent',cursor:'pointer',width:'100%',height:'100%'}}>
-                <img src={meuPerfil?.avatar} alt="Meus Stories" style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',border:storiesAtivos.some(story => story.handle === meuPerfil?.handle) ? '3px solid #7c3aed' : '2px solid #cbd5e1'}} />
+                <img src={meuPerfil?.avatar} alt="Meus Stories" style={{width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover',border:storiesAtivos.some(story => story.authorId === meuPerfil?.id) ? '3px solid #7c3aed' : '2px solid #cbd5e1'}} />
               </button>
               <button type="button" aria-label="Adicionar Story" onClick={onAdicionarStory} style={{position:'absolute',bottom:'-3px',right:'-3px',width:'23px',height:'23px',borderRadius:'50%',border:'2px solid white',backgroundColor:'#7c3aed',color:'#fff',fontSize:'16px',fontWeight:700,cursor:'pointer',lineHeight:'18px'}}>+</button>
             </div>
             <span style={{fontSize:'11px'}}>Seu Story</span>
-          </div>
+          </div>}
 
-          {storiesAtivos.filter(story => story.handle !== meuPerfil?.handle).map((story) => (
+          {storiesAtivos.filter(story => story.authorId !== meuPerfil?.id).map((story) => (
             <button
               key={story.id}
               type="button"
@@ -167,10 +184,10 @@ export default function SocialStories({
             style={{position:'absolute',left:'12px',top:'50%',zIndex:2,border:0,borderRadius:'50%',padding:'12px',background:'#374151',color:'white',cursor:'pointer'}}>❮</button>
           <button type="button" aria-label="Próximo Story" onClick={() => navegarStory(1)}
             style={{position:'absolute',right:'12px',top:'50%',zIndex:2,border:0,borderRadius:'50%',padding:'12px',background:'#374151',color:'white',cursor:'pointer'}}>❯</button>
-          {storyAberto.handle === meuPerfil?.handle && typeof onExcluirStory === 'function' && (
-            <button type="button" onClick={() => {
+          {storyAberto.authorId === meuPerfil?.id && typeof onExcluirStory === 'function' && (
+            <button type="button" onClick={async () => {
               if (window.confirm('Excluir este Story?')) {
-                onExcluirStory(storyAberto.id);
+                await onExcluirStory(storyAberto.id);
                 fecharStory();
               }
             }} style={{position:'absolute',top:'24px',left:'20px',border:'1px solid #64748b',borderRadius:'8px',padding:'8px 12px',background:'#111827',color:'white',cursor:'pointer'}}>Excluir meu Story</button>

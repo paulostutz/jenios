@@ -13,14 +13,38 @@ export default function SocialPostCard({
   onVisitarPerfil,
   onAtualizarPost,
   onExcluirPost,
+  onLoadComments,
+  onCreateComment,
+  onDeleteComment,
+  onLikeComment,
+  onReport,
+  onBlock,
   extrairEmbedYoutube,
 }) {
+  const [reportOpen,setReportOpen]=useState(false),[reportReason,setReportReason]=useState('fraud'),[reportDetails,setReportDetails]=useState(''),[reportBusy,setReportBusy]=useState(false),[reportError,setReportError]=useState('');
+  const [commentBusy,setCommentBusy]=useState(false);
+  const [commentError,setCommentError]=useState('');
   const [comentariosAbertos, setComentariosAbertos] = useState(false);
   const [novoComentario, setNovoComentario] = useState('');
   const [respondendoId, setRespondendoId] = useState(null);
   const [textoResposta, setTextoResposta] = useState('');
   const [textoExpandido, setTextoExpandido] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
+
+  const menuRef = useRef(null);
+  useEffect(() => {
+    if (!menuAberto) return;
+    const fecharFora = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) setMenuAberto(false);
+    };
+    const fecharEscape = (event) => { if (event.key === 'Escape') setMenuAberto(false); };
+    document.addEventListener('pointerdown', fecharFora);
+    document.addEventListener('keydown', fecharEscape);
+    return () => {
+      document.removeEventListener('pointerdown', fecharFora);
+      document.removeEventListener('keydown', fecharEscape);
+    };
+  }, [menuAberto]);
 
   const cardRef = useRef(null);
   const visualizacaoRegistrada = useRef(false);
@@ -39,11 +63,27 @@ export default function SocialPostCard({
   const temVariasFotos =
     Array.isArray(post.imagens) && post.imagens.length > 1;
 
-  const souAutor =
-    meuPerfil?.handle &&
-    post?.handle &&
-    meuPerfil.handle === post.handle;
+  const souAutor = Boolean(meuPerfil?.autenticado && meuPerfil?.id && post.authorId === meuPerfil.id);
+  useEffect(()=>{
+    if(!comentariosAbertos||!post.remote||!onLoadComments)return;
+    let active=true;
+    onLoadComments(post.id).catch(()=>{if(active)setCommentError('Não foi possível carregar os comentários.');});
+    return()=>{active=false;};
+  },[comentariosAbertos,post.id]);
+  async function remoteComment(body,parentId=null){
+    if(commentBusy)return false;
+    setCommentBusy(true);setCommentError('');
+    try{await onCreateComment(post.id,body,parentId);return true;}catch{setCommentError('Não foi possível enviar. Seu texto foi preservado.');return false;}finally{setCommentBusy(false);}
+  }
+  async function remoteDelete(id){
+    setCommentError('');try{await onDeleteComment(post.id,id);}catch{setCommentError('Não foi possível excluir o comentário.');}
+  }
 
+  async function remoteLike(item){
+    if(!item||commentBusy)return;
+    setCommentBusy(true);setCommentError('');
+    try{await onLikeComment(post.id,item);}catch{setCommentError('Não foi possível atualizar a curtida.');}finally{setCommentBusy(false);}
+  }
   const textoLongo =
     typeof post.texto === 'string' && post.texto.length > 240;
 
@@ -76,13 +116,14 @@ export default function SocialPostCard({
     }, 0);
   }
 
-  function publicarComentario(e) {
+  async function publicarComentario(e) {
     e.preventDefault();
 
     const texto = novoComentario.trim();
 
     if (!texto) return;
 
+    if(post.remote){if(await remoteComment(texto)){setNovoComentario('');setComentariosAbertos(true);}return;}
     const comentario = {
       id: gerarId(),
       autor: meuPerfil?.nome || 'Usuário JENIOS',
@@ -104,6 +145,7 @@ export default function SocialPostCard({
   }
 
   function curtirComentario(comentarioId) {
+    if(post.remote){void remoteLike(comentarios.find(c=>c.id===comentarioId));return;}
     const novosComentarios = comentarios.map((comentario) => {
       if (comentario.id !== comentarioId) {
         return comentario;
@@ -133,7 +175,7 @@ export default function SocialPostCard({
 
     if (!comentario) return;
 
-    if (comentario.handle !== meuPerfil?.handle) {
+    if (post.remote ? comentario.authorId !== meuPerfil?.id : comentario.handle !== meuPerfil?.handle) {
       return;
     }
 
@@ -143,6 +185,7 @@ export default function SocialPostCard({
 
     if (!confirmou) return;
 
+    if(post.remote){void remoteDelete(comentarioId);return;}
     atualizarPost({
       comentarios: comentarios.filter(
         (item) => item.id !== comentarioId
@@ -161,13 +204,14 @@ export default function SocialPostCard({
     setTextoResposta('');
   }
 
-  function publicarResposta(e, comentarioId) {
+  async function publicarResposta(e, comentarioId) {
     e.preventDefault();
 
     const texto = textoResposta.trim();
 
     if (!texto) return;
 
+    if(post.remote){if(await remoteComment(texto,comentarioId)){setTextoResposta('');setRespondendoId(null);}return;}
     const resposta = {
       id: gerarId(),
       autor: meuPerfil?.nome || 'Usuário JENIOS',
@@ -204,6 +248,7 @@ export default function SocialPostCard({
   }
 
   function curtirResposta(comentarioId, respostaId) {
+    if(post.remote){void remoteLike(comentarios.find(c=>c.id===comentarioId)?.respostas.find(c=>c.id===respostaId));return;}
     const novosComentarios = comentarios.map((comentario) => {
       if (comentario.id !== comentarioId) {
         return comentario;
@@ -256,7 +301,7 @@ export default function SocialPostCard({
 
     if (!resposta) return;
 
-    if (resposta.handle !== meuPerfil?.handle) {
+    if (post.remote ? resposta.authorId !== meuPerfil?.id : resposta.handle !== meuPerfil?.handle) {
       return;
     }
 
@@ -266,6 +311,7 @@ export default function SocialPostCard({
 
     if (!confirmou) return;
 
+    if(post.remote){void remoteDelete(respostaId);return;}
     const novosComentarios = comentarios.map((item) => {
       if (item.id !== comentarioId) {
         return item;
@@ -582,7 +628,16 @@ export default function SocialPostCard({
           </div>
         </div>
 
-        <div
+        {reportOpen && <div role="dialog" aria-modal="true" aria-label="Denunciar publicação" style={{position:'fixed',inset:0,zIndex:30000,background:'rgba(15,23,42,.7)',display:'grid',placeItems:'center',padding:20}}>
+          <form onSubmit={async event=>{event.preventDefault();if(reportBusy)return;setReportBusy(true);setReportError('');try{await onReport(post.id,reportReason,reportDetails);setReportOpen(false);setReportDetails('');window.alert('Denúncia registrada para análise.');}catch{setReportError('Não foi possível registrar. Tente novamente.');}finally{setReportBusy(false);}}} style={{background:'#fff',padding:24,borderRadius:16,width:'100%',maxWidth:420,display:'grid',gap:12}}>
+            <h3>Denunciar publicação</h3>
+            <label>Motivo<select aria-label="Motivo da denúncia" value={reportReason} onChange={e=>setReportReason(e.target.value)} style={{display:'block',width:'100%',padding:10}}>{[['fraud','Fraude ou golpe'],['harassment','Assédio'],['hate','Discurso de ódio'],['violence','Violência'],['sexual','Conteúdo sexual'],['terrorism','Terrorismo'],['other','Outro motivo']].map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
+            <textarea aria-label="Detalhes da denúncia" placeholder="Detalhes (opcional)" maxLength={2000} value={reportDetails} onChange={e=>setReportDetails(e.target.value)}/>
+            {reportError&&<p role="alert">{reportError}</p>}
+            <button type="submit" disabled={reportBusy}>{reportBusy?'Enviando…':'Enviar denúncia'}</button><button type="button" disabled={reportBusy} onClick={()=>setReportOpen(false)}>Cancelar</button>
+          </form>
+        </div>}
+        <div ref={menuRef}
           style={{
             position: 'relative',
             flexShrink: 0,
@@ -661,9 +716,7 @@ export default function SocialPostCard({
                   type="button"
                   onClick={() => {
                     setMenuAberto(false);
-                    window.alert(
-                      'A denúncia será integrada à Central de Moderação da JENIOS nas próximas etapas.'
-                    );
+                    setReportError('');setReportOpen(true);
                   }}
                   style={estiloBotaoMenu}
                 >
@@ -671,6 +724,10 @@ export default function SocialPostCard({
                 </button>
               )}
 
+              {!souAutor && <button type="button" style={estiloBotaoMenu} onClick={async()=>{setMenuAberto(false);if(window.confirm('Bloquear este usuário? Vocês deixarão de ver as publicações um do outro e não poderão enviar mensagens.'))try{await onBlock(post.authorId);}catch{window.alert('Não foi possível bloquear o usuário.');}}}>Bloquear usuário</button>}
+              {souAutor && (
+                <a href={'/impulsionar' + (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(post.id)) ? '?post=' + encodeURIComponent(post.id) : '')} style={{...estiloBotaoMenu,display:'block',textDecoration:'none'}}>↗ Impulsionar publicação</a>
+              )}
               {souAutor && (
                 <button
                   type="button"
@@ -764,7 +821,7 @@ export default function SocialPostCard({
         </div>
       )}
 
-      {/* FOTOS */}
+      {/* FOTOS E VÍDEOS */}
     {Array.isArray(post.imagens) &&
       post.imagens.length > 0 &&
       !embedYoutubeUrl &&
@@ -780,6 +837,21 @@ export default function SocialPostCard({
             justifyContent: 'center',
           }}
         >
+          {(imagemAtual?.tipo === 'video' || srcImagemAtual.startsWith('data:video/')) ? (
+            <video
+              key={srcImagemAtual}
+              src={srcImagemAtual}
+              controls
+              playsInline
+              preload="metadata"
+              style={{
+                width: '100%',
+                maxHeight: '80vh',
+                display: 'block',
+                margin: '0 auto',
+              }}
+            />
+          ) : (
           <img
             src={srcImagemAtual}
             alt={`Publicação de ${post.autor}`}
@@ -791,7 +863,7 @@ export default function SocialPostCard({
               display: 'block',
               margin: '0 auto',
             }}
-          />
+          />)}
 
           {temVariasFotos && (
             <>
@@ -985,6 +1057,8 @@ export default function SocialPostCard({
       </div>
 
       {/* COMENTÁRIOS */}
+      {commentError&&<p role="alert">{commentError}</p>}
+      {commentBusy&&<p role="status">Enviando comentário…</p>}
       {comentariosAbertos && (
         <div
           style={{

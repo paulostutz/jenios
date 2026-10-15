@@ -18,7 +18,7 @@ export async function GET(request) {
     const blocks = await getJeniosPayAdmin().from('user_blocks').select('blocker_id').or(`and(blocker_id.eq.${user.id},blocked_id.eq.${id}),and(blocker_id.eq.${id},blocked_id.eq.${user.id})`).limit(1);
     if (blocks.error) throw blocks.error;
     if (blocks.data?.length) throw Object.assign(new Error('Perfil não disponível.'), { status: 404 });
-    const profile = await db.from('profiles').select('id,handle,display_name,bio,avatar_url,website').eq('id', id).maybeSingle();
+    const profile = await db.from('profiles').select('id,handle,display_name,bio,cargo,avatar_url,website').eq('id', id).maybeSingle();
     if (profile.error) throw profile.error;
     if (!profile.data) throw Object.assign(new Error('Perfil não disponível.'), { status: 404 });
     const offset=Number(params.get('offset')||0);if(!Number.isSafeInteger(offset)||offset<0)throw Object.assign(new Error('Página inválida.'),{status:400});

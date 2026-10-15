@@ -5,6 +5,7 @@ import SocialDirectSession from '../components/SocialDirectSession';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase, accountDatabase } from '../../lib/supabase';
+import { visitorProfile, profileView } from '../../lib/social/feed-view.mjs';
 import { uploadSocialMedia } from '../../lib/social/media.mjs';
 const REMOTE_MEDIA = true;
 
@@ -85,6 +86,8 @@ function SocialContent() {
 
   // Modais
   const [modalEditarPerfil, setModalEditarPerfil] = useState(false);
+  const [perfilRascunho,setPerfilRascunho]=useState({...visitorProfile});
+  const [perfilSalvando,setPerfilSalvando]=useState(false),[perfilSaveError,setPerfilSaveError]=useState('');
   const [modalAutenticacao, setModalAutenticacao] = useState(false);
   const [modalLista, setModalLista] = useState(null);
   const [modoAuth, setModoAuth] = useState('login');
@@ -182,40 +185,43 @@ function SocialContent() {
 
   const salvarEdicaoPerfil = async (e) => {
     e.preventDefault();
+    if(perfilSalvando)return;
+    const owner=meuPerfil.id,draft={...perfilRascunho};
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
-    const handle=meuPerfil.handle.trim().replace(/^@/,'').toLowerCase();
-    if(!/^[a-z0-9_]{3,30}$/.test(handle)){alert('Use de 3 a 30 letras, números ou _ no identificador.');return;}
+    const handle=draft.handle.trim().replace(/^@/,'').toLowerCase();
+    if(!/^[a-z0-9_]{3,30}$/.test(handle)){setPerfilSaveError('Use de 3 a 30 letras, números ou _ no identificador.');return;}
+    if(!draft.nome.trim()){setPerfilSaveError('Informe seu nome.');return;}
+    setPerfilSalvando(true);setPerfilSaveError('');
     try{
       const checked=await supabase.auth.getUser();
-      if(checked.error||checked.data?.user?.id!==meuPerfil.id||checked.data.user.is_anonymous)throw Error('Entre na sua conta novamente.');
-      let avatar=meuPerfil.avatar;
+      if(checked.error||checked.data?.user?.id!==owner||checked.data.user.is_anonymous)throw Error('Entre na sua conta novamente.');
+      let avatar=draft.avatar===visitorProfile.avatar?'':draft.avatar;
       if(avatar.startsWith('data:image/')){
-        const uploaded=await uploadSocialMedia([{src:avatar,tipo:'imagem'}],{client:supabase,getAccessToken:async()=>{const r=await supabase.auth.getSession();return r.data?.session?.access_token;}});avatar=uploaded[0].src;
+        const uploaded=await uploadSocialMedia([{src:avatar,tipo:'imagem'}],{client:supabase,getAccessToken:async()=>{
+          const r=await supabase.auth.getSession();
+          if(r.data?.session?.user.id!==owner||sessionOwnerRef.current!==owner)throw Error('Sua sessão mudou.');
+          return r.data.session.access_token;
+        }});avatar=uploaded[0].src;
+        if(sessionOwnerRef.current!==owner)return;
+        setPerfilRascunho(p=>({...p,avatar}));
       }
-      if(avatar&&!avatar.startsWith('https://'))avatar=null;
-      const result=await accountDatabase(meuPerfil.id).from('profiles').upsert({id:checked.data.user.id,handle,display_name:meuPerfil.nome.trim(),bio:meuPerfil.bio,avatar_url:avatar},{onConflict:'id'});
-      if(result.error)throw Error(result.error.code==='23505'?'Este identificador já está em uso.':'Não foi possível salvar o perfil.');
-      const current=await supabase.auth.getUser();
-      if(current.data?.user?.id!==meuPerfil.id)return;
-      setMeuPerfil(p=>({...p,handle:'@'+handle,avatar:avatar||p.avatar}));setModalEditarPerfil(false);
-    }catch(error){alert(error.message);}
+      if(avatar&&!avatar.startsWith('https://'))throw Error('Use um endereço de foto com https:// ou envie uma imagem JPG, PNG ou WebP.');
+      const result=await accountDatabase(owner).from('profiles').upsert({id:owner,handle,display_name:draft.nome.trim(),bio:draft.bio,cargo:draft.cargo,avatar_url:avatar||null},{onConflict:'id'}).select('id,handle,display_name,bio,cargo,avatar_url').single();
+      if(result.error)throw Error(result.error.code==='23505'?'Este identificador já está em uso.':'Não foi possível salvar o perfil. Seus dados continuam no formulário.');
+      if(sessionOwnerRef.current!==owner)return;
+      const saved=profileView(result.data,true);
+      setMeuPerfil(p=>({...p,nome:saved.nome,handle:saved.handle,bio:saved.bio,cargo:saved.cargo,avatar:saved.avatar}));setModalEditarPerfil(false);
+    }catch(error){if(sessionOwnerRef.current===owner)setPerfilSaveError(error.message);}
+    finally{if(sessionOwnerRef.current===owner)setPerfilSalvando(false);}
   };
 
   const handleUploadAvatar = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setMeuPerfil((prev) => ({
-          ...prev,
-          avatar: reader.result,
-        }));
-      };
-
-      reader.readAsDataURL(file);
-    }
+    const file=e.target.files[0],owner=meuPerfil.id;
+    if(!file)return;
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){setPerfilSaveError('Use uma imagem JPG, PNG ou WebP de até 10 MB.');return;}
+    const reader=new FileReader();
+    reader.onloadend=()=>{if(sessionOwnerRef.current===owner)setPerfilRascunho(prev=>({...prev,avatar:reader.result}));};
+    reader.readAsDataURL(file);
   };
 
   const fazerLogout = async () => {
@@ -849,6 +855,7 @@ const handleUploadCarrossel = async (e) => {
             </div>
 
             <form
+              aria-label="Editar perfil"
               onSubmit={salvarEdicaoPerfil}
               style={{
                 display: 'flex',
@@ -856,6 +863,7 @@ const handleUploadCarrossel = async (e) => {
                 gap: '12px',
               }}
             >
+              <fieldset disabled={perfilSalvando} style={{border:0,padding:0,margin:0,display:'contents'}}>
               <div
                 style={{
                   textAlign: 'center',
@@ -863,7 +871,7 @@ const handleUploadCarrossel = async (e) => {
                 }}
               >
                 <img
-                  src={meuPerfil.avatar}
+                  src={perfilRascunho.avatar}
                   alt="Avatar Atual"
                   style={{
                     width: '80px',
@@ -893,7 +901,7 @@ const handleUploadCarrossel = async (e) => {
 
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/webp"
                       onChange={handleUploadAvatar}
                       style={{ display: 'none' }}
                     />
@@ -914,10 +922,10 @@ const handleUploadCarrossel = async (e) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.avatar}
+                  value={perfilRascunho.avatar===visitorProfile.avatar?'':perfilRascunho.avatar}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       avatar: e.target.value,
                     })
                   }
@@ -946,10 +954,10 @@ const handleUploadCarrossel = async (e) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.nome}
+                  value={perfilRascunho.nome}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       nome: e.target.value,
                     })
                   }
@@ -979,10 +987,10 @@ const handleUploadCarrossel = async (e) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.handle}
+                  value={perfilRascunho.handle}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       handle: e.target.value,
                     })
                   }
@@ -1007,7 +1015,7 @@ const handleUploadCarrossel = async (e) => {
                   }}
                 >
                   O seu link será: jenios.com.br/
-                  {meuPerfil.handle.replace('@', '')}
+                  {perfilRascunho.handle.replace('@', '')}
                 </span>
               </div>
 
@@ -1024,10 +1032,10 @@ const handleUploadCarrossel = async (e) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.cargo}
+                  value={perfilRascunho.cargo}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       cargo: e.target.value,
                     })
                   }
@@ -1055,10 +1063,10 @@ const handleUploadCarrossel = async (e) => {
                 </label>
 
                 <textarea
-                  value={meuPerfil.bio}
+                  value={perfilRascunho.bio}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       bio: e.target.value,
                     })
                   }
@@ -1075,6 +1083,7 @@ const handleUploadCarrossel = async (e) => {
                 />
               </div>
 
+              {perfilSaveError && <p role="alert" style={{color:'#b91c1c'}}>{perfilSaveError}</p>}
               <button
                 type="submit"
                 style={{
@@ -1089,8 +1098,9 @@ const handleUploadCarrossel = async (e) => {
                   marginTop: '8px',
                 }}
               >
-                Salvar Alterações
+                {perfilSalvando?'Salvando…':'Salvar Alterações'}
               </button>
+              </fieldset>
             </form>
           </div>
         </div>
@@ -1475,7 +1485,7 @@ const handleUploadCarrossel = async (e) => {
               }}
             >
               <button
-                onClick={() => {if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setModalEditarPerfil(true);}}
+                onClick={() => {if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setPerfilRascunho({...meuPerfil});setPerfilSaveError('');setPerfilSalvando(false);setModalEditarPerfil(true);}}
                 style={{
                   backgroundColor: '#7c3aed',
                   color: '#fff',

@@ -14,7 +14,7 @@ export default function useSocialFeed(){
  const clientFor=ticket=>createScopedFeedClient({auth:supabase.auth,fence:fence.current,ticket});
  async function profilesFor(ids){
   if(!ids.length)return new Map();
-  const r=await supabase.from('profiles').select('id,handle,display_name,bio,avatar_url').in('id',[...new Set(ids)]);
+  const r=await supabase.from('profiles').select('id,handle,display_name,bio,cargo,avatar_url').in('id',[...new Set(ids)]);
   if(r.error)throw Error('Não foi possível carregar os perfis.');
   return new Map((r.data||[]).map(p=>[p.id,p]));
  }

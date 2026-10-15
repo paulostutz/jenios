@@ -16,7 +16,7 @@ try {
   }
   await page.goto(base + '/checkout', { waitUntil: 'networkidle' });
   for (const name of ['Nacional — B3','Global Crypto — B3 + Cripto','Internacional Pro']) await page.getByRole('heading', { name, exact: true }).waitFor();
-  await page.getByRole('button', { name: /Contratar plano mensal/ }).click();
+  await page.getByRole('button', { name: /Contratar plano mensal/ }).first().click();
   await page.getByRole('status').filter({ hasText: /Configure sua conta|Entre na sua conta/ }).waitFor();
   assert.deepEqual(errors, []);
   console.log('PASS plans, unauthenticated purchase and zero browser exceptions');

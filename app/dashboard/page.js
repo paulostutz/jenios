@@ -45,49 +45,38 @@ export default function DashboardPage() {
     { ativo: 'Carregando dados...', tendencia: 'Sincronizando...', cor: '#64748b' }
   ]);
 
-  const [baleias, setBaleias] = useState([
-    { id: 1, info: 'Varredura de fluxo institucional em andamento...', tempo: 'Agora' }
-  ]);
+  const baleias = [];
+  const [marketMessage, setMarketMessage] = useState('Consultando tendências de busca…');
 
   const [tokensExplosivos, setTokensExplosivos] = useState([
-    { nome: 'Buscando ativos em alta volume...', status: 'Conectando à API DEX...' }
+    { nome: 'Consultando pesquisas de mercado…', status: 'Fonte: CoinGecko, não é detecção de lançamentos.' }
   ]);
 
   useEffect(() => {
+    let active = true, busy = false;
+    const controller = new AbortController();
     async function buscarDadosReaisDashboard() {
+      if (busy || document.visibilityState !== 'visible') return;
+      busy = true;
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=6&page=1');
-        const dados = await res.json();
-
-        if (Array.isArray(dados) && dados.length > 0) {
-          const tendenciasReais = dados.slice(0, 5).map(coin => ({
-            ativo: `${coin.name} (${coin.symbol.toUpperCase()})`,
-            tendencia: `${coin.price_change_percentage_24h >= 0 ? '▲ Alta' : '▼ Baixa'} (${coin.price_change_percentage_24h?.toFixed(2)}%)`,
-            cor: coin.price_change_percentage_24h >= 0 ? '#10b981' : '#ef4444'
-          }));
-          setMegatendencias(tendenciasReais);
-
-          const baleiasReais = dados.slice(0, 2).map((coin, i) => ({
-            id: i + 1,
-            info: `Fluxo Institucional Detectado em ${coin.symbol.toUpperCase()}: Volume 24h de $${coin.total_volume.toLocaleString()}`,
-            tempo: 'Há poucos instantes'
-          }));
-          setBaleias(baleiasReais);
-
-          const explosivosReais = dados.slice(2, 4).map(coin => ({
-            nome: `${coin.name} ($${coin.symbol.toUpperCase()})`,
-            status: `Preço: $${coin.current_price} | Influxo de Capital Ativo`
-          }));
-          setTokensExplosivos(explosivosReais);
-        }
+        const res = await fetch('/api/tendencias', { cache: 'no-store', signal: controller.signal });
+        const payload = await res.json();
+        if (!res.ok) throw Error('Fonte indisponível');
+        if (!active) return;
+        const dados = Array.isArray(payload.tokens) && (payload.disponivel || payload.stale) ? payload.tokens : [];
+        const label = payload.stale ? 'Última leitura, fonte não confirmada agora' : 'Tendência de pesquisa';
+        setMegatendencias(dados.slice(0, 5).map(coin => ({ ativo: `${coin.nome} (${coin.simbolo})`, tendencia: label, cor: payload.stale ? '#92400e' : '#6d28d9' })));
+        setTokensExplosivos(dados.slice(5, 10).map(coin => ({ nome: `${coin.nome} (${coin.simbolo})`, status: label })));
+        setMarketMessage(dados.length ? 'Fonte: CoinGecko Search Trending. Não é fluxo institucional, lançamento ou recomendação.' : 'Tendências temporariamente indisponíveis.');
       } catch (e) {
-        console.warn('Erro ao atualizar dados reais na dashboard.');
-      }
+        if (active) { setMegatendencias([]); setTokensExplosivos([]); setMarketMessage('Não foi possível confirmar uma leitura atual da fonte.'); }
+      } finally { busy = false; }
     }
 
     buscarDadosReaisDashboard();
-    const intervalDashboard = setInterval(buscarDadosReaisDashboard, 45000);
-    return () => clearInterval(intervalDashboard);
+    const intervalDashboard = setInterval(buscarDadosReaisDashboard, 60000);
+    document.addEventListener('visibilitychange', buscarDadosReaisDashboard);
+    return () => { active = false; controller.abort(); clearInterval(intervalDashboard); document.removeEventListener('visibilitychange', buscarDadosReaisDashboard); };
   }, []);
 
   const atalhosPorMercado = {
@@ -508,8 +497,8 @@ export default function DashboardPage() {
             
             {/* Megatendências Reais */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>📊 FLUXO MACRO EM TEMPO REAL</span>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Megatendências</h3>
+              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>PESQUISAS NO COINGECKO</span>
+              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Ativos pesquisados</h3>
               <div style={{ backgroundColor: '#f8fafc', padding: '12px', borderRadius: '10px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '8px', border: '1px solid #cbd5e1' }}>
                 {megatendencias.map((item, idx) => (
                   <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -524,6 +513,7 @@ export default function DashboardPage() {
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>🐋 MOVIMENTOS INSTITUCIONAIS</span>
               <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Radar de Baleias</h3>
+              <p style={{ fontSize: 12, color: '#92400e' }}>Fonte institucional não conectada. Volume agregado de 24h não comprova movimentação de baleias.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
                 {baleias.map((b) => (
                   <div key={b.id} style={{ backgroundColor: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
@@ -539,8 +529,9 @@ export default function DashboardPage() {
 
             {/* Tokens Explosivos Reais */}
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '10px', color: '#d97706', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>🚀 ATIVOS RECENTES</span>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Tokens Explosivos</h3>
+              <span style={{ fontSize: '10px', color: '#d97706', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>TENDÊNCIAS DE PESQUISA</span>
+              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Outros ativos pesquisados</h3>
+              <p style={{ fontSize: 12, color: '#64748b' }}>{marketMessage}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
                 {tokensExplosivos.map((t, idx) => (
                   <div key={idx} style={{ backgroundColor: '#f3e8ff', border: '1px solid #d8b4fe', padding: '10px', borderRadius: '8px' }}>

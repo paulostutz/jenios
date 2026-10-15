@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const COLORS = {
   background: '#f1f5f9',
@@ -27,7 +27,7 @@ function formatTime(value) {
   return date.toLocaleString('pt-BR');
 }
 
-function StatusBadge({ available }) {
+function StatusBadge({ available, stale }) {
   return (
     <span style={{
       display: 'inline-flex',
@@ -41,7 +41,7 @@ function StatusBadge({ available }) {
       background: available ? '#d1fae5' : '#fef3c7'
     }}>
       <span style={{ width: 7, height: 7, borderRadius: '50%', background: available ? '#10b981' : '#f59e0b' }} />
-      {available ? 'FONTE ONLINE' : 'AGUARDANDO HOMOLOGAÇÃO'}
+      {available ? 'LEITURA VÁLIDA' : stale ? 'DADOS DA ÚLTIMA LEITURA' : 'FONTE INDISPONÍVEL'}
     </span>
   );
 }
@@ -51,17 +51,21 @@ export default function TendenciasPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const epoch = useRef(0), controller = useRef(null);
 
   const refresh = useCallback(async () => {
-    setError('');
+    const version = ++epoch.current;
+    controller.current?.abort(); const current = new AbortController(); controller.current = current;
+    setError(''); setLoading(true);
     try {
-      const response = await fetch('/api/tendencias', { cache: 'no-store' });
+      const response = await fetch('/api/tendencias', { cache: 'no-store', signal: current.signal });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.mensagem || 'Consulta indisponível');
-      setData(payload);
-    } catch {
+      if (version === epoch.current) setData(payload);
+    } catch (requestError) {
+      if (version !== epoch.current || requestError.name === 'AbortError') return;
       setError('Não foi possível atualizar as fontes agora.');
-      setData((current) => current || {
+      setData((current) => current ? { ...current, disponivel: false, stale: Boolean(current.tokens?.length), modulos: { ...current.modulos, tokens: { disponivel: false, stale: Boolean(current.tokens?.length), mensagem: 'Não foi possível confirmar uma nova leitura.' } } } : {
         disponivel: false,
         atualizadoEm: null,
         fonte: null,
@@ -71,21 +75,23 @@ export default function TendenciasPage() {
         modulos: {}
       });
     } finally {
-      setLoading(false);
+      if (version === epoch.current) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    refresh();
-    const timer = window.setInterval(refresh, 60_000);
-    return () => window.clearInterval(timer);
+    const visibleRefresh = () => { if (document.visibilityState === 'visible') refresh(); };
+    visibleRefresh();
+    const timer = window.setInterval(visibleRefresh, 60_000);
+    document.addEventListener('visibilitychange', visibleRefresh);
+    return () => { epoch.current++; controller.current?.abort(); window.clearInterval(timer); document.removeEventListener('visibilitychange', visibleRefresh); };
   }, [refresh]);
 
   const moduleStatus = data?.modulos?.[active] || {
     disponivel: false,
     mensagem: 'Fonte ainda não homologada.'
   };
-  const rows = moduleStatus.disponivel && Array.isArray(data?.[active]) ? data[active] : [];
+  const rows = (moduleStatus.disponivel || moduleStatus.stale) && Array.isArray(data?.[active]) ? data[active] : [];
 
   return (
     <main style={{
@@ -128,11 +134,11 @@ export default function TendenciasPage() {
           marginBottom: 20
         }}>
           <div style={metricCard}>
-            <small style={metricLabel}>Fonte ativa</small>
+            <small style={metricLabel}>Fonte da última leitura</small>
             <strong style={{ fontSize: 19 }}>{data?.fonte || 'Nenhuma fonte disponível'}</strong>
           </div>
           <div style={metricCard}>
-            <small style={metricLabel}>Última atualização</small>
+            <small style={metricLabel}>Última leitura válida no servidor</small>
             <strong style={{ fontSize: 17 }}>{formatTime(data?.atualizadoEm)}</strong>
           </div>
           <div style={metricCard}>
@@ -182,16 +188,17 @@ export default function TendenciasPage() {
                   : 'O módulo permanece fechado até que uma fonte verificável seja integrada e homologada.'}
               </p>
             </div>
-            <StatusBadge available={Boolean(moduleStatus.disponivel)} />
+            <StatusBadge available={Boolean(moduleStatus.disponivel)} stale={Boolean(moduleStatus.stale)} />
           </div>
 
           <div style={{ height: 1, background: COLORS.line, margin: '20px 0' }} />
+          {(moduleStatus.stale || error) && <p role="status" style={{ color: '#92400e' }}>Não há confirmação atual da fonte. {moduleStatus.mensagem || error} Os dados preservados abaixo são da última leitura válida, não dados em tempo real.</p>}
 
           {loading ? (
             <p role="status" style={{ color: COLORS.muted }}>Consultando fontes verificáveis...</p>
           ) : error && rows.length === 0 ? (
             <div style={emptyCard}><strong>Atualização indisponível</strong><p>{error}</p><button type="button" onClick={refresh} style={retryButton}>Tentar novamente</button></div>
-          ) : !moduleStatus.disponivel ? (
+          ) : !moduleStatus.disponivel && !moduleStatus.stale ? (
             <div style={emptyCard}>
               <strong>Dados ainda não publicados</strong>
               <p>{moduleStatus.mensagem || 'Fonte ainda não homologada.'}</p>
@@ -214,7 +221,7 @@ export default function TendenciasPage() {
                 }}>
                   <strong style={{ fontSize: 20, color: COLORS.purple }}>{String(index + 1).padStart(2, '0')}</strong>
                   <div style={{ minWidth: 0 }}>
-                    <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.nome}</strong>
+                    <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}><a href={'https://www.coingecko.com/en/coins/' + encodeURIComponent(item.id)} target="_blank" rel="noopener noreferrer">{item.nome}</a></strong>
                     <span style={{ color: COLORS.muted, fontSize: 12 }}>
                       {item.rankingMercado ? `Ranking de mercado #${item.rankingMercado}` : 'Ranking de mercado não informado'}
                     </span>
@@ -226,7 +233,7 @@ export default function TendenciasPage() {
           )}
 
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
-            Atualização automática a cada 60 segundos. Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização.
+            A tela consulta a cada 60 segundos enquanto está visível. O servidor reutiliza leituras por 10 minutos e limita retentativas; isso não representa atualização de mercado a cada minuto. Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização. Dados: CoinGecko.
           </footer>
         </section>
       </div>

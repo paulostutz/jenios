@@ -41,5 +41,6 @@ export default function SocialChargeButton({ productCode, label, target = {}, sc
     <button type="button" onClick={charge} disabled={busy || !product || product.active === false} style={{ padding: '12px 16px', border: 0, borderRadius: 10, background: '#6d28d9', color: 'white', fontWeight: 800, cursor: busy ? 'wait' : 'pointer', opacity: busy || product?.active === false ? .6 : 1 }}>{busy ? 'Preparando cobrança…' : label + (amount ? ' · ' + amount : '')}</button>
     {message && <small role="status" style={{ color: '#92400e', lineHeight: 1.5 }}>{message}</small>}
     {orderId && <small>Pedido: {orderId} · <a href="/social/cobrancas">Minhas cobranças</a></small>}
+    {orderId && productCode === 'social-crypto-validator' && <a href={'/social/consulta-detalhada?pedido=' + encodeURIComponent(orderId)}>Abrir consulta detalhada após a confirmação</a>}
   </div>;
 }

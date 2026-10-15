@@ -34,6 +34,17 @@ O RPC EVM deve informar a rede selecionada. Nome e símbolo são autodeclarados;
 
 O PDF é gerado no servidor com paginação. A cópia de revisão usada para inspeção visual foi uma amostra sintética, não laudo de transação real.
 
+### Consulta detalhada paga — checkpoint 10
+
+1. Contratar a consulta de R$9,90 com rede, tipo e identificador definidos. O produto precisa estar cadastrado e ativo no catálogo real. Nenhuma cobrança foi gerada durante estes testes locais.
+2. Depois da confirmação pela PAY existente, abrir Minhas cobranças e selecionar Emitir consulta detalhada e PDF. O link também aparece no botão que iniciou o pedido.
+3. Os dados da sessão anterior são preenchidos quando disponíveis. Caso contrário, informar exatamente o mesmo alvo. Não há reaproveitamento para outro identificador.
+4. Emitir o relatório. O servidor consulta novamente a fonte depois de autorizar o pedido. Falha de provedor não gera um laudo e não exige outra compra.
+5. Baixar o PDF. Uma nova leitura é feita e pode apresentar um estado mais recente.
+6. Confirmar rejeição de outra conta, pedido pendente/reembolsado e alvo alterado. Não editar status no navegador nem confirmar pagamentos manualmente para testar.
+
+O relatório inclui achados interpretados, evidências, metodologia e limitações. Não é uma varredura de todos os tokens da carteira nem auditoria de segurança. A consulta básica existente continua disponível. No checkpoint 10: 129 testes unitários/contrato/mock, 23 verificações HTTP, build e PDF sintético de duas páginas inspecionado. Homologação autenticada real ainda pendente.
+
 ## Execução técnica
 
 - npm test: testes unitários, de contrato e simulações; não substituem integração real.

@@ -27,6 +27,12 @@ function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
 const body={productCode:'social-bankscore-report',amount_cents:1,target:{codigo:'C123',periodo:'202606'}};
 const base={body,user:{id:'user-1'},scope:'social',key:'12345678-1234-1234-1234-123456789abc',configured:()=>true};
 
+test('não cobra por rede sem provedor homologado', async () => {
+  const db = memoryDb({ product: DEFAULT_PRODUCTS[1] });
+  await assert.rejects(checkoutService({ ...base, db, body: { productCode: 'social-crypto-validator', target: { network: 'litecoin', type: 'wallet', identifier: 'test' } }, gateway: async () => { throw Error('Gateway não deve ser chamado'); } }), { status: 400 });
+  assert.equal(db.orders.length, 0);
+});
+
 test('checkout persiste valor server-side e reutiliza pedido em repetição',async()=>{
   const db=memoryDb();const calls=[];
   const gateway=async p=>{calls.push(p);return {checkoutUrl:'https://pay.example/'+p.orderId}};

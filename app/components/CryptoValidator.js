@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import SocialChargeButton from "./SocialChargeButton";
 
 const NETWORKS = {
@@ -29,14 +29,16 @@ export default function CryptoValidator() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const epoch = useRef(0);
 
-  function reset() { setReport(null); setError(""); }
+  function reset() { epoch.current++; setReport(null); setError(""); setLoading(false); }
 
   async function handleSubmit(event) {
     event.preventDefault();
     const identifier = value.trim();
     if (!identifier) return setError("Informe o endereço, contrato ou hash que deseja consultar.");
     reset();
+    const version = epoch.current;
     setLoading(true);
     try {
       const response = await fetch("/api/crypto-validator", {
@@ -45,10 +47,10 @@ export default function CryptoValidator() {
       });
       const payload = await response.json();
       if (!response.ok || !payload.ok) throw new Error(payload.error || "Não foi possível consultar a rede.");
-      setReport(payload.report);
+      if (version === epoch.current) setReport(payload.report);
     } catch (requestError) {
-      setError(requestError.message || "Não foi possível consultar a rede.");
-    } finally { setLoading(false); }
+      if (version === epoch.current) setError(requestError.message || "Não foi possível consultar a rede.");
+    } finally { if (version === epoch.current) setLoading(false); }
   }
 
   async function savePDF() {
@@ -57,7 +59,7 @@ export default function CryptoValidator() {
     try {
       const response = await fetch("/api/crypto-validator/pdf", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ network, type, identifier: report.identifier }),
+        body: JSON.stringify({ network: report.network, type: report.type, identifier: report.identifier }),
       });
       if (!response.ok) throw new Error("Não foi possível gerar o PDF.");
       const url = URL.createObjectURL(await response.blob());
@@ -87,7 +89,7 @@ export default function CryptoValidator() {
           </select>
         </label>
         <label className="block text-sm font-semibold">Identificador
-          <textarea value={value} onChange={(event) => { setValue(event.target.value); setError(""); }} placeholder={NETWORKS[network].placeholder} rows={3} spellCheck={false} className="mt-1.5 w-full resize-y rounded-xl border border-slate-300 px-3 py-3 text-sm" />
+          <textarea value={value} onChange={(event) => { setValue(event.target.value); reset(); }} placeholder={NETWORKS[network].placeholder} rows={3} spellCheck={false} className="mt-1.5 w-full resize-y rounded-xl border border-slate-300 px-3 py-3 text-sm" />
         </label>
         <p className="text-xs text-slate-500">Nunca informe frase-semente, senha ou chave privada.</p>
         {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
@@ -109,9 +111,9 @@ export default function CryptoValidator() {
           {report.disclaimer && <p className="mt-3 text-xs leading-5 text-slate-600">{report.disclaimer}</p>}
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <a href={report.explorerUrl} target="_blank" rel="noopener noreferrer" className="flex-1 rounded-xl border border-violet-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-violet-800">Abrir explorador</a>
-            <button type="button" onClick={savePDF} className="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white">Baixar laudo em PDF</button>
+            <button type="button" onClick={savePDF} className="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white">PDF da consulta básica</button>
           </div>
-          <div className="mt-3"><SocialChargeButton productCode="social-crypto-validator" label="Contratar consulta detalhada" target={{ network: report.network, type: report.type, identifier: report.identifier }} /></div>
+          {report.supported !== false && !report.providerError && <div className="mt-3"><p className="mb-2 text-xs">Consulta detalhada: interpretação das evidências e PDF. Não inclui inventário completo de tokens, auditoria de contrato ou garantia de liquidez.</p><SocialChargeButton productCode="social-crypto-validator" label="Contratar consulta detalhada" target={{ network: report.network, type: report.type, identifier: report.identifier }} /></div>}
         </div>
       )}
       <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">Um resultado on-chain não comprova titularidade nem elimina risco de fraude. Litecoin permanece bloqueado até homologação de um provedor.</p>

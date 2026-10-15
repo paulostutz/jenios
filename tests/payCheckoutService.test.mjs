@@ -4,8 +4,8 @@ import { checkoutService } from '../lib/pay/checkout.mjs';
 import { DEFAULT_PRODUCTS } from '../lib/pay/catalog.mjs';
 
 function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
-  const orders = [];
-  const db = { orders, price: product.price_cents, from(table) {
+  const orders = [], services = [];
+  const db = { orders, services, price: product.price_cents, from(table) {
     let operation='select', payload, filters=[];
     const query = {
       select(){return query}, eq(k,v){filters.push([k,v]);return query},
@@ -15,6 +15,11 @@ function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
     function run() {
       if(table==='jenios_pay_products') return {data:{...product,id:'product-1',price_cents:db.price},error:null};
       if(table==='jenios_specialist_profiles')return {data:profile,error:null};
+      if(table==='jenios_specialist_orders'){
+        if(db.serviceError)return {data:null,error:{code:'42P01'}};
+        if(operation==='insert'){const row={...payload};services.push(row);return {data:row,error:null};}
+        return {data:services.find(row=>filters.every(([k,v])=>row[k]===v))||null,error:null};
+      }
       if(operation==='insert') {const row={...payload,id:'order-'+(orders.length+1)};orders.push(row);return {data:row,error:null};}
       const row=orders.find(o=>filters.every(([k,v])=>o[k]===v));
       if(operation==='update'&&row)Object.assign(row,payload);
@@ -85,4 +90,34 @@ test('contratação de especialista usa oferta salva e calcula 10% no servidor',
 test('ofertas privadas não podem ser contratadas por ID adivinhado',async()=>{
   const db=memoryDb({product:DEFAULT_PRODUCTS.find(p=>p.code==='social-specialist-offer'),profile:{sobre:'Currículo privado'}});
   await assert.rejects(()=>checkoutService({...base,db,body:{productCode:'social-specialist-offer',target:{specialistId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',offerId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}}}),e=>e.status===404);
+});
+
+function specialistFixture(){
+  const specialistId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',offerId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+  const offer={id:offerId,kind:'mentoria',title:'Oferta original',description:'Uma sessão contratada',price_cents:12345};
+  const profile={user_id:specialistId,nome:'Especialista',sobre:JSON.stringify({schema:'jenios-specialist-v1',public:true,about:'Perfil público',offers:[offer]})};
+  const db=memoryDb({product:DEFAULT_PRODUCTS.find(p=>p.code==='social-specialist-offer'),profile});
+  return {db,profile,offer,args:{...base,db,serviceOrdersEnabled:true,body:{productCode:'social-specialist-offer',target:{specialistId,offerId}}}};
+}
+test('atendimento é preparado antes do gateway e não duplica em retentativa',async()=>{
+  const {db,profile,offer,args}=specialistFixture();
+  const gateway=async()=>{assert.equal(db.services.length,1);return {checkoutUrl:'https://pay.example/'}};
+  await checkoutService({...args,gateway});
+  profile.sobre=JSON.stringify({schema:'jenios-specialist-v1',public:true,offers:[{...offer,title:'Título alterado',price_cents:99999}]});
+  await checkoutService({...args,gateway});
+  assert.equal(db.orders.length,1);assert.equal(db.services.length,1);
+  assert.equal(db.services[0].snapshot.title,'Oferta original');assert.equal(db.services[0].amount_cents,12345);assert.equal(db.services[0].commission_cents,1235);
+});
+test('falha da extensão impede gateway e preserva pedido para retentar',async()=>{
+  const {db,args}=specialistFixture();db.serviceError=true;let calls=0;
+  const gateway=async()=>{calls++;return {checkoutUrl:'https://pay.example/'}};
+  await assert.rejects(checkoutService({...args,gateway}),{status:503});
+  assert.equal(calls,0);assert.equal(db.orders.length,1);assert.equal(db.orders[0].status,'pending');
+  db.serviceError=false;await checkoutService({...args,gateway});
+  assert.equal(calls,1);assert.equal(db.orders.length,1);assert.equal(db.services.length,1);
+});
+test('flag desligada preserva contratação existente sem tocar extensão',async()=>{
+  const {db,args}=specialistFixture();db.serviceError=true;
+  await checkoutService({...args,serviceOrdersEnabled:false,gateway:async()=>({checkoutUrl:'https://pay.example/'})});
+  assert.equal(db.orders.length,1);assert.equal(db.services.length,0);
 });

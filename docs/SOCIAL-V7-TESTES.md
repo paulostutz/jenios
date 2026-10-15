@@ -26,6 +26,18 @@ Para evitar migração ou nova tabela, o campo sobre existente mantém uma repre
 
 Contratação usa a oferta salva no servidor, não o preço enviado pelo cliente. A comissão JENIOS é de 10%; valor e comissão são enviados à PAY. Isso não comprova divisão ou repasse efetivo pelo serviço bancário. Rentabilidade/credenciais não verificadas permanecem identificadas como tal.
 
+### Atendimentos — checkpoint 11
+
+Código e migração prontos para homologação, ainda não instalados no Supabase remoto. A migração adiciona apenas a extensão de serviços vinculada ao pedido PAY existente; não altera status financeiro ou webhook. Revisar em homologação a migração supabase/migrations/20261015000628_specialist_order_fulfillment.sql antes de ativar JENIOS_SPECIALIST_ORDERS_ENABLED=true. Não ativar a flag antes da instalação. Não é uma instrução para instalar este checkpoint isoladamente.
+
+Com a extensão ativa, contratar uma oferta e verificar que aparece em /especialistas/atendimentos para comprador e vendedor. Antes de paid, ações bloqueadas. Depois de confirmação pela PAY, vendedor aceita, agenda sessão e registra entrega; comprador confirma recebimento. Tentar repetir uma ação de revisão antiga deve retornar conflito, sem sobrescrever a atualização anterior. Alterar a oferta pública não deve alterar o snapshot do atendimento.
+
+Testar recusa com motivo: deve ficar recusado, mas não devolver dinheiro automaticamente. Reembolso registrado pela PAY deve bloquear novas ações. Outra conta não pode ver ou modificar o atendimento. Não confirmar pagamento manualmente pelo navegador para simular a PAY.
+
+147 testes unitários/contrato/mock e 21 verificações PostgreSQL isoladas aprovados. O script scripts/test-specialist-postgres.mjs compila a migração em memória, executa transições e verifica RLS/privilégios. Usa PGlite 0.5.10 instalado fora do projeto; não cria dependência de produção. A variável JENIOS_PGLITE_MODULE deve apontar para o arquivo dist/index.js desse pacote. A conexão é local/WASM, sem credenciais Supabase. Não substitui ensaio de concorrência multiconexão ou homologação na instância real.
+
+26 verificações HTTP e build Next.js aprovados. Sem homologação autenticada de navegador, sem execução de serviço real, sem convites/notificações e sem repasses neste ambiente.
+
 ## Validador
 
 O catálogo de identidade cobre apenas endereços de referência USDT/USDC explicitamente cadastrados, conferidos nas fontes dos emissores em 14/10/2026. Não é uma varredura de todos os tokens de uma carteira. Um ativo fora do catálogo fica inconclusivo, não é automaticamente chamado de falso.

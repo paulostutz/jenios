@@ -12,6 +12,7 @@ O adaptador é um contrato novo na fronteira da Social: ainda deve ser compatibi
 - JENIOS_PAY_API_TOKEN: credencial própria desse endpoint. Não reutilizar certificados, chave privada do Inter ou token administrativo.
 - JENIOS_PAY_CHECKOUT_ORIGINS: origens HTTPS adicionais autorizadas para redirecionar ao checkout, separadas por vírgula. A origem do endpoint já é autorizada.
 - JENIOS_APP_ORIGIN: opcional, origem HTTPS do site sem caminho. Acrescenta returnUrl ao contrato: /social/cobrancas para Social e /checkout para Platform. A PAY deve aceitar esse campo; não é confirmação de pagamento.
+- JENIOS_SPECIALIST_ORDERS_ENABLED=true: ativar apenas depois de instalar e validar a migração de atendimentos do checkpoint 11 em homologação. Desligado preserva o fluxo financeiro existente e informa que a gestão de atendimentos ainda não foi ativada.
 - JENIOS_PAY_ADMIN_USER_IDS: IDs de usuários Supabase autorizados à gestão financeira, separados por vírgula. Alternativamente, app_metadata.role igual a admin ou finance_admin, atribuído por backend confiável.
 - NEXT_PUBLIC_SUPABASE_URL e chave pública compatível com lib/supabase.js.
 - SUPABASE_SECRET_KEY ou SUPABASE_SERVICE_ROLE_KEY: somente no servidor.
@@ -48,4 +49,16 @@ Consulta básica e seu PDF continuam disponíveis. A consulta paga acrescenta in
 
 Não há relatório salvo na nuvem. O navegador pode reter os dados do alvo por sessão; se perdidos, o usuário informa exatamente o alvo contratado. Nenhum dado local concede acesso por si só. Nova emissão consulta novamente a fonte e pode observar outro estado. Falha de provedor retorna 503 e permite tentar novamente com o mesmo pedido, sem nova cobrança.
 
-A integração Inter é considerada validada pelo usuário. Este ambiente não homologou a compatibilidade do adaptador com a implementação PAY do Mac nem o retorno real do pagamento. BankScore completo, execução de campanhas, entrega das ofertas e recorrência ativa da Platform continuam pendentes. Não promover este pacote à produção como versão final homologada.
+A integração Inter é considerada validada pelo usuário. Este ambiente não homologou a compatibilidade do adaptador com a implementação PAY do Mac nem o retorno real do pagamento. BankScore completo, execução de campanhas e recorrência ativa da Platform continuam pendentes. Não promover este pacote à produção como versão final homologada.
+
+## Gestão de atendimentos — checkpoint 11
+
+/especialistas/atendimentos oferece visões de comprador e especialista. API /api/specialists/orders autentica a conta no servidor. Aceite, agendamento, registro de entrega e confirmação do comprador usam uma extensão de atendimento 1:1 com o pedido financeiro existente. A oferta contratada é preservada em snapshot; alterações no currículo não reescrevem o atendimento.
+
+Migração preparada: supabase/migrations/20261015000628_specialist_order_fulfillment.sql. Não aplicada remotamente. Não duplica tabelas de pagamentos: cria somente jenios_specialist_orders, ausente no inventário consultado, com FK única para jenios_pay_orders. Tabelas, referências financeiras e webhooks da PAY não são alterados. A função de transição é SECURITY INVOKER e executável apenas pelo backend service_role; acessos diretos de cliente são somente leitura dos próprios atendimentos, protegidos por RLS.
+
+Com a flag ativa, o atendimento é preparado antes de abrir checkout. Falha na preparação preserva o pedido financeiro pendente e permite retentar sem outra cobrança; não chama gateway. Sem a flag, a implementação anterior permanece operante. Pedidos pagos anteriores à ativação não são importados automaticamente, porque não existe snapshot confiável da oferta original.
+
+Ações de atendimento consultam e bloqueiam a linha financeira na mesma transação, exigem paid e revisão atual. Pedido reembolsado/expirado/pendente não permite avançar o serviço. A recusa é estado de atendimento, não reembolso. Marcar entrega não prova recebimento; somente o comprador pode confirmar. Nenhuma destas ações executa Pix, reembolso, split ou repasse.
+
+O histórico guarda ação, papel e horário, sem e-mails ou credenciais. Links HTTPS são informados pelo especialista; o sistema não cria salas, não envia convites nem notifica terceiros neste bloco. O horário é informado e mostrado no fuso do navegador.

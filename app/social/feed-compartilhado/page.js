@@ -120,6 +120,7 @@ export default function FeedCompartilhadoPreview() {
         <p style={{whiteSpace:'pre-wrap'}}>{post.body}</p>
         {(post.media||[]).map((item,index)=>item.type==='video'?<video key={index} src={item.url||item.src} controls playsInline style={{width:'100%',maxHeight:450}}/>:<img key={index} src={item.url||item.src} alt={'Mídia '+(index+1)} style={{width:'100%',maxHeight:450,objectFit:'contain'}}/>)}
         <small>{new Date(post.created_at).toLocaleString('pt-BR')}</small>
+        {post.author_id === session.user.id && <p><Link href={'/impulsionar?post='+encodeURIComponent(post.id)}>Impulsionar esta publicação</Link></p>}
         <div>
           <button disabled={busy} onClick={()=>act(async()=>{const r=await api.getLikes(post.id);await (r.liked?api.unlikePost(post.id):api.likePost(post.id));})}>Curtir / descurtir</button>
           <button disabled={busy} onClick={()=>act(async()=>{const r=await api.getLikes(post.id);setLikes(old=>({...old,[post.id]:r}));},false)}>Ver curtidas</button>

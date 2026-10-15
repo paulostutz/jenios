@@ -672,6 +672,9 @@ export default function SocialPostCard({
               )}
 
               {souAutor && (
+                <a href={'/impulsionar' + (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(post.id)) ? '?post=' + encodeURIComponent(post.id) : '')} style={{...estiloBotaoMenu,display:'block',textDecoration:'none'}}>↗ Impulsionar publicação</a>
+              )}
+              {souAutor && (
                 <button
                   type="button"
                   onClick={() => {

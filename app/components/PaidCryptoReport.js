@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import WalletInventory from './WalletInventory';
 import { supabase } from '../../lib/supabase';
 import { readReceipt, saveReceipt } from '../../lib/pay/browser-receipts.mjs';
 
@@ -65,7 +66,7 @@ export default function PaidCryptoReport() {
   return <main style={{ minHeight: '100vh', padding: 24, background: '#f4f3fa', fontFamily: 'system-ui', color: '#172033' }}><div style={{ maxWidth: 820, margin: 'auto' }}>
     <Link href="/social/cobrancas">← Minhas cobranças</Link><h1>Consulta detalhada de criptoativos</h1>
     <p>Pedido: {orderId || 'não selecionado'}</p><p>Use a mesma rede, tipo e identificador contratados. O servidor confere o pagamento e o vínculo com esta consulta antes de emitir o relatório.</p>
-    <p>Inclui interpretação das evidências e PDF. Não inclui inventário de todos os tokens da carteira, auditoria de código ou garantia contra fraude. Não solicitamos chaves privadas.</p>
+    <p>Inclui interpretação, inventário dos tokens quando a fonte da rede permitir e PDF. A cobertura é informada no relatório; não é auditoria de código ou garantia contra fraude. Não solicitamos chaves privadas.</p>
     <form onSubmit={event => { event.preventDefault(); emit('json'); }} style={{ display: 'grid', gap: 16, background: 'white', borderRadius: 14, padding: 22 }}>
       <label>Rede<select disabled={busy} style={field} value={network} onChange={e => { reset(); setNetwork(e.target.value); }}>{networks.map(n => <option key={n} value={n}>{n}</option>)}</select></label>
       <label>Tipo<select disabled={busy} style={field} value={type} onChange={e => { reset(); setType(e.target.value); }}><option value="transaction">Transação / hash</option><option value="wallet">Carteira</option><option value="token">Token / contrato</option></select></label>
@@ -76,6 +77,7 @@ export default function PaidCryptoReport() {
     {report && <section style={{ background: 'white', padding: 22, borderRadius: 14, marginTop: 20 }}><h2>Relatório detalhado</h2><p>{report.networkLabel} · {report.status}</p><p style={{ overflowWrap: 'anywhere' }}>{report.identifier}</p><p>Emitido em {new Date(report.checkedAt).toLocaleString('pt-BR')}</p>
       {report.detail.findings.map(item => <article key={item.code} style={{ borderTop: '1px solid #e2e8f0', paddingTop: 10 }}><h3>{item.title}</h3><small>{{ observed: 'Observado', attention: 'Atenção', inconclusive: 'Inconclusivo' }[item.level]}</small><p>{item.explanation}</p></article>)}
       <h3>Evidências da fonte</h3><dl>{Object.entries(report.evidence || {}).map(([key, value]) => <div key={key}><dt style={{ fontWeight: 700 }}>{key}</dt><dd style={{ overflowWrap: 'anywhere' }}>{value == null ? 'Não informado' : typeof value === 'object' ? JSON.stringify(value) : String(value)}</dd></div>)}</dl>
+      <WalletInventory inventory={report.inventory}/>
       <h3>Limites</h3><ul>{report.detail.limitations.map(item => <li key={item}>{item}</li>)}</ul><p>{report.detail.methodology}</p>
       <button style={button} disabled={busy} onClick={() => emit('pdf')}>Baixar relatório detalhado em PDF</button>
     </section>}

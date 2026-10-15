@@ -2175,6 +2175,7 @@ const excluirPost = (id) => {
         {/* ABA FEED */}
         {abaAtiva === 'feed' && (
           <div
+            className="jenios-social-feed-grid"
             style={{
               display: 'grid',
               gridTemplateColumns: 'minmax(0, 2fr) minmax(260px, 1fr)',
@@ -3830,6 +3831,7 @@ const excluirPost = (id) => {
           </div>
         </div>
       )}
+      <style jsx>{`@media (max-width: 760px) { .jenios-social-feed-grid { grid-template-columns: minmax(0,1fr) !important; } }`}</style>
     </main>
   );
 }

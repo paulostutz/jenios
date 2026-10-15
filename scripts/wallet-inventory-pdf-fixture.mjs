@@ -1,0 +1,7 @@
+import {writeFile} from 'node:fs/promises';
+import {createCryptoReportPdf} from '../lib/crypto/report-pdf.mjs';
+import {detailedCryptoReport} from '../lib/crypto/detailed.mjs';
+import {identifyToken} from '../lib/crypto/token-registry.mjs';
+const known='0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',other='0x2222222222222222222222222222222222222222';
+const report=detailedCryptoReport({network:'ethereum',networkLabel:'AMOSTRA SINTETICA - QA',type:'wallet',identifier:'0x1111111111111111111111111111111111111111',supported:true,found:true,status:'DADOS SINTETICOS, NAO E CONSULTA REAL',checkedAt:new Date().toISOString(),evidence:{saldoWei:'0'},inventory:{available:true,complete:false,scope:'Amostra sintetica de inventario parcial para verificar paginacao e limites.',warnings:['Nao e um resultado real de carteira.'],summary:{issuerMatches:1,symbolMismatches:1,unreferenced:0},tokens:[{address:known,symbol:'USDC',rawBalance:'1000000',amount:'1.000000',decimals:6,authenticity:identifyToken('ethereum',known,{onChain:true})},{address:other,symbol:'USDC',rawBalance:'9007199254740993123456',amount:'9007199254740993.123456',decimals:6,authenticity:identifyToken('ethereum',other,{symbol:'USDC',onChain:true})}]}},'11111111-1111-4111-8111-111111111111');
+const output=process.argv[2]||'/tmp/jenios-wallet-inventory-qa.pdf';await writeFile(output,await createCryptoReportPdf(report));console.log(output);

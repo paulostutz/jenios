@@ -119,10 +119,10 @@ export default function DashboardLogado() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f1f5f9', color: '#0f172a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="jenios-dashboard-layout" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f1f5f9', color: '#0f172a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       {/* Sidebar da Dashboard */}
-      <aside style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
+      <aside className="jenios-dashboard-sidebar" style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
         <div style={{ marginBottom: '30px', textAlign: 'center' }}>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>JENIOS HFT</h2>
           <span style={{ fontSize: '11px', color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>SALA DE CONTROLE OFICIAL</span>
@@ -166,7 +166,7 @@ export default function DashboardLogado() {
       </aside>
 
       {/* Conteúdo Principal da Dashboard */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
+      <main className="jenios-dashboard-main" style={{ flex: 1, minWidth: 0, padding: '40px', overflowY: 'auto' }}>
         
         {/* Topo do Usuário */}
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', flexWrap: 'wrap', gap: '15px' }}>
@@ -387,6 +387,7 @@ export default function DashboardLogado() {
         )}
 
       </main>
+      <style jsx>{`@media (max-width: 760px) { .jenios-dashboard-layout { flex-direction: column; } .jenios-dashboard-sidebar { width: auto !important; border-right: 0 !important; border-bottom: 1px solid #e2e8f0; } .jenios-dashboard-main { padding: 18px !important; } }`}</style>
     </div>
   );
 }

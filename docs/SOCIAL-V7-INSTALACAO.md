@@ -27,8 +27,8 @@ O comando lê variáveis pelo mecanismo existente do Next e inspeciona apenas es
 
 - BankScore: escopo corrigido pelo usuário para melhorar o laudo existente, não construir análise financeira completa. A partir do checkpoint 19, catálogo oferece laudo de capitalização de R$9,90; servidor confere indicador e período antes de iniciar cobrança. Emissão de histórico/PDF exige pedido pago, titular e alvo exatos. Consulta básica e PDF anteriores preservados. Não anunciar como rating ou análise completa de solvência. Preservar histórico de pedidos existentes.
 - Radar de pools recentes não comprova criação do token ou carteira institucional. Hub é o mesmo componente na página e dentro da Social; dados B3/baleias ainda precisam de fonte.
-- Validador atual não inventaria todos os tokens de uma carteira; não anunciar essa cobertura como entregue.
-- Recorrência da Platform é separada da Social. Os preços mensais R$99,90 / R$149,90 / R$199,90 não representam recorrência implementada.
+- Validador: checkpoint 20 acrescenta inventário limitado dos provedores de Solana, TRON e redes EVM. EVM precisa de URL RPC configurada que implemente os métodos de inventário Alchemy; RPC básico não enumera ERC-20. Solana consulta dois programas em mainnet; TRON usa índice mainnet TronGrid e chave opcional TRON_PRO_API_KEY. Ver limites em docs/JENIOS-PAY-CONEXAO.md. Fonte indisponível é mostrada como inventário inconclusivo, nunca saldo zero. Não anunciar cobertura universal ou separação de patrimônio verdadeiro/falso.
+- Recorrência da Platform adiada explicitamente pelo usuário até concluir a Social. É fora do bloco atual e não bloqueia a instalação da Social. Os três preços e o checkout separado permanecem preservados.
 - Feed original mantém persistência legada; não presumir compartilhamento entre dispositivos por habilitar uma flag de mídia. Preview compartilhado é separado e opcional.
 
 Somente depois de resolver os requisitos funcionais e validar instalação será emitido um único pacote final, com código completo e comandos para Mac/VS Code. Este documento é continuidade interna, não orientação para promover o estado atual à produção.

@@ -1,6 +1,6 @@
 import { getJeniosPayAdmin } from '../../../../lib/jenios-pay-admin';
 import { requirePayUser, requirePayToken } from '../../../../lib/pay/auth.mjs';
-import { mergeCatalog, priceUpdate, SPECIALIST_COMMISSION_BPS } from '../../../../lib/pay/catalog.mjs';
+import { DEFAULT_PRODUCTS, mergeCatalog, priceUpdate, SPECIALIST_COMMISSION_BPS } from '../../../../lib/pay/catalog.mjs';
 import { listAdminOrders } from '../../../../lib/pay/admin-orders.mjs';
 
 export const dynamic = 'force-dynamic';
@@ -41,4 +41,16 @@ export async function PATCH(request) {
     if (error) throw error;
     return Response.json({ product: data }, { headers });
   } catch (error) { return failure(error); }
+}
+
+// Install approved defaults once without overwriting existing prices/availability.
+export async function POST(request) {
+  try {
+    requirePayToken(request);const db=getJeniosPayAdmin();await requirePayUser(request,db,true);
+    let body;try{body=await request.json();}catch{throw Object.assign(new Error('Requisição inválida.'),{status:400});}
+    if(body?.action!=='initialize_catalog')throw Object.assign(new Error('Ação inválida.'),{status:400});
+    const {data,error}=await db.from('jenios_pay_products').upsert(DEFAULT_PRODUCTS.map(product=>({...product})),{onConflict:'code',ignoreDuplicates:true}).select('code');
+    if(error)throw error;
+    return Response.json({initialized:data?.length||0},{headers});
+  }catch(error){return failure(error);}
 }

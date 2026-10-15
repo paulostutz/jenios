@@ -8,7 +8,7 @@ const errors = []; page.on('pageerror', error => errors.push(error.message));
 let checks = 0;
 function pass(label) { checks++; console.log('PASS browser ' + label); }
 try {
-  for (const [path, heading] of [['/social/cobrancas', 'Minhas cobranças'], ['/social/consulta-detalhada', 'Consulta detalhada de criptoativos'], ['/especialistas', 'Área do Especialista'], ['/especialistas/atendimentos', 'Meus atendimentos'], ['/impulsionar/campanhas', 'Minhas campanhas']]) {
+  for (const [path, heading] of [['/social/cobrancas', 'Meus pagamentos'], ['/bankscore/detalhado', 'Laudo BankScore contratado'], ['/social/consulta-detalhada', 'Consulta detalhada de criptoativos'], ['/especialistas', 'Área do Especialista'], ['/especialistas/atendimentos', 'Meus atendimentos'], ['/impulsionar/campanhas', 'Minhas campanhas']]) {
     await page.goto(base + path, { waitUntil: 'networkidle' });
     await page.getByRole('heading', { name: heading, exact: true }).waitFor();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, path + ' overflow');
@@ -16,6 +16,7 @@ try {
   }
   const snapshot = { disponivel: true, fonte: 'CoinGecko Search Trending', atualizadoEm: '2026-10-15T00:00:00Z', tokens: [{ id: 'bitcoin', nome: 'Bitcoin SINTÉTICO QA', simbolo: 'BTC', rankingMercado: 1 }], megapulse: [], baleias: [], modulos: { tokens: { disponivel: true }, megapulse: { disponivel: false, mensagem: 'Fonte B3 não conectada — fixture.' }, baleias: { disponivel: false, mensagem: 'Fonte institucional não conectada — fixture.' } } };
   let fail = false;
+  await page.route('**/api/tendencias/tokens-novos', route => route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({disponivel:true,candidatos:[],atualizadoEm:'2026-10-15T00:00:00Z'})}));
   await page.route('**/api/tendencias', route => route.fulfill({ status: fail ? 503 : 200, contentType: 'application/json', body: JSON.stringify(fail ? { mensagem: 'Falha sintética de QA' } : snapshot) }));
   await page.goto(base + '/tendencias', { waitUntil: 'networkidle' });
   await page.getByRole('link', { name: 'Bitcoin SINTÉTICO QA' }).waitFor();
@@ -31,6 +32,12 @@ try {
   await page.getByText('Fonte B3 não conectada — fixture.', { exact: true }).waitFor();
   assert.equal(await page.getByRole('link', { name: 'Bitcoin SINTÉTICO QA' }).count(), 0); pass('B3 tab never relabels crypto data');
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true); pass('hub mobile layout');
+  await page.goto(base + '/social', {waitUntil:'networkidle'});
+  await page.getByRole('button', {name:'↗ Hub de Tendências',exact:true}).click();
+  await page.getByRole('heading',{name:'Hub de Tendências',exact:true}).waitFor();
+  await page.getByRole('link',{name:'Bitcoin SINTÉTICO QA'}).waitFor();pass('same Hub embedded in Social');
+  await page.getByRole('button',{name:'🏠 Feed',exact:true}).click();
+  assert.equal(await page.getByRole('heading',{name:'Hub de Tendências',exact:true}).count(),0);pass('Hub unmounted on feed return');
   assert.deepEqual(errors, []); pass('zero browser JavaScript exceptions');
   console.log(`${checks} browser checks passed; unauthenticated/local mocked sources, not payment homologation.`);
 } finally { await browser.close(); }

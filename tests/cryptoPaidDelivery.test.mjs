@@ -37,6 +37,14 @@ test('source failure does not produce a paid report; same order can be retried',
   const next = await deliverCryptoReport({ ...fixture(), validate: async () => observed });
   assert.equal(next.detail.orderId, orderId);
 });
+test('inventory is never queried before payment/resource checks or after a failed primary source', async () => {
+  let calls=0;const inventory=async()=>{calls++;return {available:true,complete:true,tokens:[],warnings:[],scope:'QA'};};
+  await assert.rejects(deliverCryptoReport({...fixture({status:'pending'}),validate:async()=>observed,inventory}),{status:403});
+  await assert.rejects(deliverCryptoReport({...fixture(),validate:async()=>({...observed,providerError:'offline'}),inventory}),{status:503});
+  assert.equal(calls,0);
+  const result=await deliverCryptoReport({...fixture(),validate:async()=>observed,inventory});
+  assert.equal(calls,1);assert.equal(result.inventory.complete,true);
+});
 test('refuses mismatched source identity and unsupported network', async () => {
   await assert.rejects(deliverCryptoReport({ ...fixture(), validate: async () => ({ ...observed, network: 'base' }) }), { status: 502 });
   assert.throws(() => detailedCryptoReport({ ...observed, supported: false }, orderId), { status: 503 });

@@ -6,7 +6,9 @@ export const dynamic='force-dynamic';
 const headers={'Cache-Control':'no-store'};
 export async function GET(request){
   try{
-    const own=new URL(request.url).searchParams.get('own')==='1';if(own)requirePayToken(request);
+    const params=new URL(request.url).searchParams;
+    const own=params.get('own')==='1',id=params.get('id');if(own)requirePayToken(request);
+    if(id&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))throw Object.assign(new Error('Perfil inválido.'),{status:400});
     const db=getJeniosPayAdmin();
     if(own){
       const user=await requirePayUser(request,db);
@@ -14,7 +16,13 @@ export async function GET(request){
       if(error)throw error;
       return Response.json({profile:data?{...data,...specialistDetails(data.sobre)}:null},{headers});
     }
-    const params=new URL(request.url).searchParams;const page=Number(params.get('page')||1);
+    if(id){
+      const {data,error}=await db.from('jenios_specialist_profiles').select(SPECIALIST_FIELDS).eq('user_id',id).maybeSingle();
+      if(error)throw error;const profile=data?publicSpecialist(data):null;
+      if(!profile)throw Object.assign(new Error('Perfil público não encontrado.'),{status:404});
+      return Response.json({profile},{headers});
+    }
+    const page=Number(params.get('page')||1);
     if(!Number.isInteger(page)||page<1||page>10000)throw Object.assign(new Error('Página inválida.'),{status:400});
     const {data,error}=await db.from('jenios_specialist_profiles').select(SPECIALIST_FIELDS).order('user_id').range((page-1)*50,page*50-1);
     if(error)throw error;

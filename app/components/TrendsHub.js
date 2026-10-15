@@ -68,7 +68,7 @@ export default function TrendsHub({ embedded = false }) {
     } catch (requestError) {
       if (version !== epoch.current || requestError.name === 'AbortError') return;
       setError('Não foi possível atualizar as fontes agora.');
-      setData((current) => current ? { ...current, disponivel: false, stale: Boolean(current.tokens?.length), modulos: { ...current.modulos, tokens: { disponivel: false, stale: Boolean(current.tokens?.length), mensagem: 'Não foi possível confirmar uma nova leitura.' } } } : {
+      setData((current) => current ? { ...current, disponivel: false, stale: Boolean(current.tokens?.length), modulos: { ...current.modulos, megapulse: { ...current.modulos?.megapulse, disponivel: false, stale: Boolean(current.megapulse?.length), mensagem: 'Não foi possível confirmar uma nova leitura.' }, tokens: { disponivel: false, stale: Boolean(current.tokens?.length), mensagem: 'Não foi possível confirmar uma nova leitura.' } } } : {
         disponivel: false,
         atualizadoEm: null,
         fonte: null,
@@ -138,11 +138,11 @@ export default function TrendsHub({ embedded = false }) {
         }}>
           <div style={metricCard}>
             <small style={metricLabel}>Fonte da última leitura</small>
-            <strong style={{ fontSize: 19 }}>{data?.fonte || 'Nenhuma fonte disponível'}</strong>
+            <strong style={{ fontSize: 19 }}>{(active === 'megapulse' ? moduleStatus.fonte : data?.fonte) || 'Nenhuma fonte disponível'}</strong>
           </div>
           <div style={metricCard}>
             <small style={metricLabel}>Última leitura válida no servidor</small>
-            <strong style={{ fontSize: 17 }}>{formatTime(data?.atualizadoEm)}</strong>
+            <strong style={{ fontSize: 17 }}>{formatTime(active === 'megapulse' ? moduleStatus.atualizadoEm : data?.atualizadoEm)}</strong>
           </div>
           <div style={metricCard}>
             <small style={metricLabel}>Cobertura</small>
@@ -189,10 +189,10 @@ export default function TrendsHub({ embedded = false }) {
               <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
                 {active === 'tokens'
                   ? 'Ativos em alta nas pesquisas da CoinGecko; não significa lançamento recente, fluxo institucional ou recomendação.'
-                  : 'Dados deste módulo ainda não estão disponíveis.'}
+                  : active === 'megapulse' ? 'Fechamento diário de mini Ibovespa e mini dólar. Cobertura inicial; ações ainda não incluídas.' : 'Dados deste módulo ainda não estão disponíveis.'}
               </p>
             </div>
-            <StatusBadge available={Boolean(moduleStatus.disponivel)} stale={Boolean(moduleStatus.stale)} />
+            <div>{moduleStatus.parcial && <p role="status">Cobertura parcial nesta atualização.</p>}<StatusBadge available={Boolean(moduleStatus.disponivel)} stale={Boolean(moduleStatus.stale)} /></div>
           </div>
 
           <div style={{ height: 1, background: COLORS.line, margin: '20px 0' }} />
@@ -205,7 +205,7 @@ export default function TrendsHub({ embedded = false }) {
           ) : !moduleStatus.disponivel && !moduleStatus.stale ? (
             <div style={emptyCard}>
               <strong>Dados ainda não publicados</strong>
-              <p>{'Estamos preparando a cobertura deste mercado.'}</p>
+              <p>{moduleStatus.mensagem || 'Estamos preparando a cobertura deste mercado.'}</p>
               
             </div>
           ) : rows.length === 0 ? (
@@ -225,9 +225,9 @@ export default function TrendsHub({ embedded = false }) {
                 }}>
                   <strong style={{ fontSize: 20, color: COLORS.purple }}>{String(index + 1).padStart(2, '0')}</strong>
                   <div style={{ minWidth: 0 }}>
-                    <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}><a href={'https://www.coingecko.com/en/coins/' + encodeURIComponent(item.id)} target="_blank" rel="noopener noreferrer">{item.nome}</a></strong>
+                    <strong style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis' }}>{active === 'megapulse' ? item.nome : <a href={'https://www.coingecko.com/en/coins/' + encodeURIComponent(item.id)} target="_blank" rel="noopener noreferrer">{item.nome}</a>}</strong>
                     <span style={{ color: COLORS.muted, fontSize: 12 }}>
-                      {item.rankingMercado ? `Ranking de mercado #${item.rankingMercado}` : 'Ranking de mercado não informado'}
+                      {active === 'megapulse' ? `Pregão ${item.dataPregao} · Fechamento ${item.fechamento.toLocaleString('pt-BR')} · Variação ${item.variacao.toLocaleString('pt-BR')}% · Vencimento ${item.vencimento}` : item.rankingMercado ? `Ranking de mercado #${item.rankingMercado}` : 'Ranking de mercado não informado'}
                     </span>
                   </div>
                   <span style={{ color: COLORS.blue, fontWeight: 900 }}>{item.simbolo}</span>
@@ -237,7 +237,7 @@ export default function TrendsHub({ embedded = false }) {
           )}
 
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
-            Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização. Dados: CoinGecko.
+            {active === 'megapulse' ? 'Fonte: brapi. Dados de fechamento diário, sem sinal de compra ou venda. A variação de um pregão não confirma uma tendência persistente.' : 'Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização. Dados: CoinGecko.'}
           </footer>
         </section>
       </div>

@@ -31,7 +31,8 @@ test('invalid statuses are rejected before a query and profile errors fail close
 });
 test('financial route authorizes admin before list and dashboard no longer fabricates payment success',()=>{
   const route=readFileSync(new URL('../app/api/jenios-pay/admin/route.js',import.meta.url),'utf8');
-  assert.ok(route.indexOf('await requirePayUser(request, db, true)')<route.indexOf('listAdminOrders(db,'));
+  const authorization=route.indexOf("await requireAdminPermission(request, db, 'finance.manage')");
+  assert.ok(authorization>=0&&authorization<route.indexOf('listAdminOrders(db,'));
   const dashboard=readFileSync(new URL('../app/dashboard-logado/page.js',import.meta.url),'utf8');
   assert.match(dashboard,/<PaymentStatement embedded/);assert.doesNotMatch(dashboard,/Fatura de R\$ 199,90 processada com sucesso/);
 });

@@ -151,7 +151,7 @@ export default function AdminPage() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <a href="/dashboard-logado" style={{ backgroundColor: '#f1f5f9', color: '#334155', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>Ir para Dashboard</a>
+            <a href="/admin/consultas">Consultas completas</a><a href="/admin/cobrancas">Cobranças e Inter</a><a href="/dashboard-logado" style={{ backgroundColor: '#f1f5f9', color: '#334155', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>Ir para Dashboard</a>
             <a href="/login" style={{ backgroundColor: '#fee2e2', color: '#991b1b', textDecoration: 'none', fontSize: '11px', fontWeight: 'bold', padding: '10px 16px', borderRadius: '10px' }}>Sair</a>
           </div>
         </div>

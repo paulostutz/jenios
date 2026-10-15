@@ -1,4 +1,5 @@
 'use client';
+import TrendAlertButton from './TrendAlertButton';
 import TrendHelp from './TrendHelp';
 import NewTokenRadar from './NewTokenRadar';
 
@@ -49,6 +50,7 @@ function StatusBadge({ available, stale }) {
 export default function TrendsHub({ embedded = false }) {
   const Heading = embedded ? 'h2' : 'h1';
   const [active, setActive] = useState('tokens');
+  useEffect(()=>{const selected=new URLSearchParams(window.location.search).get('modulo');if(MODULES.some(x=>x.id===selected))setActive(selected);if(selected==='novos')document.getElementById('radar-novos')?.scrollIntoView();},[]);
   const {data,loading,error,refresh,clock}=useTrendsData();
 
   const moduleStatus = data?.modulos?.[active] || {
@@ -106,7 +108,7 @@ export default function TrendsHub({ embedded = false }) {
             <strong style={{ fontSize: 17, color: COLORS.green }}>Cripto e mercado</strong>
           </div>
         </section>
-        <div style={{ marginTop: 20 }}><NewTokenRadar /></div>
+        <div id="radar-novos" style={{ marginTop: 20 }}><NewTokenRadar /></div>
 
         <nav aria-label="Módulos do Hub" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
           {MODULES.map((module) => (
@@ -193,6 +195,7 @@ export default function TrendsHub({ embedded = false }) {
             </div>
           )}
 
+          <TrendAlertButton key={active} module={active}/>
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
             {active === 'megapulse' ? 'Somente cotações com horário recente são exibidas. A variação é do pregão; não representa sinal de compra ou venda.' : active==='baleias'?'O valor representa a maior saída da transação e pode incluir troco ou transferência entre carteiras da mesma pessoa.':'Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização.'}
           </footer>

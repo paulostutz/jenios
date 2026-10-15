@@ -1,4 +1,5 @@
 'use client';
+import SocialVideo from './SocialVideo';
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -839,19 +840,7 @@ export default function SocialPostCard({
           }}
         >
           {(imagemAtual?.tipo === 'video' || srcImagemAtual.startsWith('data:video/')) ? (
-            <video
-              key={srcImagemAtual}
-              src={srcImagemAtual}
-              controls
-              playsInline
-              preload="none"
-              style={{
-                width: '100%',
-                maxHeight: '80vh',
-                display: 'block',
-                margin: '0 auto',
-              }}
-            />
+            <SocialVideo src={srcImagemAtual} postId={post.id}/>
           ) : (
           <img
             src={srcImagemAtual}

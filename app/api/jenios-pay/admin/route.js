@@ -1,3 +1,4 @@
+import {requireAdminPermission} from '../../../../lib/admin-access.mjs';
 import { getJeniosPayAdmin } from '../../../../lib/jenios-pay-admin';
 import { requirePayUser, requirePayToken } from '../../../../lib/pay/auth.mjs';
 import { DEFAULT_PRODUCTS, mergeCatalog, priceUpdate, SPECIALIST_COMMISSION_BPS } from '../../../../lib/pay/catalog.mjs';
@@ -11,7 +12,7 @@ export async function GET(request) {
   try {
     requirePayToken(request);
     const db = getJeniosPayAdmin();
-    await requirePayUser(request, db, true);
+    await requireAdminPermission(request, db, 'finance.manage');
     const params = new URL(request.url).searchParams;
     const [{ data: products, error: productError }, statement] = await Promise.all([
       db.from('jenios_pay_products').select('id,code,name,category,description,price_cents,currency,billing_type,active,updated_at').order('name'),
@@ -26,7 +27,7 @@ export async function PATCH(request) {
   try {
     requirePayToken(request);
     const db = getJeniosPayAdmin();
-    await requirePayUser(request, db, true);
+    await requireAdminPermission(request, db, 'finance.manage');
     const body = await request.json();
     let product;
     try { product = priceUpdate(body); } catch (error) { error.status = 400; throw error; }
@@ -46,7 +47,7 @@ export async function PATCH(request) {
 // Install approved defaults once without overwriting existing prices/availability.
 export async function POST(request) {
   try {
-    requirePayToken(request);const db=getJeniosPayAdmin();await requirePayUser(request,db,true);
+    requirePayToken(request);const db=getJeniosPayAdmin();await requireAdminPermission(request,db,'finance.manage');
     let body;try{body=await request.json();}catch{throw Object.assign(new Error('Requisição inválida.'),{status:400});}
     if(body?.action!=='initialize_catalog')throw Object.assign(new Error('Ação inválida.'),{status:400});
     const {data,error}=await db.from('jenios_pay_products').upsert(DEFAULT_PRODUCTS.map(product=>({...product})),{onConflict:'code',ignoreDuplicates:true}).select('code');

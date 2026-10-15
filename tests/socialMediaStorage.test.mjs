@@ -20,3 +20,9 @@ test('retentativa preserva arquivos já enviados sem novo upload',async()=>{
   const result=await uploadSocialMedia([item],{client:{},getAccessToken:async()=>'jwt',fetchImpl:async()=>{calls++;throw new Error('não pode chamar')}});
   assert.equal(calls,0);assert.equal(result[0],item);
 });
+test('retentativa após falha de processamento reutiliza o upload concluído',async()=>{
+ let items=[{src:'blob:preview',tipo:'video',duracao:3,_file:new Blob(['video'],{type:'video/mp4'})}],uploads=0,prepared=0,fail=true;const stages=[];
+ const options={client:{storage:{from:()=>({uploadToSignedUrl:async()=>{uploads++;return {error:null};}})}},getAccessToken:async()=>'jwt',onProgress:value=>{items=value;},onStage:value=>stages.push(value),fetchImpl:async(_url,opts)=>{if(opts.method==='POST'){prepared++;return {ok:true,json:async()=>({bucket:'b',path:'u/v.mp4',token:'signed'})};}return fail?{ok:false,json:async()=>({error:'Processamento indisponível'})}:{ok:true,json:async()=>({publicUrl:'https://storage.example/v-stream-v1.mp4'})};}};
+ await assert.rejects(()=>uploadSocialMedia(items,options),/Processamento indisponível/);assert.equal(items[0]._uploadedPath,'u/v.mp4');assert.equal(items[0].remote,undefined);
+ fail=false;const result=await uploadSocialMedia(items,options);assert.equal(uploads,1);assert.equal(prepared,1);assert.equal(result[0]._uploadedPath,undefined);assert.equal(result[0].remote,true);assert(stages.includes('processing'));
+});

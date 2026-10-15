@@ -10,7 +10,7 @@ const networks = ['ethereum', 'bitcoin', 'bsc', 'tron', 'solana', 'polygon', 'ar
 const field = { display: 'block', width: '100%', padding: 12, border: '1px solid #cbd5e1', borderRadius: 8, marginTop: 6, boxSizing: 'border-box' };
 const button = { padding: '12px 18px', background: '#6d28d9', color: 'white', border: 0, borderRadius: 9, fontWeight: 700, cursor: 'pointer' };
 
-export default function PaidCryptoReport() {
+export default function PaidCryptoReport({admin=false}) {
   const search = useSearchParams();
   const orderId = search.get('pedido') || '';
   const [network, setNetwork] = useState('ethereum'), [type, setType] = useState('transaction'), [identifier, setIdentifier] = useState('');
@@ -44,15 +44,15 @@ export default function PaidCryptoReport() {
     setBusy(true); setMessage(''); if (format === 'json') setReport(null);
     try {
 
-      if (!orderId) throw new Error('Selecione o pedido em Minhas cobranças.');
+      if (!admin&&!orderId) throw new Error('Selecione o pedido em Minhas cobranças.');
       const sessionResult = await supabase?.auth.getSession();
       if(sessionResult?.error)throw Error('Não foi possível verificar sua sessão.');
       const data=sessionResult?.data;
       const target = { network, type, identifier: identifier.trim() };
-      const response = await fetch('/api/crypto-validator/detailed', { method: 'POST', cache: 'no-store', headers: { 'content-type': 'application/json', ...(data?.session?.access_token?{authorization:'Bearer '+data.session.access_token}:{}) }, body: JSON.stringify({ orderId, target, format }) });
+      const response = await fetch(admin?'/api/admin/consultas':'/api/crypto-validator/detailed', { method: 'POST', cache: 'no-store', headers: { 'content-type': 'application/json', ...(data?.session?.access_token?{authorization:'Bearer '+data.session.access_token}:{}) }, body: JSON.stringify({ kind:'crypto', orderId, target, format }) });
       if (!response.ok) { const result = await response.json().catch(() => ({})); throw new Error(result.error || 'Não foi possível emitir o relatório.'); }
       if (version !== epoch.current) return;
-      saveReceipt(window.sessionStorage, data?.session?.user?.id||'guest', orderId, { productCode: 'social-crypto-validator', target });
+      if(!admin)saveReceipt(window.sessionStorage, data?.session?.user?.id||'guest', orderId, { productCode: 'social-crypto-validator', target });
       if (format === 'pdf') {
         const blob = await response.blob();
         if (version !== epoch.current) return;
@@ -65,14 +65,14 @@ export default function PaidCryptoReport() {
     finally { if (version === epoch.current) { setBusy(false); inFlight.current = false; } }
   }
   return <main style={{ minHeight: '100vh', padding: 24, background: '#f4f3fa', fontFamily: 'system-ui', color: '#172033' }}><div style={{ maxWidth: 820, margin: 'auto' }}>
-    <Link href="/social/cobrancas">← Minhas cobranças</Link><h1>Consulta detalhada de criptoativos</h1>
-    <p>Pedido: {orderId || 'não selecionado'}</p><p>Use a mesma rede, tipo e identificador contratados. O servidor confere o pagamento e o vínculo com esta consulta antes de emitir o relatório.</p>
+    {!admin&&<Link href="/social/cobrancas">← Minhas cobranças</Link>}<h1>Consulta detalhada de criptoativos</h1>
+    {!admin&&<><p>Pedido: {orderId || 'não selecionado'}</p><p>Use a mesma rede, tipo e identificador contratados. O servidor confere o pagamento e o vínculo com esta consulta antes de emitir o relatório.</p></>}
     <p>Inclui interpretação, inventário dos tokens quando a fonte da rede permitir e PDF. A cobertura é informada no relatório; não é auditoria de código ou garantia contra fraude. Não solicitamos chaves privadas.</p>
     <form onSubmit={event => { event.preventDefault(); emit('json'); }} style={{ display: 'grid', gap: 16, background: 'white', borderRadius: 14, padding: 22 }}>
       <label>Rede<select disabled={busy} style={field} value={network} onChange={e => { reset(); setNetwork(e.target.value); }}>{networks.map(n => <option key={n} value={n}>{n}</option>)}</select></label>
       <label>Tipo<select disabled={busy} style={field} value={type} onChange={e => { reset(); setType(e.target.value); }}><option value="transaction">Transação / hash</option><option value="wallet">Carteira</option><option value="token">Token / contrato</option></select></label>
       <label>Identificador<textarea disabled={busy} style={field} rows={3} spellCheck={false} value={identifier} onChange={e => { reset(); setIdentifier(e.target.value); }} required maxLength={180} /></label>
-      <button style={button} disabled={busy || !orderId}>{busy ? 'Verificando pedido e consultando rede…' : 'Emitir consulta detalhada'}</button>
+      <button style={button} disabled={busy || (!admin&&!orderId)}>{busy ? 'Verificando pedido e consultando rede…' : 'Emitir consulta detalhada'}</button>
     </form>
     {message && <p role="status">{message}</p>}
     {report && <section style={{ background: 'white', padding: 22, borderRadius: 14, marginTop: 20 }}><h2>Relatório detalhado</h2><p>{report.networkLabel} · {report.status}</p><p style={{ overflowWrap: 'anywhere' }}>{report.identifier}</p><p>Emitido em {new Date(report.checkedAt).toLocaleString('pt-BR')}</p>

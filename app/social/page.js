@@ -80,6 +80,7 @@ function SocialContent() {
   const archiveActions=useRef(new Set()),[archiveBusyId,setArchiveBusyId]=useState(null);
   const [archivedPreview,setArchivedPreview]=useState(null);
   const [uploadPercent,setUploadPercent]=useState(null);
+  const [uploadStage,setUploadStage]=useState('');
   const [profileBusy,setProfileBusy]=useState(false),[profileError,setProfileError]=useState('');
   const profileRequest=useRef(0);
   const [followRows,setFollowRows]=useState([]),[followNext,setFollowNext]=useState(null),[followError,setFollowError]=useState('');
@@ -483,13 +484,13 @@ const handleUploadCarrossel = async (e) => {
     if(enviandoPublicacao)return;
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
     if(!novoTexto.trim()&&!imagensPreview.length&&!youtubeLink.trim())return;
-    setEnviandoPublicacao(true);setPublicationNotice('');setUploadPercent(null);
+    setEnviandoPublicacao(true);setPublicationNotice('');setUploadPercent(null);setUploadStage('');
     try {
       if(!supabase)throw Error('Entre na sua conta para publicar.');
       const {data,error}=await supabase.auth.getUser();
       if(error||!data.user?.id||data.user.is_anonymous||data.user.id!==meuPerfil.id)throw Error('Sua sessão mudou. Entre novamente.');
       const owner=data.user.id;
-      const media=imagensPreview.length?await uploadSocialMedia(imagensPreview,{client:supabase,onUploadProgress:percent=>{if(sessionOwnerRef.current===owner)setUploadPercent(percent);},onProgress:items=>{if(sessionOwnerRef.current===owner)setImagensPreview(items);},getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data?.session?.access_token;}}):[];
+      const media=imagensPreview.length?await uploadSocialMedia(imagensPreview,{client:supabase,onStage:stage=>{if(sessionOwnerRef.current===owner)setUploadStage(stage);},onUploadProgress:percent=>{if(sessionOwnerRef.current===owner)setUploadPercent(percent);},onProgress:items=>{if(sessionOwnerRef.current===owner)setImagensPreview(items);},getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data?.session?.access_token;}}):[];
       const check=await supabase.auth.getUser();
       if(check.error||check.data?.user?.id!==owner)throw Error('Sua sessão mudou. O texto foi preservado.');
       const created=await feed.publish([novoTexto.trim(),youtubeLink.trim()].filter(Boolean).join('\n'),media.map(x=>({url:x.src,type:x.tipo==='video'?'video':'image'})));
@@ -1633,7 +1634,7 @@ const handleUploadCarrossel = async (e) => {
               >
                 <form onSubmit={publicarPost}>
                   {publicationNotice&&<p role="status" style={{color:'#047857'}}>{publicationNotice}</p>}
-                  {enviandoPublicacao&&<p role="status">{uploadPercent===null?'Preparando publicação…':uploadPercent<100?`Enviando mídia: ${uploadPercent}%`:'Salvando publicação…'}</p>}
+                  {enviandoPublicacao&&<p role="status">{uploadStage==='processing'?'Preparando o vídeo para uma reprodução mais rápida…':uploadPercent===null?'Preparando publicação…':uploadPercent<100?`Enviando mídia: ${uploadPercent}%`:'Salvando publicação…'}</p>}
                   {!meuPerfil.autenticado && <p style={{fontSize:14,color:"#475569",margin:"0 0 16px"}}>Entre na sua conta para publicar fotos, vídeos e Stories.</p>}
                   <textarea
                     value={novoTexto}

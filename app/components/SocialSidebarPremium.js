@@ -1,4 +1,5 @@
 "use client";
+import TrendAlertButton from './TrendAlertButton';
 import useTrendsData from './useTrendsData';
 import NewTokenRadar from './NewTokenRadar';
 import {TREND_MODULES,trendDetail,visibleTrendRows} from '../../lib/trends-ui.mjs';
@@ -25,7 +26,7 @@ export default function SocialSidebarPremium({operadores = [], onOpenRanking}){
  {id==='baleias'&&trends.modulos?.[id]?.historico&&<p>Últimos três movimentos registrados · histórico</p>}
  {visibleTrendRows(id,trends,clock).slice(0,id==='baleias'?3:2).map((x,i)=><p key={x.id||i}>{x.nome} · {x.simbolo}<small style={{display:'block'}}>{trendDetail(id,x)}</small></p>)}
  {!visibleTrendRows(id,trends,clock).length&&<p>{id==='megapulse'?'Sem movimentos recentes confirmados agora.':'Nenhum registro nesta atualização.'}</p>}
- </>}</div>)}
+ </>}<TrendAlertButton module={id}/></div>)}
  <NewTokenRadar compact/>
  <Link href="/tendencias" style={{display:'block',marginTop:12,color:blue}}>Abrir Hub de Tendências ↗</Link></section>
  <section id="jenios-bankscore" style={panel}><h3 style={{margin:"0 0 8px",fontSize:16,color:blue}}>BankScore · Top 5</h3><p style={{fontSize:11,color:muted}}>Maiores índices provisórios disponíveis, não ranking de segurança.</p>{ranking===null?<p>Carregando...</p>:ranking.ranking?.length?ranking.ranking.slice(0,5).map((x,i)=><Link key={x.codigo} href={"/bankscore/instituicao/"+encodeURIComponent(x.codigo)} style={{display:"flex",justifyContent:"space-between",gap:8,padding:"9px 0",color:"#23354e",textDecoration:"none",borderBottom:"1px solid #dce5ef",fontSize:12}}><span style={{flex:1,overflowWrap:"anywhere"}}>{i+1}. {x.nome}</span><strong style={{color:blue,whiteSpace:"nowrap"}}>{fmt(x.percentual)}</strong></Link>):<p style={{fontSize:12}} role="status">{ranking.erro||"Não há instituições elegíveis na base consultada."}</p>}<Link href="/bankscore" style={{display:"inline-block",color:blue,marginTop:12,fontSize:12}}>Consultar BankScore ↗</Link></section>

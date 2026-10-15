@@ -1,9 +1,12 @@
+import {optimizeStoredVideo} from '../../../../lib/social/video-processing.mjs';
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
 import { requirePayToken, requirePayUser } from '../../../../lib/pay/auth.mjs';
 import { MEDIA_TYPES, validateMediaMetadata } from '../../../../lib/social/media.mjs';
 
 export const dynamic='force-dynamic';
+export const runtime='nodejs';
+export const maxDuration=120;
 export async function POST(request){
   try{
     requirePayToken(request);
@@ -26,6 +29,7 @@ export async function POST(request){
 }
 
 export async function PUT(request){
+  let processing=false;
   try{
     requirePayToken(request);
     const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SECRET_KEY||process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -39,6 +43,8 @@ export async function PUT(request){
     validateMediaMetadata({contentType:file.metadata?.mimetype,size:Number(file.metadata?.size),duration:body.duration});
     if(!parts[1].endsWith('.'+MEDIA_TYPES[file.metadata.mimetype]))throw new Error('Formato não corresponde à extensão do upload.');
     const {data:publicData}=db.storage.from(bucket).getPublicUrl(body.path);
-    return Response.json({publicUrl:publicData.publicUrl},{headers:{'Cache-Control':'no-store'}});
-  }catch(error){return Response.json({error:error.status?error.message:'Arquivo enviado não corresponde aos limites de tamanho e formato.'},{status:error.status||400,headers:{'Cache-Control':'no-store'}})}
+    processing=file.metadata.mimetype.startsWith('video/');
+    const publicUrl=processing?await optimizeStoredVideo(db,bucket,body.path):publicData.publicUrl;
+    return Response.json({publicUrl},{headers:{'Cache-Control':'no-store'}});
+  }catch(error){return Response.json({error:error.status?error.message:processing?'Vídeo enviado. Não foi possível concluir a preparação; tente salvar novamente.':'Arquivo enviado não corresponde aos limites de tamanho e formato.'},{status:error.status||(processing?503:400),headers:{'Cache-Control':'no-store'}})}
 }

@@ -1,4 +1,5 @@
 'use client';
+import NewTokenRadar from '../components/NewTokenRadar';
 
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -146,6 +147,7 @@ export default function TendenciasPage() {
             <strong style={{ fontSize: 17, color: COLORS.green }}>Sem dados fictícios</strong>
           </div>
         </section>
+        <div style={{ marginTop: 20 }}><NewTokenRadar /></div>
 
         <nav aria-label="Módulos do Hub" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 18 }}>
           {MODULES.map((module) => (

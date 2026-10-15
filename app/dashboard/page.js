@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import NewTokenRadar from '../components/NewTokenRadar';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
@@ -48,10 +49,6 @@ export default function DashboardPage() {
   const baleias = [];
   const [marketMessage, setMarketMessage] = useState('Consultando tendências de busca…');
 
-  const [tokensExplosivos, setTokensExplosivos] = useState([
-    { nome: 'Consultando pesquisas de mercado…', status: 'Fonte: CoinGecko, não é detecção de lançamentos.' }
-  ]);
-
   useEffect(() => {
     let active = true, busy = false;
     const controller = new AbortController();
@@ -66,10 +63,9 @@ export default function DashboardPage() {
         const dados = Array.isArray(payload.tokens) && (payload.disponivel || payload.stale) ? payload.tokens : [];
         const label = payload.stale ? 'Última leitura, fonte não confirmada agora' : 'Tendência de pesquisa';
         setMegatendencias(dados.slice(0, 5).map(coin => ({ ativo: `${coin.nome} (${coin.simbolo})`, tendencia: label, cor: payload.stale ? '#92400e' : '#6d28d9' })));
-        setTokensExplosivos(dados.slice(5, 10).map(coin => ({ nome: `${coin.nome} (${coin.simbolo})`, status: label })));
         setMarketMessage(dados.length ? 'Fonte: CoinGecko Search Trending. Não é fluxo institucional, lançamento ou recomendação.' : 'Tendências temporariamente indisponíveis.');
       } catch (e) {
-        if (active) { setMegatendencias([]); setTokensExplosivos([]); setMarketMessage('Não foi possível confirmar uma leitura atual da fonte.'); }
+        if (active) { setMegatendencias([]); setMarketMessage('Não foi possível confirmar uma leitura atual da fonte.'); }
       } finally { busy = false; }
     }
 
@@ -527,20 +523,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Tokens Explosivos Reais */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '10px', color: '#d97706', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>TENDÊNCIAS DE PESQUISA</span>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Outros ativos pesquisados</h3>
-              <p style={{ fontSize: 12, color: '#64748b' }}>{marketMessage}</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
-                {tokensExplosivos.map((t, idx) => (
-                  <div key={idx} style={{ backgroundColor: '#f3e8ff', border: '1px solid #d8b4fe', padding: '10px', borderRadius: '8px' }}>
-                    <b style={{ color: '#6b21a8', display: 'block', marginBottom: '2px' }}>{t.nome}</b>
-                    <span style={{ color: '#581c87', fontSize: '10px' }}>{t.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <NewTokenRadar />
 
           </div>
 

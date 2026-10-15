@@ -27,7 +27,7 @@ export async function GET(request) {
   const id = url.searchParams.get('id');
   if (id !== null) {
     if (!uuid.test(id)) return reply({error:'INVALID_POST_ID'},400);
-    const {data,error} = await ctx.db.from('posts').select(POST_FIELDS).eq('id',id).maybeSingle();
+    const {data,error} = await ctx.db.from('posts').select(POST_FIELDS).eq('id',id).is('archived_at',null).maybeSingle();
     if (error) return reply({error:'FEED_UNAVAILABLE'},503);
     return data ? reply({post:publicPost(data)}) : reply({error:'POST_NOT_FOUND'},404);
   }
@@ -37,7 +37,7 @@ export async function GET(request) {
   const beforeId = url.searchParams.get("beforeId");
   if ((before === null) !== (beforeId === null) || (beforeId !== null && !uuid.test(beforeId)) || (before !== null && (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/.test(before) || !Number.isFinite(Date.parse(before))))) return reply({ error: "INVALID_CURSOR" }, 400);
   let query = ctx.db.from("posts")
-    .select(POST_FIELDS)
+    .select(POST_FIELDS).is("archived_at",null)
     .order("created_at", { ascending: false })
     .order("id", { ascending: false })
     .limit(raw + 1);

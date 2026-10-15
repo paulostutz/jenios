@@ -77,6 +77,8 @@ function SocialContent() {
   const [profilePosts,setProfilePosts]=useState([]),[profileNext,setProfileNext]=useState(null);
   const [followBusy,setFollowBusy]=useState(false);
   const [publicationNotice,setPublicationNotice]=useState('');
+  const archiveActions=useRef(new Set()),[archiveBusyId,setArchiveBusyId]=useState(null);
+  const [archivedPreview,setArchivedPreview]=useState(null);
   const [uploadPercent,setUploadPercent]=useState(null);
   const [profileBusy,setProfileBusy]=useState(false),[profileError,setProfileError]=useState('');
   const profileRequest=useRef(0);
@@ -108,7 +110,7 @@ function SocialContent() {
   const {profile:meuPerfil,setProfile:setMeuPerfil,posts,setPosts,ready:postsProntos,error:erroPosts}=feed;
   const sessionOwnerRef=useRef(null);sessionOwnerRef.current=meuPerfil.id;
   useEffect(()=>{if(modalAutenticacao)window.location.href='/login';},[modalAutenticacao]);
-  useEffect(()=>{setBlocksOpen(false);setNovoTexto('');setYoutubeLink('');setImagensPreview([]);setModalEditarPerfil(false);setPerfilVisitado(null);setPostEmFoco(null);setErroPostEmFoco('');setMensagensAberta(false);setChatAtivo(null);setTextoMensagem('');profileRequest.current++;setProfilePosts([]);setProfileNext(null);setProfileBusy(false);setProfileError('');setModalLista(null);setFollowRows([]);},[meuPerfil.id]);
+  useEffect(()=>{setArchivedPreview(null);setBlocksOpen(false);setNovoTexto('');setYoutubeLink('');setImagensPreview([]);setModalEditarPerfil(false);setPerfilVisitado(null);setPostEmFoco(null);setErroPostEmFoco('');setMensagensAberta(false);setChatAtivo(null);setTextoMensagem('');profileRequest.current++;setProfilePosts([]);setProfileNext(null);setProfileBusy(false);setProfileError('');setModalLista(null);setFollowRows([]);},[meuPerfil.id]);
   useEffect(()=>{if(postsProntos&&!directAutoOpened.current&&searchParams.get('direct')==='1'){directAutoOpened.current=true;setMensagensAberta(true);}},[postsProntos,meuPerfil.id,searchParams]);
 
   // Ranking Top 10 Semanal Completo
@@ -514,6 +516,22 @@ const handleUploadCarrossel = async (e) => {
     if(Object.keys(changes).some(k=>k!=='salvo'))return;
     try{const post=posts.find(p=>p.id===id);if(post)await feed.save(post,Boolean(changes.salvo));}catch(error){alert(error.message);}
   };
+  const arquivarPost=async(post,wanted=true)=>{
+    if(archiveActions.current.has(post.id))return;
+    archiveActions.current.add(post.id);setArchiveBusyId(post.id);
+    try{
+      await feed.archive(post,wanted);
+      if(sessionOwnerRef.current!==post.authorId)return;
+      if(wanted)setProfilePosts(old=>old.filter(p=>p.id!==post.id));
+      setPerfilVisitado(p=>p?.id===post.authorId?{...p,postsCount:Math.max(0,(p.postsCount||0)+(wanted?-1:1))}:p);
+      setPublicationNotice(wanted?'Publicação arquivada. Só você pode vê-la em Arquivados.':'Publicação restaurada ao feed, na data original.');
+    }finally{archiveActions.current.delete(post.id);if(sessionOwnerRef.current===post.authorId)setArchiveBusyId(null);}
+  };
+  const desarquivarPreview=async()=>{
+    if(!archivedPreview)return;
+    try{await arquivarPost(archivedPreview,false);setArchivedPreview(null);}
+    catch{setProfileError('Não foi possível desarquivar. Tente novamente.');}
+  };
   const excluirPost = async (id) => {try{await feed.remove(id);}catch(error){alert(error.message);}};
 
   useEffect(()=>{
@@ -544,7 +562,7 @@ const handleUploadCarrossel = async (e) => {
     });
   };
 
-  // Abre uma publicação selecionada na galeria, inclusive em Salvos.
+  // Abre uma publicação selecionada na galeria do perfil.
   const abrirPostDaGaleria = async (postId) => {
     try{await feed.openPost(postId);setPostEmFoco(postId);setAbaAtiva('feed');}catch(error){alert('Não foi possível abrir a publicação.');}
   };
@@ -575,7 +593,7 @@ const handleUploadCarrossel = async (e) => {
       const result=await feed.visit(usuario,offset);
       if(owner!==sessionOwnerRef.current||request!==profileRequest.current)return;
       setPerfilVisitado(result.profile);setProfilePosts(old=>offset?[...old,...result.posts.filter(p=>!old.some(x=>x.id===p.id))]:result.posts);setProfileNext(result.nextOffset);
-      if(tab==='salvos')await feed.loadSaved();
+      if(tab==='arquivados')await feed.loadArchived();
     }catch(error){if(owner===sessionOwnerRef.current&&request===profileRequest.current)setProfileError('Não foi possível carregar o perfil. Tente novamente.');}
     finally{if(owner===sessionOwnerRef.current&&request===profileRequest.current)setProfileBusy(false);}
     if(!offset)window.scrollTo({top:0,behavior:'smooth'});
@@ -1543,21 +1561,21 @@ const handleUploadCarrossel = async (e) => {
             ['ranking','🏆 Ranking'],
             ['lives','🔴 Lives'],
             ['perfil','👤 Meu Perfil'],
-            ['salvos','🔖 Salvos'],
+            ['arquivados','Arquivados'],
             ['bloqueados','Usuários bloqueados']
           ].map(([destino,rotulo]) => (
             <button key={destino} type="button" onClick={() => {
               if(destino==='bloqueados'){if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setBlocksOpen(true);return;}
-              if (destino === 'perfil' || destino === 'salvos') {
+              if (destino === 'perfil' || destino === 'arquivados') {
                 if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
-                void visitarPerfil(meuPerfil,destino === 'salvos' ? 'salvos' : 'posts');
+                void visitarPerfil(meuPerfil,destino === 'arquivados' ? 'arquivados' : 'posts');
               } else {
                 setAbaAtiva(destino);
               }
               window.scrollTo({top:0,behavior:'smooth'});
             }} style={{padding:'9px 13px',borderRadius:'9px',cursor:'pointer',fontSize:'12px',fontWeight:700,
-              border:'1px solid #ddd6fe',backgroundColor:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#7c3aed' : '#fff',
-              color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
+              border:'1px solid #ddd6fe',backgroundColor:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'arquivados') || (destino === 'arquivados' && abaAtiva === 'perfil-visita' && abaGaleria === 'arquivados')) ? '#7c3aed' : '#fff',
+              color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'arquivados') || (destino === 'arquivados' && abaAtiva === 'perfil-visita' && abaGaleria === 'arquivados')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
           ))}
         </nav>
 
@@ -1875,6 +1893,7 @@ const handleUploadCarrossel = async (e) => {
                     onVisitarPerfil={visitarPerfil}
                     onAtualizarPost={atualizarPost}
                     onExcluirPost={excluirPost}
+                    onArchive={arquivarPost}
                     onLoadComments={feed.comments}
                     onCreateComment={feed.comment}
                     onDeleteComment={feed.removeComment}
@@ -2363,15 +2382,15 @@ const handleUploadCarrossel = async (e) => {
                     ['posts', 'Posts'],
                     ['fotos', 'Fotos'],
                     ['videos', 'Vídeos'],
-                    ['salvos', 'Salvos'],
+                    ['arquivados', 'Arquivados'],
                   ].filter(([tipo]) =>
-                    tipo !== 'salvos' ||
-                    perfilVisitado.handle === meuPerfil.handle
+                    tipo !== 'arquivados' ||
+                    perfilVisitado.id === meuPerfil.id
                   ).map(([tipo, nome]) => (
                     <button
                       key={tipo}
                       type="button"
-                      onClick={() => {setAbaGaleria(tipo);if(tipo==='salvos')feed.loadSaved().catch(()=>setProfileError('Não foi possível carregar os salvos.'));}}
+                      onClick={() => {setAbaGaleria(tipo);if(tipo==='arquivados')feed.loadArchived().catch(()=>setProfileError('Não foi possível carregar os arquivados.'));}}
                       style={{
                         padding: '10px 15px',
                         borderRadius: '9px',
@@ -2389,17 +2408,18 @@ const handleUploadCarrossel = async (e) => {
                   ))}
                 </div>
 
+                {abaGaleria==='arquivados' && <p style={{color:'#64748b',fontSize:12}}>Só você pode ver estas publicações. Ao desarquivar, elas voltam ao perfil na data original.</p>}
                 {profileBusy && <p role="status">Carregando perfil…</p>}
                 {profileError && <p role="alert">{profileError} <button onClick={()=>visitarPerfil(perfilVisitado,abaGaleria)}>Tentar novamente</button></p>}
                 {(() => {
-                  const publicacoes = (abaGaleria==='salvos'?feed.savedPosts:profilePosts).filter((p) => {
+                  const publicacoes = (abaGaleria==='arquivados'?feed.archivedPosts:profilePosts).filter((p) => {
                     const ehDoPerfil =
                       p.authorId === perfilVisitado.id;
 
-                    if (abaGaleria === 'salvos') {
+                    if (abaGaleria === 'arquivados') {
                       return (
-                        perfilVisitado.handle === meuPerfil.handle &&
-                        Boolean(p.salvo)
+                        perfilVisitado.id === meuPerfil.id &&
+                        Boolean(p.archivedAt)
                       );
                     }
 
@@ -2444,9 +2464,10 @@ const handleUploadCarrossel = async (e) => {
                           : primeira?.src;
 
                         return (
-                          <button key={p.id} type="button"
-                            onClick={() => abrirPostDaGaleria(p.id)}
-                            aria-label={`Abrir publicação de ${p.autor || p.handle || 'usuário'}`}
+                          <div key={p.id}><button type="button"
+                            onClick={() => abaGaleria==='arquivados'?setArchivedPreview(p):abrirPostDaGaleria(p.id)}
+                            aria-label={`${abaGaleria==='arquivados'?'Abrir publicação arquivada':'Abrir publicação'} de ${p.autor || p.handle || 'usuário'}`}
+                            
                             style={{
                             padding: 0,
                             textAlign: 'left',
@@ -2500,16 +2521,29 @@ const handleUploadCarrossel = async (e) => {
                               <span>👁️ {p.views || 0}</span>
                             </div>
                           </button>
+                          {p.authorId===meuPerfil.id && <button type="button" disabled={archiveBusyId===p.id} onClick={async()=>{setProfileError('');try{await arquivarPost(p,abaGaleria!=='arquivados');}catch{setProfileError('Não foi possível atualizar o arquivo. Tente novamente.');}}} style={{padding:10,width:'100%',border:'1px solid #ddd6fe',borderRadius:8,color:'#6d28d9',background:'#fff',cursor:'pointer'}}>{abaGaleria==='arquivados'?'Desarquivar':'Arquivar'}</button>}
+                          </div>
                         );
                       })}
                     </div>
                   );
                 })()}
-                {(abaGaleria==='salvos'?feed.savedNext:profileNext)!==null && <button disabled={profileBusy} onClick={()=>abaGaleria==='salvos'?feed.loadSaved(feed.savedNext).catch(()=>setProfileError('Não foi possível carregar mais salvos.')):visitarPerfil(perfilVisitado,abaGaleria,profileNext)}>Carregar mais publicações</button>}
+                {(abaGaleria==='arquivados'?feed.archivedNext:profileNext)!==null && <button disabled={profileBusy} onClick={()=>abaGaleria==='arquivados'?feed.loadArchived(feed.archivedNext).catch(()=>setProfileError('Não foi possível carregar mais arquivados.')):visitarPerfil(perfilVisitado,abaGaleria,profileNext)}>Carregar mais publicações</button>}
               </div>
             </div>
           )}
       </div>
+
+      {archivedPreview && archivedPreview.authorId===meuPerfil.id && <div style={{position:'fixed',inset:0,zIndex:3000,background:'#0f172acc',display:'grid',placeItems:'center',padding:18}}>
+        <section role="dialog" aria-modal="true" aria-label="Publicação arquivada" style={{background:'#fff',color:'#172554',borderRadius:16,padding:24,maxWidth:640,width:'100%',maxHeight:'85vh',overflowY:'auto',boxSizing:'border-box'}}>
+          <button type="button" onClick={()=>setArchivedPreview(null)} style={{float:'right'}}>Fechar arquivo</button>
+          <h2>Publicação arquivada</h2><small>Só você pode ver · {archivedPreview.tempo}</small>
+          <p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{archivedPreview.texto}</p>
+          {(archivedPreview.imagens||[]).map((media,index)=>media.tipo==='video'?<video key={index} src={media.src} controls playsInline preload="metadata" style={{width:'100%',maxHeight:420}}/>:<img key={index} src={media.src} alt="Mídia arquivada" loading="lazy" style={{width:'100%',maxHeight:420,objectFit:'contain'}}/>)}
+          {archivedPreview.youtubeUrl&&<a href={archivedPreview.youtubeUrl} target="_blank" rel="noopener noreferrer">Abrir vídeo do YouTube</a>}
+          <button type="button" disabled={archiveBusyId===archivedPreview.id} onClick={desarquivarPreview} style={{display:'block',padding:12,marginTop:14,background:'#7c3aed',color:'#fff',border:0,borderRadius:8}}>Desarquivar publicação</button>
+        </section>
+      </div>}
 
       {/* MODAL DE AUTENTICAÇÃO */}
       {modalAutenticacao && (

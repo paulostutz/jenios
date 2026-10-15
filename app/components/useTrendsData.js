@@ -14,11 +14,12 @@ async function read(path,force=false){
 }
 export default function useTrendsData(path='/api/tendencias'){
  const [data,setData]=useState(()=>cache.get(path)?.data||null),[loading,setLoading]=useState(!cache.has(path)),[error,setError]=useState('');
- const [revision,setRevision]=useState(0);
+ const [revision,setRevision]=useState(0),[clock,setClock]=useState(Date.now());
+ useEffect(()=>{const timer=setInterval(()=>setClock(Date.now()),10000);return()=>clearInterval(timer);},[]);
  useEffect(()=>{let live=true;
   async function refresh(){if(document.hidden)return;try{const d=await read(path,revision>0);if(live){setData(d);setError('');}}catch{if(live)setError('Não foi possível atualizar agora.');}finally{if(live)setLoading(false);}}
   refresh();const timer=setInterval(refresh,60000);document.addEventListener('visibilitychange',refresh);
   return()=>{live=false;clearInterval(timer);document.removeEventListener('visibilitychange',refresh);};
  },[path,revision]);
- return {data,loading,error,refresh:()=>{setLoading(true);setRevision(n=>n+1);}};
+ return {data,loading,error,clock,refresh:()=>{setLoading(true);setRevision(n=>n+1);}};
 }

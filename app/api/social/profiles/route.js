@@ -22,7 +22,7 @@ export async function GET(request) {
     if (profile.error) throw profile.error;
     if (!profile.data) throw Object.assign(new Error('Perfil não disponível.'), { status: 404 });
     const offset=Number(params.get('offset')||0);if(!Number.isSafeInteger(offset)||offset<0)throw Object.assign(new Error('Página inválida.'),{status:400});
-    const posts = await db.from('posts').select(POST_FIELDS,{count:'exact'}).eq('author_id', id).order('created_at', { ascending: false }).order('id',{ascending:false}).range(offset,offset+19);
+    const posts = await db.from('posts').select(POST_FIELDS,{count:'exact'}).eq('author_id', id).is('archived_at',null).order('created_at', { ascending: false }).order('id',{ascending:false}).range(offset,offset+19);
     if (posts.error) throw posts.error;
     return Response.json({ profile: profile.data, posts: (posts.data || []).map(publicPost), postsCount:posts.count||0,nextOffset:posts.data?.length===20?offset+20:null }, { headers });
   } catch (error) { return Response.json({ error: error.status ? error.message : 'Não foi possível consultar o perfil.' }, { status: error.status || 503, headers }); }

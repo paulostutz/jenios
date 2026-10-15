@@ -1,7 +1,7 @@
 "use client";
 import useTrendsData from './useTrendsData';
 import NewTokenRadar from './NewTokenRadar';
-import {TREND_MODULES,trendDetail} from '../../lib/trends-ui.mjs';
+import {TREND_MODULES,trendDetail,visibleTrendRows} from '../../lib/trends-ui.mjs';
 import TrendHelp from './TrendHelp';
 import {useEffect,useState} from "react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ const panel={background:"#fff",border:"1px solid #dce5ef",borderRadius:16,paddin
 const muted="#63758e",blue="#7c3aed";
 const fmt=v=>v==null?"N/D":Number(v).toLocaleString("pt-BR",{maximumFractionDigits:2})+"%";
 export default function SocialSidebarPremium({operadores = [], onOpenRanking}){
- const {data:trends,error:trendsError}=useTrendsData();
+ const {data:trends,error:trendsError,clock}=useTrendsData();
  const [ranking,setRanking]=useState(null),[news,setNews]=useState(null),[newsChecked,setNewsChecked]=useState(null),[newsError,setNewsError]=useState(false);
 
  useEffect(()=>{let active=true;fetch("/api/bankscore/ranking",{cache:"no-store"}).then(async r=>{const d=await r.json();return r.ok?d:{...d,erro:d.erro||"Falha ao consultar BankScore"}}).then(d=>{if(active)setRanking(d)}).catch(()=>{if(active)setRanking({ranking:[],erro:"Falha de conexão com o BankScore"})});return()=>{active=false}},[]);
@@ -18,12 +18,13 @@ export default function SocialSidebarPremium({operadores = [], onOpenRanking}){
  return <div style={{display:"grid",gap:14}}>
  <section style={panel} aria-label="Ranking semanal"><h3 style={{margin:'0 0 8px',fontSize:16,color:blue}}>🏆 Ranking Semanal · Top 5</h3><p style={{fontSize:12,color:muted}}>Ranking em preparação. Os resultados serão publicados após conferência.</p>{[].map((op,i)=><div key={op.handle} style={{display:'flex',justifyContent:'space-between',gap:8,padding:'8px 0',fontSize:12,borderBottom:'1px solid #eef2f6'}}><span>{i+1}º {op.nome}</span><strong style={{color:blue}}>{op.rentabilidade}</strong></div>)}<button onClick={onOpenRanking} style={{border:0,background:'none',padding:'12px 0 0',fontSize:12,color:blue,textDecoration:'underline',cursor:'pointer'}}>Ver ranking completo ↗</button></section>
  <section id="jenios-megapulse" style={panel}><h3 style={{margin:'0 0 10px',fontSize:16,color:blue}}>Hub de Tendências</h3>
- {trendsError&&<p role="status">Atualização indisponível. Exibindo a última leitura.</p>}
+ {trendsError&&<p role="status">Não foi possível atualizar agora.</p>}
  {TREND_MODULES.map(({id,label})=><div key={id} style={{fontSize:12,padding:'10px 0',borderBottom:'1px solid #eef2f6'}}><strong>{label}</strong><TrendHelp kind={id}/>
  {!trends?<p>Carregando…</p>:!(trends.modulos?.[id]?.disponivel||trends.modulos?.[id]?.stale)?<p role="status">{trends.modulos?.[id]?.mensagem||'Atualização indisponível.'}</p>:<>
  {trends.modulos?.[id]?.stale&&<p>Dados da última leitura.</p>}
- {(trends[id]||[]).slice(0,2).map((x,i)=><p key={x.id||i}>{x.nome} · {x.simbolo}<small style={{display:'block'}}>{trendDetail(id,x)}</small></p>)}
- {!trends[id]?.length&&<p>Nenhum registro nesta atualização.</p>}
+ {id==='baleias'&&trends.modulos?.[id]?.historico&&<p>Últimos três movimentos registrados · histórico</p>}
+ {visibleTrendRows(id,trends,clock).slice(0,id==='baleias'?3:2).map((x,i)=><p key={x.id||i}>{x.nome} · {x.simbolo}<small style={{display:'block'}}>{trendDetail(id,x)}</small></p>)}
+ {!visibleTrendRows(id,trends,clock).length&&<p>{id==='megapulse'?'Sem movimentos recentes confirmados agora.':'Nenhum registro nesta atualização.'}</p>}
  </>}</div>)}
  <NewTokenRadar compact/>
  <Link href="/tendencias" style={{display:'block',marginTop:12,color:blue}}>Abrir Hub de Tendências ↗</Link></section>

@@ -14,6 +14,7 @@ export default function SocialPostCard({
   onVisitarPerfil,
   onAtualizarPost,
   onExcluirPost,
+  onArchive,
   onLoadComments,
   onCreateComment,
   onDeleteComment,
@@ -56,7 +57,11 @@ export default function SocialPostCard({
     ? post.comentarios
     : [];
 
-  const salvo = Boolean(post.salvo);
+  const [archiveBusy,setArchiveBusy]=useState(false),[archiveError,setArchiveError]=useState('');
+  async function archivePost(){
+    if(!souAutor||archiveBusy)return;setArchiveBusy(true);setArchiveError('');
+    try{await onArchive(post);setMenuAberto(false);}catch{setArchiveError('Não foi possível arquivar. Tente novamente.');}finally{setArchiveBusy(false);}
+  }
 
   const embedYoutubeUrl =
     typeof extrairEmbedYoutube === 'function'
@@ -332,12 +337,6 @@ export default function SocialPostCard({
 
     atualizarPost({
       comentarios: novosComentarios,
-    });
-  }
-
-  function alternarSalvo() {
-    atualizarPost({
-      salvo: !salvo,
     });
   }
 
@@ -701,18 +700,8 @@ export default function SocialPostCard({
                 🔗 Copiar link
               </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  alternarSalvo();
-                  setMenuAberto(false);
-                }}
-                style={estiloBotaoMenu}
-              >
-                {salvo
-                  ? '🔖 Remover dos salvos'
-                  : '🔖 Salvar publicação'}
-              </button>
+              {souAutor && onArchive && <button type="button" disabled={archiveBusy} onClick={archivePost} style={estiloBotaoMenu}>{archiveBusy?'Arquivando…':'Arquivar publicação'}</button>}
+              {archiveError && <p role="alert">{archiveError}</p>}
 
               {!souAutor && (
                 <button
@@ -981,7 +970,7 @@ export default function SocialPostCard({
           padding: '12px 16px',
           display: 'grid',
           gridTemplateColumns:
-            'repeat(4, minmax(0, 1fr))',
+            'repeat(3, minmax(0, 1fr))',
           backgroundColor: '#f8fafc',
           borderTop:
             '1px solid #e2e8f0',
@@ -1026,21 +1015,6 @@ export default function SocialPostCard({
           ↗️ <span>Compartilhar</span>
         </button>
 
-        <button
-          type="button"
-          onClick={alternarSalvo}
-          style={{
-            ...estiloAcao,
-            color: salvo
-              ? '#7c3aed'
-              : '#475569',
-          }}
-        >
-          {salvo ? '🔖' : '🏷️'}{' '}
-          <span>
-            {salvo ? 'Salvo' : 'Salvar'}
-          </span>
-        </button>
       </div>
 
       {/* REPOSTAR */}

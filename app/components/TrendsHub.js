@@ -4,7 +4,7 @@ import NewTokenRadar from './NewTokenRadar';
 
 import Link from 'next/link';
 import useTrendsData from './useTrendsData';
-import {TREND_MODULES,trendDetail,trendUrl} from '../../lib/trends-ui.mjs';
+import {TREND_MODULES,trendDetail,trendUrl,visibleTrendRows} from '../../lib/trends-ui.mjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const COLORS = {
@@ -49,13 +49,13 @@ function StatusBadge({ available, stale }) {
 export default function TrendsHub({ embedded = false }) {
   const Heading = embedded ? 'h2' : 'h1';
   const [active, setActive] = useState('tokens');
-  const {data,loading,error,refresh}=useTrendsData();
+  const {data,loading,error,refresh,clock}=useTrendsData();
 
   const moduleStatus = data?.modulos?.[active] || {
     disponivel: false,
     mensagem: 'Fonte ainda não homologada.'
   };
-  const rows = (moduleStatus.disponivel || moduleStatus.stale) && Array.isArray(data?.[active]) ? data[active] : [];
+  const rows = moduleStatus.disponivel || moduleStatus.stale ? visibleTrendRows(active,data,clock) : [];
 
   return (
     <section aria-label="Hub de Tendências" style={{
@@ -146,14 +146,14 @@ export default function TrendsHub({ embedded = false }) {
               <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
                 {active === 'tokens'
                   ? 'Ativos em alta nas pesquisas; não significa lançamento recente, fluxo institucional ou recomendação.'
-                  : active === 'megapulse' ? 'Fechamento diário de mini Ibovespa e mini dólar. Cobertura inicial; ações ainda não incluídas.' : 'Grandes transferências confirmadas em Bitcoin. Amostra de até 50 transações do bloco mais recente; compras e identidade institucional não são confirmadas.'}
+                  : active === 'megapulse' ? 'Cotações reais de ações monitoradas, com horário de negociação de até 2 minutos. Futuros só serão exibidos com leitura intradiária confirmada.' : 'Grandes transferências confirmadas em Bitcoin. Consulta em até 3 blocos recentes, com verificação das transações candidatas; compras e identidade institucional não são confirmadas.'}
               </p>
             </div>
-            <div>{moduleStatus.parcial && <p role="status">Cobertura parcial nesta atualização.</p>}<StatusBadge available={!error&&Boolean(moduleStatus.disponivel)} stale={Boolean(moduleStatus.stale)||(Boolean(error)&&rows.length>0)} /></div>
+            <div>{moduleStatus.parcial && <p role="status">Cobertura parcial nesta atualização.</p>}{moduleStatus.historico && <p role="status">Últimos três movimentos registrados · histórico</p>}<StatusBadge available={!error&&Boolean(moduleStatus.disponivel)&&(active!=='megapulse'||rows.length>0)&&!moduleStatus.historico} stale={Boolean(moduleStatus.historico)||(active!=='megapulse'&&(Boolean(moduleStatus.stale)||(Boolean(error)&&rows.length>0)))} /></div>
           </div>
 
           <div style={{ height: 1, background: COLORS.line, margin: '20px 0' }} />
-          {(moduleStatus.stale || error) && <p role="status" style={{ color: '#92400e' }}>Não há confirmação atual da fonte. {moduleStatus.mensagem || error} Os dados preservados abaixo são da última leitura válida, não dados em tempo real.</p>}
+          {active!=='megapulse' && (moduleStatus.stale || error) && <p role="status" style={{ color: '#92400e' }}>Não há confirmação atual da fonte. {moduleStatus.mensagem || error} Os dados preservados abaixo são da última leitura válida, não dados em tempo real.</p>}
 
           {loading ? (
             <p role="status" style={{ color: COLORS.muted }}>Carregando tendências…</p>
@@ -166,7 +166,7 @@ export default function TrendsHub({ embedded = false }) {
               
             </div>
           ) : rows.length === 0 ? (
-            <div style={emptyCard}><strong>Nenhum registro disponível nesta atualização.</strong></div>
+            <div style={emptyCard}><strong>{active==='megapulse'?'Sem movimentos recentes confirmados agora.':'Nenhum registro disponível nesta atualização.'}</strong></div>
           ) : (
             <div style={{ display: 'grid', gap: 11 }}>
               {rows.map((item, index) => (
@@ -194,7 +194,7 @@ export default function TrendsHub({ embedded = false }) {
           )}
 
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
-            {active === 'megapulse' ? 'Dados de fechamento diário, sem sinal de compra ou venda. A variação de um pregão não confirma uma tendência persistente.' : active==='baleias'?'O valor representa a maior saída da transação e pode incluir troco ou transferência entre carteiras da mesma pessoa.':'Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização.'}
+            {active === 'megapulse' ? 'Somente cotações com horário recente são exibidas. A variação é do pregão; não representa sinal de compra ou venda.' : active==='baleias'?'O valor representa a maior saída da transação e pode incluir troco ou transferência entre carteiras da mesma pessoa.':'Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização.'}
           </footer>
         </section>
       </div>

@@ -12,6 +12,7 @@ export default function useSocialFeed(){
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[cursor,setCursor]=useState(null),[loading,setLoading]=useState(false);
  const [stories,setStories]=useState([]),[storiesNext,setStoriesNext]=useState(null),[storiesError,setStoriesError]=useState('');
  const [savedPosts,setSavedPosts]=useState([]),[savedNext,setSavedNext]=useState(null);
+ const [archivedPosts,setArchivedPosts]=useState([]),[archivedNext,setArchivedNext]=useState(null);
  const fence=useRef(createSessionFence()),busy=useRef(new Map()),reloadRef=useRef(null),postRevision=useRef(0);
  const clientFor=ticket=>createScopedFeedClient({auth:supabase.auth,fence:fence.current,ticket});
  async function profilesFor(ids){
@@ -22,12 +23,12 @@ export default function useSocialFeed(){
  }
  async function present(rows,ticket){
   const client=clientFor(ticket),ids=rows.map(r=>r.id);
-  const [profiles,savedResult,likesResult]=await Promise.all([
-   profilesFor(rows.map(x=>x.author_id)),client.savedState(ids).catch(()=>({ids:[]})),client.likesBatch(ids).catch(()=>({stats:[]}))
+  const [profiles,likesResult]=await Promise.all([
+   profilesFor(rows.map(x=>x.author_id)),client.likesBatch(ids).catch(()=>({stats:[]}))
   ]);
   if(!fence.current.current(ticket))return [];
-  const saved=new Set(savedResult.ids),likes=new Map(likesResult.stats.map(x=>[x.post_id,x]));
-  return rows.map(row=>({...postView(row,profiles.get(row.author_id)),salvo:saved.has(row.id),likes:likes.has(row.id)?Number(likes.get(row.id).count):null,curtido:likes.get(row.id)?.liked||false}));
+  const likes=new Map(likesResult.stats.map(x=>[x.post_id,x]));
+  return rows.map(row=>({...postView(row,profiles.get(row.author_id)),likes:likes.has(row.id)?Number(likes.get(row.id).count):null,curtido:likes.get(row.id)?.liked||false}));
  }
  async function load(ticket,after=null){
   const revision=postRevision.current;
@@ -44,7 +45,7 @@ export default function useSocialFeed(){
   async function refresh(){
    if(!live)return;
    let ticket=fence.current.change();
-   setProfile({...visitorProfile});setPosts([]);setCursor(null);setError('');setReady(false);setLoading(false);setSavedPosts([]);setSavedNext(null);setStories([]);setStoriesNext(null);setStoriesError('');busy.current.clear();
+   setProfile({...visitorProfile});setPosts([]);setCursor(null);setError('');setReady(false);setLoading(false);setSavedPosts([]);setSavedNext(null);setArchivedPosts([]);setArchivedNext(null);setStories([]);setStoriesNext(null);setStoriesError('');busy.current.clear();
    try{
     const r=await supabase?.auth.getUser();
     if(!live||!fence.current.current(ticket))return;
@@ -155,7 +156,7 @@ export default function useSocialFeed(){
  async function createStory(media){return action('story-publish',async(ticket,client)=>{await client.createStory(media);await loadStories(0,ticket);});}
  async function deleteStory(id){return action('story-delete:'+id,async(ticket,client)=>{await client.deleteStory(id);if(fence.current.current(ticket))setStories(old=>old.filter(s=>s.id!==id));});}
  async function refreshCounts(ticket=fence.current.capture()){
-  const [counts,own]=await Promise.all([clientFor(ticket).follows(ticket.owner),supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',ticket.owner)]);
+  const [counts,own]=await Promise.all([clientFor(ticket).follows(ticket.owner),supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',ticket.owner).is('archived_at',null)]);
   if(fence.current.current(ticket))setProfile(p=>({...p,followersCount:counts.followers,followingCount:counts.following,...(!own.error?{postsCount:own.count}: {})}));
  }
  async function save(post,wanted){return action('save:'+post.id,async(ticket,client)=>{
@@ -168,6 +169,21 @@ export default function useSocialFeed(){
  async function loadSaved(offset=0){return action('saved',async(ticket,client)=>{
   const result=await client.listSaved(offset),rows=await present(result.posts,ticket);
   if(fence.current.current(ticket)){setSavedPosts(old=>offset?[...old,...rows.filter(p=>!old.some(x=>x.id===p.id))]:rows);setSavedNext(result.nextOffset);}
+ });}
+ async function loadArchived(offset=0){return action('archive-list',async(ticket,client)=>{
+  const result=await client.listArchived(offset),rows=await present(result.posts,ticket);
+  if(fence.current.current(ticket)){setArchivedPosts(old=>offset?[...old,...rows.filter(p=>!old.some(x=>x.id===p.id))]:rows);setArchivedNext(result.nextOffset);}
+ });}
+ async function archive(post,wanted=true){return action('archive:'+post.id,async(ticket,client)=>{
+  if(post.authorId!==ticket.owner)throw Error('Você só pode arquivar suas publicações.');
+  const result=await client.archive(post.id,wanted);
+  if(fence.current.current(ticket)){
+   postRevision.current++;
+   if(wanted){setPosts(old=>old.filter(p=>p.id!==post.id));setArchivedPosts(old=>[{...post,archivedAt:result.post.archived_at},...old.filter(p=>p.id!==post.id)]);}
+   else{setArchivedPosts(old=>old.filter(p=>p.id!==post.id));await load(ticket);}
+   await Promise.allSettled([refreshCounts(ticket),loadStories(0,ticket)]);
+  }
+  return result.post;
  });}
  async function visit(person,offset=0){return action('profile:'+person.id+':'+person.handle,async(ticket,client)=>{
   const data=await client.profile(person,offset);const [counts,rows]=await Promise.all([client.follows(data.profile.id),present(data.posts,ticket)]);
@@ -186,5 +202,5 @@ export default function useSocialFeed(){
   catch{if(fence.current.current(ticket))setError('Não foi possível carregar mais publicações. Tente novamente.');}
   finally{if(fence.current.current(ticket))setLoading(false);}
  }
- return {lives,createLive,deleteLive,reportLive,blocks,block,unblock,likeComment,report,stories,storiesNext,storiesError,loadStories,createStory,deleteStory,profile,setProfile,posts,setPosts,ready,error,cursor,loading,more,publish,like,remove,comments,comment,removeComment,openPost,savedPosts,savedNext,save,loadSaved,visit,toggleFollow,followList,retry:()=>reloadRef.current?.()};
+ return {archivedPosts,archivedNext,loadArchived,archive,lives,createLive,deleteLive,reportLive,blocks,block,unblock,likeComment,report,stories,storiesNext,storiesError,loadStories,createStory,deleteStory,profile,setProfile,posts,setPosts,ready,error,cursor,loading,more,publish,like,remove,comments,comment,removeComment,openPost,savedPosts,savedNext,save,loadSaved,visit,toggleFollow,followList,retry:()=>reloadRef.current?.()};
 }

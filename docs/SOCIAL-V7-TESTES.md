@@ -38,6 +38,18 @@ Testar recusa com motivo: deve ficar recusado, mas não devolver dinheiro automa
 
 26 verificações HTTP e build Next.js aprovados. Sem homologação autenticada de navegador, sem execução de serviço real, sem convites/notificações e sem repasses neste ambiente.
 
+## Impulsionamento — checkpoint 12
+
+Código de distribuição interna implementado, migração e flags ainda não aplicadas no ambiente remoto. Não instalar este checkpoint isoladamente; integrar a configuração ao pacote final. Revisar a migração supabase/migrations/20261015001833_boost_campaign_delivery.sql, depois configurar as variáveis descritas em JENIOS-PAY-CONEXAO.md.
+
+Em homologação, contratar publicação própria com orçamento do cliente. Para website/copy, informar destino HTTPS; para WhatsApp, wa.me com DDI. Depois da confirmação real na PAY, abrir Minhas campanhas e ativar. Antes de paid não deve ativar. Conferir pausa/retomada, prazo que continua durante pausas e cancelamento que não reembolsa automaticamente.
+
+Em uma segunda conta, abrir o componente Publicidade na comunidade, informar voluntariamente a mesma região e solicitar uma publicação patrocinada. Post deve estar rotulado Patrocinado. País deve coincidir; região/cidade só são filtros quando o anunciante os definiu. Não se trata de localização verificada. Testar bloqueios nos dois sentidos e exclusão do post. O anúncio deve parar quando não elegível. Perfil do anunciante abre página real, somente leitura, respeitando bloqueios e RLS.
+
+Exibição é tentativa de registro após 50% do cartão por 1 segundo em aba visível; sem IntersectionObserver não inventar impressão. Métricas são deduplicadas por conta/dia UTC e não debitam orçamento. Conferir token alterado, outra conta, validade vencida e revisão antiga após pausa. Não tratar contadores como auditoria antifraude ou gasto consumido.
+
+166 testes unitários/contrato/mock, 26 verificações PostgreSQL isoladas do impulsionamento, 33 verificações HTTP e build aprovados. O script scripts/test-boost-postgres.mjs usa PGlite 0.5.10 externo ao projeto. O SQL foi executado com fixtures locais; não houve campanha paga real, homologação autenticada em navegador ou teste de carga/multiconexão.
+
 ## Validador
 
 O catálogo de identidade cobre apenas endereços de referência USDT/USDC explicitamente cadastrados, conferidos nas fontes dos emissores em 14/10/2026. Não é uma varredura de todos os tokens de uma carteira. Um ativo fora do catálogo fica inconclusivo, não é automaticamente chamado de falso.

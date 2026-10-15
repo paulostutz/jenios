@@ -43,5 +43,6 @@ export default function SocialChargeButton({ productCode, label, target = {}, sc
     {orderId && <small>Pedido: {orderId} · <a href="/social/cobrancas">Minhas cobranças</a></small>}
     {orderId && productCode === 'social-crypto-validator' && <a href={'/social/consulta-detalhada?pedido=' + encodeURIComponent(orderId)}>Abrir consulta detalhada após a confirmação</a>}
     {orderId && productCode === 'social-specialist-offer' && <a href="/especialistas/atendimentos">Acompanhar atendimento após a confirmação</a>}
+    {orderId && productCode === 'social-boost' && <a href="/impulsionar/campanhas">Acompanhar e ativar campanha após a confirmação</a>}
   </div>;
 }

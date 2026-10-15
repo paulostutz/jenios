@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import CryptoValidator from '../components/CryptoValidator';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialStories from '../components/SocialStories';
+import PromotedPost from '../components/PromotedPost';
 import { supabase } from '../../lib/supabase';
 import { uploadSocialMedia } from '../../lib/social/media.mjs';
 
@@ -2184,6 +2185,7 @@ const excluirPost = (id) => {
                 gap: '20px',
               }}
             >
+              <PromotedPost />
               <SocialStories
                 meuPerfil={meuPerfil}
                 stories={storiesJenios}

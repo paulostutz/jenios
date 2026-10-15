@@ -13,6 +13,9 @@ O adaptador é um contrato novo na fronteira da Social: ainda deve ser compatibi
 - JENIOS_PAY_CHECKOUT_ORIGINS: origens HTTPS adicionais autorizadas para redirecionar ao checkout, separadas por vírgula. A origem do endpoint já é autorizada.
 - JENIOS_APP_ORIGIN: opcional, origem HTTPS do site sem caminho. Acrescenta returnUrl ao contrato: /social/cobrancas para Social e /checkout para Platform. A PAY deve aceitar esse campo; não é confirmação de pagamento.
 - JENIOS_SPECIALIST_ORDERS_ENABLED=true: ativar apenas depois de instalar e validar a migração de atendimentos do checkpoint 11 em homologação. Desligado preserva o fluxo financeiro existente e informa que a gestão de atendimentos ainda não foi ativada.
+- JENIOS_BOOST_CAMPAIGNS_ENABLED=true: ativar somente depois de instalar e validar a migração de campanhas do checkpoint 12. Ausente/false preserva o fluxo anterior.
+- JENIOS_BOOST_SIGNING_SECRET: chave aleatória própria de pelo menos 32 bytes, somente servidor, para comprovantes curtos de exibição. Não reutilizar chave Inter, token PAY ou credencial Supabase. Com campanhas ativas e chave ausente, novas contratações são bloqueadas antes de criar pedido.
+- NEXT_PUBLIC_SOCIAL_PROMOTIONS_ENABLED=true: renderiza o componente opcional de publicidade no feed original e no compartilhado. Requer a extensão, a flag de servidor e a chave de assinatura já configuradas.
 - JENIOS_PAY_ADMIN_USER_IDS: IDs de usuários Supabase autorizados à gestão financeira, separados por vírgula. Alternativamente, app_metadata.role igual a admin ou finance_admin, atribuído por backend confiável.
 - NEXT_PUBLIC_SUPABASE_URL e chave pública compatível com lib/supabase.js.
 - SUPABASE_SECRET_KEY ou SUPABASE_SERVICE_ROLE_KEY: somente no servidor.
@@ -49,7 +52,7 @@ Consulta básica e seu PDF continuam disponíveis. A consulta paga acrescenta in
 
 Não há relatório salvo na nuvem. O navegador pode reter os dados do alvo por sessão; se perdidos, o usuário informa exatamente o alvo contratado. Nenhum dado local concede acesso por si só. Nova emissão consulta novamente a fonte e pode observar outro estado. Falha de provedor retorna 503 e permite tentar novamente com o mesmo pedido, sem nova cobrança.
 
-A integração Inter é considerada validada pelo usuário. Este ambiente não homologou a compatibilidade do adaptador com a implementação PAY do Mac nem o retorno real do pagamento. BankScore completo, execução de campanhas e recorrência ativa da Platform continuam pendentes. Não promover este pacote à produção como versão final homologada.
+A integração Inter é considerada validada pelo usuário. Este ambiente não homologou a compatibilidade do adaptador com a implementação PAY do Mac nem o retorno real do pagamento. BankScore completo e recorrência ativa da Platform continuam pendentes; campanhas têm distribuição interna implementada no checkpoint 12, ainda não ativada/homologada na instância real. Não promover este pacote à produção como versão final homologada.
 
 ## Gestão de atendimentos — checkpoint 11
 
@@ -62,3 +65,17 @@ Com a flag ativa, o atendimento é preparado antes de abrir checkout. Falha na p
 Ações de atendimento consultam e bloqueiam a linha financeira na mesma transação, exigem paid e revisão atual. Pedido reembolsado/expirado/pendente não permite avançar o serviço. A recusa é estado de atendimento, não reembolso. Marcar entrega não prova recebimento; somente o comprador pode confirmar. Nenhuma destas ações executa Pix, reembolso, split ou repasse.
 
 O histórico guarda ação, papel e horário, sem e-mails ou credenciais. Links HTTPS são informados pelo especialista; o sistema não cria salas, não envia convites nem notifica terceiros neste bloco. O horário é informado e mostrado no fuso do navegador.
+
+## Campanhas e distribuição interna — checkpoint 12
+
+Migração preparada e não aplicada remotamente: supabase/migrations/20261015001833_boost_campaign_delivery.sql. Inventário remoto não possuía estrutura equivalente. A extensão cria jenios_boost_campaigns (1:1 com pedido PAY) e jenios_boost_events (métricas), sem duplicar cobranças ou modificar tabelas financeiras. Não cria campanha em redes externas.
+
+Com a flag de servidor ativa, snapshot de público, objetivo, destino, orçamento diário e dias é preparado antes de abrir checkout. Falha de preparação preserva pedido pendente sem chamar gateway. Só o dono do post pode contratar e ativar. /impulsionar/campanhas permite iniciar após paid, pausar, retomar e cancelar distribuição. Cancelamento não é reembolso e nenhuma métrica debita dinheiro.
+
+O prazo começa no primeiro start e não é estendido por pausas. Expiração é aplicada na seleção, sem depender de cron. A seleção exclui pedidos não pagos/reembolsados, campanhas inativas/expiradas, posts excluídos, autoria incompatível, bloqueios em qualquer direção e visualização do próprio anunciante. Leitura final do post usa a sessão/RLS do visitante. O objetivo perfil leva a uma página somente leitura do perfil real, sem substituir a navegação legada da Social.
+
+Público por país/região/cidade autodeclarados voluntariamente, sem GPS ou inferência por IP. Comparação textual de país e, quando definidos, região/cidade, ignorando caixa e espaços nas extremidades; não converte siglas ou nomes de cidades. O visitante solicita o conteúdo patrocinado pelo componente opcional. Não há inserção automática de publicidade para visitantes que não informaram região. O orçamento diário pondera a seleção aleatória entre campanhas elegíveis; não garante volume de entrega e não é medição de gasto consumido.
+
+Destinos website/copy exigem HTTPS sem credenciais; WhatsApp usa wa.me com DDI e número completo. O cliente informa o destino antes de pagar. Comprovante assinado vincula campanha, conta, revisão e validade de 10 minutos. Eventos exigem sessão válida e revalidam elegibilidade no banco. Cliente tenta registrar impressão somente após 50% do cartão visível por 1 segundo em aba visível. Cliques também estabelecem impressão. Cada tipo é deduplicado por conta/campanha/dia UTC.
+
+As contagens são registros de uso do cliente, não métricas auditadas ou antifraude completo. Identidades individuais de visitantes não são exibidas ao anunciante; a tabela de eventos não tem acesso direto de anon/authenticated. Limpeza/retencão destes eventos ainda precisa de política antes da produção. As funções são SECURITY INVOKER, executáveis apenas pelo backend, e as campanhas têm RLS de leitura do proprietário.

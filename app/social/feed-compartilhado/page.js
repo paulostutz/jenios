@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
 import { createSocialFeedClient } from '../../../lib/social/feed-client.mjs';
 import SocialMediaPicker from '../../components/SocialMediaPicker';
+import PromotedPost from '../../components/PromotedPost';
 import { uploadSocialMedia } from '../../../lib/social/media.mjs';
 
 const enabled = process.env.NEXT_PUBLIC_SOCIAL_SHARED_PREVIEW_ENABLED === 'true';
@@ -114,6 +115,7 @@ export default function FeedCompartilhadoPreview() {
         <button type="submit" disabled={busy || (!draft.trim() && !media.length)}>Publicar</button>
       </form>
       <button disabled={busy} onClick={()=>load(false)}>Atualizar feed</button>
+      <PromotedPost client={supabase}/>
       {posts.map(post=><article key={post.id} style={{border:'1px solid #aaa',padding:12,marginTop:12}}>
         <p style={{whiteSpace:'pre-wrap'}}>{post.body}</p>
         {(post.media||[]).map((item,index)=>item.type==='video'?<video key={index} src={item.url||item.src} controls playsInline style={{width:'100%',maxHeight:450}}/>:<img key={index} src={item.url||item.src} alt={'Mídia '+(index+1)} style={{width:'100%',maxHeight:450,objectFit:'contain'}}/>)}

@@ -4,8 +4,8 @@ import { checkoutService } from '../lib/pay/checkout.mjs';
 import { DEFAULT_PRODUCTS } from '../lib/pay/catalog.mjs';
 
 function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
-  const orders = [], services = [];
-  const db = { orders, services, price: product.price_cents, from(table) {
+  const orders = [], services = [], campaigns = [];
+  const db = { orders, services, campaigns, price: product.price_cents, from(table) {
     let operation='select', payload, filters=[];
     const query = {
       select(){return query}, eq(k,v){filters.push([k,v]);return query},
@@ -15,6 +15,12 @@ function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
     function run() {
       if(table==='jenios_pay_products') return {data:{...product,id:'product-1',price_cents:db.price},error:null};
       if(table==='jenios_specialist_profiles')return {data:profile,error:null};
+      if(table==='posts')return {data:db.post||null,error:null};
+      if(table==='jenios_boost_campaigns'){
+        if(db.campaignError)return {data:null,error:{code:'42P01'}};
+        if(operation==='insert'){const row={...payload};campaigns.push(row);return {data:row,error:null};}
+        return {data:campaigns.find(row=>filters.every(([k,v])=>row[k]===v))||null,error:null};
+      }
       if(table==='jenios_specialist_orders'){
         if(db.serviceError)return {data:null,error:{code:'42P01'}};
         if(operation==='insert'){const row={...payload};services.push(row);return {data:row,error:null};}
@@ -120,4 +126,29 @@ test('flag desligada preserva contratação existente sem tocar extensão',async
   const {db,args}=specialistFixture();db.serviceError=true;
   await checkoutService({...args,serviceOrdersEnabled:false,gateway:async()=>({checkoutUrl:'https://pay.example/'})});
   assert.equal(db.orders.length,1);assert.equal(db.services.length,0);
+});
+
+function boostFixture(){
+  const db=memoryDb({product:DEFAULT_PRODUCTS[2]});
+  db.post={id:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',author_id:'user-1'};
+  return {db,args:{...base,db,campaignsEnabled:true,campaignsConfigured:()=>true,body:{productCode:'social-boost',target:{postId:db.post.id,dailyBudget:'10',days:3,objective:'profile',country:'Brasil',region:'Bahia',city:''}}}};
+}
+test('campanha é preparada antes do checkout e retentativa não duplica',async()=>{
+  const {db,args}=boostFixture();const gateway=async()=>{assert.equal(db.campaigns.length,1);return {checkoutUrl:'https://pay.example/'}};
+  await checkoutService({...args,gateway});await checkoutService({...args,gateway});
+  assert.equal(db.orders.length,1);assert.equal(db.campaigns.length,1);assert.equal(db.campaigns[0].amount_cents,3000);
+});
+test('falha de preparação da campanha preserva pedido e não abre checkout',async()=>{
+  const {db,args}=boostFixture();db.campaignError=true;let calls=0;const gateway=async()=>{calls++;return {checkoutUrl:'https://pay.example/'}};
+  await assert.rejects(checkoutService({...args,gateway}),{status:503});assert.equal(calls,0);assert.equal(db.orders[0].status,'pending');
+  db.campaignError=false;await checkoutService({...args,gateway});assert.equal(calls,1);assert.equal(db.orders.length,1);
+});
+test('campanha sem destino ou configuração é rejeitada antes de criar pedido',async()=>{
+  const {db,args}=boostFixture();
+  await assert.rejects(checkoutService({...args,body:{...args.body,target:{...args.body.target,objective:'website'}}}),{status:400});assert.equal(db.orders.length,0);
+  await assert.rejects(checkoutService({...args,campaignsConfigured:()=>{throw Object.assign(new Error('Not configured'),{status:503})}}),{status:503});assert.equal(db.orders.length,0);
+});
+test('impulsionamento de publicação de outra pessoa não cria pedido',async()=>{
+  const {db,args}=boostFixture();db.post.author_id='other';
+  await assert.rejects(checkoutService(args),{status:403});assert.equal(db.orders.length,0);
 });

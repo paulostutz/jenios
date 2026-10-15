@@ -25,7 +25,7 @@ O comando lê variáveis pelo mecanismo existente do Next e inspeciona apenas es
 
 ## Requisitos que configuração não resolve
 
-- BankScore completo depende de base e metodologia; catálogo bloqueia nova venda enquanto não houver entrega completa. Preservar histórico de pedidos existentes.
+- BankScore: escopo corrigido pelo usuário para melhorar o laudo existente, não construir análise financeira completa. A partir do checkpoint 19, catálogo oferece laudo de capitalização de R$9,90; servidor confere indicador e período antes de iniciar cobrança. Emissão de histórico/PDF exige pedido pago, titular e alvo exatos. Consulta básica e PDF anteriores preservados. Não anunciar como rating ou análise completa de solvência. Preservar histórico de pedidos existentes.
 - Radar de pools recentes não comprova criação do token ou carteira institucional. Hub é o mesmo componente na página e dentro da Social; dados B3/baleias ainda precisam de fonte.
 - Validador atual não inventaria todos os tokens de uma carteira; não anunciar essa cobertura como entregue.
 - Recorrência da Platform é separada da Social. Os preços mensais R$99,90 / R$149,90 / R$199,90 não representam recorrência implementada.

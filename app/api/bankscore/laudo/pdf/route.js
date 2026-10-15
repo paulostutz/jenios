@@ -94,6 +94,8 @@ export async function createReportPdf(report) {
   const pct = report.instituicao.percentual == null ? 'Nao disponivel' : `${Number(report.instituicao.percentual).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
   paragraph(`Indice de Basileia provisorio: ${pct}`, { size: 15, font: bold, color: rgb(0.08, 0.23, 0.39), gap: 5 });
   paragraph(`Classificacao explicativa: ${report.classificacao}`, { size: 11, font: bold, gap: 14 });
+  if (report.escopo) paragraph(report.escopo, { size: 10, gap: 10 });
+  if (report.orderId) paragraph(`Pedido: ${report.orderId} | Emitido em: ${report.emitidoEm}`, { size: 9 });
 
   heading('Resumo em linguagem simples');
   paragraph('O Indice de Basileia procura mostrar quanto capital uma instituicao possui em relacao aos riscos assumidos. Ele representa apenas uma parte da analise da saude financeira.');
@@ -112,6 +114,15 @@ export async function createReportPdf(report) {
   paragraph('Este documento descreve sinais de capitalizacao, nao preve liquidacao, nao certifica solvencia e nao constitui rating de credito ou recomendacao de investimento.');
   paragraph(`Fonte declarada: ${report.fonte}. Material experimental, sem validacao oficial do Banco Central.`, { size: 9, color: rgb(0.38, 0.46, 0.55) });
 
+  if (Array.isArray(report.historico)) {
+    heading('Historico do indicador de capitalizacao');
+    paragraph('Percentuais provisorios da mesma instituicao e periodos disponiveis. Nao representam posicao atual nem previsao.');
+    if (!report.historico.length) paragraph('Sem serie historica disponivel.');
+    for (const item of report.historico) paragraph(`${item.periodo}: ${item.percentual === null ? 'Dado sob revisao' : item.percentual.toLocaleString('pt-BR') + '%'} | ${item.revisao}`);
+    if (report.historicoLimitado) paragraph('Exibidos somente os oito periodos mais recentes da amostra.');
+    if (report.evolucao) paragraph(`Diferenca em relacao a ${report.evolucao.periodoAnterior}: ${report.evolucao.diferencaPontosPercentuais.toLocaleString('pt-BR')} pontos percentuais. Uma alta ou queda isolada nao determina solvencia.`, { font: bold });
+    else paragraph('Sem periodo anterior interpretavel para calcular a diferenca.');
+  }
   if (report.coverage) {
     heading('Diagnostico gratuito de cobertura');
     paragraph(report.coverage.reason);

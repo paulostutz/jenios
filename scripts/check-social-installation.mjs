@@ -41,5 +41,5 @@ if(url&&secret) {
   }catch{record('Bucket de mídia',false,'Consulta indisponível; nenhuma alteração.');}
 }else record('Inspeção de estruturas',false,'Não executada: configuração administrativa ausente.');
 // Structural success is deliberately not labelled a completed/homologated Social.
-console.log(JSON.stringify({readOnly:true,configurationChecks:results,notValidated:['RLS e permissões de RPC','Compatibilidade do checkout PAY e confirmação real','BankScore completo e dados complementares','Criação dos tokens e identidade institucional','Inventário completo de tokens do Validador','Navegador, duas contas reais e entrega dos serviços','Recorrência da Platform, em área separada']},null,2));
+console.log(JSON.stringify({readOnly:true,configurationChecks:results,notValidated:['RLS e permissões de RPC','Compatibilidade do checkout PAY e confirmação real','Emissão paga real do laudo BankScore no escopo de capitalização','Criação dos tokens e identidade institucional','Inventário completo de tokens do Validador','Navegador, duas contas reais e entrega dos serviços','Recorrência da Platform, em área separada']},null,2));
 if(results.some(item=>item.status==='PENDENTE'))process.exitCode=1;

@@ -1,0 +1,15 @@
+# Checkpoint interno 19 — BankScore no escopo existente
+
+Decisão vinculante do usuário: BankScore funcionava; faltavam melhoria do laudo e cobrança. Não ampliar para uma nova análise financeira completa como condição da entrega. Integração Inter/webhook permanece considerada validada pelo usuário. Não houve chamadas Inter, cobranças reais, mudanças de banco ou de produção.
+
+Reutilizados consulta básica, Top 10, dados de homologação e gerador PDF. Acrescentado loadCapitalReport na mesma jenios_bankscore_homologacao: instituição e período explícitos, indicador consistente, histórico de até oito períodos, variação em pontos percentuais ante período anterior válido, fonte e limites. Não calcula requisito mínimo, rating, solvência ou dimensões ausentes. A existência de dados provisórios permanece identificada. APIs/PDFs gratuitos anteriores preservados.
+
+Cobrança: preço aprovado R$9,90 mantido. Catálogo oferece laudo do indicador de capitalização disponível; bloqueio universal do checkpoint 13 substituído por validação daquele alvo antes de inserir pedido/chamar gateway. Falhas de fonte, dados ausentes, duplicidade e inconsistência impedem nova cobrança. Pedidos pagos não são revogados por mudança posterior de preço; emissão pode ser retentada com mesmo pedido. Não se deve anunciar o produto como laudo financeiro completo.
+
+POST /api/bankscore/detailed exige conta real, pedido paid da conta, produto correto, valor/moeda e fingerprint de instituição/período antes de consultar dados ou gerar PDF. JSON/PDF obtidos pelo mesmo serviço. /bankscore/detalhado?pedido=UUID permite restaurar alvo da sessão ou informá-lo exatamente. Troca de conta/alvo descarta resposta anterior. Nenhum relatório salvo na nuvem. Extrato e botão de contratação oferecem link para emissão após pagamento.
+
+PDF detalhado acrescenta escopo, pedido, emissão, histórico e diferença entre períodos. Gerador anterior preservado e melhorado por extensão. Corrigidos contraste dos cartões brancos da página da instituição e referência temporal fixa: utiliza o período exibido, não texto fixo de junho/2026.
+
+Verificação: 205 testes automatizados aprovados, incluindo ausência/duplicidade/inconsistência, alvo explícito, série histórica, controle pago/titular/alvo antes da consulta e PDF. Build aprovado após remover do caminho de build uma pasta gerada .next residual (preservada em /tmp; primeira tentativa falhou ENOTEMPTY, compilação de código havia passado). 39 verificações HTTP aprovadas, incluindo rejeição anônima do novo endpoint e página. PDF sintético de QA com duas páginas renderizado e inspecionado; não é laudo real. git diff --check aprovado antes desta documentação.
+
+Homologação paga real pelo usuário continua pendente, bem como navegador autenticado. Não declarar a Social inteira concluída: permanecem inventário amplo do Validador, fontes/evidências Hub, ativação real de serviços e demais limites dos checkpoints anteriores, conforme escopo final. Nenhum pacote provisório entregue; backup por commit na branch homologação.

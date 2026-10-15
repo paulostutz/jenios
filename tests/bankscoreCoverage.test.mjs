@@ -28,10 +28,10 @@ test('invalid code/period rejected before database access', async () => {
   assert.throws(() => bankscoreCoverage({ ...row, periodo: 202613 }), { status: 409 });
   await assert.rejects(loadBankscoreCoverage({ db: { from() { throw Error('No query'); } }, target: { codigo: 'invalid' } }), { status: 400 });
 });
-test('catalog and checkout expose unavailable status without changing approved price', () => {
-  assert.throws(assertBankscoreDetailedReady, { status: 503 });
+test('catalog offers the existing capitalization report; missing backend still blocks checkout', async () => {
+  await assert.rejects(assertBankscoreDetailedReady(), { status: 503 });
   const product = withBankscoreAvailability({ code: 'social-bankscore-report', price_cents: 990, active: true });
-  assert.equal(product.price_cents, 990); assert.equal(product.serviceReady, false);
+  assert.equal(product.price_cents, 990); assert.equal(product.serviceReady, true);
   assert.equal(withBankscoreAvailability({ code: 'social-crypto-validator' }).serviceReady, undefined);
 });
 test('coverage PDF paginates long supplemental evidence without replacing the basic report', async () => {

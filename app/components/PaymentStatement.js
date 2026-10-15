@@ -57,6 +57,7 @@ export default function PaymentStatement({ embedded = false }) {
           <td style={{padding:10}}>{labels[o.status]||o.status}</td>
           <td style={{padding:10}}>
             {o.status==='paid' && o.productCode==='social-crypto-validator' && <Link href={'/social/consulta-detalhada?pedido='+encodeURIComponent(o.id)}>Consulta e PDF</Link>}
+            {o.status==='paid' && o.productCode==='social-bankscore-report' && <Link href={'/bankscore/detalhado?pedido='+encodeURIComponent(o.id)}>Laudo e PDF</Link>}
             {o.productCode==='social-specialist-offer' && <Link href="/especialistas/atendimentos">Atendimento</Link>}
             {o.productCode==='social-boost' && <Link href="/impulsionar/campanhas">Campanha</Link>}
             {o.status==='paid' && <div><button onClick={()=>verify(o.id)}>Verificar acesso</button></div>}

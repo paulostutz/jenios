@@ -272,6 +272,8 @@ export default function LoginPage() {
             />
           </div>
 
+          {!isCadastro && <a href="/recuperar-senha" style={{display:"block",textAlign:"right",fontSize:13,color:"#7c3aed",marginBottom:16}}>Esqueci minha senha</a>}
+
           {isCadastro && (
             <p
               style={{

@@ -120,7 +120,7 @@ export default function TrendsHub({ embedded = false }) {
               </div>
               <Heading style={{ margin: '7px 0 5px', fontSize: 'clamp(25px,4vw,38px)' }}>Hub de Tendências</Heading>
               <p style={{ margin: 0, maxWidth: 720, color: COLORS.muted, lineHeight: 1.6 }}>
-                Dados externos identificados por fonte. Nenhum número demonstrativo é apresentado como informação em tempo real.
+                Acompanhe tendências de busca, tokens recentes e movimentações de mercado.
               </p>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -145,8 +145,8 @@ export default function TrendsHub({ embedded = false }) {
             <strong style={{ fontSize: 17 }}>{formatTime(data?.atualizadoEm)}</strong>
           </div>
           <div style={metricCard}>
-            <small style={metricLabel}>Política de integridade</small>
-            <strong style={{ fontSize: 17, color: COLORS.green }}>Sem dados fictícios</strong>
+            <small style={metricLabel}>Cobertura</small>
+            <strong style={{ fontSize: 17, color: COLORS.green }}>Cripto e mercado</strong>
           </div>
         </section>
         <div style={{ marginTop: 20 }}><NewTokenRadar /></div>
@@ -189,7 +189,7 @@ export default function TrendsHub({ embedded = false }) {
               <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
                 {active === 'tokens'
                   ? 'Ativos em alta nas pesquisas da CoinGecko; não significa lançamento recente, fluxo institucional ou recomendação.'
-                  : 'O módulo permanece fechado até que uma fonte verificável seja integrada e homologada.'}
+                  : 'Dados deste módulo ainda não estão disponíveis.'}
               </p>
             </div>
             <StatusBadge available={Boolean(moduleStatus.disponivel)} stale={Boolean(moduleStatus.stale)} />
@@ -205,8 +205,8 @@ export default function TrendsHub({ embedded = false }) {
           ) : !moduleStatus.disponivel && !moduleStatus.stale ? (
             <div style={emptyCard}>
               <strong>Dados ainda não publicados</strong>
-              <p>{moduleStatus.mensagem || 'Fonte ainda não homologada.'}</p>
-              <p style={{ fontSize: 12 }}>A JENIOS não preencherá este painel com exemplos apresentados como dados reais.</p>
+              <p>{'Estamos preparando a cobertura deste mercado.'}</p>
+              
             </div>
           ) : rows.length === 0 ? (
             <div style={emptyCard}><strong>Nenhum registro disponível nesta atualização.</strong></div>
@@ -237,7 +237,7 @@ export default function TrendsHub({ embedded = false }) {
           )}
 
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
-            A tela consulta a cada 60 segundos enquanto está visível. O servidor reutiliza leituras por 10 minutos e limita retentativas; isso não representa atualização de mercado a cada minuto. Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização. Dados: CoinGecko.
+            Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização. Dados: CoinGecko.
           </footer>
         </section>
       </div>

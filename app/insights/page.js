@@ -1,9 +1,11 @@
 "use client";
 import {useState} from "react";
 import Link from "next/link";
+import RequireSocialAccount from "../components/RequireSocialAccount";
 const purple="#6d28d9";
 const card={background:"#fff",border:"1px solid #e7e4f0",borderRadius:16,padding:20,boxShadow:"0 8px 25px #23133c09"};
-export default function Insights(){
+export default function Insights(){return <RequireSocialAccount><InsightsContent/></RequireSocialAccount>;}
+function InsightsContent(){
  const [periodo,setPeriodo]=useState(30),[aba,setAba]=useState("Visão geral");
  const labels=["Visualizações","Contas alcançadas","Interações","Seguidores líquidos"];
  return <main style={{minHeight:"100vh",background:"#f6f5fb",padding:"30px 16px",fontFamily:"Inter,Arial,sans-serif",color:"#251c39"}}><div style={{maxWidth:1000,margin:"auto"}}>

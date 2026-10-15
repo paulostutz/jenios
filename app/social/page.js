@@ -788,7 +788,7 @@ const handleUploadCarrossel = async (e) => {
       )}
 
       {/* MODAL EDITAR PERFIL */}
-      {modalEditarPerfil && (
+      {modalEditarPerfil && meuPerfil.autenticado && (
         <div
           style={{
             position: 'fixed',
@@ -1463,7 +1463,7 @@ const handleUploadCarrossel = async (e) => {
                 <b style={{ fontSize: '15px', color: '#059669' }}>
                   {'—'}
                 </b>
-                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span><a href="/insights" style={{display:"block",fontSize:11,color:"#7c3aed",marginTop:4,fontWeight:700}}>Abrir Insights ↗</a>
+                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span><a href="/insights" onClick={e=>{if(!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{display:"block",fontSize:11,color:"#7c3aed",marginTop:4,fontWeight:700}}>Abrir Insights ↗</a>
               </div>
             </div>
 
@@ -1475,7 +1475,7 @@ const handleUploadCarrossel = async (e) => {
               }}
             >
               <button
-                onClick={() => setModalEditarPerfil(true)}
+                onClick={() => {if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setModalEditarPerfil(true);}}
                 style={{
                   backgroundColor: '#7c3aed',
                   color: '#fff',
@@ -1524,6 +1524,7 @@ const handleUploadCarrossel = async (e) => {
             <button key={destino} type="button" onClick={() => {
               if(destino==='bloqueados'){if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setBlocksOpen(true);return;}
               if (destino === 'perfil' || destino === 'salvos') {
+                if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
                 void visitarPerfil(meuPerfil,destino === 'salvos' ? 'salvos' : 'posts');
               } else {
                 setAbaAtiva(destino);
@@ -1543,7 +1544,7 @@ const handleUploadCarrossel = async (e) => {
             ["Especialistas","/especialistas"],
             ["Insights","/insights"],
             ["Impulsionar","/impulsionar"]
-          ].map(([titulo,url])=><a key={url} href={url} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</a>)}
+          ].map(([titulo,url])=><a key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</a>)}
         </nav>
         {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
         {abaAtiva === 'lives' && <SocialLives key={meuPerfil?.id} meuPerfil={meuPerfil} onLoad={feed.lives} onCreate={feed.createLive} onRemove={feed.deleteLive} onReport={feed.reportLive} />}

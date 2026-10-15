@@ -48,7 +48,7 @@ export default function SocialLives({ meuPerfil, onLoad, onCreate, onRemove, onR
     catch{if(mounted.current)setErro('Não foi possível carregar as Lives. Tente atualizar.');}
     finally{if(mounted.current)setBusy(false);}
   }
-  useEffect(()=>{mounted.current=true;void load();return()=>{mounted.current=false;};},[]);
+  useEffect(()=>{mounted.current=true;if(meuPerfil?.autenticado)void load();return()=>{mounted.current=false;};},[]);
   async function adicionar(e){
     e.preventDefault();const videoId=videoIdYoutube(link);
     if(!videoId){setErro('Cole um link válido de vídeo ou Live do YouTube.');return;}
@@ -66,6 +66,7 @@ export default function SocialLives({ meuPerfil, onLoad, onCreate, onRemove, onR
     try{await onReport(reportId,reason,details);if(mounted.current){setDenunciadas(old=>[...old,reportId]);setReportId(null);setDetails('');}}catch{if(mounted.current)setErro('Não foi possível enviar a denúncia. Tente novamente.');}finally{if(mounted.current)setBusy(false);}
   }
 
+  if(!meuPerfil?.autenticado)return <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}><h2>🔴 JENIOS Live</h2><p>Entre na sua conta para acompanhar e compartilhar transmissões.</p><a href="/login" style={{color:'#6d28d9',fontWeight:700}}>Entrar na Jenios</a></section>;
   return <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}>
     <h2 style={{fontSize:19,margin:'0 0 6px',color:'#312e81'}}>🔴 JENIOS Live</h2>
     <p style={{fontSize:13,color:'#475569',margin:'0 0 16px'}}>Incorpore uma transmissão pública do YouTube. As transmissões cadastradas são compartilhadas entre contas, e as denúncias são encaminhadas à moderação. O vídeo é transmitido pelo YouTube.</p>

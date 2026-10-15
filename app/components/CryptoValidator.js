@@ -13,7 +13,6 @@ const NETWORKS = {
   arbitrum: { label: "Arbitrum", placeholder: "Hash, carteira ou contrato 0x..." },
   base: { label: "Base", placeholder: "Hash, carteira ou contrato 0x..." },
   avalanche: { label: "Avalanche C-Chain", placeholder: "Hash, carteira ou contrato 0x..." },
-  litecoin: { label: "Litecoin (aguardando homologação)", placeholder: "Hash da transação ou endereço LTC" },
 };
 
 const TYPES = [
@@ -116,7 +115,7 @@ export default function CryptoValidator() {
           {report.supported !== false && !report.providerError && <div className="mt-3"><p className="mb-2 text-xs">Consulta detalhada: interpretação das evidências e PDF. Para carteiras, tenta listar tokens da rede escolhida; a cobertura pode ser parcial ou indisponível. Não inclui auditoria de contrato ou garantia de liquidez.</p><SocialChargeButton productCode="social-crypto-validator" label="Contratar consulta detalhada" target={{ network: report.network, type: report.type, identifier: report.identifier }} /></div>}
         </div>
       )}
-      <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">Um resultado on-chain não comprova titularidade nem elimina risco de fraude. Litecoin permanece bloqueado até homologação de um provedor.</p>
+      <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">Um resultado on-chain não comprova titularidade nem elimina risco de fraude.</p>
     </section>
   );
 }

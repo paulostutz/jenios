@@ -24,10 +24,10 @@ export default function NewTokenRadar() {
   },[]);
   return <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20,minWidth:0}}>
     <h3 style={{margin:'0 0 8px'}}>Tokens Explosivos — observação<TrendHelp kind="novos"/></h3>
-    <p style={{fontSize:12,color:'#475569'}}>Pré-seleção por pools de 15 minutos a 48 horas, liquidez ≥ US$25 mil, volume de 1h ≥ US$50 mil, ≥100 compras, ≥50 compradores, ≥60% de compras e alta de 1h ≥5%. Exclui ativos catalogados e símbolos de moedas consolidadas. Volume/liquidez máximo: 20×.</p>
+    <p style={{fontSize:12,color:'#475569'}}>Acompanhe tokens e pools recentes em observação.</p>
     <p style={{fontSize:12,color:'#92400e'}}>Pool novo não comprova token recém-criado. Criação do token e compras institucionais ainda não confirmadas; estes candidatos não atendem, sozinhos, à definição completa de token explosivo.</p>
     <div aria-live="polite">
-      {!data ? <p>Consultando pools recentes…</p> : !data.disponivel ? <p>{data.mensagem}</p> : !data.candidatos?.length ? <p>Nenhum candidato atende aos filtros nesta amostra. A lista não será preenchida com moedas antigas.</p> : data.candidatos.map(item => <article key={item.id} style={{padding:12,marginBottom:8,background:'#f8fafc',borderRadius:10,overflowWrap:'anywhere'}}>
+      {!data ? <p>Consultando pools recentes…</p> : !data.disponivel ? <p>{data.mensagem}</p> : !data.candidatos?.length ? <p>Nenhum token em destaque nesta atualização.</p> : data.candidatos.map(item => <article key={item.id} style={{padding:12,marginBottom:8,background:'#f8fafc',borderRadius:10,overflowWrap:'anywhere'}}>
         <a href={item.url} target="_blank" rel="noopener noreferrer"><strong>{item.nome} ({item.simbolo})</strong></a>
         <p style={{fontSize:12}}>Rede: {item.rede} · Pool criado em {new Date(item.poolCriadoEm).toLocaleString('pt-BR')}</p>
         <p style={{fontSize:12}}>Liquidez {usd(item.liquidezUsd)} · Volume/1h {usd(item.volumeH1Usd)} · Alta/1h {item.variacaoH1.toFixed(1)}%</p>
@@ -35,6 +35,6 @@ export default function NewTokenRadar() {
         <small>Contrato: {item.contrato}. Identidade institucional não verificada.</small>
       </article>)}
     </div>
-    <p style={{fontSize:11,color:'#64748b'}}>Fonte: GeckoTerminal/CoinGecko. {data?.cobertura} {data?.disponivel && data.atualizadoEm ? `Última consulta válida: ${new Date(data.atualizadoEm).toLocaleString('pt-BR')}.` : ''} Cache de 5 minutos por processo. Critérios de triagem internos, sem validação preditiva. Não verifica honeypot, concentração, bloqueio de liquidez ou volume artificial e não estima retorno.</p>
+    <p style={{fontSize:11,color:'#64748b'}}>Fonte: GeckoTerminal/CoinGecko. {data?.disponivel && data.atualizadoEm ? `Última consulta válida: ${new Date(data.atualizadoEm).toLocaleString('pt-BR')}.` : ''} Não verifica honeypot, concentração, bloqueio de liquidez ou volume artificial e não estima retorno.</p>
   </section>;
 }

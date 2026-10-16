@@ -2,8 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { saveReceipt } from '../../lib/pay/browser-receipts.mjs';
+import { isPrelaunchReport, prelaunchReportHref } from '../../lib/reports/prelaunch.mjs';
 
-export default function SocialChargeButton({ productCode, label, target = {}, scope = 'social' }) {
+export default function SocialChargeButton(props) {
+  if (isPrelaunchReport(props.productCode, props.scope || 'social')) return <div style={{ display: 'grid', gap: 7 }}><a href={prelaunchReportHref(props.productCode, props.target)} style={{ padding: '12px 16px', borderRadius: 10, background: '#6d28d9', color: 'white', fontWeight: 800, textAlign: 'center', textDecoration: 'none' }}>Acessar relatório completo grátis</a><small>Pré-lançamento: visualização e PDF gratuitos para contas da Social.</small></div>;
+  return <PaidSocialChargeButton {...props}/>;
+}
+function PaidSocialChargeButton({ productCode, label, target = {}, scope = 'social' }) {
   const [catalog, setCatalog] = useState(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');

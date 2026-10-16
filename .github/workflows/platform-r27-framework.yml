@@ -1,0 +1,32 @@
+name: JENIOS R27 framework candidate
+on:
+  push:
+    branches: [checkpoints/jenios-platform-r27-atendimento]
+    paths: [.github/workflows/platform-r27-framework.yml]
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8bcdef507ee2774bc24f832e1d04608fde16aea9
+          persist-credentials: false
+      - name: Resolve stable framework candidate only; no credentials or deployment
+        run: |
+          mkdir -p /tmp/r27-framework
+          npm install --ignore-scripts --no-audit --no-fund --save-exact next@16 react@19 react-dom@19 @supabase/supabase-js@2.117.3
+          cp package.json package-lock.json /tmp/r27-framework/
+          npm ls --depth=0 > /tmp/r27-framework/dependencies.txt
+          npm audit --omit=dev --json > /tmp/r27-framework/audit.json || true
+          tar -czf /tmp/r27-framework/dependency-cache.tar.gz node_modules
+          sha256sum /tmp/r27-framework/dependency-cache.tar.gz > /tmp/r27-framework/SHA256SUMS.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-r27-framework-candidate
+          path: /tmp/r27-framework/
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

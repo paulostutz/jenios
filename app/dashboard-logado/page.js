@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import PaymentStatement from '../components/PaymentStatement';
 
 export default function DashboardLogado() {
   const [diagnosticoFeito, setDiagnosticoFeito] = useState(false);
@@ -46,10 +47,6 @@ export default function DashboardLogado() {
       return;
     }
     window.location.href = '/dashboard';
-  };
-
-  const pagarFaturaAtual = () => {
-    alert('💳 Fatura de R$ 199,90 processada com sucesso! Assinatura mantida por mais 30 dias.');
   };
 
   const conectarCorretora = (e) => {
@@ -122,10 +119,10 @@ export default function DashboardLogado() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f1f5f9', color: '#0f172a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div className="jenios-dashboard-layout" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f1f5f9', color: '#0f172a', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       {/* Sidebar da Dashboard */}
-      <aside style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
+      <aside className="jenios-dashboard-sidebar" style={{ width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
         <div style={{ marginBottom: '30px', textAlign: 'center' }}>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>JENIOS HFT</h2>
           <span style={{ fontSize: '11px', color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>SALA DE CONTROLE OFICIAL</span>
@@ -148,7 +145,7 @@ export default function DashboardLogado() {
             🌐 Jenios Social
           </Link>
           <button onClick={() => setAbaAtiva('financeiro')} style={{ textAlign: 'left', background: abaAtiva === 'financeiro' ? '#f3e8ff' : 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: abaAtiva === 'financeiro' ? '#7c3aed' : '#334155', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
-            💳 Assinaturas & Faturas
+            💳 Meus pagamentos
           </button>
           <button onClick={() => setAbaAtiva('afiliados')} style={{ textAlign: 'left', background: abaAtiva === 'afiliados' ? '#f3e8ff' : 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: abaAtiva === 'afiliados' ? '#7c3aed' : '#334155', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
             🤝 Gestão de Afiliados
@@ -169,7 +166,7 @@ export default function DashboardLogado() {
       </aside>
 
       {/* Conteúdo Principal da Dashboard */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
+      <main className="jenios-dashboard-main" style={{ flex: 1, minWidth: 0, padding: '40px', overflowY: 'auto' }}>
         
         {/* Topo do Usuário */}
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)', flexWrap: 'wrap', gap: '15px' }}>
@@ -219,24 +216,8 @@ export default function DashboardLogado() {
           </div>
         )}
 
-        {/* ABA: ASSINATURAS & FATURAS */}
-        {abaAtiva === 'financeiro' && (
-          <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Gestão de Assinatura & Faturas</h2>
-            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>Acompanhe o estado da sua assinatura profissional e realize pagamentos de faturas pendentes.</p>
-            
-            <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px' }}>
-              <div>
-                <b style={{ fontSize: '16px', color: '#0f172a', display: 'block' }}>{dadosFinanceiros.plano}</b>
-                <span style={{ fontSize: '12px', color: '#059669', fontWeight: 'bold' }}>{dadosFinanceiros.statusAssinatura}</span>
-                <p style={{ fontSize: '12px', color: '#475569', marginTop: '6px', margin: 0 }}>Valor da próxima fatura: <b>{dadosFinanceiros.valorFatura}</b></p>
-              </div>
-              <button onClick={pagarFaturaAtual} style={{ backgroundColor: '#10b981', color: '#fff', border: 'none', padding: '12px 20px', borderRadius: '8px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                💳 Pagar Fatura / Renovar
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Extrato real da JENIOS PAY */}
+        {abaAtiva === 'financeiro' && <PaymentStatement embedded />}
 
         {/* ABA: GESTÃO DE AFILIADOS */}
         {abaAtiva === 'afiliados' && (
@@ -406,6 +387,7 @@ export default function DashboardLogado() {
         )}
 
       </main>
+      <style jsx>{`@media (max-width: 760px) { .jenios-dashboard-layout { flex-direction: column; } .jenios-dashboard-sidebar { width: auto !important; border-right: 0 !important; border-bottom: 1px solid #e2e8f0; } .jenios-dashboard-main { padding: 18px !important; } }`}</style>
     </div>
   );
 }

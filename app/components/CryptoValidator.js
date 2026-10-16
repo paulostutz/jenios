@@ -1,58 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import SocialChargeButton from "./SocialChargeButton";
 
 const NETWORKS = {
-  bitcoin: {
-    label: "Bitcoin",
-    explorer: "https://www.blockchain.com/explorer",
-    placeholder: "Hash da transação ou endereço BTC",
-  },
-  ethereum: {
-    label: "Ethereum (ERC-20)",
-    explorer: "https://etherscan.io",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  bsc: {
-    label: "BNB Smart Chain (BEP-20)",
-    explorer: "https://bscscan.com",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  tron: {
-    label: "TRON (TRC-20)",
-    explorer: "https://tronscan.org",
-    placeholder: "Hash, carteira ou contrato TRON",
-  },
-  solana: {
-    label: "Solana",
-    explorer: "https://explorer.solana.com",
-    placeholder: "Assinatura, carteira ou endereço do token",
-  },
-  polygon: {
-    label: "Polygon",
-    explorer: "https://polygonscan.com",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  arbitrum: {
-    label: "Arbitrum",
-    explorer: "https://arbiscan.io",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  base: {
-    label: "Base",
-    explorer: "https://basescan.org",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  avalanche: {
-    label: "Avalanche C-Chain",
-    explorer: "https://snowtrace.io",
-    placeholder: "Hash, carteira ou contrato 0x...",
-  },
-  litecoin: {
-    label: "Litecoin",
-    explorer: "https://blockchair.com/litecoin",
-    placeholder: "Hash da transação ou endereço LTC",
-  },
+  bitcoin: { label: "Bitcoin", placeholder: "Hash da transação ou endereço BTC" },
+  ethereum: { label: "Ethereum (ERC-20)", placeholder: "Hash, carteira ou contrato 0x..." },
+  bsc: { label: "BNB Smart Chain (BEP-20)", placeholder: "Hash, carteira ou contrato 0x..." },
+  tron: { label: "TRON (TRC-20)", placeholder: "Hash, carteira ou contrato TRON" },
+  solana: { label: "Solana", placeholder: "Assinatura, carteira ou endereço do token" },
+  polygon: { label: "Polygon", placeholder: "Hash, carteira ou contrato 0x..." },
+  arbitrum: { label: "Arbitrum", placeholder: "Hash, carteira ou contrato 0x..." },
+  base: { label: "Base", placeholder: "Hash, carteira ou contrato 0x..." },
+  avalanche: { label: "Avalanche C-Chain", placeholder: "Hash, carteira ou contrato 0x..." },
 };
 
 const TYPES = [
@@ -67,235 +27,95 @@ export default function CryptoValidator() {
   const [value, setValue] = useState("");
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const epoch = useRef(0);
 
-  function handleNetworkChange(event) {
-    setNetwork(event.target.value);
-    setReport(null);
-    setError("");
-  }
+  function reset() { epoch.current++; setReport(null); setError(""); setLoading(false); }
 
-  function handleTypeChange(event) {
-    setType(event.target.value);
-    setReport(null);
-    setError("");
-  }
-
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    const identifier = value.trim();
+    if (!identifier) return setError("Informe o endereço, contrato ou hash que deseja consultar.");
+    reset();
+    const version = epoch.current;
+    setLoading(true);
+    try {
+      const response = await fetch("/api/crypto-validator", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ network, type, identifier }),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Não foi possível consultar a rede.");
+      if (version === epoch.current) setReport(payload.report);
+    } catch (requestError) {
+      if (version === epoch.current) setError(requestError.message || "Não foi possível consultar a rede.");
+    } finally { if (version === epoch.current) setLoading(false); }
+  }
 
-    const input = value.trim();
-
-    if (!input) {
-      setError("Informe o endereço, contrato ou hash que deseja consultar.");
-      return;
-    }
-
-    if (input.length < 10) {
-      setError("O identificador parece muito curto. Confira os dados digitados.");
-      return;
-    }
-
+  async function savePDF() {
+    if (!report) return;
     setError("");
-
-    // Esta etapa gera um relatório preliminar.
-    // A validação on-chain real será conectada à API do servidor.
-    setReport({
-      network: NETWORKS[network].label,
-      type: TYPES.find((item) => item.value === type)?.label,
-      identifier: input,
-      date: new Date().toLocaleString("pt-BR"),
-    });
-  }
-
-  function openExplorer() {
-    if (!report) return;
-
-    const base = NETWORKS[network].explorer.replace(/\/$/, "");
-    const identifier = encodeURIComponent(report.identifier);
-
-    const url =
-      network === "bitcoin"
-        ? `${base}/search?search=${identifier}`
-        : network === "litecoin"
-        ? `${base}/${identifier}`
-        : network === "solana"
-        ? `${base}/address/${identifier}`
-        : `${base}/search?f=${identifier}`;
-
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-
-  function savePDF() {
-    if (!report) return;
-    window.print();
+    try {
+      const response = await fetch("/api/crypto-validator/pdf", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ network: report.network, type: report.type, identifier: report.identifier }),
+      });
+      if (!response.ok) throw new Error("Não foi possível gerar o PDF.");
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "jenios-validacao-" + network + ".pdf";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (requestError) { setError(requestError.message || "Não foi possível gerar o PDF."); }
   }
 
   return (
-    <section className="w-full rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm">
+    <section className="jenios-crypto-card w-full rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm">
       <div className="mb-5 flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-xl">
-          ◈
-        </div>
-
-        <div>
-          <h2 className="text-lg font-bold">
-            Validador de Criptoativos
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Consulte identificadores de ativos digitais em diferentes redes.
-          </p>
-        </div>
+        
+        <div><h2 className="text-lg font-bold">JENIOS · Validador de Criptoativos</h2><p className="mt-1 text-sm text-slate-500">Consulta pública gratuita com indicação da fonte e das limitações. Não compartilhe senhas, seed phrases ou chaves privadas.</p></div>
       </div>
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="crypto-network"
-            className="mb-1.5 block text-sm font-semibold"
-          >
-            Rede blockchain
-          </label>
-
-          <select
-            id="crypto-network"
-            value={network}
-            onChange={handleNetworkChange}
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-          >
-            {Object.entries(NETWORKS).map(([key, item]) => (
-              <option key={key} value={key}>
-                {item.label}
-              </option>
-            ))}
+        <label className="block text-sm font-semibold">Rede
+          <select value={network} onChange={(event) => { setNetwork(event.target.value); reset(); }} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm">
+            {Object.entries(NETWORKS).map(([key, item]) => <option key={key} value={key}>{item.label}</option>)}
           </select>
-        </div>
-
-        <div>
-          <label
-            htmlFor="crypto-type"
-            className="mb-1.5 block text-sm font-semibold"
-          >
-            O que deseja consultar?
-          </label>
-
-          <select
-            id="crypto-type"
-            value={type}
-            onChange={handleTypeChange}
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-          >
-            {TYPES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
+        </label>
+        <label className="block text-sm font-semibold">Tipo
+          <select value={type} onChange={(event) => { setType(event.target.value); reset(); }} className="mt-1.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm">
+            {TYPES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
-        </div>
-
-        <div>
-          <label
-            htmlFor="crypto-identifier"
-            className="mb-1.5 block text-sm font-semibold"
-          >
-            Identificador
-          </label>
-
-          <textarea
-            id="crypto-identifier"
-            value={value}
-            onChange={(event) => {
-              setValue(event.target.value);
-              setError("");
-            }}
-            placeholder={NETWORKS[network].placeholder}
-            rows={3}
-            spellCheck={false}
-            className="w-full resize-y rounded-xl border border-slate-300 px-3 py-3 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-          />
-
-          <p className="mt-1.5 text-xs text-slate-500">
-            Nunca informe sua frase-semente, senha ou chave privada.
-          </p>
-        </div>
-
-        {error && (
-          <p
-            role="alert"
-            className="rounded-lg bg-red-50 p-3 text-sm text-red-700"
-          >
-            {error}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-violet-700 px-4 py-3 font-semibold text-white transition hover:bg-violet-800"
-        >
-          Preparar consulta
-        </button>
+        </label>
+        <label className="block text-sm font-semibold">Identificador público
+          <textarea value={value} onChange={(event) => { setValue(event.target.value); reset(); }} placeholder={NETWORKS[network].placeholder} rows={1} spellCheck={false} className="mt-1.5 w-full resize-y rounded-xl border border-slate-300 px-3 py-3 text-sm" />
+        </label>
+        <p className="text-xs text-slate-500">Nunca informe frase-semente, senha ou chave privada.</p>
+        {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+        <button type="submit" disabled={loading} className="w-full rounded-xl bg-violet-700 px-4 py-3 font-semibold text-white disabled:opacity-60">{loading ? "Consultando a blockchain…" : "Verificação gratuita"}</button>
       </form>
-
       {report && (
-        <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <p className="font-bold text-amber-900">
-            Relatório preliminar
-          </p>
-
-          <p className="mt-2 text-sm text-amber-900">
-            A consulta ainda não foi validada pela blockchain. Os dados abaixo
-            registram somente o que foi informado no formulário.
-          </p>
-
+        <div className={"mt-5 rounded-xl border p-4 " + (report.found ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50")}>
+          <p className="font-bold">Resultado da consulta on-chain</p>
+          <p className="mt-2 text-sm">{report.status}. {report.provider ? "Fonte: " + report.provider + "." : ""}</p>
+          {report.authenticity&&<div className="mt-4 rounded-lg border border-slate-200 bg-white p-3"><strong>{report.authenticity.label}</strong><p className="mt-1 text-xs text-slate-600">Catálogo limitado · referências conferidas em {report.authenticity.registryCheckedAt}. Nome e símbolo não provam autenticidade.</p>{report.authenticity.source&&<a href={report.authenticity.source} target="_blank" rel="noopener noreferrer" className="text-sm text-violet-700">Conferir fonte do emissor ↗</a>}</div>}
           <dl className="mt-4 space-y-3 text-sm">
-            <div>
-              <dt className="font-semibold text-slate-600">Rede</dt>
-              <dd className="break-words">{report.network}</dd>
-            </div>
-
-            <div>
-              <dt className="font-semibold text-slate-600">Tipo</dt>
-              <dd>{report.type}</dd>
-            </div>
-
-            <div>
-              <dt className="font-semibold text-slate-600">
-                Identificador consultado
-              </dt>
-              <dd className="break-all">{report.identifier}</dd>
-            </div>
-
-            <div>
-              <dt className="font-semibold text-slate-600">Data</dt>
-              <dd>{report.date}</dd>
-            </div>
+            <div><dt className="font-semibold text-slate-600">Rede</dt><dd>{report.networkLabel}</dd></div>
+            <div><dt className="font-semibold text-slate-600">Tipo</dt><dd>{TYPES.find((item) => item.value === report.type)?.label}</dd></div>
+            <div><dt className="font-semibold text-slate-600">Identificador</dt><dd className="break-all">{report.identifier}</dd></div>
+            <div><dt className="font-semibold text-slate-600">Verificado em</dt><dd>{new Date(report.checkedAt).toLocaleString("pt-BR")}</dd></div>
+            {Object.entries(report.evidence || {}).map(([key, item]) => <div key={key}><dt className="font-semibold text-slate-600">{key}</dt><dd className="break-all">{item == null ? "—" : typeof item === "object" ? JSON.stringify(item) : String(item)}</dd></div>)}
           </dl>
-
+          {report.providerError && <p className="mt-3 text-sm">O provedor não respondeu: {report.providerError}</p>}
+          {report.disclaimer && <p className="mt-3 text-xs leading-5 text-slate-600">{report.disclaimer}</p>}
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={openExplorer}
-              className="flex-1 rounded-xl border border-violet-300 bg-white px-3 py-2.5 text-sm font-semibold text-violet-800 hover:bg-violet-50"
-            >
-              Abrir explorador
-            </button>
-
-            <button
-              type="button"
-              onClick={savePDF}
-              className="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
-            >
-              Imprimir / salvar PDF
-            </button>
+            <a href={report.explorerUrl} target="_blank" rel="noopener noreferrer" className="flex-1 rounded-xl border border-violet-300 bg-white px-3 py-2.5 text-center text-sm font-semibold text-violet-800">Abrir explorador</a>
+            <button type="button" onClick={savePDF} className="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white">PDF da consulta básica</button>
           </div>
+          {report.supported !== false && !report.providerError && <div className="mt-3"><p className="mb-2 text-xs">Consulta detalhada: interpretação das evidências e PDF. Para carteiras, tenta listar tokens da rede escolhida; a cobertura pode ser parcial ou indisponível. Não inclui auditoria de contrato ou garantia de liquidez.</p><SocialChargeButton productCode="social-crypto-validator" label="Contratar consulta detalhada" target={{ network: report.network, type: report.type, identifier: report.identifier }} /></div>}
         </div>
       )}
-
-      <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
-        Esta interface não armazena a consulta em um banco de dados. A
-        integração com APIs de blockchain ainda precisa ser implementada para
-        confirmar transações, identificar contratos e gerar resultados
-        efetivamente verificados.
-      </p>
+      <p className="mt-5 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">Um resultado on-chain não comprova titularidade nem elimina risco de fraude.</p>
     </section>
   );
 }

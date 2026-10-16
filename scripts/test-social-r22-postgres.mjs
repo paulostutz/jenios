@@ -1,0 +1,26 @@
+import {readFile} from 'node:fs/promises';import assert from 'node:assert/strict';
+const {PGlite}=await import(process.env.JENIOS_PGLITE_MODULE||'@electric-sql/pglite');const db=new PGlite();
+await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema auth;
+create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('qa.user',true),'')::uuid$$;
+grant usage on schema auth to authenticated;
+create table posts(id uuid primary key,author_id uuid,body text,created_at timestamptz default now());
+create table stories(id uuid primary key,author_id uuid,shared_post_id uuid references posts(id));
+create table comments(id uuid primary key,post_id uuid references posts(id),body text);
+create table post_likes(post_id uuid references posts(id),user_id uuid);
+alter table posts enable row level security;create policy read_posts on posts for select to authenticated using(true);create policy update_posts on posts for update to authenticated using(author_id=auth.uid()) with check(author_id=auth.uid());
+alter table stories enable row level security;create policy read_stories on stories for select to authenticated using(true);create policy insert_stories on stories for insert to authenticated with check(author_id=auth.uid());
+alter table comments enable row level security;create policy read_comments on comments for select to authenticated using(exists(select 1 from posts where id=post_id));
+alter table post_likes enable row level security;create policy read_likes on post_likes for select to authenticated using(exists(select 1 from posts where id=post_id));
+grant select,update on posts to authenticated;grant select,insert on stories to authenticated;grant select on comments,post_likes to authenticated;`);
+for(const file of ['20261015214615_social_post_archive_r22.sql','20261015214619_trend_history_r22.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+const a='11111111-1111-4111-8111-111111111111',b='22222222-2222-4222-8222-222222222222',p='33333333-3333-4333-8333-333333333333';
+await db.query("insert into posts values($1,$2,'Original',now()-interval '1 day',null)",[p,a]);await db.query("insert into comments values(gen_random_uuid(),$1,'Comment')",[p]);await db.query('insert into post_likes values($1,$2)',[p,b]);await db.query('insert into stories values(gen_random_uuid(),$1,$2)',[b,p]);
+const original=(await db.query('select created_at from posts')).rows[0].created_at;
+async function act(id){await db.exec('reset role');await db.query("select set_config('qa.user',$1,false)",[id]);await db.exec('set role authenticated');}
+await act(b);assert.equal((await db.query('update posts set archived_at=now() where id=$1 returning id',[p])).rows.length,0);
+await act(a);assert.equal((await db.query('update posts set archived_at=now() where id=$1 returning id',[p])).rows.length,1);assert.equal((await db.query('select * from posts where archived_at is null')).rows.length,0);assert.equal((await db.query('select * from posts where archived_at is not null')).rows.length,1);assert.equal((await db.query('select * from stories')).rows.length,0);
+await act(b);assert.equal((await db.query('select * from posts')).rows.length,0);assert.equal((await db.query('select * from comments')).rows.length,0);assert.equal((await db.query('select * from post_likes')).rows.length,0);assert.equal((await db.query('select * from stories')).rows.length,0);await assert.rejects(db.query('insert into stories values(gen_random_uuid(),$1,$2)',[b,p]));
+await act(a);await db.query('update posts set archived_at=null where id=$1',[p]);assert.equal(new Date((await db.query('select created_at from posts')).rows[0].created_at).getTime(),new Date(original).getTime());
+await act(b);assert.equal((await db.query('select * from posts')).rows.length,1);assert.equal((await db.query('select * from comments')).rows.length,1);assert.equal((await db.query('select * from post_likes')).rows.length,1);assert.equal((await db.query('select * from stories')).rows.length,1);
+await assert.rejects(db.query('select * from jenios_whale_events'));await db.exec('reset role;set role service_role');await db.query('insert into jenios_whale_events(id,occurred_at,amount_btc) values($1,now(),100)',['a'.repeat(64)]);assert.equal((await db.query('select * from jenios_whale_events')).rows.length,1);
+await db.close();console.log('PASS private archive, owner-only mutation, hidden original/comments/likes/Stories, restore preserves date and relationships; history server-only');

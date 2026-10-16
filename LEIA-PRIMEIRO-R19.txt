@@ -1,0 +1,5 @@
+JENIOS SOCIAL — R19
+Correções do editor de perfil, foto padrão e persistência de cargo.
+Recuperação e login com nova senha validados pelo usuário.
+Consulte docs/REVISAO-R19-PERFIL.md para evidências e pendência da credencial do servidor.
+Produção main não modificada. Publicação apenas na branch codex/social-r16-teste.

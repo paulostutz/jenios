@@ -1,98 +1,33 @@
 'use client';
+import Link from 'next/link';
 
+import useSocialFeed from '../components/useSocialFeed';
+import SocialDirectSession from '../components/SocialDirectSession';
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { supabase, accountDatabase } from '../../lib/supabase';
+import { visitorProfile, profileView, postView } from '../../lib/social/feed-view.mjs';
+import { uploadSocialMedia } from '../../lib/social/media.mjs';
+const REMOTE_MEDIA = true;
+
 import CryptoValidator from '../components/CryptoValidator';
+import SocialSidebarPremium from '../components/SocialSidebarPremium';
+import './jenios-theme.css';
 import SocialPostCard from '../components/SocialPostCard';
+import SocialBlocks from '../components/SocialBlocks';
 import SocialStories from '../components/SocialStories';
+import SocialLives from '../components/SocialLives';
 
 
-
-const JENIOS_SOCIAL_DB = 'jenios-social-db';
-const JENIOS_SOCIAL_STORE = 'social-data';
-const JENIOS_POSTS_KEY = 'posts-v1';
-
-function abrirJeniosSocialDb() {
-  return new Promise((resolve, reject) => {
-    if (typeof window === 'undefined' || !window.indexedDB) {
-      reject(new Error('IndexedDB não disponível.'));
-      return;
-    }
-
-    const request = indexedDB.open(JENIOS_SOCIAL_DB, 1);
-
-    request.onupgradeneeded = () => {
-      const db = request.result;
-
-      if (!db.objectStoreNames.contains(JENIOS_SOCIAL_STORE)) {
-        db.createObjectStore(JENIOS_SOCIAL_STORE);
-      }
-    };
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-async function salvarPostsIndexedDb(posts) {
-  const db = await abrirJeniosSocialDb();
-
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(
-      JENIOS_SOCIAL_STORE,
-      'readwrite'
-    );
-
-    const store = transaction.objectStore(
-      JENIOS_SOCIAL_STORE
-    );
-
-    store.put(posts, JENIOS_POSTS_KEY);
-
-    transaction.oncomplete = () => {
-      db.close();
-      resolve();
-    };
-
-    transaction.onerror = () => {
-      db.close();
-      reject(transaction.error);
-    };
-  });
-}
-
-async function carregarPostsIndexedDb() {
-  const db = await abrirJeniosSocialDb();
-
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(
-      JENIOS_SOCIAL_STORE,
-      'readonly'
-    );
-
-    const store = transaction.objectStore(
-      JENIOS_SOCIAL_STORE
-    );
-
-    const request = store.get(JENIOS_POSTS_KEY);
-
-    request.onsuccess = () => {
-      db.close();
-      resolve(request.result || null);
-    };
-
-    request.onerror = () => {
-      db.close();
-      reject(request.error);
-    };
-  });
-}
 
 function SocialContent() {
+  const [blocksOpen,setBlocksOpen]=useState(false);
   const [abaGaleria, setAbaGaleria] = useState('posts');
 
   const searchParams = useSearchParams();
   const perfilUrl = searchParams.get('perfil');
+  const postUrl = searchParams.get('post');
+  const [erroPostEmFoco, setErroPostEmFoco] = useState('');
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -113,101 +48,53 @@ function SocialContent() {
   }, []);
 
   const [abaAtiva, setAbaAtiva] = useState('feed');
-  const [storiesJenios, setStoriesJenios] = useState([]);
-
-  useEffect(() => {
-    try {
-      const salvos = JSON.parse(
-        localStorage.getItem('jenios_social_stories') || '[]'
-      );
-
-      if (Array.isArray(salvos)) {
-        setStoriesJenios(
-          salvos.filter((s) =>
-            Date.now() - new Date(s.criadoEm).getTime() <
-            24 * 60 * 60 * 1000
-          )
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao carregar Stories:', error);
-    }
-  }, []);
-
+  const [storyUploading,setStoryUploading]=useState(false);
   const adicionarStoryJenios = async () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,video/*';
-
-    input.onchange = async (evento) => {
-      const arquivo = evento.target.files?.[0];
-      if (!arquivo) return;
-
-      if (arquivo.size > 4 * 1024 * 1024) {
-        alert('Arquivo muito grande. Limite temporario: 4 MB.');
-        return;
-      }
-
-      const leitor = new FileReader();
-
-      leitor.onload = () => {
-        const novoStory = {
-          id: Date.now(),
-          autor: meuPerfil.nome,
-          handle: meuPerfil.handle,
-          avatar: meuPerfil.avatar,
-          src: leitor.result,
-          tipo: arquivo.type.startsWith('video/')
-            ? 'video'
-            : 'imagem',
-          criadoEm: new Date().toISOString(),
-        };
-
-        const atualizados = [...storiesJenios, novoStory];
-
-        try {
-          localStorage.setItem(
-            'jenios_social_stories',
-            JSON.stringify(atualizados)
-          );
-          setStoriesJenios(atualizados);
-        } catch (error) {
-          console.error(error);
-          alert('Nao foi possivel salvar o Story.');
-        }
-      };
-
-      leitor.readAsDataURL(arquivo);
-    };
-
-    input.click();
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    if(storyUploading)return;
+    const owner=meuPerfil.id,input=document.createElement('input');input.type='file';input.accept='image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime';
+    input.onchange=async event=>{
+      const file=event.target.files?.[0];if(!file)return;
+      setStoryUploading(true);const src=URL.createObjectURL(file);
+      try{
+        let duration;
+        if(file.type.startsWith('video/'))duration=await new Promise((resolve,reject)=>{const video=document.createElement('video');const timer=setTimeout(()=>reject(Error('Não foi possível ler o vídeo.')),15000);video.preload='metadata';video.onloadedmetadata=()=>{clearTimeout(timer);resolve(video.duration);};video.onerror=()=>{clearTimeout(timer);reject(Error('Não foi possível ler o vídeo.'));};video.src=src;});
+        const media=await uploadSocialMedia([{src,_file:file,tipo:file.type.startsWith('video/')?'video':'imagem',duracao:duration}],{client:supabase,getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data.session.access_token;}});
+        if(sessionOwnerRef.current!==owner)throw Error('Sua sessão mudou.');
+        await feed.createStory({url:media[0].src,type:media[0].tipo==='video'?'video':'image'});
+      }catch(error){alert(error.message||'Não foi possível publicar o Story.');}
+      finally{URL.revokeObjectURL(src);setStoryUploading(false);}
+    };input.click();
   };
-
-  const excluirStoryJenios = (id) => {
-    setStoriesJenios((anteriores) => {
-      const atualizados = anteriores.filter((story) => story.id !== id);
-      try {
-        localStorage.setItem('jenios_social_stories', JSON.stringify(atualizados));
-      } catch (erro) {
-        console.error('Erro ao persistir exclusão do Story:', erro);
-      }
-      return atualizados;
-    });
-  };
+  const excluirStoryJenios=async id=>{try{await feed.deleteStory(id);}catch{alert('Não foi possível excluir o Story.');}};
 
   const [novoTexto, setNovoTexto] = useState('');
   const [youtubeLink, setYoutubeLink] = useState('');
   const [imagensPreview, setImagensPreview] = useState([]);
+  const [enviandoPublicacao, setEnviandoPublicacao] = useState(false);
   const [indiceCarrossel, setIndiceCarrossel] = useState({});
   const [perfilVisitado, setPerfilVisitado] = useState(null);
-  const [seguindoLocal, setSeguindoLocal] = useState([]);
+  const [profilePosts,setProfilePosts]=useState([]),[profileNext,setProfileNext]=useState(null);
+  const [followBusy,setFollowBusy]=useState(false);
+  const [publicationNotice,setPublicationNotice]=useState('');
+  const archiveActions=useRef(new Set()),[archiveBusyId,setArchiveBusyId]=useState(null);
+  const [archivedPreview,setArchivedPreview]=useState(null);
+  const [uploadPercent,setUploadPercent]=useState(null);
+  const [uploadStage,setUploadStage]=useState('');
+  const [profileBusy,setProfileBusy]=useState(false),[profileError,setProfileError]=useState('');
+  const profileRequest=useRef(0);
+  const [followRows,setFollowRows]=useState([]),[followNext,setFollowNext]=useState(null),[followError,setFollowError]=useState('');
   const [postEmFoco, setPostEmFoco] = useState(null);
   const [chatAtivo, setChatAtivo] = useState(null);
+  const directAutoOpened=useRef(false);
   const [textoMensagem, setTextoMensagem] = useState('');
   const [mensagensDirect, setMensagensDirect] = useState({});
+  const [mensagensAberta, setMensagensAberta] = useState(false);
 
   // Modais
   const [modalEditarPerfil, setModalEditarPerfil] = useState(false);
+  const [perfilRascunho,setPerfilRascunho]=useState({...visitorProfile});
+  const [perfilSalvando,setPerfilSalvando]=useState(false),[perfilSaveError,setPerfilSaveError]=useState('');
   const [modalAutenticacao, setModalAutenticacao] = useState(false);
   const [modalLista, setModalLista] = useState(null);
   const [modoAuth, setModoAuth] = useState('login');
@@ -219,182 +106,16 @@ function SocialContent() {
   const videoRef = useRef(null);
 
   // Perfil do Usuário
-  const [meuPerfil, setMeuPerfil] = useState({
-    nome: 'Paulo Stutz Netto',
-    handle: '@paulostutz',
-    cargo: 'CEO & Fundador • Letter Franqueadora',
-    rentabilidade: 'R$ 0,00',
-    assertividade: '0%',
-    avatar:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    bio:
-      'Pastor, empresário, escritor e palestrante.\nCEO-Founder da Letter e da Jenios Social.\n+14 anos de experiência no mercado financeiro.',
-    seguidoresLista: [
-      '@carlosm',
-      '@anapaula',
-      '@robertodias',
-      '@julianac',
-    ],
-    seguindoLista: ['@carlosm', '@anapaula', '@fernandal'],
-    postsCount: 2,
-    visualizacoes30Dias: 1420,
-    status: '🏆 Conta Verificada',
-    autenticado: true,
-  });
+  const feed = useSocialFeed();
+  const storiesJenios=feed.stories;
+  const {profile:meuPerfil,setProfile:setMeuPerfil,posts,setPosts,ready:postsProntos,error:erroPosts}=feed;
+  const sessionOwnerRef=useRef(null);sessionOwnerRef.current=meuPerfil.id;
+  useEffect(()=>{if(modalAutenticacao)window.location.href='/login';},[modalAutenticacao]);
+  useEffect(()=>{setArchivedPreview(null);setBlocksOpen(false);setNovoTexto('');setYoutubeLink('');setImagensPreview([]);setModalEditarPerfil(false);setPerfilVisitado(null);setPostEmFoco(null);setErroPostEmFoco('');setMensagensAberta(false);setChatAtivo(null);setTextoMensagem('');profileRequest.current++;setProfilePosts([]);setProfileNext(null);setProfileBusy(false);setProfileError('');setModalLista(null);setFollowRows([]);},[meuPerfil.id]);
+  useEffect(()=>{if(postsProntos&&!directAutoOpened.current&&searchParams.get('direct')==='1'){directAutoOpened.current=true;setMensagensAberta(true);}},[postsProntos,meuPerfil.id,searchParams]);
 
   // Ranking Top 10 Semanal Completo
-  const [rankingOperadores] = useState([
-    {
-      pos: 1,
-      nome: 'Carlos M.',
-      handle: '@carlosm',
-      cargo: 'Trader Pro',
-      rentabilidade: '+ R$ 14.850',
-      assertividade: '94%',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-      bio: 'Especialista em robôs HFT e Mini-Índice.',
-      seguidoresLista: ['@paulostutz', '@anapaula'],
-      seguindoLista: ['@paulostutz'],
-      postsCount: 12,
-      visualizacoes30Dias: '28.4k',
-    },
-    {
-      pos: 2,
-      nome: 'Ana Paula S.',
-      handle: '@anapaula',
-      cargo: 'Institucional',
-      rentabilidade: '+ R$ 11.200',
-      assertividade: '91%',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      bio: 'Arbitragem algorítmica multi-rede na Solana.',
-      seguidoresLista: ['@paulostutz', '@carlosm'],
-      seguindoLista: ['@paulostutz'],
-      postsCount: 9,
-      visualizacoes30Dias: '21.0k',
-    },
-    {
-      pos: 3,
-      nome: 'Roberto Dias',
-      handle: '@robertodias',
-      cargo: 'Swing Trader',
-      rentabilidade: '+ R$ 9.400',
-      assertividade: '88%',
-      avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
-      bio: 'Foco em tendências de médio prazo.',
-      seguidoresLista: ['@paulostutz'],
-      seguindoLista: ['@carlosm'],
-      postsCount: 7,
-      visualizacoes30Dias: '15.8k',
-    },
-    {
-      pos: 4,
-      nome: 'Juliana Costa',
-      handle: '@julianac',
-      cargo: 'Scalper',
-      rentabilidade: '+ R$ 7.800',
-      assertividade: '86%',
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-      bio: 'Operações de alta frequência no Dólar.',
-      seguidoresLista: [],
-      seguindoLista: [],
-      postsCount: 14,
-      visualizacoes30Dias: '12.1k',
-    },
-    {
-      pos: 5,
-      nome: 'Marcos Vinicius',
-      handle: '@marcosv',
-      cargo: 'Quant Dev',
-      rentabilidade: '+ R$ 6.500',
-      assertividade: '85%',
-      avatar:
-        'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150',
-      bio: 'Desenvolvedor de estratégias matemáticas.',
-      seguidores: [],
-      seguindoLista: [],
-      postsCount: 5,
-      visualizacoes30Dias: '9.4k',
-    },
-    {
-      pos: 6,
-      nome: 'Fernanda Lima',
-      handle: '@fernandal',
-      cargo: 'Analista Macro',
-      rentabilidade: '+ R$ 5.200',
-      assertividade: '82%',
-      avatar:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-      bio: 'Foco em notícias globais e commodities.',
-      seguidores: ['@paulostutz'],
-      seguindoLista: ['@paulostutz'],
-      postsCount: 8,
-      visualizacoes30Dias: '8.2k',
-    },
-    {
-      pos: 7,
-      nome: 'Lucas Mendes',
-      handle: '@lucasm',
-      cargo: 'Crypto Trader',
-      rentabilidade: '+ R$ 4.300',
-      assertividade: '80%',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-      bio: 'Especialista em DEX e pools de liquidez.',
-      seguidores: [],
-      seguindoLista: [],
-      postsCount: 6,
-      visualizacoes30Dias: '6.9k',
-    },
-    {
-      pos: 8,
-      nome: 'Beatriz Souza',
-      handle: '@beatrizs',
-      cargo: 'Day Trader',
-      rentabilidade: '+ R$ 3.800',
-      assertividade: '78%',
-      avatar:
-        'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150',
-      bio: 'Operando price action clássico.',
-      seguidores: [],
-      seguindoLista: [],
-      postsCount: 4,
-      visualizacoes30Dias: '5.1k',
-    },
-    {
-      pos: 9,
-      nome: 'Gabriel Rocha',
-      handle: '@gabrielr',
-      cargo: 'Position',
-      rentabilidade: '+ R$ 2.900',
-      assertividade: '76%',
-      avatar:
-        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150',
-      bio: 'Alocação de longo prazo em ações.',
-      seguidores: [],
-      seguindoLista: [],
-      postsCount: 3,
-      visualizacoes30Dias: '4.2k',
-    },
-    {
-      pos: 10,
-      nome: 'Camila Martins',
-      handle: '@camilam',
-      cargo: 'Iniciante Pro',
-      rentabilidade: '+ R$ 1.800',
-      assertividade: '74%',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      bio: 'Evoluindo no método Jenios.',
-      seguidores: [],
-      seguindoLista: [],
-      postsCount: 2,
-      visualizacoes30Dias: '3.0k',
-    },
-  ]);
+  const rankingOperadores = [];
 
   const [noticiasMacro] = useState([
     {
@@ -426,106 +147,8 @@ function SocialContent() {
     },
   ]);
 
-  const [postsProntos, setPostsProntos] = useState(false);
-  const [erroPosts, setErroPosts] = useState('');
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      autor: 'Carlos M.',
-      handle: '@carlosm',
-      cargo: 'ESTRATEGISTA HFT',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-      bio: 'Especialista em robôs HFT e Mini-Índice.',
-      texto: 'Modo Reverso ativado no Mini-Índice com sucesso!',
-      imagens: [
-        'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800',
-      ],
-      youtubeUrl: '',
-      proporcao: 'quadrada',
-      tempo: 'Há 15 mins',
-      likes: 34,
-      curtido: false,
-      views: 342,
-      perfilAssociado: rankingOperadores[0],
-    },
-  ]);
-
-  useEffect(() => {
-    const perfilSalvo = localStorage.getItem('jenios_social_perfil');
-
-    if (perfilSalvo) {
-      try {
-        setMeuPerfil(JSON.parse(perfilSalvo));
-      } catch (e) {}
-    }
-
-    carregarPostsIndexedDb()
-      .then((dados) => {
-        if (Array.isArray(dados)) {
-          setPosts(dados);
-          setPostsProntos(true);
-        } else if (dados == null) {
-          setPosts([]);
-          setPostsProntos(true);
-        } else {
-          setErroPosts(
-            'Formato inesperado. Dados preservados.'
-          );
-        }
-      })
-      .catch((erro) => {
-        console.error('Erro ao recuperar posts:', erro);
-        setErroPosts(
-          'Não foi possível carregar as publicações.'
-        );
-      });
-
-    // V6: relações de seguimento locais (protótipo, não compartilhadas entre usuários).
-    try {
-      const seguindoSalvo = JSON.parse(localStorage.getItem('jenios_social_seguindo_v6') || '[]');
-      if (Array.isArray(seguindoSalvo)) {
-        setSeguindoLocal(seguindoSalvo.filter((h) => typeof h === 'string'));
-      }
-    } catch (error) {
-      console.warn('Não foi possível ler a lista de seguindo:', error);
-    }
-
-    const directSalvo = localStorage.getItem('jenios_social_directs');
-
-    if (directSalvo) {
-      try {
-        setMensagensDirect(JSON.parse(directSalvo));
-      } catch (e) {}
-    }
-
-    if (perfilUrl) {
-      const encontrado =
-        rankingOperadores.find((op) => op.handle === perfilUrl) || meuPerfil;
-
-      setPerfilVisitado(encontrado);
-      setAbaAtiva('perfil-visita');
-    }
-  }, [perfilUrl]);
-
-  const salvarPostsNoStorage = (novosPosts) => {
-    if (!postsProntos || erroPosts) {
-      alert('Aguarde o carregamento das publicações.');
-      return;
-    }
-    setPosts(novosPosts);
-
-    salvarPostsIndexedDb(novosPosts).catch((error) => {
-      console.error(
-        'Erro ao salvar posts da JENIOS Social:',
-        error
-      );
-
-      alert(
-        'Não foi possível salvar esta publicação no armazenamento local.'
-      );
-    });
-  };
+  // Shared feed and authentication are loaded by useSocialFeed, never from localStorage.
+  useEffect(()=>{if(perfilUrl&&meuPerfil.id&&postsProntos)void visitarPerfil({handle:perfilUrl});},[perfilUrl,meuPerfil.id,postsProntos]);
 
   const extrairEmbedYoutube = (url) => {
     if (!url) return null;
@@ -567,129 +190,53 @@ function SocialContent() {
     return existeNosSalvos;
   };
 
-  const salvarEdicaoPerfil = (e) => {
+  const salvarEdicaoPerfil = async (e) => {
     e.preventDefault();
-
-    let handleFormatado = meuPerfil.handle.trim();
-
-    if (!handleFormatado.startsWith('@')) {
-      handleFormatado = `@${handleFormatado}`;
-    }
-
-    if (verificarHandleEmUso(handleFormatado)) {
-      alert(
-        '❌ Este @ já está em uso por outro usuário. Escolha um identificador único.'
-      );
-      return;
-    }
-
-    const perfilAtualizado = {
-      ...meuPerfil,
-      handle: handleFormatado,
-    };
-
-    setMeuPerfil(perfilAtualizado);
-
-    localStorage.setItem(
-      'jenios_social_perfil',
-      JSON.stringify(perfilAtualizado)
-    );
-
-    const usuariosSalvos = JSON.parse(
-      localStorage.getItem('jenios_social_usuarios_registrados') || '[]'
-    );
-
-    const filtrados = usuariosSalvos.filter(
-      (u) => u.email !== authEmail
-    );
-
-    localStorage.setItem(
-      'jenios_social_usuarios_registrados',
-      JSON.stringify([...filtrados, perfilAtualizado])
-    );
-
-    setModalEditarPerfil(false);
-
-    alert('✅ Perfil e @ atualizados com sucesso!');
+    if(perfilSalvando)return;
+    const owner=meuPerfil.id,draft={...perfilRascunho};
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    const handle=draft.handle.trim().replace(/^@/,'').toLowerCase();
+    if(!/^[a-z0-9_]{3,30}$/.test(handle)){setPerfilSaveError('Use de 3 a 30 letras, números ou _ no identificador.');return;}
+    if(!draft.nome.trim()){setPerfilSaveError('Informe seu nome.');return;}
+    setPerfilSalvando(true);setPerfilSaveError('');
+    try{
+      const checked=await supabase.auth.getUser();
+      if(checked.error||checked.data?.user?.id!==owner||checked.data.user.is_anonymous)throw Error('Entre na sua conta novamente.');
+      let avatar=draft.avatar===visitorProfile.avatar?'':draft.avatar;
+      if(avatar.startsWith('data:image/')){
+        const uploaded=await uploadSocialMedia([{src:avatar,tipo:'imagem'}],{client:supabase,getAccessToken:async()=>{
+          const r=await supabase.auth.getSession();
+          if(r.data?.session?.user.id!==owner||sessionOwnerRef.current!==owner)throw Error('Sua sessão mudou.');
+          return r.data.session.access_token;
+        }});avatar=uploaded[0].src;
+        if(sessionOwnerRef.current!==owner)return;
+        setPerfilRascunho(p=>({...p,avatar}));
+      }
+      if(avatar&&!avatar.startsWith('https://'))throw Error('Use um endereço de foto com https:// ou envie uma imagem JPG, PNG ou WebP.');
+      const result=await accountDatabase(owner).from('profiles').upsert({id:owner,handle,display_name:draft.nome.trim(),bio:draft.bio,cargo:draft.cargo,avatar_url:avatar||null},{onConflict:'id'}).select('id,handle,display_name,bio,cargo,avatar_url').single();
+      if(result.error)throw Error(result.error.code==='23505'?'Este identificador já está em uso.':'Não foi possível salvar o perfil. Seus dados continuam no formulário.');
+      if(sessionOwnerRef.current!==owner)return;
+      const saved=profileView(result.data,true);
+      setMeuPerfil(p=>({...p,nome:saved.nome,handle:saved.handle,bio:saved.bio,cargo:saved.cargo,avatar:saved.avatar}));setModalEditarPerfil(false);
+    }catch(error){if(sessionOwnerRef.current===owner)setPerfilSaveError(error.message);}
+    finally{if(sessionOwnerRef.current===owner)setPerfilSalvando(false);}
   };
 
   const handleUploadAvatar = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setMeuPerfil((prev) => ({
-          ...prev,
-          avatar: reader.result,
-        }));
-      };
-
-      reader.readAsDataURL(file);
-    }
+    const file=e.target.files[0],owner=meuPerfil.id;
+    if(!file)return;
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024){setPerfilSaveError('Use uma imagem JPG, PNG ou WebP de até 10 MB.');return;}
+    const reader=new FileReader();
+    reader.onloadend=()=>{if(sessionOwnerRef.current===owner)setPerfilRascunho(prev=>({...prev,avatar:reader.result}));};
+    reader.readAsDataURL(file);
   };
 
-  const fazerLogout = () => {
-    const perfilSair = {
-      ...meuPerfil,
-      autenticado: false,
-      nome: 'Visitante',
-      handle: '@visitante',
-    };
-
-    setMeuPerfil(perfilSair);
-
-    localStorage.setItem(
-      'jenios_social_perfil',
-      JSON.stringify(perfilSair)
-    );
-
-    alert('Sessão encerrada.');
+  const fazerLogout = async () => {
+    const result=await supabase?.auth.signOut({scope:'local'});
+    if(result?.error){alert('Não foi possível encerrar a sessão. Tente novamente.');return;}
+    setModalEditarPerfil(false);setPerfilVisitado(null);setAbaAtiva('feed');
   };
-
-  const processarAuth = (e) => {
-    e.preventDefault();
-
-    let handleFormatado = meuPerfil.handle.trim();
-
-    if (!handleFormatado.startsWith('@')) {
-      handleFormatado = `@${handleFormatado}`;
-    }
-
-    if (verificarHandleEmUso(handleFormatado)) {
-      alert(
-        '❌ Este @ já está cadastrado. Por favor, escolha outro.'
-      );
-      return;
-    }
-
-    const perfilLogado = {
-      ...meuPerfil,
-      handle: handleFormatado,
-      autenticado: true,
-    };
-
-    setMeuPerfil(perfilLogado);
-
-    localStorage.setItem(
-      'jenios_social_perfil',
-      JSON.stringify(perfilLogado)
-    );
-
-    const usuariosSalvos = JSON.parse(
-      localStorage.getItem('jenios_social_usuarios_registrados') || '[]'
-    );
-
-    localStorage.setItem(
-      'jenios_social_usuarios_registrados',
-      JSON.stringify([...usuariosSalvos, perfilLogado])
-    );
-
-    setModalAutenticacao(false);
-
-    alert('Autenticado com sucesso!');
-  };
+  const processarAuth = (event) => {event.preventDefault();window.location.href='/login';};
 
   const comprimirImagem = (file) => {
   return new Promise((resolve, reject) => {
@@ -753,7 +300,7 @@ function SocialContent() {
           novaAltura
         );
 
-        // Compressão para não estourar o localStorage durante o desenvolvimento
+        // Reduz o tamanho da imagem antes do envio ao armazenamento.
         const imagemComprimida = canvas.toDataURL(
           'image/jpeg',
           0.78
@@ -761,6 +308,7 @@ function SocialContent() {
 
         resolve({
           src: imagemComprimida,
+          tipo: 'imagem',
           largura: novaLargura,
           altura: novaAltura,
           larguraOriginal,
@@ -786,34 +334,72 @@ function SocialContent() {
 };
 
 const handleUploadCarrossel = async (e) => {
-  const files = Array.from(e.target.files || []);
+  const files = Array.from(e.target.files || []), owner=sessionOwnerRef.current;
 
-  if (files.length === 0) {
-    return;
-  }
+  if (files.length === 0) return;
+  if(files.length+imagensPreview.length>10){alert('Use no máximo dez fotos e vídeos.');e.target.value='';return;}
+
+  const processarVideo = (file) => new Promise((resolve, reject) => {
+    if (file.size > 50 * 1024 * 1024) {
+      reject(new Error('O vídeo deve ter no máximo 50 MB.'));
+      return;
+    }
+
+    const video = document.createElement('video');
+    const objectUrl = URL.createObjectURL(file);
+    video.preload = 'metadata';
+
+    const metadataTimer=setTimeout(()=>{video.removeAttribute('src');video.load();URL.revokeObjectURL(objectUrl);reject(new Error('Não foi possível ler este vídeo. Tente um arquivo MP4 ou WebM.'));},25000);
+    video.onloadedmetadata = () => {
+      clearTimeout(metadataTimer);
+      const duracao = video.duration;
+      URL.revokeObjectURL(objectUrl);
+
+      if (!Number.isFinite(duracao) || duracao > 90) {
+        reject(new Error('O vídeo deve ter no máximo 1 minuto e 30 segundos.'));
+        return;
+      }
+
+      if(REMOTE_MEDIA){resolve({src:URL.createObjectURL(file),tipo:'video',duracao,_file:file});return;}
+
+      const reader = new FileReader();
+      reader.onload = () => resolve({
+        src: reader.result,
+        tipo: 'video',
+        duracao
+      });
+      reader.onerror = () => reject(new Error('Não foi possível ler o vídeo.'));
+      reader.readAsDataURL(file);
+    };
+
+    video.onerror = () => {
+      clearTimeout(metadataTimer);
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Formato de vídeo não suportado.'));
+    };
+    video.src = objectUrl;
+  });
 
   try {
-    const imagensProcessadas = await Promise.all(
-      files.map((file) => comprimirImagem(file))
-    );
+    const midiasProcessadas = await Promise.all(files.map((file) => {
+      if (file.type.startsWith('image/')) return comprimirImagem(file);
+      if (file.type.startsWith('video/')) return processarVideo(file);
+      throw new Error('Selecione apenas fotos ou vídeos.');
+    }));
 
-    setImagensPreview((prev) => [
-      ...prev,
-      ...imagensProcessadas,
-    ]);
-
+    if(owner!==sessionOwnerRef.current){for(const item of midiasProcessadas)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);return;}
+    setImagensPreview((prev) => [...prev,...midiasProcessadas]);
+  } catch (error) {
+    console.error('Erro ao processar mídia:', error);
+    alert(error.message || 'Não foi possível processar uma das mídias.');
+  } finally {
     // Permite selecionar novamente o mesmo arquivo depois
     e.target.value = '';
-  } catch (error) {
-    console.error('Erro ao processar imagem:', error);
-
-    alert(
-      'Não foi possível processar uma das imagens. Tente novamente.'
-    );
   }
 };
 
   const removerFotoPreview = (index) => {
+    if(imagensPreview[index]?.src?.startsWith('blob:'))URL.revokeObjectURL(imagensPreview[index].src);
     setImagensPreview((prev) =>
       prev.filter((_, i) => i !== index)
     );
@@ -893,117 +479,70 @@ const handleUploadCarrossel = async (e) => {
     alert('📸 Foto capturada e adicionada ao carrossel!');
   };
 
-  const publicarPost = (e) => {
+  const publicarPost = async (e) => {
     e.preventDefault();
-
-    if (
-      !novoTexto.trim() &&
-      imagensPreview.length === 0 &&
-      !youtubeLink.trim()
-    ) {
-      return;
-    }
-
-    const novoP = {
-      id: Date.now(),
-      autor: meuPerfil.nome,
-      handle: meuPerfil.handle,
-      cargo: meuPerfil.cargo,
-      avatar: meuPerfil.avatar,
-      bio: meuPerfil.bio,
-      texto: novoTexto,
-      imagens: imagensPreview,
-      youtubeUrl: youtubeLink.trim(),
-      tempo: 'Agora mesmo',
-      likes: 0,
-      curtido: false,
-      views: 1,
-      perfilAssociado: meuPerfil,
-    };
-
-    const atualizados = [novoP, ...posts];
-
-    salvarPostsNoStorage(atualizados);
-
-    setNovoTexto('');
-    setYoutubeLink('');
-    setImagensPreview([]);
-
-    const perfilAtualizado = {
-      ...meuPerfil,
-      postsCount: Number(meuPerfil.postsCount || 0) + 1,
-      // Não inventar visualizações quando um post é publicado.
-      visualizacoes30Dias: meuPerfil.visualizacoes30Dias,
-    };
-
-    setMeuPerfil(perfilAtualizado);
-
-    localStorage.setItem(
-      'jenios_social_perfil',
-      JSON.stringify(perfilAtualizado)
-    );
-
-    alert('🚀 Publicação realizada com sucesso!');
+    if(enviandoPublicacao)return;
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    if(!novoTexto.trim()&&!imagensPreview.length&&!youtubeLink.trim())return;
+    setEnviandoPublicacao(true);setPublicationNotice('');setUploadPercent(null);setUploadStage('');
+    try {
+      if(!supabase)throw Error('Entre na sua conta para publicar.');
+      const {data,error}=await supabase.auth.getUser();
+      if(error||!data.user?.id||data.user.is_anonymous||data.user.id!==meuPerfil.id)throw Error('Sua sessão mudou. Entre novamente.');
+      const owner=data.user.id;
+      const media=imagensPreview.length?await uploadSocialMedia(imagensPreview,{client:supabase,onStage:stage=>{if(sessionOwnerRef.current===owner)setUploadStage(stage);},onUploadProgress:percent=>{if(sessionOwnerRef.current===owner)setUploadPercent(percent);},onProgress:items=>{if(sessionOwnerRef.current===owner)setImagensPreview(items);},getAccessToken:async()=>{const r=await supabase.auth.getSession();if(r.data?.session?.user.id!==owner)throw Error('Sua sessão mudou.');return r.data?.session?.access_token;}}):[];
+      const check=await supabase.auth.getUser();
+      if(check.error||check.data?.user?.id!==owner)throw Error('Sua sessão mudou. O texto foi preservado.');
+      const created=await feed.publish([novoTexto.trim(),youtubeLink.trim()].filter(Boolean).join('\n'),media.map(x=>({url:x.src,type:x.tipo==='video'?'video':'image'})));
+      if(sessionOwnerRef.current!==owner)return;
+      const ownPost={...postView(created,{id:owner,display_name:meuPerfil.nome,handle:meuPerfil.handle,avatar_url:meuPerfil.avatar}),likes:0};
+      if(perfilVisitado?.id===owner){setProfilePosts(old=>[ownPost,...old.filter(p=>p.id!==created.id)]);setPerfilVisitado(p=>({...p,postsCount:(p.postsCount||0)+1}));}
+      setPublicationNotice('Publicado no feed e no seu perfil.');setPostEmFoco(created.id);
+      for(const item of imagensPreview)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);
+      setNovoTexto('');setYoutubeLink('');setImagensPreview([]);
+    }catch(error){alert(error.message||'Não foi possível publicar. Seu texto foi preservado.');}
+    finally{setEnviandoPublicacao(false);}
   };
-
-  const repostarPost = (postOriginal) => {
-    const novoP = {
-      id: Date.now(),
-      autor: meuPerfil.nome,
-      handle: meuPerfil.handle,
-      cargo: meuPerfil.cargo,
-      avatar: meuPerfil.avatar,
-      bio: meuPerfil.bio,
-      texto: `🔄 Repost de ${postOriginal.handle}: "${postOriginal.texto}"`,
-      imagens: postOriginal.imagens || [],
-      youtubeUrl: postOriginal.youtubeUrl || '',
-      proporcao: postOriginal.proporcao || 'quadrada',
-      tempo: 'Agora mesmo',
-      likes: 0,
-      curtido: false,
-      views: 1,
-      perfilAssociado: meuPerfil,
-    };
-
-    const atualizados = [novoP, ...posts];
-
-    salvarPostsNoStorage(atualizados);
-
-    alert('🚀 Post repostado com sucesso no seu feed!');
+  const compartilharStory = async post => {
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    await feed.createStory({postId:post.id});
+    setPublicationNotice('Publicação compartilhada nos seus Stories por 24 horas.');
   };
-
-  const curtirPost = (id) => {
-    const atualizados = posts.map((p) =>
-      p.id === id
-        ? {
-            ...p,
-            likes: p.curtido
-              ? p.likes - 1
-              : p.likes + 1,
-            curtido: !p.curtido,
-          }
-        : p
-    );
-
-    salvarPostsNoStorage(atualizados);
+  const repostarPost = async (post) => {
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    try{await feed.publish(`Repost de ${post.handle}:\n${post.texto}\n${window.location.origin}/social?post=${post.id}`,[]);}catch(error){alert(error.message);}
   };
-const atualizarPost = (id, alteracoes) => {
-  const atualizados = posts.map((p) =>
-    p.id === id
-      ? { ...p, ...alteracoes }
-      : p
-  );
+  const curtirPost = async (id) => {try{const post=posts.find(p=>p.id===id);if(post)await feed.like(post);}catch(error){alert(error.message);}};
+  const atualizarPost = async (id,changes) => {
+    if(Object.keys(changes).some(k=>k!=='salvo'))return;
+    try{const post=posts.find(p=>p.id===id);if(post)await feed.save(post,Boolean(changes.salvo));}catch(error){alert(error.message);}
+  };
+  const arquivarPost=async(post,wanted=true)=>{
+    if(archiveActions.current.has(post.id))return;
+    archiveActions.current.add(post.id);setArchiveBusyId(post.id);
+    try{
+      await feed.archive(post,wanted);
+      if(sessionOwnerRef.current!==post.authorId)return;
+      if(wanted)setProfilePosts(old=>old.filter(p=>p.id!==post.id));
+      setPerfilVisitado(p=>p?.id===post.authorId?{...p,postsCount:Math.max(0,(p.postsCount||0)+(wanted?-1:1))}:p);
+      setPublicationNotice(wanted?'Publicação arquivada. Só você pode vê-la em Arquivados.':'Publicação restaurada ao feed, na data original.');
+    }finally{archiveActions.current.delete(post.id);if(sessionOwnerRef.current===post.authorId)setArchiveBusyId(null);}
+  };
+  const desarquivarPreview=async()=>{
+    if(!archivedPreview)return;
+    try{await arquivarPost(archivedPreview,false);setArchivedPreview(null);}
+    catch{setProfileError('Não foi possível desarquivar. Tente novamente.');}
+  };
+  const excluirPost = async (id) => {try{await feed.remove(id);}catch(error){alert(error.message);}};
 
-  salvarPostsNoStorage(atualizados);
-};
+  useEffect(()=>{
+    if(!postUrl||!meuPerfil.autenticado||!postsProntos)return;
+    let live=true;setErroPostEmFoco('');
+    if(!/^[0-9a-f-]{36}$/i.test(postUrl)){setErroPostEmFoco('Link de publicação inválido.');return;}
+    feed.openPost(postUrl).then(()=>{if(live){setPostEmFoco(postUrl);setAbaAtiva('feed');}}).catch(error=>{if(live)setErroPostEmFoco(error.code==='POST_NOT_FOUND'?'Esta publicação não está disponível.':'Não foi possível abrir esta publicação.');});
+    return()=>{live=false;};
+  },[postUrl,meuPerfil.id,postsProntos]);
 
-const excluirPost = (id) => {
-  const atualizados = posts.filter(
-    (p) => p.id !== id
-  );
-
-  salvarPostsNoStorage(atualizados);
-};
   const mudarFotoCarrossel = (
     postId,
     direcao,
@@ -1024,10 +563,9 @@ const excluirPost = (id) => {
     });
   };
 
-  // Abre uma publicação selecionada na galeria, inclusive em Salvos.
-  const abrirPostDaGaleria = (postId) => {
-    setPostEmFoco(postId);
-    setAbaAtiva('feed');
+  // Abre uma publicação selecionada na galeria do perfil.
+  const abrirPostDaGaleria = async (postId) => {
+    try{await feed.openPost(postId);setPostEmFoco(postId);setAbaAtiva('feed');}catch(error){alert('Não foi possível abrir a publicação.');}
   };
 
   useEffect(() => {
@@ -1041,31 +579,31 @@ const excluirPost = (id) => {
     return () => clearTimeout(timer);
   }, [abaAtiva, postEmFoco]);
 
-  const alternarSeguir = (handle) => {
-    if (!handle || handle === meuPerfil.handle) return;
-    setSeguindoLocal((anterior) => {
-      const proximo = anterior.includes(handle)
-        ? anterior.filter((item) => item !== handle)
-        : [...anterior, handle];
-      try {
-        localStorage.setItem('jenios_social_seguindo_v6', JSON.stringify(proximo));
-      } catch (error) {
-        console.error('Não foi possível salvar seguindo:', error);
-      }
-      return proximo;
-    });
+  const alternarSeguir = async () => {
+    if(followBusy||profileBusy||!perfilVisitado?.id)return;
+    setFollowBusy(true);const owner=sessionOwnerRef.current,request=profileRequest.current;
+    try{const updated=await feed.toggleFollow(perfilVisitado);if(owner===sessionOwnerRef.current&&request===profileRequest.current)setPerfilVisitado(updated);}catch(error){alert(error.message);}finally{setFollowBusy(false);}
   };
-
-  const visitarPerfil = (usuario) => {
-    if (!usuario?.handle) return;
-    // Resolve dados atualizados e evita abrir um perfil incompleto do post.
-    const perfil = usuario.handle === meuPerfil.handle
-      ? meuPerfil
-      : rankingOperadores.find((item) => item.handle === usuario.handle) || usuario;
-    setPerfilVisitado(perfil);
-    setAbaGaleria('posts');
-    setAbaAtiva('perfil-visita');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const visitarPerfil = async (usuario,tab='posts',offset=0) => {
+    if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+    if(!usuario?.handle&&!usuario?.id)return;
+    const request=++profileRequest.current,owner=sessionOwnerRef.current;
+    setProfileBusy(true);setProfileError('');setAbaGaleria(tab);setAbaAtiva('perfil-visita');
+    if(!offset){setPerfilVisitado({...visitorProfile,...usuario});setProfilePosts([]);setProfileNext(null);}
+    try{
+      const result=await feed.visit(usuario,offset);
+      if(owner!==sessionOwnerRef.current||request!==profileRequest.current)return;
+      setPerfilVisitado(result.profile);setProfilePosts(old=>offset?[...old,...result.posts.filter(p=>!old.some(x=>x.id===p.id))]:result.posts);setProfileNext(result.nextOffset);
+      if(tab==='arquivados')await feed.loadArchived();
+    }catch(error){if(owner===sessionOwnerRef.current&&request===profileRequest.current)setProfileError('Não foi possível carregar o perfil. Tente novamente.');}
+    finally{if(owner===sessionOwnerRef.current&&request===profileRequest.current)setProfileBusy(false);}
+    if(!offset)window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const abrirLista = async (kind,offset=0) => {
+    const owner=sessionOwnerRef.current;
+    setModalLista(kind);setFollowError('');if(!offset){setFollowRows([]);setFollowNext(null);}
+    try{const result=await feed.followList(owner,kind==='seguidores'?'followers':'following',offset);if(owner===sessionOwnerRef.current){setFollowRows(old=>offset?[...old,...result.profiles]:result.profiles);setFollowNext(result.nextOffset);}}
+    catch{if(owner===sessionOwnerRef.current)setFollowError('Não foi possível carregar esta lista.');}
   };
 
   const enviarMensagemDirect = (e) => {
@@ -1115,24 +653,13 @@ const excluirPost = (id) => {
     const handleLimpo = handle.replace('@', '');
 
     const url =
-      `jenios.com.br/${handleLimpo}`;
+      `${window.location.origin}/social?perfil=${encodeURIComponent(handleLimpo)}`;
 
     navigator.clipboard.writeText(url);
 
     alert(`🔗 Link do perfil copiado: ${url}`);
   };
 
-  if (erroPosts || !postsProntos) {
-    return (
-      <main style={{ padding: 32 }}>
-        <h2>JENIOS Social</h2>
-        <p>
-          {erroPosts ||
-            'Carregando publicações salvas...'}
-        </p>
-      </main>
-    );
-  }
 
   return (
     <main
@@ -1144,7 +671,8 @@ const excluirPost = (id) => {
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
-    >{/* MODAL CÂMERA */}
+    >{blocksOpen&&<SocialBlocks key={meuPerfil.id} onLoad={feed.blocks} onUnblock={feed.unblock} onClose={()=>setBlocksOpen(false)}/>}
+      {/* MODAL CÂMERA */}
       {modalCamera && (
         <div
           style={{
@@ -1291,52 +819,16 @@ const excluirPost = (id) => {
                 overflowY: 'auto',
               }}
             >
-              {(
-                meuPerfil[
-                  modalLista === 'seguidores'
-                    ? 'seguidoresLista'
-                    : 'seguindoLista'
-                ] || []
-              ).map((handle, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '8px 10px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 'bold',
-                      color: '#7c3aed',
-                    }}
-                  >
-                    {handle}
-                  </span>
-
-                  <span
-                    style={{
-                      fontSize: '10px',
-                      color: '#059669',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Seguindo ⚡
-                  </span>
-                </div>
-              ))}
+              {followError && <p role="alert">{followError}</p>}
+              {followRows.map(person=><button key={person.id} onClick={()=>{setModalLista(null);void visitarPerfil({id:person.id,handle:person.handle});}} style={{padding:10,border:'1px solid #ddd6fe',borderRadius:8,background:'#fff',color:'#7c3aed',cursor:'pointer'}}>{person.display_name || person.handle} · @{person.handle}</button>)}
+              {followNext!==null && <button onClick={()=>abrirLista(modalLista,followNext)}>Carregar mais</button>}
             </div>
           </div>
         </div>
       )}
 
       {/* MODAL EDITAR PERFIL */}
-      {modalEditarPerfil && (
+      {modalEditarPerfil && meuPerfil.autenticado && (
         <div
           style={{
             position: 'fixed',
@@ -1397,6 +889,7 @@ const excluirPost = (id) => {
             </div>
 
             <form
+              aria-label="Editar perfil"
               onSubmit={salvarEdicaoPerfil}
               style={{
                 display: 'flex',
@@ -1404,6 +897,7 @@ const excluirPost = (id) => {
                 gap: '12px',
               }}
             >
+              <fieldset disabled={perfilSalvando} style={{border:0,padding:0,margin:0,display:'contents'}}>
               <div
                 style={{
                   textAlign: 'center',
@@ -1411,7 +905,7 @@ const excluirPost = (id) => {
                 }}
               >
                 <img
-                  src={meuPerfil.avatar}
+                  src={perfilRascunho.avatar}
                   alt="Avatar Atual"
                   style={{
                     width: '80px',
@@ -1441,7 +935,7 @@ const excluirPost = (id) => {
 
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/webp"
                       onChange={handleUploadAvatar}
                       style={{ display: 'none' }}
                     />
@@ -1462,10 +956,10 @@ const excluirPost = (id) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.avatar}
+                  value={perfilRascunho.avatar===visitorProfile.avatar?'':perfilRascunho.avatar}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       avatar: e.target.value,
                     })
                   }
@@ -1494,10 +988,10 @@ const excluirPost = (id) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.nome}
+                  value={perfilRascunho.nome}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       nome: e.target.value,
                     })
                   }
@@ -1527,10 +1021,10 @@ const excluirPost = (id) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.handle}
+                  value={perfilRascunho.handle}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       handle: e.target.value,
                     })
                   }
@@ -1555,7 +1049,7 @@ const excluirPost = (id) => {
                   }}
                 >
                   O seu link será: jenios.com.br/
-                  {meuPerfil.handle.replace('@', '')}
+                  {perfilRascunho.handle.replace('@', '')}
                 </span>
               </div>
 
@@ -1572,10 +1066,10 @@ const excluirPost = (id) => {
 
                 <input
                   type="text"
-                  value={meuPerfil.cargo}
+                  value={perfilRascunho.cargo}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       cargo: e.target.value,
                     })
                   }
@@ -1603,10 +1097,10 @@ const excluirPost = (id) => {
                 </label>
 
                 <textarea
-                  value={meuPerfil.bio}
+                  value={perfilRascunho.bio}
                   onChange={(e) =>
-                    setMeuPerfil({
-                      ...meuPerfil,
+                    setPerfilRascunho({
+                      ...perfilRascunho,
                       bio: e.target.value,
                     })
                   }
@@ -1623,6 +1117,7 @@ const excluirPost = (id) => {
                 />
               </div>
 
+              {perfilSaveError && <p role="alert" style={{color:'#b91c1c'}}>{perfilSaveError}</p>}
               <button
                 type="submit"
                 style={{
@@ -1637,8 +1132,9 @@ const excluirPost = (id) => {
                   marginTop: '8px',
                 }}
               >
-                Salvar Alterações
+                {perfilSalvando?'Salvando…':'Salvar Alterações'}
               </button>
+              </fieldset>
             </form>
           </div>
         </div>
@@ -1653,7 +1149,7 @@ const excluirPost = (id) => {
         }}
       >
         {/* CABEÇALHO */}
-        <div
+        <div className="social-main-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -1701,6 +1197,9 @@ const excluirPost = (id) => {
               alignItems: 'center',
             }}
           >
+            <Link className="social-header-link" href="/lp">Conheça a Tecnologia JENIOS ↗</Link>
+            <button className="social-header-link" onClick={() => {setChatAtivo(abaAtiva==='perfil-visita'&&perfilVisitado?.id!==meuPerfil.id?perfilVisitado:null);setMensagensAberta(true);}}>Mensagens</button>
+            <Link className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></Link>
             {meuPerfil.autenticado ? (
               <>
                 <span
@@ -1749,6 +1248,11 @@ const excluirPost = (id) => {
           </div>
         </div>
 
+        {mensagensAberta && <div className="social-message-backdrop" onClick={() => setMensagensAberta(false)}><section className="social-message-dialog" role="dialog" aria-modal="true" aria-label="Mensagens" onClick={e=>e.stopPropagation()}>
+          <button autoFocus className="social-header-link" onClick={() => setMensagensAberta(false)}>Fechar</button><h2>Mensagens</h2>
+          <SocialDirectSession initialPerson={chatAtivo}/>
+        </section></div>}
+
         {/* PERFIL HEADER */}
         <div
           style={{
@@ -1761,7 +1265,7 @@ const excluirPost = (id) => {
             boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
           }}
         >
-          <div
+          <div className="social-profile-row"
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -1781,13 +1285,13 @@ const excluirPost = (id) => {
             >
               <img
                 src={meuPerfil.avatar}
-                onClick={() => visitarPerfil(meuPerfil)}
+                onClick={() => window.dispatchEvent(new Event("jenios:abrir-meu-story"))}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    visitarPerfil(meuPerfil);
+                    window.dispatchEvent(new Event("jenios:abrir-meu-story"));
                   }
                 }}
                 alt="Avatar"
@@ -1801,6 +1305,7 @@ const excluirPost = (id) => {
                 }}
               />
 
+              <button type="button" onClick={adicionarStoryJenios} aria-label="Adicionar Story" title="Adicionar Story" style={{marginLeft:-39,marginTop:64,zIndex:2,background:'#7c3aed',color:'#fff',border:'2px solid white',borderRadius:'50%',width:28,height:28,fontSize:20,cursor:'pointer',flexShrink:0}}>+</button>
               <div>
                 <h2
                   style={{
@@ -1874,7 +1379,7 @@ const excluirPost = (id) => {
               </div>
             </div>
 
-            <div
+            <div className="social-profile-stats"
               style={{
                 display: 'flex',
                 gap: '16px',
@@ -1928,7 +1433,7 @@ const excluirPost = (id) => {
               />
 
               <div
-                onClick={() => setModalLista('seguidores')}
+                onClick={() => abrirLista('seguidores')}
                 style={{
                   textAlign: 'center',
                   cursor: 'pointer',
@@ -1945,7 +1450,7 @@ const excluirPost = (id) => {
                   SEGUIDORES
                 </span>
                 <b style={{ fontSize: '15px', color: '#7c3aed' }}>
-                  {(meuPerfil.seguidoresLista || []).length}
+                  {meuPerfil.followersCount ?? '—'}
                 </b>
               </div>
 
@@ -1958,7 +1463,7 @@ const excluirPost = (id) => {
               />
 
               <div
-                onClick={() => setModalLista('seguindo')}
+                onClick={() => abrirLista('seguindo')}
                 style={{
                   textAlign: 'center',
                   cursor: 'pointer',
@@ -1975,7 +1480,7 @@ const excluirPost = (id) => {
                   SEGUINDO
                 </span>
                 <b style={{ fontSize: '15px', color: '#7c3aed' }}>
-                  {(meuPerfil.seguindoLista || []).length}
+                  {meuPerfil.followingCount ?? '—'}
                 </b>
               </div>
 
@@ -2002,7 +1507,7 @@ const excluirPost = (id) => {
                 <b style={{ fontSize: '15px', color: '#059669' }}>
                   {'—'}
                 </b>
-                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span>
+                <span title="Aguardando registro de visualizações datadas em banco compartilhado" style={{display:'block',fontSize:'9px',color:'#64748b'}}>Métrica em preparação</span><a href="/insights" onClick={e=>{if(!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{display:"block",fontSize:11,color:"#7c3aed",marginTop:4,fontWeight:700}}>Abrir Insights ↗</a>
               </div>
             </div>
 
@@ -2014,7 +1519,7 @@ const excluirPost = (id) => {
               }}
             >
               <button
-                onClick={() => setModalEditarPerfil(true)}
+                onClick={() => {if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setPerfilRascunho({...meuPerfil});setPerfilSaveError('');setPerfilSalvando(false);setModalEditarPerfil(true);}}
                 style={{
                   backgroundColor: '#7c3aed',
                   color: '#fff',
@@ -2055,23 +1560,38 @@ const excluirPost = (id) => {
           {[
             ['feed','🏠 Feed'],
             ['ranking','🏆 Ranking'],
+            ['lives','🔴 Lives'],
             ['perfil','👤 Meu Perfil'],
-            ['salvos','🔖 Salvos']
+            ['arquivados','Arquivados'],
+            ['bloqueados','Usuários bloqueados']
           ].map(([destino,rotulo]) => (
             <button key={destino} type="button" onClick={() => {
-              if (destino === 'perfil' || destino === 'salvos') {
-                setPerfilVisitado(meuPerfil);
-                setAbaGaleria(destino === 'salvos' ? 'salvos' : 'posts');
-                setAbaAtiva('perfil-visita');
+              if(destino==='bloqueados'){if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setBlocksOpen(true);return;}
+              if (destino === 'perfil' || destino === 'arquivados') {
+                if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+                void visitarPerfil(meuPerfil,destino === 'arquivados' ? 'arquivados' : 'posts');
               } else {
                 setAbaAtiva(destino);
               }
               window.scrollTo({top:0,behavior:'smooth'});
             }} style={{padding:'9px 13px',borderRadius:'9px',cursor:'pointer',fontSize:'12px',fontWeight:700,
-              border:'1px solid #ddd6fe',backgroundColor:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#7c3aed' : '#fff',
-              color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'salvos') || (destino === 'salvos' && abaAtiva === 'perfil-visita' && abaGaleria === 'salvos')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
+              border:'1px solid #ddd6fe',backgroundColor:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'arquivados') || (destino === 'arquivados' && abaAtiva === 'perfil-visita' && abaGaleria === 'arquivados')) ? '#7c3aed' : '#fff',
+              color:(abaAtiva === destino || (destino === 'perfil' && abaAtiva === 'perfil-visita' && abaGaleria !== 'arquivados') || (destino === 'arquivados' && abaAtiva === 'perfil-visita' && abaGaleria === 'arquivados')) ? '#fff' : '#4c1d95'}}>{rotulo}</button>
           ))}
         </nav>
+
+        <nav aria-label="Ferramentas JENIOS" style={{display:"flex",gap:8,flexWrap:"wrap",margin:"0 0 16px"}}>
+          {[
+            ["Simulador","/social/simulador"],
+            ["Hub de Tendências","/tendencias"],
+            ["BankScore","/bankscore"],
+            ["Especialistas","/especialistas"],
+            ["Insights","/insights"],
+            ["Impulsionar","/impulsionar"]
+          ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
+        </nav>
+        {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
+        {abaAtiva === 'lives' && <SocialLives key={meuPerfil?.id} meuPerfil={meuPerfil} onLoad={feed.lives} onCreate={feed.createLive} onRemove={feed.deleteLive} onReport={feed.reportLive} />}
 
         {/* ABA FEED */}
         {abaAtiva === 'feed' && (
@@ -2092,11 +1612,16 @@ const excluirPost = (id) => {
                 gap: '20px',
               }}
             >
-              <SocialStories
+              {storyUploading && <p role="status">Enviando Story…</p>}
+                  {feed.storiesError && <p role="alert">{feed.storiesError} <button onClick={()=>feed.loadStories().catch(()=>{})}>Tentar novamente</button></p>}
+                  {feed.storiesNext!==null && <button onClick={()=>feed.loadStories(feed.storiesNext).catch(()=>{})}>Carregar mais Stories</button>}
+                  <SocialStories
                 meuPerfil={meuPerfil}
                 stories={storiesJenios}
+                onOpenPost={abrirPostDaGaleria}
                 onExcluirStory={excluirStoryJenios}
                 onAdicionarStory={adicionarStoryJenios}
+                ocultarMeuStory={false}
               />
               {/* CRIAR PUBLICAÇÃO */}
               <div
@@ -2108,6 +1633,9 @@ const excluirPost = (id) => {
                 }}
               >
                 <form onSubmit={publicarPost}>
+                  {publicationNotice&&<p role="status" style={{color:'#047857'}}>{publicationNotice}</p>}
+                  {enviandoPublicacao&&<p role="status">{uploadStage==='processing'?'Preparando o vídeo para uma reprodução mais rápida…':uploadPercent===null?'Preparando publicação…':uploadPercent<100?`Enviando mídia: ${uploadPercent}%`:'Salvando publicação…'}</p>}
+                  {!meuPerfil.autenticado && <p style={{fontSize:14,color:"#475569",margin:"0 0 16px"}}>Entre na sua conta para publicar fotos, vídeos e Stories.</p>}
                   <textarea
                     value={novoTexto}
                     onChange={(e) =>
@@ -2159,7 +1687,7 @@ const excluirPost = (id) => {
                       fontWeight: '600',
                     }}
                   >
-                    ✨ Formato automático — cada foto mantém sua proporção original.
+                    ✨ Um único botão para fotos e vídeos. Vídeos de até 1 minuto e 30 segundos.
                   </div>
 
                   <div
@@ -2216,6 +1744,15 @@ const excluirPost = (id) => {
                           justifyContent: 'center',
                         }}
                       >
+                        {(imagem?.tipo === 'video' || imagem?.src?.startsWith('data:video/')) ? (
+                          <video
+                            src={imagem.src}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            style={{ width: '100%', maxHeight: '150px', display: 'block' }}
+                          />
+                        ) : (
                         <img
                           src={
                             typeof imagem === 'string'
@@ -2230,7 +1767,7 @@ const excluirPost = (id) => {
                             objectFit: 'contain',
                             display: 'block',
                           }}
-                        />
+                        />)}
 
                         <button
                           type="button"
@@ -2297,7 +1834,7 @@ const excluirPost = (id) => {
 
                       <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         multiple
                         onChange={handleUploadCarrossel}
                         style={{ display: 'none' }}
@@ -2338,6 +1875,10 @@ const excluirPost = (id) => {
                   gap: '20px',
                 }}
               >
+                {!postsProntos&&<p role="status">Carregando publicações…</p>}
+                {erroPosts&&<p role="alert">{erroPosts} <button onClick={feed.retry}>Tentar novamente</button></p>}
+                {erroPostEmFoco&&<p role="alert">{erroPostEmFoco}</p>}
+                {postsProntos&&!erroPosts&&!posts.length&&<p>{meuPerfil.autenticado?'Nenhuma publicação disponível.':'Entre na sua conta para acompanhar as publicações.'}</p>}
                 {posts.map((p) => (
                   <div key={p.id} id={`jenios-post-${p.id}`}
                     style={{outline: postEmFoco === p.id ? '2px solid #7c3aed' : 'none', borderRadius:'16px'}}>
@@ -2349,13 +1890,22 @@ const excluirPost = (id) => {
                     onCurtir={curtirPost}
                     onRepostar={repostarPost}
                     onCompartilhar={copiarLinkPost}
+                    onShareStory={compartilharStory}
                     onVisitarPerfil={visitarPerfil}
                     onAtualizarPost={atualizarPost}
                     onExcluirPost={excluirPost}
+                    onArchive={arquivarPost}
+                    onLoadComments={feed.comments}
+                    onCreateComment={feed.comment}
+                    onDeleteComment={feed.removeComment}
+                    onLikeComment={feed.likeComment}
+                    onReport={feed.report}
+                    onBlock={feed.block}
                     extrairEmbedYoutube={extrairEmbedYoutube}
                   />
                   </div>
                 ))}
+                {feed.cursor&&<button disabled={feed.loading} onClick={feed.more}>{feed.loading?'Carregando…':'Carregar mais publicações'}</button>}
               </div>
 
               </div>
@@ -2368,268 +1918,7 @@ const excluirPost = (id) => {
                 gap: '20px',
               }}
             >
-              {/* NOTÍCIAS MACRO */}
-              <div
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '20px',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#0f172a',
-                    margin: '0 0 10px 0',
-                  }}
-                >
-                  🌐 Canal de Notícias Macro
-                </h3>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  {noticiasMacro.map((n) => (
-                    <div
-                      key={n.id}
-                      style={{
-                        backgroundColor: '#f8fafc',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '10px',
-                        padding: '10px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          gap: '8px',
-                          marginBottom: '5px',
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            fontWeight: 'bold',
-                            color: '#7c3aed',
-                            backgroundColor: '#f3e8ff',
-                            padding: '3px 6px',
-                            borderRadius: '4px',
-                          }}
-                        >
-                          {n.fonte}
-                        </span>
-
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            color: '#64748b',
-                          }}
-                        >
-                          {n.hora}
-                        </span>
-                      </div>
-
-                      <span
-                        style={{
-                          display: 'block',
-                          fontSize: '9px',
-                          fontWeight: 'bold',
-                          color: '#94a3b8',
-                          marginBottom: '4px',
-                        }}
-                      >
-                        {n.cat}
-                      </span>
-
-                      <h4
-                        style={{
-                          fontSize: '11px',
-                          color: '#0f172a',
-                          margin: '0 0 6px 0',
-                          fontWeight: 'bold',
-                          lineHeight: '1.4',
-                        }}
-                      >
-                        {n.titulo}
-                      </h4>
-
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 'bold',
-                          color: '#334155',
-                        }}
-                      >
-                        {n.impacto}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* TOP TRADERS */}
-              <div
-                style={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '20px',
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    color: '#0f172a',
-                    margin: '0 0 6px 0',
-                  }}
-                >
-                  🏆 Top Traders (Semanal)
-                </h3>
-
-                <p
-                  style={{
-                    fontSize: '10px',
-                    color: '#64748b',
-                    margin: '0 0 12px 0',
-                  }}
-                >
-                  Ranking dos operadores em destaque.
-                </p>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  {rankingOperadores
-                    .slice(0, 5)
-                    .map((op) => (
-                      <div
-                        key={op.pos}
-                        onClick={() => visitarPerfil(op)}
-                        style={{
-                          backgroundColor: '#f8fafc',
-                          border: '1px solid #e2e8f0',
-                          borderRadius: '10px',
-                          padding: '10px',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          cursor: 'pointer',
-                          gap: '8px',
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            minWidth: 0,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: '22px',
-                              height: '22px',
-                              borderRadius: '50%',
-                              backgroundColor:
-                                op.pos === 1
-                                  ? '#fef3c7'
-                                  : '#f1f5f9',
-                              color:
-                                op.pos === 1
-                                  ? '#d97706'
-                                  : '#475569',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '9px',
-                              fontWeight: '900',
-                              flexShrink: 0,
-                            }}
-                          >
-                            {op.pos}
-                          </div>
-
-                          <img
-                            src={op.avatar}
-                            alt={op.nome}
-                            style={{
-                              width: '30px',
-                              height: '30px',
-                              borderRadius: '50%',
-                              objectFit: 'cover',
-                              flexShrink: 0,
-                            }}
-                          />
-
-                          <div style={{ minWidth: 0 }}>
-                            <b
-                              style={{
-                                fontSize: '11px',
-                                color: '#0f172a',
-                                display: 'block',
-                              }}
-                            >
-                              {op.nome}
-                            </b>
-
-                            <span
-                              style={{
-                                fontSize: '9px',
-                                color: '#059669',
-                                fontWeight: 'bold',
-                              }}
-                            >
-                              {op.rentabilidade}
-                            </span>
-                          </div>
-                        </div>
-
-                        <span
-                          style={{
-                            fontSize: '9px',
-                            color: '#7c3aed',
-                            fontWeight: 'bold',
-                            flexShrink: 0,
-                          }}
-                        >
-                          Ver ↗️
-                        </span>
-                      </div>
-                    ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setAbaAtiva('ranking')}
-                  style={{
-                    width: '100%',
-                    marginTop: '12px',
-                    padding: '9px',
-                    backgroundColor: '#faf5ff',
-                    color: '#7c3aed',
-                    border: '1px solid #d8b4fe',
-                    borderRadius: '8px',
-                    fontSize: '10px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Ver Top 10 Completo →
-                </button>
-              </div>
+              <SocialSidebarPremium operadores={rankingOperadores} onOpenRanking={() => {setAbaAtiva('ranking');window.scrollTo({top:0,behavior:'smooth'});}} />
 
               {/* VALIDADOR DE CRIPTOATIVOS */}
               <CryptoValidator />
@@ -2666,7 +1955,7 @@ const excluirPost = (id) => {
                     margin: '0 0 5px 0',
                   }}
                 >
-                  🏆 Ranking Oficial Top 10
+                  🏆 Ranking Semanal · Top 10
                 </h2>
 
                 <p
@@ -2676,8 +1965,7 @@ const excluirPost = (id) => {
                     margin: 0,
                   }}
                 >
-                  Classificação semanal dos operadores da
-                  comunidade JENIOS.
+                  Ranking em preparação. Os resultados serão publicados após conferência.
                 </p>
               </div>
 
@@ -2706,7 +1994,7 @@ const excluirPost = (id) => {
                 gap: '12px',
               }}
             >
-              {rankingOperadores.map((op) => (
+              {[].map((op) => (
                 <div
                   key={op.pos}
                   onClick={() => visitarPerfil(op)}
@@ -2954,14 +2242,15 @@ const excluirPost = (id) => {
                       {perfilVisitado.handle}
                     </span>
 
-                    {perfilVisitado.handle !== meuPerfil.handle && (
+                    {perfilVisitado.id !== meuPerfil.id && (
                       <button
                         type="button"
-                        aria-pressed={seguindoLocal.includes(perfilVisitado.handle)}
-                        onClick={() => alternarSeguir(perfilVisitado.handle)}
+                        aria-pressed={Boolean(perfilVisitado.followed)}
+                        disabled={profileBusy||followBusy||!perfilVisitado.id}
+                        onClick={() => alternarSeguir()}
                         style={{
-                          backgroundColor: seguindoLocal.includes(perfilVisitado.handle) ? '#f5f3ff' : '#7c3aed',
-                          color: seguindoLocal.includes(perfilVisitado.handle) ? '#6d28d9' : '#fff',
+                          backgroundColor: Boolean(perfilVisitado.followed) ? '#f5f3ff' : '#7c3aed',
+                          color: Boolean(perfilVisitado.followed) ? '#6d28d9' : '#fff',
                           border: '1px solid #7c3aed',
                           padding: '8px 16px',
                           borderRadius: '8px',
@@ -2970,16 +2259,14 @@ const excluirPost = (id) => {
                           cursor: 'pointer',
                         }}
                       >
-                        {seguindoLocal.includes(perfilVisitado.handle) ? '✓ Seguindo' : '+ Seguir'}
+                        {Boolean(perfilVisitado.followed) ? '✓ Seguindo' : '+ Seguir'}
                       </button>
                     )}
-                    {perfilVisitado.handle !==
-                      meuPerfil.handle && (
+                    {perfilVisitado.id !== meuPerfil.id && (
                       <button
                         type="button"
-                        onClick={() =>
-                          setChatAtivo(perfilVisitado)
-                        }
+                        disabled={profileBusy||!perfilVisitado.id}
+                        onClick={() => {setChatAtivo(perfilVisitado);setMensagensAberta(true);}}
                         style={{
                           backgroundColor: '#7c3aed',
                           color: '#fff',
@@ -3045,35 +2332,21 @@ const excluirPost = (id) => {
                   >
                     <div>
                       <b>
-                        {posts.filter(
-                          (p) =>
-                            p.handle ===
-                            perfilVisitado.handle
-                        ).length ||
-                          perfilVisitado.postsCount ||
-                          0}
+                        {perfilVisitado.postsCount ?? '—'}
                       </b>{' '}
                       posts
                     </div>
 
                     <div>
                       <b>
-                        {(
-                          perfilVisitado.seguidoresLista ||
-                          perfilVisitado.seguidores ||
-                          []
-                        ).length}
+                        {perfilVisitado.followersCount ?? '—'}
                       </b>{' '}
                       seguidores
                     </div>
 
                     <div>
                       <b>
-                        {(
-                          perfilVisitado.handle === meuPerfil.handle
-                            ? seguindoLocal
-                            : (perfilVisitado.seguindoLista || [])
-                        ).length}
+                        {perfilVisitado.followingCount ?? '—'}
                       </b>{' '}
                       seguindo
                     </div>
@@ -3086,183 +2359,6 @@ const excluirPost = (id) => {
                 </div>
               </div>
 
-              {/* DIRECT */}
-              {chatAtivo &&
-                chatAtivo.handle ===
-                  perfilVisitado.handle && (
-                  <div
-                    style={{
-                      backgroundColor: '#f8fafc',
-                      border: '1px solid #cbd5e1',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      marginTop: '20px',
-                      marginBottom: '25px',
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        gap: '10px',
-                        marginBottom: '12px',
-                      }}
-                    >
-                      <h4
-                        style={{
-                          fontSize: '13px',
-                          fontWeight: 'bold',
-                          color: '#0f172a',
-                          margin: 0,
-                        }}
-                      >
-                        💬 Conversa com{' '}
-                        {perfilVisitado.nome}
-                      </h4>
-
-                      <button
-                        type="button"
-                        onClick={() => setChatAtivo(null)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '15px',
-                          fontWeight: 'bold',
-                          color: '#64748b',
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        height: '180px',
-                        backgroundColor: '#fff',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        padding: '10px',
-                        overflowY: 'auto',
-                        marginBottom: '10px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '7px',
-                      }}
-                    >
-                      {(
-                        mensagensDirect[
-                          perfilVisitado.handle
-                        ] || []
-                      ).length === 0 ? (
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            color: '#64748b',
-                            textAlign: 'center',
-                            marginTop: '65px',
-                          }}
-                        >
-                          Nenhuma mensagem ainda. Inicie a
-                          conversa.
-                        </span>
-                      ) : (
-                        (
-                          mensagensDirect[
-                            perfilVisitado.handle
-                          ] || []
-                        ).map((msg, index) => (
-                          <div
-                            key={index}
-                            style={{
-                              alignSelf:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? 'flex-end'
-                                  : 'flex-start',
-                              backgroundColor:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? '#7c3aed'
-                                  : '#e2e8f0',
-                              color:
-                                msg.remetente ===
-                                meuPerfil.handle
-                                  ? '#fff'
-                                  : '#0f172a',
-                              padding: '8px 12px',
-                              borderRadius: '10px',
-                              fontSize: '12px',
-                              maxWidth: '75%',
-                            }}
-                          >
-                            <div>{msg.texto}</div>
-
-                            <span
-                              style={{
-                                display: 'block',
-                                marginTop: '3px',
-                                fontSize: '8px',
-                                opacity: 0.7,
-                              }}
-                            >
-                              {msg.hora}
-                            </span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    <form
-                      onSubmit={enviarMensagemDirect}
-                      style={{
-                        display: 'flex',
-                        gap: '8px',
-                      }}
-                    >
-                      <input
-                        type="text"
-                        placeholder="Escreva uma mensagem..."
-                        value={textoMensagem}
-                        onChange={(e) =>
-                          setTextoMensagem(e.target.value)
-                        }
-                        style={{
-                          flex: 1,
-                          padding: '10px',
-                          borderRadius: '8px',
-                          border: '1px solid #cbd5e1',
-                          fontSize: '12px',
-                          minWidth: 0,
-                        }}
-                        required
-                      />
-
-                      <button
-                        type="submit"
-                        style={{
-                          backgroundColor: '#059669',
-                          color: '#fff',
-                          border: 'none',
-                          padding: '10px 18px',
-                          borderRadius: '8px',
-                          fontWeight: 'bold',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Enviar 📨
-                      </button>
-                    </form>
-                  </div>
-                )}
-
-              {perfilVisitado.handle !== meuPerfil.handle && (
-                <p style={{fontSize:'11px', color:'#64748b', margin:'0 0 12px'}}>
-                  Seguir e mensagens estão em modo de demonstração local até a integração das contas.
-                </p>
-              )}
               {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
               <div style={{
                 borderTop: '1px solid #e2e8f0',
@@ -3287,15 +2383,15 @@ const excluirPost = (id) => {
                     ['posts', 'Posts'],
                     ['fotos', 'Fotos'],
                     ['videos', 'Vídeos'],
-                    ['salvos', 'Salvos'],
+                    ['arquivados', 'Arquivados'],
                   ].filter(([tipo]) =>
-                    tipo !== 'salvos' ||
-                    perfilVisitado.handle === meuPerfil.handle
+                    tipo !== 'arquivados' ||
+                    perfilVisitado.id === meuPerfil.id
                   ).map(([tipo, nome]) => (
                     <button
                       key={tipo}
                       type="button"
-                      onClick={() => setAbaGaleria(tipo)}
+                      onClick={() => {setAbaGaleria(tipo);if(tipo==='arquivados')feed.loadArchived().catch(()=>setProfileError('Não foi possível carregar os arquivados.'));}}
                       style={{
                         padding: '10px 15px',
                         borderRadius: '9px',
@@ -3313,27 +2409,29 @@ const excluirPost = (id) => {
                   ))}
                 </div>
 
+                {abaGaleria==='arquivados' && <p style={{color:'#64748b',fontSize:12}}>Só você pode ver estas publicações. Ao desarquivar, elas voltam ao perfil na data original.</p>}
+                {profileBusy && <p role="status">Carregando perfil…</p>}
+                {profileError && <p role="alert">{profileError} <button onClick={()=>visitarPerfil(perfilVisitado,abaGaleria)}>Tentar novamente</button></p>}
                 {(() => {
-                  const publicacoes = posts.filter((p) => {
+                  const publicacoes = (abaGaleria==='arquivados'?feed.archivedPosts:profilePosts).filter((p) => {
                     const ehDoPerfil =
-                      p.handle === perfilVisitado.handle;
+                      p.authorId === perfilVisitado.id;
 
-                    if (abaGaleria === 'salvos') {
+                    if (abaGaleria === 'arquivados') {
                       return (
-                        perfilVisitado.handle === meuPerfil.handle &&
-                        Boolean(p.salvo)
+                        perfilVisitado.id === meuPerfil.id &&
+                        Boolean(p.archivedAt)
                       );
                     }
 
                     if (!ehDoPerfil) return false;
 
                     if (abaGaleria === 'fotos') {
-                      return Array.isArray(p.imagens) &&
-                        p.imagens.length > 0;
+                      return p.imagens?.some(item=>item.tipo!=='video');
                     }
 
                     if (abaGaleria === 'videos') {
-                      return Boolean(p.youtubeUrl || p.videoUrl);
+                      return Boolean(p.youtubeUrl || p.videoUrl || p.imagens?.some(item=>item.tipo==='video'));
                     }
 
                     return true;
@@ -3367,9 +2465,10 @@ const excluirPost = (id) => {
                           : primeira?.src;
 
                         return (
-                          <button key={p.id} type="button"
-                            onClick={() => abrirPostDaGaleria(p.id)}
-                            aria-label={`Abrir publicação de ${p.autor || p.handle || 'usuário'}`}
+                          <div key={p.id}><button type="button"
+                            onClick={() => abaGaleria==='arquivados'?setArchivedPreview(p):abrirPostDaGaleria(p.id)}
+                            aria-label={`${abaGaleria==='arquivados'?'Abrir publicação arquivada':'Abrir publicação'} de ${p.autor || p.handle || 'usuário'}`}
+                            
                             style={{
                             padding: 0,
                             textAlign: 'left',
@@ -3387,7 +2486,7 @@ const excluirPost = (id) => {
                               backgroundColor: src ? '#000' : '#f8fafc',
                               overflow: 'hidden',
                             }}>
-                              {src ? (
+                              {src && primeira?.tipo==='video' ? <video src={src} muted playsInline preload="none" style={{width:'100%',height:'100%',objectFit:'contain'}}/> : src ? (
                                 <img
                                   src={src}
                                   alt="Publicação"
@@ -3423,15 +2522,29 @@ const excluirPost = (id) => {
                               <span>👁️ {p.views || 0}</span>
                             </div>
                           </button>
+                          {p.authorId===meuPerfil.id && <button type="button" disabled={archiveBusyId===p.id} onClick={async()=>{setProfileError('');try{await arquivarPost(p,abaGaleria!=='arquivados');}catch{setProfileError('Não foi possível atualizar o arquivo. Tente novamente.');}}} style={{padding:10,width:'100%',border:'1px solid #ddd6fe',borderRadius:8,color:'#6d28d9',background:'#fff',cursor:'pointer'}}>{abaGaleria==='arquivados'?'Desarquivar':'Arquivar'}</button>}
+                          </div>
                         );
                       })}
                     </div>
                   );
                 })()}
+                {(abaGaleria==='arquivados'?feed.archivedNext:profileNext)!==null && <button disabled={profileBusy} onClick={()=>abaGaleria==='arquivados'?feed.loadArchived(feed.archivedNext).catch(()=>setProfileError('Não foi possível carregar mais arquivados.')):visitarPerfil(perfilVisitado,abaGaleria,profileNext)}>Carregar mais publicações</button>}
               </div>
             </div>
           )}
       </div>
+
+      {archivedPreview && archivedPreview.authorId===meuPerfil.id && <div style={{position:'fixed',inset:0,zIndex:3000,background:'#0f172acc',display:'grid',placeItems:'center',padding:18}}>
+        <section role="dialog" aria-modal="true" aria-label="Publicação arquivada" style={{background:'#fff',color:'#172554',borderRadius:16,padding:24,maxWidth:640,width:'100%',maxHeight:'85vh',overflowY:'auto',boxSizing:'border-box'}}>
+          <button type="button" onClick={()=>setArchivedPreview(null)} style={{float:'right'}}>Fechar arquivo</button>
+          <h2>Publicação arquivada</h2><small>Só você pode ver · {archivedPreview.tempo}</small>
+          <p style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{archivedPreview.texto}</p>
+          {(archivedPreview.imagens||[]).map((media,index)=>media.tipo==='video'?<video key={index} src={media.src} controls playsInline preload="metadata" style={{width:'100%',maxHeight:420}}/>:<img key={index} src={media.src} alt="Mídia arquivada" loading="lazy" style={{width:'100%',maxHeight:420,objectFit:'contain'}}/>)}
+          {archivedPreview.youtubeUrl&&<a href={archivedPreview.youtubeUrl} target="_blank" rel="noopener noreferrer">Abrir vídeo do YouTube</a>}
+          <button type="button" disabled={archiveBusyId===archivedPreview.id} onClick={desarquivarPreview} style={{display:'block',padding:12,marginTop:14,background:'#7c3aed',color:'#fff',border:0,borderRadius:8}}>Desarquivar publicação</button>
+        </section>
+      </div>}
 
       {/* MODAL DE AUTENTICAÇÃO */}
       {modalAutenticacao && (

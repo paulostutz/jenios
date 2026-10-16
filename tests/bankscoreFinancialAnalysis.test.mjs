@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {analyzeFinancialStatements as analyze} from '../lib/bankscore/financial-analysis.mjs';
+const options={institutionCode:'C123',asOf:'2026-10-15T00:00:00Z'};
+const row=period=>({institutionCode:'C123',period,reviewed:true,sourceUrl:'https://www.bcb.gov.br/example',publishedAt:'2026-09-01',retrievedAt:'2026-09-02',documentId:String(period),scope:'consolidated_accounting',consolidationId:'C123-v1',accountingStandard:'COSIF-2025',currency:'BRL',scale:1,incomeBasis:'quarter_only',equity:100,totalAssets:1000,netIncomeQuarter:10,provisions:20});
+const series=()=>[row(202606),row(202603),row(202512)];
+test('three consecutive consistent statements permit accounting comparisons, never an automatic score',()=>{const r=analyze(series(),options);assert.equal(r.status,'SERIE_CONTABIL_DISPONIVEL');assert.equal(r.score.value,null);assert.equal(r.latestPublicationVerified,false);});
+test('missing values remain missing, not zero',()=>{const s=series();s[0].equity=null;const r=analyze(s,options);assert.equal(r.changes.equity,null);assert.ok(r.missing.includes('equity'));});
+test('mixed perimeter and gaps prevent trends',()=>{for(const field of ['scope','consolidationId','accountingStandard']) {const s=series();s[1][field]=field==='scope'?'prudential':'other';assert.equal(analyze(s,options).comparable,false);}const s=series();s[2].period=202509;assert.equal(analyze(s,options).comparable,false);});
+test('duplicates including three copies are rejected until restatements are reconciled',()=>{const s=series();const r=analyze([...s,s[0],s[0]],options);assert.deepEqual(r.duplicatePeriods,['202606']);assert.equal(r.comparable,false);});
+test('negative and zero equity do not produce misleading growth percentages',()=>{for(const value of [-5,0]){const s=series();s[1].equity=value;s[0].equity=-10;const r=analyze(s,options);assert.equal(r.changes.equity.percent,null);assert.ok(r.observations.some(x=>x.includes('negativo')));}});
+test('reject YTD profit, unscaled money, unreviewed data, future publications and foreign institutions',()=>{for(const change of [{incomeBasis:'year_to_date'},{scale:1000},{reviewed:false},{publishedAt:'2027-01-01'},{institutionCode:'999'},{equity:'100'}]){const s=series();Object.assign(s[0],change);assert.equal(analyze(s,options).rejected.length,1);}});
+test('empty input reports missing coverage',()=>{const r=analyze([],options);assert.equal(r.latestAvailablePeriod,null);assert.equal(r.status,'COBERTURA_INCOMPLETA');});

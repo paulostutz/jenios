@@ -1,0 +1,8 @@
+const {chromium}=require('playwright'),assert=require('node:assert/strict');
+const base=process.env.TEST_BASE_URL||'http://localhost:3068';
+(async()=>{const browser=await chromium.launch({executablePath:process.env.TEST_CHROMIUM_PATH,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+try{const page=await browser.newPage();let paid=false,reads=0;const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.route('**/api/jenios-pay/pix?*',r=>{reads++;return r.fulfill({contentType:'application/json',body:JSON.stringify({orderId:'11111111-1111-4111-8111-111111111111',productCode:'social-bankscore-report',productName:'Laudo BankScore',amount_cents:990,currency:'BRL',status:paid?'paid':'awaiting_payment',...(!paid?{pixCode:'000201-SYNTHETIC-NOT-PAYABLE',expiresAt:new Date(Date.now()+60000).toISOString()}:{})})});});
+await page.goto(base+'/social/pagamento?pedido=11111111-1111-4111-8111-111111111111');await page.getByRole('textbox',{name:'Código Pix Copia e Cola'}).waitFor();assert.match(await page.locator('main').innerText(),/9,90/);
+paid=true;await page.getByRole('button',{name:'Já paguei · verificar pagamento'}).click();await page.getByText('Pagamento confirmado.',{exact:true}).waitFor();assert.equal(await page.getByRole('textbox',{name:'Código Pix Copia e Cola'}).count(),0);assert.equal(await page.getByRole('link',{name:'Acessar minha compra →'}).getAttribute('href'),'/bankscore/detalhado?pedido=11111111-1111-4111-8111-111111111111');assert.equal(reads,2);assert.deepEqual(errors,[]);console.log('PASS Pix page shows server amount/code, explicit confirmation lookup and paid delivery link; synthetic bank response only');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

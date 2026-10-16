@@ -1,0 +1,80 @@
+/* JENIOS Social - identidade visual */
+
+.jenios-social {
+  --jenios-purple: #6425e8;
+  --jenios-purple-hover: #5120bd;
+}
+
+/* Acoes principais */
+.jenios-social .jenios-primary {
+  background: #6425e8 !important;
+  color: #ffffff !important;
+  border: 1px solid #6425e8 !important;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: background .2s ease;
+}
+
+.jenios-social .jenios-primary:hover {
+  background: #5120bd !important;
+}
+
+/* Navegacao */
+.jenios-social .jenios-nav-active {
+  background: #6425e8 !important;
+  border-color: #6425e8 !important;
+  color: #ffffff !important;
+}
+
+/* Cartoes */
+.jenios-social .jenios-card {
+  background: #ffffff;
+  border: 1px solid #e8e5f0;
+  border-radius: 16px;
+}
+
+/* Padronizacao institucional JENIOS */
+.jenios-social button.jenios-primary,
+.jenios-social .jenios-primary,
+.jenios-social button.jenios-nav-active {
+  background: #6425e8 !important;
+  border-color: #6425e8 !important;
+  color: #fff !important;
+}
+
+.jenios-social button.jenios-primary:hover,
+.jenios-social .jenios-primary:hover {
+  background: #5120bd !important;
+}
+
+/* Controles do cabeçalho e consulta pública: CSS local, sem depender de Tailwind. */
+.social-header-link { display:inline-block; border:1px solid #ddd6fe; border-radius:10px; background:#fafaff; padding:9px 12px; color:#6d28d9; font-family:inherit; font-weight:600; font-size:12px; text-decoration:none; cursor:pointer; }
+.social-message-backdrop { position:fixed; inset:0; background:#10102566; z-index:1000; display:grid; place-items:center; padding:20px; }
+.social-message-dialog { background:white; color:#24354e; padding:24px; border-radius:16px; max-width:480px; width:100%; box-sizing:border-box; }
+.jenios-crypto-card { background:#fff; border:1px solid #dce5ef; border-radius:16px; padding:20px; color:#24354e; box-sizing:border-box; min-width:0; overflow-wrap:anywhere; }
+.jenios-crypto-card h2 { font-size:23px; margin:0 0 18px; }
+.jenios-crypto-card p { line-height:1.45; }
+.jenios-crypto-card form label { display:block; margin:14px 0; font-size:14px; }
+.jenios-crypto-card select,.jenios-crypto-card textarea { display:block; width:100%; box-sizing:border-box; margin-top:7px; padding:11px; border:1px solid #dce5ef; border-radius:10px; background:#fff; font:inherit; color:#24354e; }
+.jenios-crypto-card button[type=submit] { width:100%; border:0; border-radius:10px; padding:13px; background:#2414e8; color:white; font-weight:700; cursor:pointer; }
+.jenios-crypto-card button:disabled { opacity:.6; cursor:wait; }
+.jenios-crypto-card dd { margin:4px 0 12px; }
+.jenios-crypto-card [role=alert] { color:#b91c1c; }
+@media(max-width:600px) { .social-header-link { padding:8px; } }
+
+.social-main-header { gap:12px; flex-wrap:wrap; }
+.social-main-header > div { flex-wrap:wrap; }
+
+@media(min-width:1100px) {
+ .social-profile-row { flex-wrap:nowrap !important; gap:12px !important; }
+ .social-profile-row > div:first-child { min-width:240px !important; gap:14px !important; }
+ .social-profile-row > div:nth-child(2) { gap:10px !important; padding:12px !important; }
+ .social-profile-row > div:last-child { flex-shrink:0; }
+}
+
+/* Keep every profile indicator visible on narrow phones. */
+@media(max-width:600px) {
+ .social-profile-stats { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; box-sizing:border-box; gap:16px !important; padding:14px !important; }
+ .social-profile-stats > div:nth-child(even) { display:none; }
+ .social-profile-stats > div { min-width:0; overflow-wrap:anywhere; }
+}

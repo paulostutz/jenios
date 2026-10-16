@@ -1,0 +1,40 @@
+name: JENIOS Platform R25 baseline audit
+on:
+  push:
+    branches: [work/jenios-platform-r25]
+    paths: [.github/workflows/platform-r25-audit.yml]
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: 8bcdef507ee2774bc24f832e1d04608fde16aea9
+          persist-credentials: false
+      - name: Confirm baseline and install locked dependencies without lifecycle scripts
+        run: |
+          test "$(git rev-parse HEAD)" = "8bcdef507ee2774bc24f832e1d04608fde16aea9"
+          mkdir -p /tmp/jenios-r25-audit
+          node --version > /tmp/jenios-r25-audit/environment.txt
+          npm --version >> /tmp/jenios-r25-audit/environment.txt
+          npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run existing regression tests
+        run: |
+          set -o pipefail
+          npm test | tee /tmp/jenios-r25-audit/baseline-tests.txt
+      - name: Package exact source and dependency cache for isolated review
+        run: |
+          git archive --format=tar.gz HEAD > /tmp/jenios-r25-audit/baseline-source.tar.gz
+          tar -czf /tmp/jenios-r25-audit/dependency-cache.tar.gz node_modules
+          sha256sum /tmp/jenios-r25-audit/*.tar.gz > /tmp/jenios-r25-audit/SHA256SUMS.txt
+      - name: Preserve one-day review artifact; no environment secrets or production data
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-r25-baseline
+          path: /tmp/jenios-r25-audit/
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

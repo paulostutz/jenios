@@ -1,0 +1,12 @@
+/* Only the existing profile gallery uses this inline geometry. Higher specificity
+   than the legacy global mobile rule; no feed/sidebar/BankScore layout changes. */
+div[style*="grid-template-columns"][style*="minmax(160px"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+div[style*="grid-template-columns"][style*="minmax(160px"] > div { min-width: 0; }
+div[style*="grid-template-columns"][style*="minmax(160px"] > div > button:first-child { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
+div[style*="grid-template-columns"][style*="minmax(160px"] > div > button:first-child > div:first-child { height: auto !important; aspect-ratio: 1; }
+div[style*="grid-template-columns"][style*="minmax(160px"] img,
+div[style*="grid-template-columns"][style*="minmax(160px"] video { object-fit: cover !important; }
+div[style*="grid-template-columns"][style*="minmax(160px"] > div > button:first-child > div:first-child > span { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; box-sizing: border-box; max-height: 100%; }

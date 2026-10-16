@@ -1,3 +1,5 @@
+import './social/profile-grid.css';
+
 export const metadata = {
   title: 'JENIOS - Ecossistema HFT',
   description: 'Plataforma de alta frequência e gestão comportamental',

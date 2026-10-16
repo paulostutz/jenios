@@ -1,0 +1,33 @@
+name: R41 Verified Futures 1h/5m — Independent Research Capture
+on:
+  push:
+    branches:
+      - research/jenios-r41-futures-1h-5m-heldout
+    paths:
+      - .github/workflows/r41-verified-futures.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audited-futures:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Checkout research-only public branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Fetch 90 official monthly archives and verify every checksum, candle and timestamp
+        run: python scripts/research/r41_download_futures.py
+      - name: Upload only research data with provenance
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-R41-90-CHECKSUM-VERIFIED-FUTURES
+          path: r41-official-dataset/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error

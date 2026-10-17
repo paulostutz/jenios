@@ -5,6 +5,7 @@ on:
       - research/jenios-r42-official-funding
     paths:
       - .github/workflows/r42-audit-official-funding.yml
+      - scripts/research/r42_download_official_funding.py
   workflow_dispatch:
 permissions:
   contents: read

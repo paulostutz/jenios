@@ -1,0 +1,47 @@
+/* S02: scoped adjustments. No Social, dashboard, or private engine selectors. */
+.jenios-lp *, .jenios-portal * { box-sizing: border-box; }
+.jenios-lp a:focus-visible, .jenios-lp button:focus-visible, .jenios-lp summary:focus-visible,
+.jenios-portal a:focus-visible { outline: 3px solid #c084fc; outline-offset: 4px; }
+.jenios-lp a, .jenios-lp button, .jenios-lp summary { -webkit-tap-highlight-color: rgba(124,58,237,.18); }
+.jenios-lp [id] { scroll-margin-top: 24px; }
+.jenios-lp .lp-header { flex-wrap: wrap; gap: 18px; }
+.jenios-lp .lp-header-actions { flex-wrap: wrap; align-items: center; }
+.jenios-lp .lp-header-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; text-align:center; }
+.jenios-lp .lp-social-link { color:#334155;background:#f1f5f9;border:1px solid #cbd5e1;text-decoration:none;font-size:11px;font-weight:bold;padding:10px 18px;border-radius:10px; }
+.jenios-lp .lp-section-nav { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+.jenios-lp .lp-section-nav a { color:#e9d5ff; background:#1e1b4b; border:1px solid #6d28d9; border-radius:999px; min-height:44px; padding:12px 16px; text-decoration:none; font-size:13px; font-weight:700; }
+.jenios-lp .lp-purpose-banner > div { flex-wrap:wrap; }
+.jenios-lp .lp-card-grid { min-width:0; }
+.jenios-lp .lp-section { min-width:0; overflow-wrap:break-word; }
+.jenios-lp .lp-section button, .jenios-lp .lp-section a[style*="inline-block"], .jenios-lp #jenios-plans a { min-height:44px; }
+.jenios-lp .lp-section summary { min-height:44px; line-height:1.6; }
+.jenios-portal .portal-quick-access { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:0 0 24px; }
+.jenios-portal .portal-quick-access a { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:52px; padding:14px 20px; border-radius:12px; font-size:14px; font-weight:750; line-height:1.4; text-decoration:none; }
+.jenios-portal .portal-quick-social { background:#7c3aed;color:#fff; }
+.jenios-portal .portal-quick-platform { background:#10b981;color:#052e16; }
+.jenios-portal .portal-cards { grid-template-columns:repeat(auto-fit,minmax(min(390px,100%),1fr))!important; }
+.jenios-portal .portal-cards a { min-height:48px; white-space:normal!important; line-height:1.5; }
+@media (max-width:768px) {
+ main.jenios-lp { padding:20px 8px!important; }
+ .jenios-lp .lp-content { gap:24px!important; }
+ .jenios-lp .lp-header { padding:18px 16px!important; gap:16px; }
+ .jenios-lp .lp-header-actions { width:100%; display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px!important; }
+ .jenios-lp .lp-header-actions a:last-child { grid-column:1 / -1; }
+ .jenios-lp .lp-hero h1 { font-size:clamp(25px,6.5vw,32px)!important; }
+ .jenios-lp .lp-section { padding:24px 20px!important; }
+ .jenios-lp .lp-purpose-banner { padding:24px 20px!important; }
+ .jenios-lp .lp-purpose-banner > div > span { font-size:10px!important; }
+ .jenios-lp .lp-card-grid { grid-template-columns:1fr!important; }
+ .jenios-lp .lp-section-nav { justify-content:flex-start; flex-wrap:nowrap; max-width:100%; overflow-x:auto; overscroll-behavior-x:contain; padding:4px; }
+ .jenios-lp .lp-section-nav a { flex:0 0 auto; }
+ .jenios-lp #jenios-quiz { font-size:22px!important; }
+ .jenios-lp .lp-section button { font-size:15px; }
+ main.jenios-portal { justify-content:flex-start!important; padding:24px 12px!important; }
+ .jenios-portal .portal-heading { margin-bottom:22px!important; }
+ .jenios-portal .portal-heading h1 { font-size:28px!important; }
+ .jenios-portal .portal-quick-access { grid-template-columns:1fr!important; gap:10px; }
+ .jenios-portal .portal-quick-access a { min-height:52px; padding:14px 16px; }
+ .jenios-portal .portal-cards { gap:16px!important; grid-template-columns:1fr!important; }
+ .jenios-portal .portal-cards > div { padding:24px!important; }
+}
+@media(prefers-reduced-motion:reduce) { .jenios-lp *, .jenios-portal * { scroll-behavior:auto!important; } }

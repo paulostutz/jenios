@@ -1,4 +1,5 @@
 import './social/profile-grid.css';
+import './public-entry.css';
 
 export const metadata = {
   title: 'JENIOS - Ecossistema HFT',

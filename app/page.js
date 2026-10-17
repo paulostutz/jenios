@@ -1,8 +1,9 @@
 import Link from 'next/link';
+import {PLATFORM_SLOGAN} from '../lib/brand/identity.mjs';
 
 export default function Home() {
   return (
-    <main style={{ 
+    <main className="jenios-portal" style={{ 
       backgroundColor: '#070b19', 
       backgroundImage: 'radial-gradient(circle at 50% 15%, rgba(139, 92, 246, 0.18) 0%, rgba(7, 11, 25, 0.92) 65%, #070b19 100%)',
       color: '#f8fafc', 
@@ -18,7 +19,7 @@ export default function Home() {
       <div style={{ maxWidth: '920px', width: '100%', textAlign: 'center' }}>
         
         {/* Cabeçalho / Emblema Luminoso */}
-        <div style={{ marginBottom: '40px' }}>
+        <div className="portal-heading" style={{ marginBottom: '40px' }}>
           <div style={{ 
             width: '52px', 
             height: '52px', 
@@ -42,12 +43,17 @@ export default function Home() {
             Onde deseja entrar hoje?
           </h1>
           <p style={{ fontSize: '14px', color: '#94a3b8', margin: '0 auto', maxWidth: '580px', lineHeight: '1.6' }}>
-            Selecione o ambiente desejado para aceder à comunidade de alta performance ou ao motor HFT de inteligência adaptativa.
+            Escolha seu caminho: participe da comunidade gratuita ou conheça a tecnologia adaptativa da JENIOS Platform.
           </p>
         </div>
 
+        <nav className="portal-quick-access" aria-label="Escolha onde entrar">
+          <Link className="portal-quick-social" href="/social">Entrar na JENIOS Social <span aria-hidden="true">→</span></Link>
+          <Link className="portal-quick-platform" href="/lp">Conheça a Tecnologia JENIOS <span aria-hidden="true">→</span></Link>
+        </nav>
+
         {/* Grelha de Acessos com Cartões */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(390px, 1fr))', gap: '24px', marginBottom: '40px', textAlign: 'left' }}>
+        <div className="portal-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(390px, 1fr))', gap: '24px', marginBottom: '40px', textAlign: 'left' }}>
           
           {/* Card Jenios Social */}
           <div style={{ 
@@ -79,7 +85,7 @@ export default function Home() {
                 Jenios Social
               </h2>
               <p style={{ color: '#475569', fontSize: '13.5px', margin: '0 0 28px 0', lineHeight: '1.6' }}>
-                Aceda à nossa rede social, salas de inteligência coletiva, radar de baleias em tempo real e interaja com estrategistas profissionais sem custos.
+                Navegue pelas publicações e informações de mercado. Crie sua conta para publicar, seguir pessoas e participar das conversas da comunidade.
               </p>
             </div>
             <div>
@@ -97,12 +103,12 @@ export default function Home() {
                 whiteSpace: 'nowrap',
                 letterSpacing: '0.2px'
               }}>
-                ENTRAR NA SOCIAL (CRIAR CONTA) &rarr;
+                Entrar na JENIOS Social &rarr;
               </Link>
             </div>
           </div>
 
-          {/* Card Plataforma & Motor HFT (Aponstando para /lp) */}
+          {/* Card JENIOS Platform (Aponstando para /lp) */}
           <div style={{ 
             backgroundColor: '#f8fafc', 
             color: '#0f172a',
@@ -126,13 +132,16 @@ export default function Home() {
                 marginBottom: '16px',
                 letterSpacing: '0.5px'
               }}>
-                MOTOR HFT & ASSINATURAS
+                TECNOLOGIA ADAPTATIVA
               </span>
               <h2 style={{ color: '#0f172a', fontSize: '22px', fontWeight: '800', margin: '0 0 10px 0' }}>
-                Plataforma & Motor HFT
+                JENIOS Platform
               </h2>
-              <p style={{ color: '#475569', fontSize: '13.5px', margin: '0 0 28px 0', lineHeight: '1.6' }}>
-                Descubra a engenharia reversa adaptativa, faça o seu simulador de estresse operacional e ative a blindagem contra as baleias nos planos profissionais.
+              <p style={{ color: '#475569', fontSize: '13.5px', margin: '0 0 14px 0', lineHeight: '1.6' }}>
+                Conheça a proposta de engenharia reversa adaptativa, o diagnóstico simulado e os métodos de controle de risco da JENIOS Platform. A execução real depende de integração e homologação.
+              </p>
+              <p style={{ color: '#7c3aed', fontSize: '11px', margin: '0 0 16px 0', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '.4px' }}>
+                {PLATFORM_SLOGAN}
               </p>
             </div>
             <div>
@@ -150,7 +159,7 @@ export default function Home() {
                 whiteSpace: 'nowrap',
                 letterSpacing: '0.2px'
               }}>
-                CONHECER A PLATAFORMA (IR PARA A LP) &rarr;
+                Conheça a Tecnologia JENIOS &rarr;
               </Link>
             </div>
           </div>
@@ -159,8 +168,8 @@ export default function Home() {
 
         {/* Rodapé Oficial */}
         <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '22px' }}>
-          <p style={{ fontSize: '11.5px', color: '#f43f5e', fontWeight: '800', letterSpacing: '0.8px', margin: '0 0 6px 0' }}>
-            A PLATAFORMA QUE TRANSFORMA O SEU ERRO EM LUCRO
+          <p style={{ fontSize: '11.5px', color: '#c084fc', fontWeight: '800', letterSpacing: '0.8px', margin: '0 0 6px 0' }}>
+            UMA IDENTIDADE · DOIS PRODUTOS COM PROPÓSITOS PRÓPRIOS
           </p>
           <p style={{ fontSize: '11px', color: '#64748b', margin: 0, letterSpacing: '0.5px' }}>
             JENIOS ECOSYSTEM • Todos os direitos reservados.

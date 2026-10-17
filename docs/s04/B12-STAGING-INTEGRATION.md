@@ -33,3 +33,11 @@ Data: 2026-10-17. Escopo: branch `jenios-s04-b12-staging-integracao-20261017`; *
 - A verificação é somente leitura, não cria contas, não usa CPF e não consome credenciais bancárias.
 - O build **falhará** caso o serviço esteja indisponível, a função RPC incorreta ou uma tabela protegida exponha dados.
 - O teste não substitui a autenticação real em um navegador nem a confirmação de e-mail.
+
+## Synthetic positive authentication E2E (S04-B14)
+- Conta `s04-lab-positive-941@invalid.example` criada **somente no Supabase de testes** com senha criptografada no Auth e confirmação sintética (nenhum e-mail real enviado).
+- Segredo transitório armazenado somente em variáveis `preview` vinculadas à branch; não publicar em GitHub, logs ou relatórios.
+- O build usa `signInWithPassword` e `auth.getUser` do GoTrue e lê apenas o próprio perfil em `profiles`.
+- Verifica que as tabelas de segurança e de concessão do trial permanecem invisíveis ao usuário autenticado.
+- Ao final o script executa `auth.signOut`; depois da verificação remota, excluir a conta sintética do Auth/Postgres e apagar suas variáveis de ambiente.
+- Essas verificações **não são um teste de interface móvel nem de confirmação de e-mail via SMTP**.

@@ -26,3 +26,10 @@ Data: 2026-10-17. Escopo: branch `jenios-s04-b12-staging-integracao-20261017`; *
 - Nenhuma alteração na `main`, `jenios.com.br`, supabase de produção, Docker ou serviços financeiros.
 - Sem execução de dinheiro real, sem cobrança, sem envio de mensagens a pessoas reais.
 - O teste grátis da Platform continuará desativado até provedor de identidade verificada, consentimentos, auditoria e testes externos.
+
+## Remote HTTP smoke (S04-B13)
+- A Vercel consultará `GET /auth/v1/health` e a RPC `social_handle_availability_v1` no Supabase de homologação.
+- Verificará que anon não lê `jenios_s04_staging_guard_20261017`, o ledger de teste grátis nem perfis de usuários.
+- A verificação é somente leitura, não cria contas, não usa CPF e não consome credenciais bancárias.
+- O build **falhará** caso o serviço esteja indisponível, a função RPC incorreta ou uma tabela protegida exponha dados.
+- O teste não substitui a autenticação real em um navegador nem a confirmação de e-mail.

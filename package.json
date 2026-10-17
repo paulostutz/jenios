@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run test:s03 && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "test:s03": "node --test tests/social-s01/accounts.test.mjs tests/social-s03/*.test.mjs tests/reportPrelaunch.test.mjs tests/brandR30.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

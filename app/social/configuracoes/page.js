@@ -54,7 +54,7 @@ export default function SocialAccountSettings(){
   {loaded&&!session&&<p>Entre na sua conta para continuar. <Link href="/login">Fazer login</Link></p>}
   {session&&<><h2>Excluir minha conta</h2><p>A conta JENIOS também dá acesso a outros módulos. A solicitação abaixo precisa considerar conteúdos publicados, arquivos e eventuais vínculos com serviços.</p>
    <p><strong>Solicitar não significa excluir imediatamente.</strong> A conta permanece ativa até o processamento. Nenhum prazo ou exclusão integral é confirmado por este formulário.</p>
-   {record?<div role="status"><strong>Solicitação registrada</strong><p>Protocolo: {record.id}</p><p>Status: {({pending:'Aguardando processamento',processing:'Em processamento',completed:'Processamento concluído',cancelled:'Cancelada'})[record.status]||'Em análise'}</p><p>Não envie novamente a mesma solicitação.</p>
+   {record?<div role="status"><strong>Solicitação registrada</strong><p>Protocolo: {record.id}</p><p>Status: {({pending:'Aguardando processamento',processing:'Em processamento',completed:'Processamento concluído',cancelled:'Cancelada'})[record.status]||'Em análise'}</p><p>{record.status==='cancelled'?'Você pode reabrir o pedido com uma nova confirmação abaixo.':'Não envie novamente a mesma solicitação.'}</p>
     {deletionAction(record.status)==='cancel'&&<form onSubmit={cancelRequest}>
       <p>Você pode cancelar uma solicitação ainda pendente. Nenhum conteúdo da conta é excluído pelo cancelamento.</p>
       <label htmlFor="cancel-deletion-confirmation">Digite {CANCEL_CONFIRMATION} para cancelar</label>

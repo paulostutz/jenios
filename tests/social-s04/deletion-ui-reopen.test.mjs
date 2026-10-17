@@ -16,6 +16,7 @@ test('cancelled request is visible with re-open option and requires confirmation
  const src=readFileSync('app/social/configuracoes/page.js','utf8');
  assert.match(src,/deletionAction\(record.status\)==='reopen'/);
  assert.match(src,/Reabrir solicitação de exclusão/);
+ assert.match(src,/record\.status==='cancelled'\?'Você pode reabrir/);
  assert.match(src,/onSubmit=\{submit\}/);
  assert.match(src,/confirmation!==DELETION_CONFIRMATION/);
  assert.match(src,/!understood/);

@@ -15,7 +15,10 @@ import { createCryptoReportPdf } from '../lib/crypto/report-pdf.mjs';
 const user = { id: '11111111-1111-4111-8111-111111111111', is_anonymous: false };
 const bankTarget = { codigo: '123', periodo: '202606' };
 const cryptoTarget = { network: 'ethereum', type: 'token', identifier: '0x' + '1'.repeat(40) };
-const noPayments = { from() { throw Error('Payment tables must not be used by prelaunch authorization.'); } };
+const noPayments = { from(table) {
+  assert.equal(table, 'profiles', 'only the Social profiles table may be consulted for free report authorization');
+  return {select(fields){assert.equal(fields,'id');return this;},eq(field,id){assert.equal(field,'id');assert.equal(id,user.id);return this;},async maybeSingle(){return {data:{id:user.id},error:null};}};
+} };
 const authorize = requirePrelaunchReportAccess;
 const syntheticBank = () => montarLaudo({ codigo: '123', nome: 'Instituição sintética de teste', tipo: 'Teste', periodo: 202606, percentual: 14, revisao: 'PROVISORIO' });
 const syntheticCrypto = { ...cryptoTarget, networkLabel: 'Ethereum', supported: true, found: true, status: 'encontrado on-chain', checkedAt: '2026-10-15T00:00:00Z', evidence: {} };

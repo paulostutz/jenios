@@ -1,0 +1,14 @@
+.social-account-page,.social-account-page *{box-sizing:border-box}
+.social-account-page{min-height:100vh;padding:24px;background:#0f172a;color:#172033;font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:flex-start}
+.social-account-card{width:100%;max-width:640px;border-radius:20px;padding:28px;background:white;margin:24px auto;line-height:1.5}
+.social-account-page a{color:#6d28d9}.social-account-page label{display:block;font-weight:700;margin:10px 0 6px}
+.social-account-page input:not([type=checkbox]),.social-handle-input{width:100%;min-height:44px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;font:inherit;font-size:16px;padding:10px}
+.social-account-page button{min-height:44px;cursor:pointer;border-radius:10px;padding:10px 14px;font:inherit;font-weight:700}
+.social-account-page button:disabled{opacity:.55;cursor:not-allowed}.social-account-page :focus-visible{outline:3px solid #7c3aed;outline-offset:3px}
+.social-handle-input{display:flex;align-items:center;gap:6px}.social-handle-input input{border:0!important;background:transparent!important;padding:0!important;min-width:0}
+.social-handle-field small{display:block;margin-top:6px;color:#475569}.social-handle-field [role=status]{min-height:20px;font-size:13px;margin:8px 0;color:#4c1d95}
+.social-handle-suggestions{display:flex;gap:8px;flex-wrap:wrap}.social-handle-suggestions button{border:1px solid #ddd6fe;background:#f5f3ff;color:#5b21b6;overflow-wrap:anywhere;max-width:100%}
+.social-confirm-checkbox{display:flex!important;gap:10px;align-items:flex-start;font-weight:400!important}.social-confirm-checkbox input{width:20px;min-width:20px;height:20px;margin-top:3px}
+.social-danger{display:block;background:#b91c1c;color:white;border:1px solid #991b1b;margin-top:16px;width:100%}
+.social-account-page [role=alert]{color:#b91c1c}.social-account-card p{overflow-wrap:anywhere}
+@media(max-width:768px){.social-account-page>div,.social-account-card{padding:20px!important;margin:0!important}.social-account-page{align-items:flex-start!important}.social-account-page input{font-size:16px!important}}

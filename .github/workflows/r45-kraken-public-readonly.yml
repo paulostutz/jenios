@@ -1,0 +1,32 @@
+name: R45 Kraken Public Book Forward Snapshots - READ ONLY
+on:
+  push:
+    branches:
+      - research/jenios-r45-kraken-forward-readonly
+    paths:
+      - .github/workflows/r45-kraken-public-readonly.yml
+      - scripts/research/r45_collect_public_kraken_ws.mjs
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  collect-public-market-snapshots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Checkout public research branch only
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify native WebSocket client exists
+        run: node -p "process.version+' '+typeof WebSocket"
+      - name: Two read-only public book snapshots
+        run: node scripts/research/r45_collect_public_kraken_ws.mjs
+      - name: Retain failure evidence or valid public quotes 7 days
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-R45-KRAKEN-PUBLIC-READONLY-PROSPECTIVE
+          path: r45-public-kraken-forward/
+          retention-days: 7
+          if-no-files-found: warn

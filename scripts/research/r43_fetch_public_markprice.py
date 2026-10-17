@@ -80,8 +80,15 @@ def get_one(key):
         info=z.getinfo(names[0])
         if info.file_size>MAX_UNZIP:fail("CSV too large")
         csv_bytes=z.read(info)
-    lines=parse_csv(csv_bytes,symbol,interval,year,month)
+    try:
+        lines=parse_csv(csv_bytes,symbol,interval,year,month)
+        defect=None
+    except ValueError as exc:
+        # Official checksum may match a defective monthly archive: FAIL CLOSED.
+        lines=[]
+        defect=str(exc)
     return {"symbol":symbol,"interval":interval,"period":period,"zip":blob,"checksum":checksum,
+       "coverageComplete":defect is None,"validationIssue":defect,
        "filename":filename,"sourceUrl":url,"checksumUrl":url+".CHECKSUM","zipSha256":sha(blob),
        "checksumSha256":sha(checksum),"csvSha256":sha(csv_bytes),"rows":len(lines),"lines":lines}
 
@@ -115,6 +122,12 @@ def main():
       for interval,step in INTERVALS.items():
         selected=sorted((x for x in results if x["symbol"]==symbol and x["interval"]==interval),key=lambda x:x["period"])
         assert len(selected)==15
+        invalid=[{"period":x["period"],"issue":x["validationIssue"]} for x in selected if not x["coverageComplete"]]
+        if invalid:
+            # No normalized dataset for an incomplete series, no backfill and no partial use.
+            normalized[f"{symbol}_{interval}"]={"coverageComplete":False,"invalidMonths":invalid,
+                "rows":0,"intervalMs":step,"usableForFullPeriod":False}
+            continue
         body=("time,open,high,low,close\n"+"".join(line for x in selected for line in x["lines"])).encode()
         path=OUT/"normalized"/f"{symbol}-mark-{interval}-2025-07_2026-09.csv"
         path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(body)
@@ -122,7 +135,8 @@ def main():
         count=int((datetime(2026,10,1,tzinfo=timezone.utc).timestamp()*1000-first)/step)
         if len(body.splitlines())-1!=count:fail("unexpected complete normalized count")
         normalized[f"{symbol}_{interval}"]={"filename":path.name,"sha256":sha(body),
-             "rows":count,"firstTime":first,"lastTime":first+(count-1)*step,"intervalMs":step}
+             "rows":count,"firstTime":first,"lastTime":first+(count-1)*step,"intervalMs":step,
+             "coverageComplete":True,"usableForFullPeriod":True}
     for item in results:
         dest=OUT/"sources"/item["symbol"]/item["interval"]
         dest.mkdir(parents=True,exist_ok=True)
@@ -133,13 +147,17 @@ def main():
     manifest={"schema":"JENIOS_R43_USDM_MARKPRICE_KLINES_SHA256",
        "source":BASE,"symbols":SYMBOLS,"intervals":list(INTERVALS),
        "startInclusive":"2025-07-01T00:00:00Z","endExclusive":"2026-10-01T00:00:00Z",
-       "sourceArchivesVerified":len(records),"normalized":normalized,"monthlySources":records,
+       "sourceArchivesChecksumVerified":len(records),"normalized":normalized,"monthlySources":records,
+       "coverageStatus":"COMPLETE" if all(x["coverageComplete"] for x in results) else "PARTIAL_REJECTED_INVALID_SERIES",
+       "defectiveArchives":[{"symbol":x["symbol"],"interval":x["interval"],"period":x["period"],"issue":x["validationIssue"]} for x in results if not x["coverageComplete"]],
        "markKlinesObserved":True,"markAtEventExactKnown":False,
        "maintenanceBracketsVerified":False,"brokerFillsMeasured":False,
        "liveTrading":False,"releaseGate":"NO_GO"}
     (OUT/"MANIFESTO-R43-MARK-PRICE.json").write_text(json.dumps(manifest,indent=2)+"\n")
-    (OUT/"RESULTADO-R43.txt").write_text("R43 VERIFIED 90 ZIP/CHECKSUM; "+
-      ", ".join(f"{k}={v['rows']}" for k,v in normalized.items())+"; NO_GO\n")
+    (OUT/"RESULTADO-R43.txt").write_text(
+        "R43 90 SHA256 archives verified; coverage="+manifest["coverageStatus"]+"; "+
+        ", ".join(f"{k}={v['rows']} valid={v['coverageComplete']}" for k,v in normalized.items())+
+        "; defects="+str(manifest["defectiveArchives"])+"; real trading NO_GO\n")
     print((OUT/"RESULTADO-R43.txt").read_text())
 
 if __name__=="__main__":

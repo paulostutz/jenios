@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:s03 && npm run test:s04 && node scripts/check-s04-staging-build.mjs && node scripts/check-s04-staging-api.mjs && node scripts/check-s04-staging-auth-e2e.mjs && next build",
+    "build": "npm run test:s03 && npm run test:s04 && node scripts/check-s04-staging-build.mjs && node scripts/check-s04-staging-api.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.mjs",

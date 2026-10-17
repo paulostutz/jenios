@@ -41,3 +41,10 @@ Data: 2026-10-17. Escopo: branch `jenios-s04-b12-staging-integracao-20261017`; *
 - Verifica que as tabelas de segurança e de concessão do trial permanecem invisíveis ao usuário autenticado.
 - Ao final o script executa `auth.signOut`; depois da verificação remota, excluir a conta sintética do Auth/Postgres e apagar suas variáveis de ambiente.
 - Essas verificações **não são um teste de interface móvel nem de confirmação de e-mail via SMTP**.
+
+## S04-B15 — cleanup verified
+- GoTrue real password sign-in for the synthetic account, auth.getUser, own profile RLS query, and private ledger/guard restrictions succeeded on the remote Vercel builder. No tokens, passwords or personal identifiers were logged.
+- Fixture removed from `auth.users`, `auth.identities`, `profiles`; staging table counts verified at zero, including trial ledger and deletion queue.
+- Two synthetic-only Vercel environment values were invalidated. Existing preview deployments are historical proof of successful E2E; no further builds should require that deleted account.
+- `scripts/check-s04-staging-auth-e2e.mjs` remains for future optional, explicit synthetic login tests but is not executed during ordinary CI.
+- At this stage, **manual visual signup, e-mail confirmation and real download E2E remain pending**. Next.js 14.2.3 emits a version security warning; dependency upgrade requires separate regression before production promotion.

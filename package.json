@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:s03 && next build",
+    "build": "npm run test:s03 && npm run test:s04 && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.mjs",
-    "test:s03": "node --test tests/social-s01/accounts.test.mjs tests/social-s03/*.test.mjs tests/reportPrelaunch.test.mjs"
+    "test:s03": "node --test tests/social-s01/accounts.test.mjs tests/social-s03/*.test.mjs tests/reportPrelaunch.test.mjs",
+    "test:s04": "node --test tests/social-s04/*.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

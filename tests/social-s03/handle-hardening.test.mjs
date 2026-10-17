@@ -44,8 +44,8 @@ test('latest lookup cannot deliver an outdated result after field changes',async
 });
 test('registration UI never trusts an availability response as a unique reservation',()=>{
  const source=readFileSync('app/components/SocialAccessForm.js','utf8');
- assert.match(source,/checkHandleAvailability\(handle\)/);assert.match(source,/auth\.signUp/);
- assert.match(source,/registration_source: "social"/);assert.doesNotMatch(source,/user_metadata.*is_admin|admin: true/);
+ assert.match(source,/checkHandleAvailability\(signup\.options\.data\.handle\)/);assert.match(source,/auth\.signUp/);
+ const policy=readFileSync('lib/social/signup-policy.mjs','utf8');assert.match(policy,/registration_source:'social'/);assert.doesNotMatch(source+policy,/user_metadata.*is_admin|admin: true/);
  const cadastro=readFileSync('app/cadastro/page.js','utf8');assert.doesNotMatch(cadastro,/alert\(/);assert.match(cadastro,/SocialAccessForm/);
 });
 test('migration enforces normalized uniqueness in DB with transaction and no existing-profile mass updates',()=>{

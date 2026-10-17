@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
 import SocialHandleField from "./SocialHandleField";
-import {checkHandleAvailability, normalizeHandle} from "../../lib/social/handle-policy.mjs";
+import {checkHandleAvailability} from "../../lib/social/handle-policy.mjs";
+import {prepareSocialSignup} from "../../lib/social/signup-policy.mjs";
 import "../social/account-controls.css";
 
 export default function SocialAccessForm({ initialRegistration = false }) {
@@ -51,40 +52,17 @@ export default function SocialAccessForm({ initialRegistration = false }) {
       return;
     }
 
-    if (isCadastro && nome.trim().length < 2) {
-      setErro("Informe seu nome completo.");
-      return;
-    }
-
-    if (isCadastro && (
-      senha.length < 12 ||
-      !/[a-z]/.test(senha) ||
-      !/[A-Z]/.test(senha) ||
-      !/[0-9]/.test(senha) ||
-      !/[^A-Za-z0-9]/.test(senha)
-    )) {
-      setErro("Use pelo menos 12 caracteres, incluindo letras maiúsculas e minúsculas, números e símbolos.");
-      return;
-    }
-
     submitting.current = true;
     setCarregando(true);
 
     try {
       if (isCadastro) {
-        const availability=await checkHandleAvailability(handle);
+        const signup=prepareSocialSignup({name:nome,email,password:senha,handle});
+        const availability=await checkHandleAvailability(signup.options.data.handle);
         if(!availability.available)throw new Error('Este @ não está mais disponível. Escolha outro identificador ou uma sugestão.');
         const { data, error } = await supabase.auth.signUp({
-          email: email.trim().toLowerCase(),
-          password: senha,
-          options: {
-            data: {
-              full_name: nome.trim(),
-              handle: normalizeHandle(handle),
-              registration_source: "social",
-            },
-            emailRedirectTo: `${window.location.origin}/login`,
-          },
+          ...signup,
+          options:{...signup.options,emailRedirectTo:`${window.location.origin}/login`},
         });
 
         if (error) {

@@ -19,7 +19,7 @@ export default function SocialHandleField({value,onChange,disabled=false}){
   <div className="social-handle-input"><span aria-hidden="true">@</span><input id="social-handle" name="handle" value={value} onChange={e=>onChange(normalizeHandle(e.target.value))} disabled={disabled} required minLength={3} maxLength={30} pattern="[a-z0-9_]{3,30}" autoCapitalize="none" autoCorrect="off" spellCheck={false} autoComplete="username" aria-describedby="social-handle-help social-handle-status" aria-invalid={unavailable||state.status==='invalid'} placeholder="seunome"/></div>
   <small id="social-handle-help">De 3 a 30 letras, números ou _. Este será seu identificador público.</small>
   <p id="social-handle-status" role="status" aria-live="polite">
-   {state.status==='checking'?'Verificando disponibilidade…':state.status==='ready'?(state.available?'@'+state.handle+' está disponível. Será reservado ao criar a conta.':(state.suggestions.length?'Este @ não está disponível. Escolha uma sugestão abaixo ou tente outro.':'Este @ não está disponível. Tente outro identificador.')):state.error||''}
+   {state.status==='checking'?'Verificando disponibilidade…':state.status==='ready'?(state.available?'@'+state.handle+' parece disponível agora. A confirmação ocorre ao concluir o cadastro.':(state.suggestions.length?'Este @ não está disponível. Escolha uma sugestão abaixo ou tente outro.':'Este @ não está disponível. Tente outro identificador.')):state.error||''}
   </p>
   {unavailable&&state.suggestions.length>0&&<div className="social-handle-suggestions" aria-label="Sugestões de identificadores disponíveis">
    {state.suggestions.map(handle=><button key={handle} type="button" disabled={disabled} onClick={()=>onChange(handle)}>@{handle}</button>)}

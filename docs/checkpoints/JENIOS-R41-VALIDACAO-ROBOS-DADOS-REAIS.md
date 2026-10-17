@@ -20,7 +20,7 @@
 - **Gatilho de 8%** não é teto garantido de perda: em alguns backtests o desvio resultante passa de 8% antes do bloqueio de novas posições.
 
 ## QA efetivamente executado
-- **471 testes do núcleo privado**, 0 falhas / 0 ignorados, após estabilização da suíte;
+- **472 testes do núcleo privado**, 0 falhas / 0 ignorados, após estabilização da suíte;
 - **674 testes da aplicação**, 0 falhas;
 - **355 arquivos** na verificação de sintaxe; Next.js 16/Webpack build aprovado com placeholders QA não funcionais;
 - Verificação portátil dos 90 arquivos oficiais e SHA-256; 6 conjuntos normalizados e 1h/5m íntegros;
@@ -28,11 +28,11 @@
 - PDF de cinco páginas renderizado e revisado. Nenhum pedido/pagamento/ordem real executado.
 
 ## Backups privados da R41
-- Pacote cumulativo **JENIOS-Platform-R41-FINAL-VALIDADO.zip**, Biblioteca `/JENIOS-Platform-R41-FINAL-VALIDADO.zip`;
-- **82.442.843 bytes, 955 entradas ZIP** (954 arquivos de conteúdo mais manifesto). Integridade ZIP e SHA-256 dos 954 arquivos verificados;
-- SHA-256 do pacote: `2c2d981db751f9c35f0b89640322356fa7af263aa84e1062059e24c2d84eb11c`;
+- Pacote cumulativo **JENIOS-Platform-R41-FINAL-CONFERIDO.zip**, Biblioteca `/JENIOS-Platform-R41-FINAL-CONFERIDO.zip`;
+- **82.445.126 bytes, 958 entradas ZIP** (957 arquivos de conteúdo mais manifesto). Integridade ZIP e SHA-256 dos 957 arquivos verificados;
+- SHA-256 do pacote: `a964c3c0ad1c30df7b80394d076f4abc69f263ed3e591140dc8f6b5c915c99f1`;
 - ZIP da fonte oficial `JENIOS-R41-90-ARQUIVOS-USDM-VERIFICADOS.zip`: 45.455.671 bytes, SHA-256 `412ddd8f4caef7dfdbc633940ab831519ad5eabe41e2db2f6087a114e8152b76`;
-- Laudo PDF na Biblioteca: `/JENIOS-R41-Relatorio-Historico-Robos.pdf` e incluído no pacote privado.
+- Laudo PDF na Biblioteca: `/JENIOS-R41-Laudo-Final-472-Testes.pdf` e incluído no pacote privado.
 - O núcleo de pesquisa e os históricos NÃO foram enviados ao GitHub público por este checkpoint.
 
 ## Próxima prova que falta

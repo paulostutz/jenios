@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {supabase} from '../../../lib/supabase';
 import {DELETION_CONFIRMATION} from '../../../lib/social/account-deletion.mjs';
 import {CANCEL_CONFIRMATION} from '../../../lib/social/account-deletion-cancel.mjs';
+import {deletionAction} from '../../../lib/social/deletion-ui-state.mjs';
 import '../account-controls.css';
 export default function SocialAccountSettings(){
  const [session,setSession]=useState(null),[loaded,setLoaded]=useState(false),[record,setRecord]=useState(null);
@@ -54,12 +55,20 @@ export default function SocialAccountSettings(){
   {session&&<><h2>Excluir minha conta</h2><p>A conta JENIOS também dá acesso a outros módulos. A solicitação abaixo precisa considerar conteúdos publicados, arquivos e eventuais vínculos com serviços.</p>
    <p><strong>Solicitar não significa excluir imediatamente.</strong> A conta permanece ativa até o processamento. Nenhum prazo ou exclusão integral é confirmado por este formulário.</p>
    {record?<div role="status"><strong>Solicitação registrada</strong><p>Protocolo: {record.id}</p><p>Status: {({pending:'Aguardando processamento',processing:'Em processamento',completed:'Processamento concluído',cancelled:'Cancelada'})[record.status]||'Em análise'}</p><p>Não envie novamente a mesma solicitação.</p>
-    {record.status==='pending'&&<form onSubmit={cancelRequest}>
+    {deletionAction(record.status)==='cancel'&&<form onSubmit={cancelRequest}>
       <p>Você pode cancelar uma solicitação ainda pendente. Nenhum conteúdo da conta é excluído pelo cancelamento.</p>
       <label htmlFor="cancel-deletion-confirmation">Digite {CANCEL_CONFIRMATION} para cancelar</label>
       <input id="cancel-deletion-confirmation" value={cancelConfirmation} onChange={e=>setCancelConfirmation(e.target.value)} autoComplete="off" disabled={busy}/>
       <button type="submit" disabled={busy||cancelConfirmation!==CANCEL_CONFIRMATION}>Cancelar solicitação de exclusão</button>
       <p>Por segurança, é necessário ter feito login recentemente.</p>
+    </form>}
+    {deletionAction(record.status)==='reopen'&&<form onSubmit={submit}>
+      <p>Esta solicitação foi cancelada e sua conta permanece ativa. Se desejar retomar a exclusão, confirme novamente. O pedido será reaberto apenas para sua própria conta, após login recente.</p>
+      <label className="social-confirm-checkbox"><input type="checkbox" checked={understood} onChange={e=>setUnderstood(e.target.checked)} required disabled={busy}/>Compreendo que estou reabrindo minha solicitação de exclusão e que a conta não será excluída imediatamente.</label>
+      <label htmlFor="reopen-deletion-confirmation">Digite {DELETION_CONFIRMATION}</label>
+      <input id="reopen-deletion-confirmation" value={confirmation} onChange={e=>setConfirmation(e.target.value)} autoComplete="off" required disabled={busy}/>
+      <button type="submit" className="social-danger" disabled={busy||!understood||confirmation!==DELETION_CONFIRMATION}>{busy?'Reabrindo…':'Reabrir solicitação de exclusão'}</button>
+      <p>Por segurança, entre novamente se seu login tiver mais de 15 minutos. <Link href="/login">Entrar novamente</Link>.</p>
     </form>}
    </div>:<form onSubmit={submit}>
     <label className="social-confirm-checkbox"><input type="checkbox" checked={understood} onChange={e=>setUnderstood(e.target.checked)} required disabled={busy}/>Compreendo que estou solicitando a exclusão da minha própria conta e que o processamento não é imediato.</label>

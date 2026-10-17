@@ -39,7 +39,7 @@ def time_ms(v):
     if n<1_500_000_000_000 or n>1_900_000_000_000: fail("timestamp out of bounds")
     return n
 
-def parse_csv(blob, symbol, year, month):
+def parse_csv(blob, symbol, year, month, require_complete=True):
     text=blob.decode("utf-8-sig")
     rdr=csv.DictReader(io.StringIO(text))
     headers=rdr.fieldnames or []
@@ -62,7 +62,7 @@ def parse_csv(blob, symbol, year, month):
         result.append((ts,str(rate)))
         prev=ts
     if not result: fail("empty funding archive")
-    if result[0][0]-start>36*3600_000 or last-result[-1][0]>36*3600_000: fail("month edge >36h gap")
+    if require_complete and (result[0][0]-start>36*3600_000 or last-result[-1][0]>36*3600_000): fail("month edge >36h gap")
     return result,headers
 
 def load(key):
@@ -94,10 +94,10 @@ def load(key):
 def selftest():
     a="calc_time,funding_interval_hours,last_funding_rate\n1751328000000,8,0.00010\n"
     b="fundingTime,fundingRate\n1751328000000,-0.00005\n"
-    assert parse_csv(a.encode(),"BTCUSDT",2025,7)[0]==[(1751328000000,"0.00010")]
-    assert parse_csv(b.encode(),"BTCUSDT",2025,7)[0]==[(1751328000000,"-0.00005")]
+    assert parse_csv(a.encode(),"BTCUSDT",2025,7,require_complete=False)[0]==[(1751328000000,"0.00010")]
+    assert parse_csv(b.encode(),"BTCUSDT",2025,7,require_complete=False)[0]==[(1751328000000,"-0.00005")]
     for wrong in (a.replace("0.00010","NaN"), a.replace("0.00010","0.9")):
-        try: parse_csv(wrong.encode(),"BTCUSDT",2025,7)
+        try: parse_csv(wrong.encode(),"BTCUSDT",2025,7,require_complete=False)
         except ValueError: pass
         else: raise AssertionError("Invalid rate accepted")
     print("R42 funding parser selftest PASS")

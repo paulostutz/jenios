@@ -1,0 +1,36 @@
+name: R43 Verified USD-M Mark Price 1h/5m — Public Research
+on:
+  push:
+    branches:
+      - research/jenios-r43-verified-mark-price
+    paths:
+      - .github/workflows/r43-official-mark-price.yml
+      - scripts/research/r43_fetch_public_markprice.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audited-mark-price:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Checkout research only
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Parser selftest
+        run: python scripts/research/r43_fetch_public_markprice.py --selftest
+      - name: Audit 90 monthly mark price archives including official checksums
+        run: python scripts/research/r43_fetch_public_markprice.py
+      - name: Upload short-lived research evidence only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-R43-90-USDM-MARK-PRICE-VERIFIED
+          path: r43-markprice-official/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error

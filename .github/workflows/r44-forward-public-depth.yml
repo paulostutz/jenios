@@ -1,0 +1,36 @@
+name: R44 Forward Quotes Read Only — Two Observations
+on:
+  push:
+    branches:
+      - research/jenios-r44-readonly-forward-quotes
+    paths:
+      - .github/workflows/r44-forward-public-depth.yml
+      - scripts/research/r44_public_forward_snapshots.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sample-forward-public-book:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - name: Checkout public research only
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Python without extra dependencies
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Parser security selftest
+        run: python scripts/research/r44_public_forward_snapshots.py --selftest
+      - name: Obtain two read-only futures market observations 65 seconds apart
+        run: python scripts/research/r44_public_forward_snapshots.py
+      - name: Retain public quotes and failure evidence (7 days)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-R44-READONLY-FORWARD-QUOTES
+          path: r44-public-forward-observations/
+          retention-days: 7
+          if-no-files-found: warn

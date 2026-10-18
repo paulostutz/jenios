@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../../lib/supabase';
+import SocialPinnedPosts from '../../../components/SocialPinnedPosts';
 
 const safe = value => {
   try {
@@ -20,6 +21,7 @@ export default function PublicProfile() {
   const [message, setMessage] = useState('Carregando perfil…');
   const [selectedPost, setSelectedPost] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [viewerId,setViewerId]=useState(null);
   const epoch = useRef(0), moreBusy = useRef(false);
 
   useEffect(() => {
@@ -30,13 +32,14 @@ export default function PublicProfile() {
       try {
         if (!supabase) throw new Error('Conexão não configurada.');
         const { data: auth } = await supabase.auth.getSession();
-        if (!auth?.session) throw new Error('Entre na sua conta para visitar o perfil.');
+        if (!auth?.session || auth.session.user?.is_anonymous) throw new Error('Entre na sua conta para visitar o perfil.');
         const response = await fetch('/api/social/profiles?id=' + encodeURIComponent(id), {
           cache: 'no-store', headers: { authorization: 'Bearer ' + auth.session.access_token }
         });
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'Não foi possível carregar o perfil.');
         if (version === epoch.current) {
+          setViewerId(auth.session.user.id);
           setData({ ...result, posts: Array.isArray(result.posts) ? result.posts : [] });
           setMessage('');
         }
@@ -48,7 +51,7 @@ export default function PublicProfile() {
     const listener = supabase?.auth.onAuthStateChange(event => {
       if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') return;
       epoch.current++; moreBusy.current = false;
-      setData(null); setSelectedPost(null); setLoadingMore(false);
+      setData(null); setSelectedPost(null); setLoadingMore(false); setViewerId(null);
       setMessage('A conta mudou. Reabra o perfil.');
     });
     return () => {
@@ -104,6 +107,7 @@ export default function PublicProfile() {
           <p style={{ whiteSpace: 'pre-wrap' }}>{data.profile?.bio}</p>
           {safe(data.profile?.website) && <a href={data.profile.website} target="_blank" rel="noopener noreferrer">Site informado no perfil ↗</a>}
         </header>
+        <SocialPinnedPosts ownerId={data.profile?.id} accountId={viewerId} candidatePosts={data.posts}/>
         <h2>Publicações</h2>
         <p style={{ fontSize: 13, color: '#64748b' }}>
           {Number(data.postsCount) || 0} publicações visíveis. Selecione uma miniatura para abrir o conteúdo.

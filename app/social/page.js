@@ -15,6 +15,7 @@ import CryptoValidator from '../components/CryptoValidator';
 import SocialSidebarPremium from '../components/SocialSidebarPremium';
 import './jenios-theme.css';
 import SocialPostCard from '../components/SocialPostCard';
+import SocialPinnedPosts from '../components/SocialPinnedPosts';
 import SocialBlocks from '../components/SocialBlocks';
 import SocialStories from '../components/SocialStories';
 import SocialLives from '../components/SocialLives';
@@ -2359,6 +2360,7 @@ const handleUploadCarrossel = async (e) => {
                 </div>
               </div>
 
+              <SocialPinnedPosts ownerId={perfilVisitado.id} accountId={meuPerfil.id} candidatePosts={profilePosts} />
               {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
               <div style={{
                 borderTop: '1px solid #e2e8f0',

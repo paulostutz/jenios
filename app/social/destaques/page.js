@@ -33,12 +33,7 @@ export default function StoryHighlightsPage(){
   const result=await fetchFor(ticket,'/api/social/highlights?'+new URLSearchParams({ownerId:profileId}));
   if(!fence.current.current(ticket))return;
   setCollections(result.collections||[]);setItems(result.items||[]);
-  if(profileId!==ticket.owner){setMyStories([]);return;}
-  const rows=await fetchFor(ticket,'/api/social/stories?offset=0');
-  if(!fence.current.current(ticket))return;
-  setMyStories((rows.stories||[]).filter(s=>s.author_id===ticket.owner&&
-   !s.shared_post_id||false).concat((rows.stories||[]).filter(s=>s.author_id===ticket.owner&&s.shared_post_id))
-   .filter(s=>Date.parse(s.expires_at)>Date.now()));
+  setMyStories(profileId===ticket.owner?(result.eligibleStories||[]).filter(story=>story.author_id===ticket.owner):[]);
  }
  useEffect(()=>{
   let live=true;
@@ -122,7 +117,7 @@ export default function StoryHighlightsPage(){
        <select aria-label={'Selecionar Story para '+collection.title} value={selected[collection.id]||''}
         onChange={e=>setSelected(old=>({...old,[collection.id]:e.target.value}))}
         style={{background:'#f8fafc',borderRadius:8,padding:10,flex:'1 1 190px'}}>
-        <option value="">Selecione um Story seu que ainda esteja ativo</option>
+        <option value="">Selecione um Story seu (ativo ou arquivado)</option>
         {storiesForSelect.filter(s=>!saved.some(i=>i.source_story_id===s.id)).map(s=>
          <option key={s.id} value={s.id}>{s.media_type==='post'?'Publicação compartilhada':s.media_type==='video'?'Vídeo':'Imagem'} · {new Date(s.created_at).toLocaleDateString('pt-BR')}</option>)}
        </select>

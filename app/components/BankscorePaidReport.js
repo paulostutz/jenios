@@ -1,5 +1,6 @@
 'use client';
 import BankscoreFinancialAppendix from './BankscoreFinancialAppendix';
+import {downloadVerifiedReportPdf} from '../../lib/reports/pdf-download.mjs';
 import ReportAccountGate from './ReportAccountGate';
 import {isPrelaunchReport} from '../../lib/reports/prelaunch.mjs';
 import {useEffect,useRef,useState} from 'react';
@@ -26,7 +27,7 @@ function BankscoreReportContent({orderId,admin=false,prelaunch=false,initialCodi
    const response=await fetch(admin?'/api/admin/consultas':'/api/bankscore/detailed',{method:'POST',cache:'no-store',headers:{'content-type':'application/json',...(data?.session?.access_token?{authorization:'Bearer '+data.session.access_token}:{})},body:JSON.stringify({kind:'bankscore',orderId,target:{codigo,periodo},format})});
    if(!response.ok){const body=await response.json();throw Error(body.error||'Não foi possível emitir o laudo.');}
    if(format==='json'){const body=await response.json();if(version===epoch.current)setReport(body.report);}
-   else{const blob=await response.blob();if(version!==epoch.current)return;const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='jenios-bankscore-detalhado.pdf';document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);}
+   else{await downloadVerifiedReportPdf(response,'jenios-bankscore-detalhado.pdf',{isCurrent:()=>version===epoch.current});}
   }catch(error){if(version===epoch.current)setMessage(error.message);}
   finally{if(version===epoch.current)setBusy(false);}
  }

@@ -59,3 +59,17 @@ test('S05 production refuses to enable Inter charges without all current credent
   INTER_CERTIFICATE:'fixture-certificate',INTER_PRIVATE_KEY:'fixture-key'}),
   {ok:true,mode:'production-validated'});
 });
+
+test('S05-B49 explicitly accepts prior user-confirmed manual Social tests without claiming fresh E2E',()=>{
+ const approved={...prod,JENIOS_S05_E2E_CERTIFIED:'false',JENIOS_S05_PRIOR_MANUAL_SOCIAL_TESTS_ACCEPTED:'true'};
+ assert.deepEqual(checkS05DeploymentScope(approved),{ok:true,mode:'production-prior-manual-acceptance'});
+ assert.equal(checkS05DeploymentScope({...approved,JENIOS_S05_PRIOR_MANUAL_SOCIAL_TESTS_ACCEPTED:'false'}).ok,false);
+ assert.equal(checkS05DeploymentScope({...approved,JENIOS_S05_SCHEMA_CERTIFIED:'false'}).ok,false);
+ assert.equal(checkS05DeploymentScope({...approved,SUPABASE_SECRET_KEY:undefined}).ok,false);
+ assert.equal(checkS05DeploymentScope({...approved,NEXT_PUBLIC_SUP_PUBLISHABLE_KEY:undefined}).ok,false);
+});
+test('S05-B49 prior manual acceptance may not activate trial or optimized video',()=>{
+ const manual={...prod,JENIOS_S05_E2E_CERTIFIED:'false',JENIOS_S05_PRIOR_MANUAL_SOCIAL_TESTS_ACCEPTED:'true'};
+ for(const key of ['JENIOS_TRIAL_ENABLED','JENIOS_TRIAL_ACTIVATION_APPROVED','NEXT_PUBLIC_SOCIAL_OPTIMIZED_VIDEO'])
+  assert.equal(checkS05DeploymentScope({...manual,[key]:'true'}).ok,false);
+});

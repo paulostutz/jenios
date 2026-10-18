@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import {supabase} from '../../lib/supabase';
-import {playbackSource,shouldRequestVideoVariant,nextVideoVariant} from '../../lib/social/video-playback.mjs';
+import {playbackSource,shouldRequestVideoVariant,nextVideoVariant,samePublicVideoBucket} from '../../lib/social/video-playback.mjs';
 const variants=new Map(), attempted=new Map();
 const optimizedVideoEnabled=process.env.NEXT_PUBLIC_SOCIAL_OPTIMIZED_VIDEO==='true';
 /** Feed videos play their original immediately. Processing is optional and never blocks playback. */
@@ -32,7 +32,7 @@ export default function SocialVideo({src,postId,style}){
     });
     if(!response.ok)return;
     const result=await response.json();
-    if(!result?.url||!nextVideoVariant(variants,src,result.url))return;
+    if(!result?.url||!samePublicVideoBucket(src,result.url)||!nextVideoVariant(variants,src,result.url))return;
     if(!alive)return;
     if(ref.current&&!ref.current.paused&&!ref.current.ended)pendingVariant.current=result.url;
     else setUrl(result.url);

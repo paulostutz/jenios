@@ -23,7 +23,7 @@ export default function ConfirmacaoSocial(){
    <strong>JENIOS · Confirmação de acesso</strong><h1>Verificação da conta Social</h1>
    <p role="status">{text[state]||text.unavailable}</p>
    <p>Esta página não exibe códigos de confirmação ou dados de identificação.</p>
-   {state==='ready'?<Link href="/s04-laboratorio">Abrir laboratório de testes</Link>:<Link href="/login">Voltar ao login</Link>}
+   {state==='ready'?<Link href="/social">Abrir JENIOS Social</Link>:<Link href="/login">Voltar ao login</Link>}
   </section>
  </main>;
 }

@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:s03 && npm run test:s04 && node scripts/check-s04-staging-build.mjs && node scripts/check-s04-staging-api.mjs && next build",
+    "build": "npm run test:s03 && npm run test:s04 && npm run test:s05 && node scripts/check-s04-staging-build.mjs && node scripts/check-s04-staging-api.mjs && node scripts/check-s05-video-runtime.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.mjs",
     "test:s03": "node --test tests/social-s01/accounts.test.mjs tests/social-s03/*.test.mjs tests/reportPrelaunch.test.mjs",
-    "test:s04": "node --test tests/social-s04/*.test.mjs"
+    "test:s04": "node --test tests/social-s04/*.test.mjs",
+    "test:s05": "node --test tests/social-s05/*.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

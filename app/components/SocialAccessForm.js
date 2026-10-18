@@ -62,7 +62,7 @@ export default function SocialAccessForm({ initialRegistration = false }) {
         if(!availability.available)throw new Error('Este @ não está mais disponível. Escolha outro identificador ou uma sugestão.');
         const { data, error } = await supabase.auth.signUp({
           ...signup,
-          options:{...signup.options,emailRedirectTo:`${window.location.origin}/login`},
+          options:{...signup.options,emailRedirectTo:`${window.location.origin}/auth/confirm`},
         });
 
         if (error) {

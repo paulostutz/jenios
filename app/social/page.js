@@ -8,6 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { supabase, accountDatabase } from '../../lib/supabase';
 import { visitorProfile, profileView, postView } from '../../lib/social/feed-view.mjs';
 import { uploadSocialMedia } from '../../lib/social/media.mjs';
+import { validateHandle } from '../../lib/social/handle-policy.mjs';
 const REMOTE_MEDIA = true;
 
 import CryptoValidator from '../components/CryptoValidator';
@@ -163,40 +164,15 @@ function SocialContent() {
       : null;
   };
 
-  // VERIFICAÇÃO DE DUPLICIDADE DE @HANDLE
-  const verificarHandleEmUso = (handleInformado) => {
-    const handleLimpo = handleInformado.startsWith('@')
-      ? handleInformado.trim().toLowerCase()
-      : `@${handleInformado.trim().toLowerCase()}`;
-
-    if (handleLimpo === meuPerfil.handle.toLowerCase()) return false;
-
-    const existeNoRanking = rankingOperadores.some(
-      (op) => op.handle.toLowerCase() === handleLimpo
-    );
-
-    if (existeNoRanking) return true;
-
-    const usuariosSalvos = JSON.parse(
-      localStorage.getItem('jenios_social_usuarios_registrados') || '[]'
-    );
-
-    const existeNosSalvos = usuariosSalvos.some(
-      (u) =>
-        u.handle.toLowerCase() === handleLimpo &&
-        u.handle.toLowerCase() !== meuPerfil.handle.toLowerCase()
-    );
-
-    return existeNosSalvos;
-  };
-
+  // A escolha do @ é validada no servidor e pelo índice único do banco.
   const salvarEdicaoPerfil = async (e) => {
     e.preventDefault();
     if(perfilSalvando)return;
     const owner=meuPerfil.id,draft={...perfilRascunho};
     if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
-    const handle=draft.handle.trim().replace(/^@/,'').toLowerCase();
-    if(!/^[a-z0-9_]{3,30}$/.test(handle)){setPerfilSaveError('Use de 3 a 30 letras, números ou _ no identificador.');return;}
+    const checkedHandle=validateHandle(draft.handle);
+    if(!checkedHandle.ok){setPerfilSaveError(checkedHandle.error);return;}
+    const handle=checkedHandle.handle;
     if(!draft.nome.trim()){setPerfilSaveError('Informe seu nome.');return;}
     setPerfilSalvando(true);setPerfilSaveError('');
     try{
@@ -533,7 +509,18 @@ const handleUploadCarrossel = async (e) => {
     try{await arquivarPost(archivedPreview,false);setArchivedPreview(null);}
     catch{setProfileError('Não foi possível desarquivar. Tente novamente.');}
   };
-  const excluirPost = async (id) => {try{await feed.remove(id);}catch(error){alert(error.message);}};
+  const excluirPost = async (id) => {
+    const owner=sessionOwnerRef.current;
+    const ownPost=posts.find(p=>p.id===id)||profilePosts.find(p=>p.id===id);
+    try{
+      await feed.remove(id);
+      if(owner!==sessionOwnerRef.current)return;
+      if(ownPost?.authorId===owner){
+        setProfilePosts(old=>old.filter(p=>p.id!==id));
+        setPerfilVisitado(p=>p?.id===owner?{...p,postsCount:Math.max(0,(p.postsCount||0)-1)}:p);
+      }
+    }catch(error){alert(error.message);}
+  };
 
   useEffect(()=>{
     if(!postUrl||!meuPerfil.autenticado||!postsProntos)return;
@@ -1590,12 +1577,18 @@ const handleUploadCarrossel = async (e) => {
             ["Impulsionar","/impulsionar"]
           ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
         </nav>
+        {abaAtiva==='feed' && <nav className="social-mobile-quick-nav" aria-label="Acesso rápido aos módulos da Social">
+          <a href="#jenios-megapulse">Tendências</a>
+          <a href="#jenios-bankscore">BankScore</a>
+          <a href="#jenios-noticias">Notícias</a>
+          <a href="#jenios-cripto-mobile">Criptos</a>
+        </nav>}
         {/* JENIOS V7: compartilhamento de transmissões do YouTube */}
         {abaAtiva === 'lives' && <SocialLives key={meuPerfil?.id} meuPerfil={meuPerfil} onLoad={feed.lives} onCreate={feed.createLive} onRemove={feed.deleteLive} onReport={feed.reportLive} />}
 
         {/* ABA FEED */}
         {abaAtiva === 'feed' && (
-          <div
+          <div className="social-feed-layout"
             style={{
               display: 'grid',
               gridTemplateColumns: 'minmax(0, 2fr) minmax(260px, 1fr)',
@@ -1605,7 +1598,7 @@ const handleUploadCarrossel = async (e) => {
 
 
             {/* COLUNA PRINCIPAL */}
-            <div
+            <div className="social-feed-primary"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -1911,7 +1904,7 @@ const handleUploadCarrossel = async (e) => {
               </div>
 
             {/* COLUNA DIREITA */}
-            <div
+            <div className="social-feed-tools"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -1921,7 +1914,7 @@ const handleUploadCarrossel = async (e) => {
               <SocialSidebarPremium operadores={rankingOperadores} onOpenRanking={() => {setAbaAtiva('ranking');window.scrollTo({top:0,behavior:'smooth'});}} />
 
               {/* VALIDADOR DE CRIPTOATIVOS */}
-              <CryptoValidator />
+              <div id="jenios-cripto-mobile"><CryptoValidator /></div>
             </div>
           </div>
         )}

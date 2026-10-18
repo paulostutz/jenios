@@ -78,3 +78,21 @@
  .social-profile-stats > div:nth-child(even) { display:none; }
  .social-profile-stats > div { min-width:0; overflow-wrap:anywhere; }
 }
+
+/* S05-B13: no two-column overflow on phones. Insights appear before the feed. */
+.social-feed-layout > * {min-width:0;}
+.social-feed-tools {min-width:0;}
+.social-mobile-quick-nav {display:none;}
+@media (max-width:900px) {
+  .social-feed-layout {display:flex !important; flex-direction:column; gap:14px;}
+  .social-feed-tools {order:-1; width:100%; max-width:100%; min-width:0;}
+  .social-feed-primary {order:0; width:100%; max-width:100%; min-width:0;}
+  .social-feed-tools > * {min-width:0; max-width:100%;}
+  .social-mobile-quick-nav {display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px;}
+  .social-mobile-quick-nav a {text-decoration:none; border:1px solid #ddd6fe; border-radius:10px; padding:9px 12px; color:#6d28d9; background:#faf5ff; font-size:12px; font-weight:700;}
+  .social-profile-grid {grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  .jenios-crypto-card {min-width:0; max-width:100%; overflow-wrap:anywhere;}
+}
+@media (max-width:380px) {
+  .social-profile-grid {grid-template-columns:minmax(0,1fr) !important;}
+}

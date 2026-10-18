@@ -114,7 +114,7 @@ export default function useSocialFeed(){
  });}
  async function remove(id){return action('delete:'+id,async(ticket,client)=>{
   await client.deletePost(id);
-  if(fence.current.current(ticket)){postRevision.current++;setPosts(old=>old.filter(p=>p.id!==id));}
+  if(fence.current.current(ticket)){postRevision.current++;setPosts(old=>old.filter(p=>p.id!==id));setProfile(p=>({...p,postsCount:Math.max(0,(p.postsCount||0)-1)}));}
  });}
  async function comments(postId,ticket=fence.current.capture()){
   const r=await clientFor(ticket).listComments(postId);

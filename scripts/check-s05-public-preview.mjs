@@ -38,4 +38,14 @@ const noDelete=await request('/api/social/account-deletion');
 check('unauthenticated deletion request is denied',noDelete.status===401);
 const noMedia=await request('/api/social/media',{method:'POST',body:{contentType:'image/jpeg',size:4}});
 check('unauthenticated signed-media upload is denied',noMedia.status===401);
+const video=await request('/api/social/video-capabilities');
+check('video optimization is disabled and original playback fallback remains enabled',
+ video.status===200 && video.json?.optimization==='disabled' && video.json?.playbackFallback===true);
+const bankscore=await request('/api/bankscore/detailed',{method:'POST',body:{format:'pdf',target:{}}});
+check('BankScore full PDF cannot be issued without Social session',bankscore.status===401);
+const crypto=await request('/api/crypto-validator/detailed',{method:'POST',body:{format:'pdf',target:{}}});
+check('Token validator full PDF cannot be issued without Social session',crypto.status===401);
+const trial=await request('/api/platform/trial');
+check('unapproved Platform trial cannot be started from integrated release',
+ trial.status===404 || (trial.status===503 && trial.json?.code==='TRIAL_NOT_AVAILABLE'));
 console.log('RESULT '+JSON.stringify({checks:pass,failed:0,mode:'anonymous read-only and denied writes',target:'isolated preview only'}));

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.mjs",
-    "test:release-s05": "node --test tests/release-s05/*.test.mjs tests/social-s05/report-pdf-download.test.mjs"
+    "test:release-s05": "node --test tests/release-s05/*.test.mjs tests/social-s05/report-pdf-download.test.mjs",
+    "test:e2e:s05": "node scripts/check-s05-authenticated-e2e.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

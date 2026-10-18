@@ -1186,6 +1186,7 @@ const handleUploadCarrossel = async (e) => {
           >
             <Link className="social-header-link" href="/lp">Conheça a Tecnologia JENIOS ↗</Link>
             <button className="social-header-link" onClick={() => {setChatAtivo(abaAtiva==='perfil-visita'&&perfilVisitado?.id!==meuPerfil.id?perfilVisitado:null);setMensagensAberta(true);}}>Mensagens</button>
+            <Link className="social-header-link" href="/social/reels" aria-label="Reels JENIOS">Reels</Link>
             <Link className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></Link>
             {meuPerfil.autenticado ? (
               <>
@@ -1578,6 +1579,7 @@ const handleUploadCarrossel = async (e) => {
           ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
         </nav>
         {abaAtiva==='feed' && <nav className="social-mobile-quick-nav" aria-label="Acesso rápido aos módulos da Social">
+          <Link href="/social/reels">Reels</Link>
           <a href="#jenios-ranking">Ranking</a>
           <a href="#jenios-megapulse">Tendências</a>
           <a href="#jenios-bankscore">BankScore</a>

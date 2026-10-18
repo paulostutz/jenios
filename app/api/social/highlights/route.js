@@ -22,11 +22,21 @@ export async function GET(request){
   .eq('owner_id',ownerId).order('created_at',{ascending:false}).limit(12);
  if(result.error)return reply({error:'HIGHLIGHTS_UNAVAILABLE'},503);
  const collections=result.data||[],ids=collections.map(c=>c.id);
- if(!ids.length)return reply({collections:[],items:[]});
+ // Only the owner receives a selection list of their own Stories, including expired.
+ // Highlights intentionally retain the original media beyond the normal 24h Story feed.
+ let eligibleStories=[];
+ if(ownerId===ctx.userId){
+  const own=await ctx.db.from('stories')
+   .select('id,author_id,media_type,created_at,expires_at,shared_post_id')
+   .eq('author_id',ctx.userId).order('created_at',{ascending:false}).limit(120);
+  if(own.error)return reply({error:'STORIES_UNAVAILABLE'},503);
+  eligibleStories=own.data||[];
+ }
+ if(!ids.length)return reply({collections:[],items:[],eligibleStories});
  const items=await ctx.db.from('social_highlight_items').select(itemFields)
   .in('collection_id',ids).order('created_at',{ascending:true}).order('id',{ascending:true}).limit(360);
  if(items.error)return reply({error:'HIGHLIGHTS_UNAVAILABLE'},503);
- return reply({collections,items:items.data||[]});
+ return reply({collections,items:items.data||[],eligibleStories});
 }
 export async function POST(request){
  const ctx=await socialContext(request);if(ctx.error)return reply({error:ctx.error},ctx.status);

@@ -1578,6 +1578,7 @@ const handleUploadCarrossel = async (e) => {
           ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
         </nav>
         {abaAtiva==='feed' && <nav className="social-mobile-quick-nav" aria-label="Acesso rápido aos módulos da Social">
+          <a href="#jenios-ranking">Ranking</a>
           <a href="#jenios-megapulse">Tendências</a>
           <a href="#jenios-bankscore">BankScore</a>
           <a href="#jenios-noticias">Notícias</a>

@@ -48,7 +48,7 @@ test('B47 free reports remain denied without a real non-anonymous Social identit
 test('B47 prelaunch checkout exits before database, financial orders or charges',()=>{
  const checkout=readFileSync('app/api/jenios-pay/checkout/route.js','utf8');
  const guard=checkout.indexOf('if(isPrelaunchReport(body?.productCode))');
- const database=checkout.indexOf('const db=getJeniosPayAdmin()');
+ const database=checkout.indexOf('getJeniosPayAdmin();');
  const buyer=checkout.indexOf('requireReportBuyer(request, db)');
  const checkoutService=checkout.indexOf('checkoutService({');
  assert.ok(guard>0&&guard<database&&database<buyer&&buyer<checkoutService);

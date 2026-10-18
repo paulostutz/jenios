@@ -10,7 +10,9 @@ const preview={VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:release,
 const prod={VERCEL_ENV:'production',VERCEL_GIT_COMMIT_REF:release,
  NEXT_PUBLIC_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',
  SOCIAL_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',
- JENIOS_S05_SCHEMA_CERTIFIED:'true',JENIOS_S05_E2E_CERTIFIED:'true'};
+ JENIOS_S05_SCHEMA_CERTIFIED:'true',JENIOS_S05_E2E_CERTIFIED:'true',
+ SUPABASE_SECRET_KEY:'synthetic-test-secret-not-valid-for-api',
+ NEXT_PUBLIC_SUP_PUBLISHABLE_KEY:'synthetic-test-publishable'};
 test('S05-B40 stage preview with isolated Supabase is permitted',()=>{
  assert.deepEqual(checkS05DeploymentScope(preview),{ok:true,mode:'preview-isolated'});
 });
@@ -37,4 +39,23 @@ test('S05-B40 trial and unverified transcoding remain blocked in all environment
 test('S05-B40 build invokes environment scope validation before other work',()=>{
  const source=JSON.parse(readFileSync('package.json','utf8')).scripts.build;
  assert.match(source,/^node scripts\/check-s05-env-scope\.mjs && npm test/);
+});
+
+test('S05 production refuses missing financial Supabase service credentials even when other gates claim true',()=>{
+ for(const key of ['SUPABASE_SECRET_KEY','SUPABASE_SERVICE_ROLE_KEY']){
+  const noSecret={...prod,SUPABASE_SECRET_KEY:undefined,SUPABASE_SERVICE_ROLE_KEY:undefined};
+  assert.equal(checkS05DeploymentScope(noSecret).reason,'S05_PRODUCTION_FINANCIAL_SUPABASE_SECRET_MISSING');
+ }
+});
+test('S05 production refuses missing public publishable key',()=>{
+ const result=checkS05DeploymentScope({...prod,NEXT_PUBLIC_SUP_PUBLISHABLE_KEY:undefined});
+ assert.equal(result.reason,'S05_PRODUCTION_PUBLISHABLE_KEY_MISSING');
+});
+test('S05 production refuses to enable Inter charges without all current credentials',()=>{
+ const active={...prod,JENIOS_PAY_PAYMENTS_ENABLED:'true'};
+ assert.equal(checkS05DeploymentScope(active).reason,'S05_PRODUCTION_ACTIVE_INTER_CREDENTIALS_MISSING');
+ assert.deepEqual(checkS05DeploymentScope({...active,
+  INTER_CLIENT_ID:'fixture-id',INTER_CLIENT_SECRET:'fixture-secret',
+  INTER_CERTIFICATE:'fixture-certificate',INTER_PRIVATE_KEY:'fixture-key'}),
+  {ok:true,mode:'production-validated'});
 });

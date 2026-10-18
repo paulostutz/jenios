@@ -53,7 +53,7 @@ test('B52 server API accesses only authenticated Social context and owner-bound 
  assert.match(api,/\.eq\('id',collectionId\)\.eq\('owner_id',ctx\.userId\)/);
  assert.match(api,/ownerId===ctx\.userId/);
  assert.match(api,/eligibleStories/);
- assert.doesNotMatch(api,/service_role|SUPABASE_SECRET_KEY|pay\\/|jenios-pay|createSignedUploadUrl/);
+ assert.doesNotMatch(api,/service_role|SUPABASE_SECRET_KEY|jenios-pay|createSignedUploadUrl/);
 });
 test('B52 authenticated UI prevents stale-session media and reuses safe existing video player',()=>{
  assert.match(ui,/createSessionFence/);

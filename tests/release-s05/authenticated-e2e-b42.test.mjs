@@ -82,7 +82,7 @@ test('B42 requires two different independently provisioned test credentials',()=
 test('B42 full user-scoped client E2E survives relogin and leaves no test post',async()=>{
  const server=mockServer();
  const result=await certifyStagingFeed({...opts,fetcher:server.fetcher,now:()=>new Date('2026-10-18T01:00:00.000Z')});
- assert.equal(result.passed,10);
+ assert.equal(result.passed,11);
  assert.equal(result.cleaned,true);
  assert.equal(server.state.post,null);
  assert.ok(server.state.comment);

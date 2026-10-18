@@ -26,9 +26,7 @@ export async function GET(request){
  // Highlights intentionally retain the original media beyond the normal 24h Story feed.
  let eligibleStories=[];
  if(ownerId===ctx.userId){
-  const own=await ctx.db.from('stories')
-   .select('id,author_id,media_type,created_at,expires_at,shared_post_id')
-   .eq('author_id',ctx.userId).order('created_at',{ascending:false}).limit(120);
+  const own=await ctx.db.rpc('social_my_story_archive_for_highlights_v1');
   if(own.error)return reply({error:'STORIES_UNAVAILABLE'},503);
   eligibleStories=own.data||[];
  }

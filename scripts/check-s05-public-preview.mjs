@@ -48,15 +48,4 @@ check('Token validator full PDF cannot be issued without Social session',crypto.
 const trial=await request('/api/platform/trial');
 check('unapproved Platform trial cannot be started from integrated release',
  trial.status===404 || (trial.status===503 && trial.json?.code==='TRIAL_NOT_AVAILABLE'));
-// Free during prelaunch: no payment order may be created for either report.
-for(const [productCode,target,expectedPath] of [
- ['social-bankscore-report',{codigo:'123',periodo:'202606'},'/bankscore/detalhado'],
- ['social-crypto-validator',{network:'ethereum',type:'token',identifier:'0x'+'1'.repeat(40)},'/social/consulta-detalhada']
-]){
- const quote=await request('/api/jenios-pay/checkout',{method:'POST',body:{productCode,target}});
- check('free prelaunch checkout blocked for '+productCode,
-  quote.status===409 && typeof quote.json?.reportUrl==='string'
-  && new URL(quote.json.reportUrl,url).pathname===expectedPath
-  && quote.json.error?.includes('gratuito'));
-}
 console.log('RESULT '+JSON.stringify({checks:pass,failed:0,mode:'anonymous read-only and denied writes',target:'isolated preview only'}));

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm test && npm run test:release-s05 && next build",
+    "build": "node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.mjs",

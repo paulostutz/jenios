@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import WalletInventory from './WalletInventory';
+import {downloadVerifiedReportPdf} from '../../lib/reports/pdf-download.mjs';
 import ReportAccountGate from './ReportAccountGate';
 import { isPrelaunchReport } from '../../lib/reports/prelaunch.mjs';
 import { supabase } from '../../lib/supabase';
@@ -61,12 +62,8 @@ function CryptoReportContent({admin=false,prelaunch=false}) {
       if (version !== epoch.current) return;
       if(!admin&&!prelaunch)saveReceipt(window.sessionStorage, data?.session?.user?.id||'guest', orderId, { productCode: 'social-crypto-validator', target });
       if (format === 'pdf') {
-        const blob = await response.blob();
-        if (version !== epoch.current) return;
-        const url = URL.createObjectURL(blob), link = document.createElement('a');
-        link.href = url; link.download = 'jenios-crypto-detalhado.pdf'; document.body.appendChild(link); link.click(); link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        setMessage('PDF emitido com nova leitura da rede; o estado pode diferir da consulta anterior.');
+        const saved=await downloadVerifiedReportPdf(response,'jenios-crypto-detalhado.pdf',{isCurrent:()=>version===epoch.current});
+        if(saved && version===epoch.current)setMessage('PDF emitido com nova leitura da rede; o estado pode diferir da consulta anterior.');
       } else { const result = await response.json(); if (version === epoch.current) setReport(result.report); }
     } catch (error) { if (version === epoch.current) setMessage(error.message); }
     finally { if (version === epoch.current) { setBusy(false); inFlight.current = false; } }

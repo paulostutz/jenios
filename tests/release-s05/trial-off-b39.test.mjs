@@ -7,7 +7,7 @@ import {TRIAL_DURATION_MS,trialAccessWindow} from '../../lib/platform/trial/pers
 const source=readFileSync('app/api/platform/trial/route.js','utf8');
 test('S05-B39 trial has a two-key independent activation gate and never charges',()=>{
  assert.match(source,/JENIOS_TRIAL_ENABLED==='true'&&process\.env\.JENIOS_TRIAL_ACTIVATION_APPROVED==='true'/);
- assert.doesNotMatch(source,/paymentIntent|chargeCustomer|PAY_ADMIN_TOKEN|inter\\/pix/i);
+ assert.doesNotMatch(source,/paymentIntent|chargeCustomer|PAY_ADMIN_TOKEN|inter.pix/i);
 });
 test('S05-B39 disabled POST returns 503 without authentication, identity verification, or ledger activity',async()=>{
  const response=await trialRequest(new Request('https://staging.invalid/api/platform/trial',{method:'POST'}),{enabled:false,context(){throw Error('AUTH_CALL')},db:{rpc(){throw Error('DB_CALL')}},verifyIdentity(){throw Error('PROVIDER_CALL')}});

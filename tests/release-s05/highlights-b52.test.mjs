@@ -47,8 +47,8 @@ test('B52 archived shared posts are not visible and deleted original stories cas
 });
 test('B52 server API accesses only authenticated Social context and owner-bound modifications',()=>{
  assert.match(api,/socialContext\(request\)/g);
- assert.match(api,/select\('id,author_id,media_type,expires_at'\)/);
- assert.match(api,/\.eq\('id',storyId\)\.eq\('author_id',ctx\.userId\)/);
+ assert.match(api,/\.rpc\('social_my_story_archive_for_highlights_v1'\)/);
+ assert.match(api,/\.some\(story=>story\.id===storyId&&story\.author_id===ctx\.userId\)/);
  assert.match(api,/\.eq\('id',itemId\)\.eq\('owner_id',ctx\.userId\)/);
  assert.match(api,/\.eq\('id',collectionId\)\.eq\('owner_id',ctx\.userId\)/);
  assert.match(api,/ownerId===ctx\.userId/);
@@ -70,6 +70,16 @@ test('B52 Highlights appear from desktop header, mobile quick navigation and vis
  assert.match(page,/encodeURIComponent\(perfilVisitado\.id\)/);
  assert.match(ui,/Selecione um Story seu \(ativo ou arquivado\)/);
 });
+test('B52R3 archived Stories can be pinned after the original 24-hour feed expires',()=>{
+ const r2=src('supabase/release-review/20261018_s05_b52_r2_owner_story_archive.sql');
+ const post=api.split('export async function POST(request)')[1].split('export async function DELETE(request)')[0];
+ assert.equal((api.match(/\.rpc\('social_my_story_archive_for_highlights_v1'\)/g)||[]).length,2);
+ assert.doesNotMatch(post,/\.from\('stories'\)/);
+ assert.match(post,/\.some\(story=>story\.id===storyId&&story\.author_id===ctx\.userId\)/);
+ assert.match(r2,/s\.author_id=auth\.uid\(\)/);
+ assert.match(r2,/REVOKE ALL ON FUNCTION public\.social_my_story_archive_for_highlights_v1\(\) FROM PUBLIC,anon/);
+});
+
 test('B52 original critical financial API fingerprints remain intact',()=>{
  const hashes=JSON.parse(src('docs/release/S05-CRITICAL-API-SHA256.json'));
  for(const path of ['app/api/bankscore/detailed/route.js','app/api/crypto-validator/detailed/route.js','app/api/jenios-pay/checkout/route.js'])

@@ -56,10 +56,12 @@ export async function POST(request){
   const collectionId=readString(input.collectionId),storyId=readString(input.storyId);
   if(!validUUID(collectionId)||!validUUID(storyId))return reply({error:'INVALID_ID'},400);
   const owner=await requireOwner(ctx,collectionId);if(owner.error)return owner.error;
-  const story=await ctx.db.from('stories').select('id,author_id,media_type,expires_at')
-   .eq('id',storyId).eq('author_id',ctx.userId).maybeSingle();
-  if(story.error)return reply({error:'STORIES_UNAVAILABLE'},503);
-  if(!story.data)return reply({error:'STORY_NOT_OWNED'},403);
+  // The ordinary Stories SELECT intentionally hides expired rows after 24h.
+  // Reuse the verified owner-only archive RPC; the INSERT trigger rechecks ownership.
+  const archive=await ctx.db.rpc('social_my_story_archive_for_highlights_v1');
+  if(archive.error)return reply({error:'STORIES_UNAVAILABLE'},503);
+  if(!(archive.data||[]).some(story=>story.id===storyId&&story.author_id===ctx.userId))
+   return reply({error:'STORY_NOT_OWNED_OR_UNAVAILABLE'},403);
   const count=await ctx.db.from('social_highlight_items').select('id',{count:'exact',head:true})
    .eq('collection_id',collectionId);
   if(count.error)return reply({error:'HIGHLIGHTS_UNAVAILABLE'},503);

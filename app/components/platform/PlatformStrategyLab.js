@@ -1,6 +1,8 @@
 'use client';
 import {useEffect,useState} from 'react';
 import {studyHistoricalCandles} from '../../../lib/platform/market-study.mjs';
+import {inspectHistoricalBars} from '../../../lib/platform/historical-quality.mjs';
+import {replayHistoricalScenario} from '../../../lib/platform/paper-replay.mjs';
 import {assessPaperStrategy,simulationModeLabels} from '../../../lib/platform/paper-policy.mjs';
 import {readSimulatedBalance,readSimulationPaused} from '../../../lib/platform/simulation-account.mjs';
 import {readSimJournal} from '../../../lib/platform/simulation-journal.mjs';
@@ -30,6 +32,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
  const [input,setInput]=useState(''),[timeframe,setTimeframe]=useState('swing');
  const [mode,setMode]=useState('direto'),[allocation,setAllocation]=useState(1000);
  const [stop,setStop]=useState(500),[result,setResult]=useState(null),[error,setError]=useState('');
+ const [quality,setQuality]=useState(null),[replay,setReplay]=useState(null);
  const [paused,setPaused]=useState(false),[simBalance,setSimBalance]=useState(balance);
  useEffect(()=>{
   const refresh=()=>{
@@ -44,24 +47,38 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
   observeSimulatedBehavior({events:readSimJournal(window.sessionStorage,userId),paused,selectedMode:mode}):null;
  const plan=assessPaperStrategy({mode,balance:simBalance,allocation:Number(allocation),dailyStop:Number(stop),paused,analysis:result,observations});
  function calculate(){
-  setError('');setResult(null);
+  setError('');setResult(null);setQuality(null);setReplay(null);
   try{
    const bars=parseLocalBars(input);
+   const audit=inspectHistoricalBars(bars);
    const next=studyHistoricalCandles(bars,{timeframe});
-   setResult(next);
+   setQuality(audit);setResult(next);
   }catch(e){setError(e?.message||'Não foi possível validar os candles.');}
+ }
+ function simulateReplay(){
+  setError('');setReplay(null);
+  if(!plan.rehearsalAllowed){setError('A pausa, alocação ou os limites fictícios impedem o replay nesta conta.');return;}
+  try{
+   const bars=parseLocalBars(input);
+   const hypothetical=replayHistoricalScenario(bars,{
+     mode,initialBalance:simBalance,allocationPct:Number(allocation)/simBalance,
+     feeBps:10,slippageBps:10,stopPct:0.02
+   });
+   if(!hypothetical.ok){setError('Dados insuficientes ou com lacunas para o replay; confira a qualidade da série.');return;}
+   setReplay(hypothetical);
+  }catch(e){setError(e?.message||'Não foi possível executar o replay histórico.');}
  }
  return <section style={panelCss} aria-label="Laboratório técnico da JENIOS Platform">
   <span style={{color:'#6d28d9',fontSize:11,fontWeight:800,letterSpacing:1}}>LABORATÓRIO B79–B80 · SEM OPERAÇÕES REAIS</span>
   <h2 style={{fontSize:21,margin:'8px 0'}}>Estudo do momento e estratégias</h2>
   <p style={{fontSize:12,lineHeight:1.6}}>Importe 60–500 candles históricos OHLCV em JSON ou CSV, ordenados do mais antigo ao mais recente. A análise usa dez leituras técnicas reproduzíveis. Dados enviados pelo usuário não são cotação de mercado validada.</p>
   <label style={{display:'grid',gap:6,fontSize:12,fontWeight:700}}>Candles históricos
-   <textarea value={input} rows={4} maxLength={180000} onChange={e=>setInput(e.target.value)}
+   <textarea value={input} rows={4} maxLength={180000} onChange={e=>{setInput(e.target.value);setResult(null);setQuality(null);setReplay(null);}}
     style={{...inputCss,resize:'vertical'}} placeholder={'JSON: [{"time":"2026-10-16T14:00:00Z","open":100,"high":102,"low":99,"close":101,"volume":1200}, ...]'} />
   </label>
   <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'end',marginTop:12}}>
    <label style={{fontSize:12}}>Horizonte<br/>
-    <select value={timeframe} onChange={e=>setTimeframe(e.target.value)} style={inputCss}>
+    <select value={timeframe} onChange={e=>{setTimeframe(e.target.value);setResult(null);setQuality(null);setReplay(null);}} style={inputCss}>
      <option value="intraday">Intradiário histórico</option><option value="swing">Swing trade histórico</option>
     </select>
    </label>
@@ -70,7 +87,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
     <input type="file" accept=".json,.csv,text/csv,application/json" onChange={async e=>{
      const file=e.target.files?.[0];if(!file)return;
      if(file.size>180000){setError('Arquivo maior que o limite de 180 KB.');return;}
-     try{setInput(await file.text());setError('');setResult(null);}
+     try{setInput(await file.text());setError('');setResult(null);setQuality(null);setReplay(null);}
      catch{setError('Não foi possível ler o arquivo local.');}
     }} style={{display:'block',maxWidth:230}}/>
    </label>
@@ -87,7 +104,16 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    </div>
    <p style={{fontSize:11,color:'#92400e'}}>{result.caution}</p>
   </div>}
-  <div style={{marginTop:18,paddingTop:12,borderTop:'1px solid #e2e8f0'}}>
+  {quality&&<div aria-label="Qualidade da série histórica" style={{borderTop:'1px solid #e2e8f0',marginTop:15,paddingTop:13,fontSize:12}}>
+    <strong>Auditoria da série importada</strong>
+    <p>{quality.count} candles · Intervalo típico: {Math.round(quality.typicalIntervalMs/1000)} segundos
+      {' '}· Lacunas identificadas: {quality.gaps.length}
+      {' '}· Volume ausente: {quality.zeroVolume}</p>
+    <p role="status">{quality.replayEligible?'Série adequada para replay ilustrativo, sem certificação de origem.':
+      'Replay bloqueado: amostra insuficiente, lacunas ou sinais relevantes de baixa qualidade.'}</p>
+    {quality.warnings.map((x,i)=><p key={i} style={{color:'#92400e'}}>{x}</p>)}
+  </div>}
+    <div style={{marginTop:18,paddingTop:12,borderTop:'1px solid #e2e8f0'}}>
    <h3 style={{fontSize:16}}>Três modos — apenas roteiro de estudo</h3>
    <label style={{fontSize:12}}>Modo simulado
     <select value={mode} onChange={e=>setMode(e.target.value)} style={{...inputCss,marginTop:6}}>
@@ -103,6 +129,19 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    {plan.reasons.length>0&&<ul style={{fontSize:12,lineHeight:1.6,color:'#92400e',paddingLeft:18}}>
     {plan.reasons.map((r,i)=><li key={i}>{r}</li>)}
    </ul>}
+   {quality&&<div style={{border:'1px solid #e4d8fc',borderRadius:12,padding:13,marginTop:14}} aria-label="Replay histórico hipotético">
+    <h4 style={{margin:'0 0 8px'}}>Replay histórico fora da amostra</h4>
+    <p style={{fontSize:12,lineHeight:1.6}}>Usa apenas candles já concluídos para formar hipóteses e simula a entrada no candle seguinte. Reserva os últimos 30% da amostra para avaliação; inclui custos e slippage ilustrativos de 0,10% cada e stop hipotético de 2% por posição. Não é o motor operacional protegido dos robôs.</p>
+    <button type="button" disabled={!quality.replayEligible||!plan.rehearsalAllowed} onClick={simulateReplay}
+      style={{background:'#4c1d95',color:'#fff',border:0,borderRadius:8,padding:'11px 15px',fontWeight:800,cursor:'pointer'}}>Executar replay hipotético</button>
+    {replay&&<div role="status" style={{marginTop:13,fontSize:12,lineHeight:1.6}}>
+      <p>Modo: {replay.mode} · {replay.evaluationBars} candles de avaliação · {replay.entries} entradas hipotéticas · {replay.closedTrades} saídas simuladas · {replay.paperStops} stops ilustrativos.</p>
+      <p>Variação hipotética da conta: {replay.hypotheticalReturnPct.toLocaleString('pt-BR')}%.
+         {' '}Benchmark ilustrativo (comprar e manter): {replay.hypotheticalBenchmarkPct.toLocaleString('pt-BR')}%.
+         {' '}Queda máxima estimada: {replay.hypotheticalMaxDrawdownPct.toLocaleString('pt-BR')}%.</p>
+      <p style={{color:'#92400e'}}>{replay.caution}</p>
+    </div>}
+   </div>}
    <small style={{color:'#64748b'}}>Este laboratório não executa operações, não altera os motores protegidos e não atribui resultados financeiros. Limites de 25% e 2% são barreiras internas demonstrativas, não orientação personalizada.</small>
   </div>
  </section>;

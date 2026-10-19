@@ -1,106 +1,91 @@
 'use client';
+import {useEffect,useState} from 'react';
 import Link from 'next/link';
-import AdminAccess from '../components/AdminAccess';
-import { supabase } from '../../lib/supabase';
-import styles from './page.module.css';
+import AdminAccess,{adminFetch} from '../components/AdminAccess';
+import {supabase} from '../../lib/supabase';
 import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
+import styles from './page.module.css';
 
-const OPTIONS = [
-  {
-    id:'reports',permission:'reports.run',href:'/admin/consultas',
-    emoji:'📑',title:'Relatórios e consultas',
-    summary:'Acesse os laudos administrativos e consultas permitidas pela sua função. Informações exibidas por fontes autenticadas.',
-    action:'Abrir consultas'
-  },
-  {
-    id:'finance',permission:'finance.manage',href:'/admin/cobrancas',
-    emoji:'💳',title:'Cobranças e produtos',
-    summary:'Gerencie preços e cobranças pela interface da JENIOS PAY. Valores e liquidações dependem da confirmação das APIs.',
-    action:'Gerenciar cobranças'
-  },
-  {
-    id:'permissions',permission:'permissions.manage',href:'/admin/plataforma/permissoes',
-    emoji:'🔐',title:'Permissões e auditoria',
-    summary:'Gerencie permissões com verificação do servidor e registro de auditoria, sem criar administradores fictícios.',
-    action:'Ver gestão de acesso'
-  }
+const SECTIONS=[
+ ['geral','◈ Visão geral'],['social','◉ JENIOS Social'],
+ ['financeiro','▤ Financeiro'],['platform','▥ Platform'],
+ ['acessos','🔐 Acessos'],['sistemas','⚙ Sistemas']
 ];
-
-function AdminHome({permissions}) {
-  const cards = OPTIONS.filter(opt=>permissions.includes(opt.permission));
-  const signOut = async () => {
-    try { await supabase?.auth.signOut(); }
-    finally { window.location.assign('/admin/login'); }
-  };
-
-  return (
-    <main className={styles.page}>
-      <div className={styles.wrap}>
-        <header className={styles.top}>
-          <Link className={styles.logo} href="/admin">
-            <BrandLockup tone="dark" context="Admin" compact/>
-          </Link>
-          <div className={styles.topActions}>
-            <Link className={styles.ghost} href="/dashboard-logado">Sala de controle</Link>
-            <button type="button" className={styles.ghost} onClick={()=>window.location.reload()}>Atualizar acesso</button>
-            <button type="button" className={styles.ghost} onClick={signOut}>Sair</button>
-          </div>
-        </header>
-
-        <section className={styles.hero}>
-          <span className={styles.eyebrow}>Painel administrativo · Acesso autorizado</span>
-          <h1>Central de administração</h1>
-          <p>Ferramentas administrativas reunidas em um único lugar. Os módulos só são exibidos após validação de permissões pelo servidor. Nenhum faturamento, saldo ou usuário de demonstração será apresentado como dado real.</p>
-          <div className={styles.pills}>
-            <span className={styles.pill}>Identidade verificada</span>
-            <span className={styles.pill}>{permissions.length} permissão(ões) recebida(s)</span>
-            <span className={styles.pill}>Operações financeiras pelo backend</span>
-          </div>
-        </section>
-
-        <div className={styles.section}>
-          <h2>Módulos disponíveis</h2><p>Conforme as permissões atribuídas à sua conta</p>
-        </div>
-        <div className={styles.grid}>
-          {cards.map(card=>(
-            <article className={styles.card} key={card.id}>
-              <span className={styles.icon} aria-hidden="true">{card.emoji}</span>
-              <h3>{card.title}</h3>
-              <p>{card.summary}</p>
-              <Link className={styles.cta} href={card.href}>{card.action} →</Link>
-            </article>
-          ))}
-          <article className={styles.card}>
-            <span className={styles.icon} aria-hidden="true">📊</span>
-            <h3>Área de negociações</h3>
-            <p>Visualização do simulador e diagnóstico, com operações reais sujeitas às liberações específicas do servidor e da corretora.</p>
-            <Link className={`${styles.cta} ${styles.secondary}`} href="/dashboard">Abrir Dashboard →</Link>
-          </article>
-          <article className={styles.card}>
-            <span className={styles.icon} aria-hidden="true">🛡️</span>
-            <h3>Controles de risco</h3>
-            <p>Acompanhe o estado das funcionalidades do simulador. Nenhuma ordem real é autorizada por este painel administrativo.</p>
-            <Link className={`${styles.cta} ${styles.secondary}`} href="/mesa-operacoes">Abrir Mesa →</Link>
-          </article>
-        </div>
-
-        <aside className={styles.note}>
-          <strong>Integridade e transparência dos dados.</strong> Este painel não calcula métricas financeiras com valores estáticos, não redefine senhas localmente e não cria contas de clientes fictícias. As ferramentas financeiras e de autorização preservam suas verificações de backend. A liberação de negociação real continua bloqueada sem homologação específica.
-        </aside>
-        <nav className={styles.footer} aria-label="Outras áreas">
-          <Link href="/admin/moderacao">Moderação existente</Link>
-          <Link href="/dashboard-logado">Voltar ao ambiente do cliente</Link>
-        </nav>
-        <BrandFooter tone="dark" scope="Admin"/>
-      </div>
-    </main>
-  );
+const LINKS={
+ geral:[
+  ['JENIOS Social','Publicações, perfis, denúncias e comunidade','/social','◉'],
+  ['JENIOS PAY','Catálogo, preços e histórico de cobranças','/admin/cobrancas','▤'],
+  ['Platform','Banco dedicado, indicadores e governança','/admin?area=platform','▥'],
+  ['Consultas','BankScore e Validador autorizados','/admin/consultas','▧']
+ ],
+ social:[
+  ['Abrir Social','Feed, Stories, comentários e moderação','/social','◉'],
+  ['Moderação','Denúncias e decisões registradas no servidor','/admin/moderacao','🛡'],
+  ['Hub de Tendências','MegaPulse, baleias e tokens emergentes','/tendencias','↗'],
+  ['Notificações','Acompanhar alertas por módulo','/notifications','♧']
+ ],
+ financeiro:[
+  ['Cobranças e produtos','JENIOS PAY e pagamentos confirmados','/admin/cobrancas','▤'],
+  ['BankScore e Tokens','Consultas administrativas completas','/admin/consultas','▧']
+ ],
+ acessos:[
+  ['Permissões operacionais','Concessões permitidas e auditadas','/admin/plataforma/permissoes','🔐']
+ ],
+ sistemas:[
+  ['Dashboard','Visão geral da negociação educacional','/dashboard','▧'],
+  ['Mesa e gráficos','Estudos, TradingView e controles','/mesa-operacoes','▥'],
+  ['Hub','Cotações e observações atuais','/tendencias','↗']
+ ]
+};
+function Item({data}){return <Link href={data[2]} className={styles.card}>
+ <span className={styles.icon} aria-hidden="true">{data[3]}</span>
+ <strong>{data[0]}</strong><p>{data[1]}</p><small>Abrir módulo →</small>
+ </Link>;}
+function PlatformPanel(){
+ const [state,setState]=useState({status:'loading'}),[refresh,setRefresh]=useState(0);
+ useEffect(()=>{let live=true;const controller=new AbortController();
+  adminFetch('/api/admin/ecosystem',{signal:controller.signal}).then(r=>r.json()).then(v=>{if(live)setState(v);})
+   .catch(()=>{if(live)setState({status:'unavailable'});});
+  return()=>{live=false;controller.abort();};
+ },[refresh]);
+ return <section className={styles.panel}>
+  <div className={styles.top}><div><h2>Platform · Indicadores do banco dedicado</h2>
+  <p>Consulta agregada e isolada. Nenhuma chave, conta ou operação é transferida.</p></div>
+  <button type="button" onClick={()=>setRefresh(n=>n+1)} className={styles.action}>Atualizar indicadores</button></div>
+  {state.status==='ready'?<div className={styles.metrics}>
+    {[[state.diagnostics,'Diagnósticos'],[state.riskEvents,'Eventos de risco'],[state.adminPermissions,'Autorizações Platform']].map(([value,name])=><div key={name}><strong>{value}</strong><small>{name}</small></div>)}
+  </div>:<p role="status">{state.status==='loading'?'Verificando dados…':'Indicadores indisponíveis. Não exibimos totais fictícios.'}</p>}
+  <p>O painel avançado da Platform mantém sua própria autenticação até que o vínculo administrativo entre os dois projetos seja homologado. Não há concessão automática de permissões.</p>
+  <Link className={styles.action} href="/platform/admin">Consultar painel da Platform ↗</Link>
+ </section>;
 }
-
-export default function AdminPage() {
-  return (
-    <AdminAccess permission={['reports.run','finance.manage','permissions.manage']} loginRedirect="/admin/login">
-      {permissions => <AdminHome permissions={permissions}/>}
-    </AdminAccess>
-  );
+function Home(){
+ const [section,setSection]=useState('geral'),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ useEffect(()=>{const key=new URLSearchParams(window.location.search).get('area');if(SECTIONS.some(s=>s[0]===key))setSection(key);},[]);
+ async function logout(){if(busy)return;setBusy(true);setError('');try{const r=await supabase.auth.signOut();if(r.error)throw Error('Não foi possível sair.');window.location.assign('/admin/login');}catch(e){setError(e.message);setBusy(false);}}
+ return <div className={styles.page}>
+  <aside className={styles.sidebar}>
+   <Link href="/admin" className={styles.brand}><BrandLockup tone="light" compact context="Master"/></Link>
+   <nav className={styles.nav} aria-label="Seções do escritório Master">
+    {SECTIONS.map(([id,label])=><button key={id} type="button" aria-current={section===id?'page':undefined} className={styles.navItem+' '+(section===id?styles.active:'')} onClick={()=>setSection(id)}>{label}</button>)}
+    <Link href="/social" className={styles.navItem}>↗ Social</Link>
+   </nav>
+   <p className={styles.note}>Escritório exclusivo Master. Permissões financeiras e de consulta não habilitam este acesso.</p>
+  </aside>
+  <main className={styles.main}>
+   <header className={styles.top}><div><span className={styles.kicker}>JENIOS · CENTRAL MASTER</span><h1>Escritório Administrativo</h1><p>Gestão organizada e rápida, com módulos carregados somente quando necessários.</p></div>
+   <div className={styles.actions}><Link href="/dashboard-logado" className={styles.action}>Sala de Controle</Link><button className={styles.action} type="button" disabled={busy} onClick={logout}>{busy?'Saindo…':'Sair'}</button></div></header>
+   {error&&<p role="alert">{error}</p>}
+   <section className={styles.hero}><small>ADMINISTRAÇÃO PRIVADA</small><h2>Seu ecossistema em um só escritório.</h2><p>Social, Platform, pagamentos, relatórios e segurança, preservando os bancos e as autorizações independentes.</p></section>
+   {section==='platform'?<PlatformPanel/>:<section aria-label={SECTIONS.find(([id])=>id===section)?.[1]}>
+     <h2 className={styles.heading}>{SECTIONS.find(([id])=>id===section)?.[1]}</h2>
+     <div className={styles.grid}>{(LINKS[section]||[]).map(card=><Item data={card} key={card[0]}/>)}</div>
+   </section>}
+   <p className={styles.notice}>Esta interface não cria ordens reais nem ativa pagamentos. Todos os módulos executam seus próprios controles no servidor; a gestão avançada da Platform depende da autorização dedicada.</p>
+   <BrandFooter tone="light" scope="Master"/>
+  </main>
+ </div>;
+}
+export default function AdminPage(){
+ return <AdminAccess permission={['reports.run','finance.manage','permissions.manage']} loginRedirect="/admin/login"><Home/></AdminAccess>;
 }

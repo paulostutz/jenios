@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
 import terminal from '../components/platform/Terminal.module.css';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
-import { supabase } from '../../lib/supabase';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {readSimJournal,appendSimIntention} from '../../lib/platform/simulation-journal.mjs';
 import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
 

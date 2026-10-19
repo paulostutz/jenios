@@ -74,10 +74,10 @@ export default function LandingPagePro() {
         {/* HERO SECTION */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', padding: '10px 0' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#ffffff', margin: 0, lineHeight: '1.2' }}>
-            O Mercado Foi Desenhado para Destruir o Seu Emocional. <span style={{ color: '#a78bfa' }}>A JENIOS Veio Para Inverter o Jogo.</span>
+            Seu comportamento também faz parte da estratégia. <span style={{ color: '#a78bfa' }}>JENIOS: Tecnologia Inversa e Gestão de Risco.</span>
           </h1>
           <p style={{ fontSize: '14px', color: '#94a3b8', maxWidth: '780px', margin: '0 auto', lineHeight: '1.6' }}>
-            Mais de 95% dos operadores perdem todo o patrimônio porque operam na base da impulsividade e da vingança. As baleias monitoram o varejo e caçam os stops. Descubra agora o seu perfil comportamental.
+            Decisões impulsivas e gestão de risco inadequada podem aumentar as perdas. Conheça os recursos de análise comportamental e simulação da JENIOS.
           </p>
         </div>
 
@@ -92,10 +92,10 @@ export default function LandingPagePro() {
             </span>
           </div>
           <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#ffffff', margin: 0, lineHeight: '1.4' }}>
-            Se continuar a operar na força de vontade e sem automação, a falência da sua conta ocorrerá em menos de 90 dias.
+            Quando não há regras claras de risco, uma sequência de decisões impulsivas pode comprometer significativamente o capital.
           </h2>
           <p style={{ fontSize: '13px', color: '#cbd5e1', margin: 0, lineHeight: '1.6' }}>
-            O seu maior inimigo não está no gráfico: está no espelho. Quando o Loss bate, o cérebro ativa o modo fúria, e os grandes bancos lucram exatamente com o seu desespero.
+            O comportamento do operador influencia a disciplina de execução. Conhecer seus próprios padrões pode ajudar a desenvolver rotinas de gestão de risco.
           </p>
         </div>
 
@@ -104,9 +104,9 @@ export default function LandingPagePro() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#f3e8ff', color: '#7c3aed', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>O VERDADEIRO INIMIGO</span>
-              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>O Problema não é o Gráfico, é o Cérebro</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Entenda os seus padrões de decisão</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
-                Sob estresse, o trader ativa o modo fúria, aumenta lotes indevidamente e devolve semanas de lucro em 10 minutos.
+                O estresse pode favorecer mudanças de lote e de stop fora do planejamento. Use o diário e os limites de exposição para estudar esses momentos.
               </p>
             </div>
           </div>
@@ -114,9 +114,9 @@ export default function LandingPagePro() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#fee2e2', color: '#991b1b', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>AS CONSEQUÊNCIAS</span>
-              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>A Falência em 90 Dias</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Risco sem limites definidos</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
-                Operar sem blindagem algorítmica significa servir de liquidez para as instituições. O seu capital evapora silenciosamente.
+                Limites de capital e procedimentos de pausa ajudam a organizar a gestão do risco, mas não eliminam a possibilidade de perdas.
               </p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function LandingPagePro() {
               <span style={{ fontSize: '10px', backgroundColor: '#d1fae5', color: '#065f46', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>A SOLUÇÃO JENIOS</span>
               <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Engenharia Reversa HFT</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
-                O nosso motor intercepta o clique emocional e inverte a ordem na corretora: transformamos o seu erro em lucro automatizado.
+                A tecnologia reúne estudos de comportamento, simulação de sinais reversos e controles de risco. O resultado de cada operação é incerto; lucros não são garantidos.
               </p>
             </div>
           </div>
@@ -202,19 +202,19 @@ export default function LandingPagePro() {
               <p style={{ fontSize: '13px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>Score de Disciplina Técnica: {percentual.toFixed(0)}%</p>
 
               <p style={{ fontSize: '12px', color: '#dc2626', fontWeight: 'bold', marginBottom: '15px' }}>
-                {percentual >= 65 ? "Perfil Moderado / Disciplinado. O robô atuará no Modo Espelho Direto para acelerar a sua escala profissional." : "⚠️ ALERTA VERMELHO: O seu perfil apresenta forte vulnerabilidade a rage trading e cliques emocionais. Sem blindagem HFT, o risco de zerar a sua conta é iminente."}
+                {percentual >= 65 ? "Perfil Moderado / Disciplinado. A orientação inicial do modo operacional dependerá da avaliação realizada na área logada." : "⚠️ ALERTA VERMELHO: O seu perfil apresenta forte vulnerabilidade a rage trading e cliques emocionais. Considere conhecer os controles de risco disponíveis e revisar suas regras antes de operar."}
               </p>
 
               <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '16px', borderRadius: '12px', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'center' }}>
-                <span style={{ fontSize: '12px', fontWeight: '900', color: '#166534', textTransform: 'uppercase' }}>O seu diagnóstico comportamental está pronto!</span>
+                <span style={{ fontSize: '12px', fontWeight: '900', color: '#166534', textTransform: 'uppercase' }}>Sua avaliação introdutória foi concluída.</span>
                 <p style={{ fontSize: '12px', color: '#15803d', margin: 0, lineHeight: '1.5' }}>
-                  Cadastre-se agora e ganhe acesso imediato a <b>7 Dias Grátis</b> na plataforma para testar o nosso motor HFT e a engenharia reversa adaptativa sem compromisso.
+                  Acesse a plataforma para conhecer os recursos disponíveis em sua conta, incluindo a área de simulação e o diagnóstico inicial.
                 </p>
                 <a 
                   href="/login" 
                   style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', fontWeight: 'bold', fontSize: '12px', padding: '14px 20px', borderRadius: '12px', display: 'inline-block', textTransform: 'uppercase', letterSpacing: '1px', boxShadow: '0 4px 12px rgba(124, 58, 237, 0.4)' }}
                 >
-                  🚀 Cadastre-se e Faça um Teste Grátis por 7 Dias
+                  🚀 Acessar a Plataforma
                 </a>
               </div>
             </div>
@@ -269,6 +269,7 @@ export default function LandingPagePro() {
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '30px' }}>
           <div style={{ fontSize: '12px', fontWeight: '900', color: '#a78bfa', letterSpacing: '2px', textTransform: 'uppercase' }}>A PLATAFORMA QUE TRANSFORMA O SEU ERRO EM LUCRO</div>
           <div style={{ fontSize: '11px', color: '#64748b' }}>JENIOS • Todos os direitos reservados.</div>
+          <p style={{fontSize:11,color:'#94a3b8',maxWidth:760,margin:'0 auto',lineHeight:1.6}}>Operações no mercado financeiro envolvem risco de perdas. Ferramentas de simulação e análises comportamentais não asseguram resultados financeiros.</p>
         </div>
 
       </div>

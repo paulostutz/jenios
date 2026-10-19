@@ -13,6 +13,7 @@ const REMOTE_MEDIA = true;
 
 import CryptoValidator from '../components/CryptoValidator';
 import SocialSidebarPremium from '../components/SocialSidebarPremium';
+import SocialMobileRail from '../components/SocialMobileRail';
 import './jenios-theme.css';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialPinnedPosts from '../components/SocialPinnedPosts';
@@ -651,6 +652,7 @@ const handleUploadCarrossel = async (e) => {
 
   return (
     <main
+      className="jenios-social-surface"
       style={{
         backgroundColor: '#f1f5f9',
         color: '#0f172a',
@@ -659,7 +661,26 @@ const handleUploadCarrossel = async (e) => {
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
-    >{blocksOpen&&<SocialBlocks key={meuPerfil.id} onLoad={feed.blocks} onUnblock={feed.unblock} onClose={()=>setBlocksOpen(false)}/>}
+    >{<SocialMobileRail
+        active={abaAtiva}
+        authenticated={Boolean(meuPerfil.autenticado)}
+        onTab={destino=>{
+          if(destino==='bloqueados'){
+            if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+            setBlocksOpen(true);return;
+          }
+          if(destino==='perfil'||destino==='arquivados'){
+            if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+            void visitarPerfil(meuPerfil,destino==='arquivados'?'arquivados':'posts');
+          }else setAbaAtiva(destino);
+          window.scrollTo({top:0,behavior:'smooth'});
+        }}
+        onMessages={()=>{setChatAtivo(null);setMensagensAberta(true);}}
+        onEdit={()=>{if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+          setPerfilRascunho({...meuPerfil});setPerfilSaveError('');setPerfilSalvando(false);setModalEditarPerfil(true);}}
+        onAuth={()=>setModalAutenticacao(true)}
+        onExit={fazerLogout}
+      />}{blocksOpen&&<SocialBlocks key={meuPerfil.id} onLoad={feed.blocks} onUnblock={feed.unblock} onClose={()=>setBlocksOpen(false)}/>}
       {/* MODAL CÂMERA */}
       {modalCamera && (
         <div
@@ -1202,7 +1223,7 @@ const handleUploadCarrossel = async (e) => {
                   {meuPerfil.handle}
                 </span>
 
-                <button
+                <button className="social-header-user-signout"
                   onClick={fazerLogout}
                   style={{
                     backgroundColor: '#fee2e2',
@@ -1501,7 +1522,7 @@ const handleUploadCarrossel = async (e) => {
               </div>
             </div>
 
-            <div
+            <div className="social-profile-actions"
               style={{
                 display: 'flex',
                 gap: '8px',
@@ -1546,7 +1567,7 @@ const handleUploadCarrossel = async (e) => {
         </div>
 
         {/* JENIOS V4: navegacao compacta */}
-        <nav aria-label="Navegação da JENIOS Social" style={{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap',margin:'12px 0 14px'}}>
+        <nav className="social-desktop-nav" aria-label="Navegação da JENIOS Social" style={{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap',margin:'12px 0 14px'}}>
           {[
             ['feed','🏠 Feed'],
             ['ranking','🏆 Ranking'],
@@ -1570,7 +1591,7 @@ const handleUploadCarrossel = async (e) => {
           ))}
         </nav>
 
-        <nav aria-label="Ferramentas JENIOS" style={{display:"flex",gap:8,flexWrap:"wrap",margin:"0 0 16px"}}>
+        <nav className="social-desktop-nav" aria-label="Ferramentas JENIOS" style={{display:"flex",gap:8,flexWrap:"wrap",margin:"0 0 16px"}}>
           {[
             ["Simulador","/social/simulador"],
             ["Hub de Tendências","/tendencias"],
@@ -1879,7 +1900,7 @@ const handleUploadCarrossel = async (e) => {
                 {erroPostEmFoco&&<p role="alert">{erroPostEmFoco}</p>}
                 {postsProntos&&!erroPosts&&!posts.length&&<p>{meuPerfil.autenticado?'Nenhuma publicação disponível.':'Entre na sua conta para acompanhar as publicações.'}</p>}
                 {posts.map((p) => (
-                  <div key={p.id} id={`jenios-post-${p.id}`}
+                  <div className="jenios-social-post-frame" key={p.id} id={`jenios-post-${p.id}`}
                     style={{outline: postEmFoco === p.id ? '2px solid #7c3aed' : 'none', borderRadius:'16px'}}>
                   <SocialPostCard
                     post={p}

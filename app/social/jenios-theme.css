@@ -96,3 +96,45 @@
 @media (max-width:380px) {
   .social-profile-grid {grid-template-columns:minmax(0,1fr) !important;}
 }
+
+
+/* B75: smartphone rail. Desktop styles remain unchanged.
+ * Hover reveals captions for pointer emulation; taps and keyboard toggle "Mais".
+ */
+.jenios-mobile-rail,.jenios-mobile-rail-backdrop { display:none; }
+@media (max-width:600px) {
+  .jenios-social-surface {padding-left:49px; box-sizing:border-box;}
+  .jenios-social-surface .social-main-header {padding:11px 12px !important; gap:6px;}
+  .jenios-social-surface .social-main-header .social-header-link,
+  .jenios-social-surface .social-header-user-signout,
+  .jenios-social-surface .social-desktop-nav,
+  .jenios-social-surface .social-mobile-quick-nav,
+  .jenios-social-surface .social-profile-actions {display:none !important;}
+  .jenios-social-surface .social-main-header > div {min-width:0;}
+  .jenios-social-surface .social-feed-tools {order:1 !important; }
+  .jenios-social-surface .social-feed-primary {order:0 !important;}
+  .jenios-social-surface .social-feed-layout {gap:12px !important;}
+  .jenios-social-post-frame {content-visibility:auto;contain-intrinsic-size:auto 550px;}
+  .jenios-mobile-rail-backdrop {display:block;position:fixed;inset:0;border:0;background:#0f172a66;z-index:4900;cursor:pointer;}
+  .jenios-mobile-rail {display:flex;flex-direction:column;position:fixed;left:5px;top:max(90px,env(safe-area-inset-top,0px));z-index:4901;max-height:calc(100dvh - 110px);
+    width:42px;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;
+    border:1px solid #ded4fc;border-radius:15px;background:#fffefaed;backdrop-filter:blur(8px);
+    box-shadow:0 5px 22px #26154525;transition:width .18s ease;}
+  .jenios-mobile-rail-open {width:min(244px,calc(100vw - 65px));}
+  .jenios-mobile-rail-top,.jenios-mobile-rail-extra {display:grid;gap:3px;padding:4px;}
+  .jenios-mobile-rail-extra {border-top:1px solid #e9e1fc;}
+  .jenios-mobile-rail-item {min-height:38px;display:flex;align-items:center;gap:10px;box-sizing:border-box;
+    width:100%;padding:5px 8px;border:0;border-radius:10px;background:transparent;
+    text-decoration:none;text-align:left;font:700 12px system-ui,sans-serif;color:#4c1d95;cursor:pointer;white-space:nowrap;}
+  .jenios-mobile-rail-icon {font-size:19px;min-width:20px;text-align:center;line-height:1;color:#6d28d9;}
+  .jenios-mobile-rail-label {display:none;overflow:hidden;text-overflow:ellipsis;}
+  .jenios-mobile-rail-open .jenios-mobile-rail-label {display:inline;}
+  .jenios-mobile-rail-item[aria-current="page"] {background:#ede9fe;}
+  .jenios-mobile-rail-item:focus-visible {outline:2px solid #7c3aed;outline-offset:-2px;}
+  .jenios-mobile-rail-toggle {background:#f2ebff;}
+  @media (hover:hover) and (pointer:fine) {
+    .jenios-mobile-rail:hover {width:min(244px,calc(100vw - 65px));}
+    .jenios-mobile-rail:hover .jenios-mobile-rail-label {display:inline;}
+    .jenios-mobile-rail-item:hover {background:#ede9fe;}
+  }
+}

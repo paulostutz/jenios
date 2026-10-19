@@ -14,10 +14,12 @@ test('S05-B41 every mobile hash navigation destination actually exists',()=>{
  for(const [,id] of page.matchAll(/href="#(jenios-[a-z-]+)"/g))
   assert.ok(page.includes('id="'+id+'"')||sidebar.includes('id="'+id+'"'),id);
 });
-test('S05-B41 mobile sidebar appears above feed without hiding desktop columns',()=>{
+test('S05-B75 mobile feed comes before deferred module tools, desktop columns retained',()=>{
  const css=readFileSync('app/social/jenios-theme.css','utf8');
  assert.match(page,/className="social-feed-tools"/);
  assert.match(page,/className="social-feed-primary"/);
- assert.match(css,/\.social-feed-tools\s*\{order:-1/);
+ assert.match(css,/\.jenios-social-surface \.social-feed-tools\s*\{order:1\s*!important/);
+ assert.match(css,/\.social-desktop-nav/);
+ assert.match(css,/\.jenios-mobile-rail/);
  assert.match(css,/\.social-feed-layout\s*\{display:flex\s*!important/);
 });

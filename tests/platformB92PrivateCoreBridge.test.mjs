@@ -1,9 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {verifyPrivateModeEnvelope,comparePrivateModeEnvelopes,signFixtureEnvelope,
+import {createHmac} from 'node:crypto';
+import {verifyPrivateModeEnvelope,comparePrivateModeEnvelopes,
  B92_SCHEMA,PINNED_ENGINE_SHA256} from '../lib/platform/private-core-bridge.mjs';
 const key='B92_test_only_not_a_prod_secret_'.padEnd(40,'!');
+/** Dedicated test-side signer. This helper must never ship with the runtime. */
+function signFixtureEnvelope(fields,secret){
+ const serial=JSON.stringify([fields.schema,fields.engineSha256,fields.mode,
+  fields.eventId,fields.observationSha256,fields.asset,fields.decisionAtMs,
+  fields.side,fields.declaredSandbox===true,fields.realExecutionAllowed===false]);
+ return {...fields,hmacSha256:createHmac('sha256',secret).update(serial).digest('hex')};
+}
+
 const now=Date.parse('2026-10-19T18:00:00Z');
 const common={schema:B92_SCHEMA,engineSha256:PINNED_ENGINE_SHA256,
  eventId:'123e4567-e89b-42d3-a456-426614174000',

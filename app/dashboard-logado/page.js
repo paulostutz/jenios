@@ -6,17 +6,17 @@ import PaymentStatement from '../components/PaymentStatement';
 export default function DashboardLogado() {
   const [abaAtiva, setAbaAtiva] = useState('geral');
 
-  // Dados do Plano e Permissões de Mercado
-  const [dadosFinanceiros] = useState({
-    plano: 'Plano Institucional Global (B3 + Cripto + Forex)',
-    tipoPlanoEnum: 'institucional', 
-    statusAssinatura: 'Ativa (Renovação em 18/11/2026)',
-    valorFatura: 'R$ 199,90',
-    ganhosAfiliados: 'R$ 3.450,00',
-    indicacoesAtivas: 12,
-    ganhosCopyTrading: 'R$ 2.180,00',
-    estrategiasCopiadasCount: 3
-  });
+  // Nenhum valor monetário é exibido sem dados autenticados do backend.
+  const dadosFinanceiros = {
+    plano: 'Assinatura a confirmar em Meus pagamentos',
+    tipoPlanoEnum: 'pendente',
+    statusAssinatura: 'Não confirmada',
+    valorFatura: 'Consulte Meus pagamentos',
+    ganhosAfiliados: 'Não apurado',
+    indicacoesAtivas: '—',
+    ganhosCopyTrading: 'Não apurado',
+    estrategiasCopiadasCount: '—'
+  };
 
   // Estados de Conexão de APIs
   const [mercadoSelecionado, setMercadoSelecionado] = useState('B3');
@@ -24,25 +24,18 @@ export default function DashboardLogado() {
   const [apiKeyCorretora, setApiKeyCorretora] = useState('');
   const [apiSecretCorretora, setApiSecretCorretora] = useState('');
   
-  const [corretorasConectadas, setCorretorasConectadas] = useState([
-    { id: 1, mercado: 'B3', nome: 'Nelogica Profit Pro', status: 'Conectado e Sincronizado (Latência: 12ms)', ativo: true }
-  ]);
+  const [corretorasConectadas] = useState([]);
 
-  const [nossaApiKeyBridge] = useState('jn_live_bridge_889347192847192_sec');
+  const [nossaApiKeyBridge] = useState('Nenhuma chave operacional emitida');
 
   // A navegação não exige diagnóstico. A execução real é autorizada no servidor.
   const irParaDashboardOuOperar = () => window.location.assign('/dashboard');
 
   const conectarCorretora = (e) => {
     e.preventDefault();
-    if (!apiKeyCorretora) {
-      alert('Por favor, insira a Chave de API / Token.');
-      return;
-    }
-    setCorretorasConectadas(prev => [...prev, { id: Date.now(), mercado: mercadoSelecionado, nome: corretoraSelecionada, status: 'Conectado ao Gateway HFT', ativo: true }]);
     setApiKeyCorretora('');
     setApiSecretCorretora('');
-    alert(`🚀 Tecnologia JENIOS HFT plugada com sucesso em ${corretoraSelecionada}! As ordens já consomem o saldo real da sua conta.`);
+    alert('Conexão de corretora não homologada nesta tela. Não informe suas credenciais: nenhuma conta foi conectada e nenhuma chave foi armazenada.');
   };
 
   const manuaisIntegracao = {
@@ -179,19 +172,19 @@ export default function DashboardLogado() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '30px' }}>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
-                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Capital Protegido</span>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>R$ 45.820,00</h3>
-                <span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>● Modo Reverso Adaptativo Ativo</span>
+                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Saldo confirmado na corretora</span>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Não conectado</h3>
+                <span style={{ fontSize: '11px', color: '#059669', fontWeight: 'bold' }}>● Simulação disponível; execução real não autorizada</span>
               </div>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Plano Contratado</span>
                 <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#0284c7', margin: '0 0 4px 0' }}>{dadosFinanceiros.plano}</h3>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>Acesso total liberado</span>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Consulte as condições confirmadas em Meus pagamentos</span>
               </div>
               <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Ganhos Totais Afiliados & Copy</span>
-                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#059669', margin: '0 0 4px 0' }}>R$ 5.630,00</h3>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>Disponível para saque imediato</span>
+                <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#059669', margin: '0 0 4px 0' }}>Não apurado</h3>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Nenhum saque foi confirmado nesta tela</span>
               </div>
             </div>
           </div>
@@ -205,7 +198,7 @@ export default function DashboardLogado() {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '30px' }}>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '10px' }}>Programa de Afiliados & Comissões Automáticas</h2>
             <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '25px' }}>
-              <b>Como funciona:</b> Compartilhe o seu link exclusivo. O sistema reconhece automaticamente cadastros e assinaturas, creditando comissões em tempo real.
+              <b>Como funciona:</b> Compartilhe o seu link exclusivo. O cadastro, rastreamento de indicações e eventuais comissões dependem de ativação e confirmação nos registros da plataforma.
             </p>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '25px' }}>
@@ -222,8 +215,8 @@ export default function DashboardLogado() {
             <div style={{ backgroundColor: '#f1f5f9', padding: '16px', borderRadius: '10px', border: '1px solid #cbd5e1' }}>
               <span style={{ fontSize: '12px', color: '#334155', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>O seu link exclusivo de afiliado:</span>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <input type="text" readOnly value="https://jenios.com.br/convite/paulo-stutz-netto" style={{ flex: 1, padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12px', color: '#0f172a' }} />
-                <button onClick={() => alert('Link copiado!')} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Copiar Link</button>
+                <input type="text" readOnly value="Link pessoal ainda não emitido" style={{ flex: 1, padding: '10px', backgroundColor: '#fff', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '12px', color: '#0f172a' }} />
+                <button onClick={() => alert('O link de indicação ainda não foi emitido e não pode ser copiado.')} style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Copiar Link</button>
               </div>
             </div>
           </div>
@@ -282,7 +275,7 @@ export default function DashboardLogado() {
             </div>
 
             <form onSubmit={conectarCorretora} style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '12px', padding: '20px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Nova Conexão & Manual de Configuração</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', marginBottom: '15px' }}>Manual de integração futura</h3><p style={{fontSize:12,color:'#b45309'}}>As integrações de corretora dependem de homologação. Não cole tokens ou senhas nesta página.</p>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px', marginBottom: '20px' }}>
                 
@@ -341,6 +334,7 @@ export default function DashboardLogado() {
                   <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CHAVE DE API (API KEY):</label>
                   <input 
                     type="text" 
+                    disabled
                     value={apiKeyCorretora} 
                     onChange={(e) => setApiKeyCorretora(e.target.value)} 
                     placeholder="Cole aqui a API Key gerada" 
@@ -352,6 +346,7 @@ export default function DashboardLogado() {
                   <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>CHAVE SECRETA (API SECRET):</label>
                   <input 
                     type="password" 
+                    disabled
                     value={apiSecretCorretora} 
                     onChange={(e) => setApiSecretCorretora(e.target.value)} 
                     placeholder="••••••••••••••••••••••••••••••••" 
@@ -360,8 +355,8 @@ export default function DashboardLogado() {
                 </div>
               </div>
 
-              <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                🔌 Conectar Conta e Salvar Credenciais
+              <button type="submit" disabled style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                🔌 Integração segura indisponível
               </button>
             </form>
           </div>

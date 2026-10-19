@@ -10,20 +10,23 @@ test('B75 smartphone rail replaces repeated button rows but preserves them for d
  assert.match(css,/@media \(max-width:600px\)/);
  assert.match(css,/\.social-desktop-nav,/);
  assert.match(css,/\.jenios-mobile-rail/);
- assert.match(css,/width:42px !important;max-width:42px !important/);
- assert.match(css,/\.jenios-mobile-rail-open \{width:min\(244px/);
+ assert.match(css,/\.jenios-mobile-rail-open/);
+ assert.match(css,/\.jenios-mobile-rail-toggle/);
+ assert.match(css,/\.jenios-mobile-rail-open/);
  assert.match(css,/\.social-feed-tools \{order:1 !important/);
  assert.match(css,/\.social-feed-primary \{order:0 !important/);
 });
-test('B75 rail has all protected shortcuts, is touch and keyboard accessible',()=>{
+test('B76 three-dot rail is touch and keyboard accessible and only exposes public shortcuts',()=>{
  const src=read('app/components/SocialMobileRail.js');
- for(const label of ['Sala de Controle','Feed','Meu perfil','Mensagens','Ranking','Lives','Reels','Destaques','Arquivados','BankScore','Insights','Impulsionar','Validador de Tokens','Notificações','Sair'])
-  assert.ok(src.includes(label),'missing shortcut '+label);
+ for(const label of ['Acesso Público','Meu Perfil','Hub de Tendências','BankScore','Validador de Tokens','Sala de Controle'])
+  assert.ok(src.includes(label),'missing '+label);
+ for(const privateLabel of ['Usuários bloqueados','Arquivados','Editar perfil','Meus Insights','Lives','Destaques'])
+  assert.ok(!src.includes(privateLabel),'owner-only shortcut leaked into public menu: '+privateLabel);
  assert.match(src,/aria-expanded=\{expanded\}/);
  assert.match(src,/onClick=\{\(\)=>setExpanded\(v=>!v\)\}/);
  assert.match(src,/e\.key==='Escape'/);
- assert.match(src,/signed\(onEdit\)/);
- assert.match(src,/authenticated\?button/);
+ assert.match(src,/authenticated&&button\('perfil'/);
+ assert.match(src,/Abrir menu de três pontos/);
  assert.doesNotMatch(src,/localStorage|service_role|SUPABASE_SERVICE_ROLE_KEY/);
 });
 test('B75 smartphone renders feed before optional tools and defers offscreen paints',()=>{

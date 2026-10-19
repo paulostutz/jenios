@@ -64,11 +64,13 @@ test('B52 authenticated UI prevents stale-session media and reuses safe existing
  assert.match(ui,/<SocialVideo src=\{viewer\.media_path\} postId=\{null\}/);
  assert.doesNotMatch(ui,/localStorage|sessionStorage|PAY_ADMIN_TOKEN|INTER_CLIENT_SECRET/);
 });
-test('B52 Highlights appear from desktop header, mobile quick navigation and visited profiles',()=>{
- assert.equal((page.match(/href="\/social\/destaques"/g)||[]).length,2);
+test('B76 Highlights live inside Meu Perfil and remain available on public visited profiles',()=>{
+ assert.match(page,/perfilVisitado\.id===meuPerfil\.id && meuPerfil\.autenticado/);
  assert.match(page,/Destaques deste perfil/);
  assert.match(page,/encodeURIComponent\(perfilVisitado\.id\)/);
+ assert.match(page,/encodeURIComponent\(meuPerfil\.id\)/);
  assert.match(ui,/Selecione um Story seu \(ativo ou arquivado\)/);
+ assert.match(api,/ownerId===ctx\.userId/);
 });
 test('B52R3 archived Stories can be pinned after the original 24-hour feed expires',()=>{
  const r2=src('supabase/release-review/20261018_s05_b52_r2_owner_story_archive.sql');

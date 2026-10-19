@@ -56,12 +56,15 @@ test('B51 video playback reuses original SocialVideo and never starts paid check
  assert.match(src,/social\?post=/);
  assert.doesNotMatch(src,/JENIOS_PAY|jenios-pay|fetch\(.+\/api\/social\/media|transcode/);
 });
-test('B51 both desktop and mobile Social navigation link to the new Reels route',()=>{
+test('B76 Reels live inside the verified owner profile while the protected reel route stays available',()=>{
  const src=readFileSync('app/social/page.js','utf8');
- const matches=src.match(/href="\/social\/reels"/g)||[];
- assert.equal(matches.length,2);
- assert.match(src,/aria-label="Reels JENIOS"/);
- assert.match(src,/social-mobile-quick-nav/);
+ assert.match(src,/perfilVisitado\.id===meuPerfil\.id && meuPerfil\.autenticado/);
+ assert.match(src,/abaGaleria==='reels'/);
+ assert.match(src,/setAbaGaleria\('reels'\)/);
+ assert.match(src,/perfilVisitado\.id===meuPerfil\.id/);
+ assert.match(src,/SocialPostCard/);
+ const dedicated=readFileSync('app/social/reels/page.js','utf8');
+ assert.match(dedicated,/createScopedFeedClient/);
 });
 test('B51 existing account and PDF payment contracts are left untouched',()=>{
  const manifest=JSON.parse(readFileSync('docs/release/S05-CRITICAL-API-SHA256.json','utf8'));

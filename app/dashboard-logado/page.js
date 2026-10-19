@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PlatformBillingStatus from '../components/platform/PlatformBillingStatus';
 import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
+import PlatformSimulationSummary from '../components/platform/PlatformSimulationSummary';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import { observePlatformDiagnostic, loadAccountDiagnostic, currentPlatformSession } from '../../lib/platform/diagnostic-client.mjs';
 import { signOutPlatform } from '../../lib/platform/account-access.mjs';
@@ -12,6 +13,7 @@ export default function DashboardLogado() {
   const [tab,setTab] = useState('geral');
   const [userLabel,setUserLabel] = useState('Operador');
   const [diagnostic,setDiagnostic] = useState(null);
+  const [platformUserId,setPlatformUserId] = useState(null);
   const [loggingOut,setLoggingOut]=useState(false);
   const [logoutError,setLogoutError]=useState('');
   async function logout(){
@@ -33,6 +35,7 @@ export default function DashboardLogado() {
       if(!live)return;
       const rev=++revision;
       setDiagnostic(status.verified?status:null);
+      setPlatformUserId(status.userId||null);
       setUserLabel('Operador');
       if(!status.userId || !supabase?.auth) return;
       supabase.auth.getUser().then(({data})=>{
@@ -94,6 +97,9 @@ export default function DashboardLogado() {
               <Link className={styles.heroLink} href="/dashboard">Entrar na negociação</Link>
               <Link className={`${styles.heroLink} ${styles.heroGhost}`} href="/diagnostico">{diagnostic?'Consultar diagnóstico':'Iniciar diagnóstico'}</Link>
             </div>
+          </section>
+          <section className={styles.panel} aria-label="Simulação da conta">
+            <PlatformSimulationSummary userId={platformUserId}/>
           </section>
           <div className={styles.grid}>
             <article className={styles.card}><span className={styles.cardLabel}>Diagnóstico</span>

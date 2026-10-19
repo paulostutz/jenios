@@ -146,6 +146,8 @@ try {
   'Dedicated Platform admin refuses unconfigured anonymous access');
  await navigate('/dashboard-logado');
  await sleep(650);
+ pass(await evalExpr(`!document.body.innerText.includes('Simulador da conta') && !document.body.innerText.includes('Saldo virtual da sessão')`),
+  'Isolated Platform simulation portal is never painted for an anonymous or Social-only visitor');
  pass(await evalExpr(`(location.pathname==='/platform/entrar' || document.body.innerText.includes('Homologação da Platform não configurada')) && !document.body.innerText.includes('Seu centro de controle')`),
   'Unauthenticated Platform user is redirected to its isolated login without Social fallback');
 

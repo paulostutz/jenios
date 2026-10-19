@@ -414,7 +414,7 @@ export default function MesaOperacoesPage() {
 
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido com base no saldo simulado atual: <b>R$ {limiteMaximoRiscoPermitido.toFixed(2)}</b>.</span>
-              <span>🎯 <b>Relação Risco/Retorno:</b> Alvo travado automaticamente em <b>1.5x</b> o valor do risco estipulado.</span>
+              <span>🎯 <b>Relação Risco/Retorno:</b> Alvo ilustrativo de <b>1.5x</b> o valor do risco estipulado.</span>
             </div>
 
             <button 
@@ -441,12 +441,9 @@ export default function MesaOperacoesPage() {
               <option>Clear Corretora (B3 / Mini-Índice & Dólar)</option>
               <option>Binance (Cripto Derivativos)</option>
             </select>
-            <input type="password" placeholder="Token de segurança da API..." style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '12px', fontFamily: 'monospace' }} />
-            <button 
-              onClick={() => { alert('Conta real conectada com sucesso!'); setModalBrokerAberto(false); }}
-              style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textTransform: 'uppercase' }}
-            >
-              Conectar e Sincronizar
+            <p style={{fontSize:12,color:'#92400e',lineHeight:1.6}}>As integrações de conta real ainda exigem homologação do gateway. Não informe senhas ou tokens nesta página. Nenhuma corretora será conectada aqui.</p>
+            <button disabled style={{ backgroundColor: '#94a3b8', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'not-allowed', textTransform: 'uppercase' }}>
+              Aguardando integração validada
             </button>
             <button 
               onClick={() => setModalBrokerAberto(false)}

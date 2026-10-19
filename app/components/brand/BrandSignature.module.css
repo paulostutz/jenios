@@ -1,0 +1,13 @@
+.lockup{display:inline-flex;align-items:center;gap:9px;max-width:100%;min-width:0;vertical-align:middle;text-decoration:none;flex-wrap:nowrap}
+.light{color:#051a4a}.dark{color:#f3faff}
+.mark{width:auto;height:auto;max-width:100%;flex-shrink:0;object-fit:contain}
+.horizontal{display:block;width:clamp(126px,16vw,195px);height:auto;max-width:100%;object-fit:contain}
+.wordmark{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;font:850 16px/1.1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.065em;white-space:nowrap}
+.wordmark small{font-weight:700;font-size:9px;letter-spacing:.12em;opacity:.68;margin-top:3px;text-transform:uppercase}
+.context{font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:#345b8e;white-space:nowrap}
+.footer{box-sizing:border-box;max-width:100%;border-top:1px solid #94a3b840;margin-top:22px;padding:20px 0 9px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:9px 16px;align-items:center;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.footerLine{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.footerWordmark{font-size:14px;letter-spacing:.08em;font-weight:850;white-space:nowrap}
+.scope{border-left:1px solid #94a3b8aa;padding-left:9px;font-size:11px;font-weight:700;opacity:.76;letter-spacing:.03em}
+.footer small{font-size:10px;line-height:1.4;opacity:.66}
+@media(max-width:600px){.horizontal{width:clamp(119px,40vw,170px)}.lockup{gap:5px}.context{font-size:9px}.footer{justify-content:center;text-align:center}.footerLine{gap:7px}.scope{font-size:10px}}

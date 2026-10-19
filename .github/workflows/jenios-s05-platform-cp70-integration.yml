@@ -56,5 +56,42 @@ jobs:
         run: npm run test:release-s05
       - name: Combined Next.js 15 release build (local scoped, no keys)
         run: npm run build
+      - name: Start local Next.js 15 server for desktop, tablet and mobile smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-cp70-integrated-local.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/dashboard; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/jenios-cp70-integrated-local.log
+          exit 1
+      - name: Integration Chrome smoke across Simulator, Mesa and Admin
+        run: node scripts/platform/cp69-browser-smoke.mjs
+      - name: Save integrity manifest of integrated source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-integration-qa
+          git diff --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD | grep -v '^.github/workflows/' > .jenios-integration-qa/integrated-files.txt
+          sha256sum $(cat .jenios-integration-qa/integrated-files.txt) > .jenios-integration-qa/SHA256SUMS.txt
+          tar -czf .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz -T .jenios-integration-qa/integrated-files.txt .jenios-integration-qa/SHA256SUMS.txt
+      - name: Preserve integrated source package
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-s05-platform-cp70-integration-source
+          path: .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz
+          retention-days: 30
+          if-no-files-found: error
+      - name: Preserve browser screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-s05-platform-cp70-browser-qa
+          path: .jenios-platform-qa/screenshots/*.png
+          retention-days: 14
+          if-no-files-found: warn
       - name: Report isolated integration readiness
         run: echo 'CP70_INTEGRATION_BUILD_PASS - no production deployment or paid operation was initiated'

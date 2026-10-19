@@ -102,7 +102,9 @@ export default function DiagnosticoPlatformPage() {
     // Na ausência de backend ou conta, somente uma preferência transitória da sessão.
     writeSessionMode(window.sessionStorage,status.userId,status.verified ? status.mode : recomendacao.mode);
     if (!status.verified) {
-      setAviso('A avaliação não foi confirmada no servidor. Você pode estudar na simulação, mas não está habilitado para operações reais.');
+      setAviso('Não foi possível confirmar o diagnóstico no servidor. Você pode usar a simulação normalmente, mas não há habilitação de operações reais.');
+      setSalvando(false);
+      return;
     }
     window.location.assign('/mesa-operacoes');
   };
@@ -187,7 +189,10 @@ export default function DiagnosticoPlatformPage() {
                 </div>
                 <p style={{fontSize:12,color:'#475569'}}>A JENIOS aplicará esse modo inicialmente na simulação. Você poderá alterar manualmente depois. O laudo é orientativo, não prevê lucros e, isoladamente, não libera operações reais.</p>
                 <button onClick={concluirEEntrarDiretoNaMesa} disabled={salvando} style={{background:'#7c3aed',color:'#fff',border:0,borderRadius:10,padding:14,fontWeight:800,cursor:salvando?'progress':'pointer'}}>{salvando?'Validando laudo…':'Entrar na área de negociações'}</button>
-                {aviso && <p role="status" style={{fontSize:12,color:'#92400e'}}>{aviso}</p>}
+                {aviso && <div role="status" style={{background:'#fff7ed',border:'1px solid #fed7aa',padding:12,borderRadius:10}}>
+                  <p style={{fontSize:12,color:'#92400e'}}>{aviso}</p>
+                  <Link href="/mesa-operacoes" style={{display:'inline-block',background:'#334155',color:'#fff',textDecoration:'none',padding:'9px 12px',borderRadius:8,fontSize:12,fontWeight:700}}>Continuar apenas no simulador</Link>
+                </div>}
                 <button onClick={() => setEtapa(perguntas.length)} style={{background:'#e2e8f0',color:'#334155',border:0,borderRadius:10,padding:10,cursor:'pointer'}}>Revisar respostas</button>
               </section>
             )}

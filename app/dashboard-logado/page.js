@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import PaymentStatement from '../components/PaymentStatement';
+import PlatformBillingStatus from '../components/platform/PlatformBillingStatus';
+import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import { observePlatformDiagnostic, loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
 import styles from './control.module.css';
@@ -30,7 +31,7 @@ export default function DashboardLogado() {
 
   const buttons=[
     ['geral','◈ Visão geral'],
-    ['pagamentos','▤ Meus pagamentos'],
+    ['pagamentos','▤ Minha assinatura'],
     ['integracoes','◎ Conexões'],
     ['apoio','? Como começar']
   ];
@@ -49,7 +50,8 @@ export default function DashboardLogado() {
           <Link href="/dashboard" className={styles.navButton}>⚡ Área de negociação</Link>
           <Link href="/mesa-operacoes" className={styles.navButton}>▥ Mesa e gráficos</Link>
           <Link href="/tendencias" className={styles.navButton}>↗ Hub de tendências</Link>
-          <Link href="/social" className={styles.navButton}>◉ JENIOS Social</Link>
+          <Link href="/social" className={styles.navButton}>◉ JENIOS Social (externo)</Link>
+          <PlatformAdminShortcut className={styles.navButton}/>
         </nav>
         <div className={styles.sidebarBottom}>Acesso à simulação independente do diagnóstico. Ordens reais exigem aprovação e validação próprias.</div>
       </aside>
@@ -78,7 +80,7 @@ export default function DashboardLogado() {
           <div className={styles.grid}>
             <article className={styles.card}><span className={styles.cardLabel}>Diagnóstico</span>
               <strong className={styles.cardValue}>{diagnostic?'Laudo inicial registrado':'Ainda não realizado'}</strong>
-              <p>{diagnostic?'Este navegador tem um laudo de orientação. Ele não representa uma autorização de negociação real.':'Disponível na Dashboard. Não é requisito de acesso à simulação.'}</p>
+              <p>{diagnostic?'O laudo inicial está associado à sua conta da Platform. Isso não autoriza negociação real.':'Disponível na Dashboard. Não é requisito de acesso à simulação.'}</p>
               <Link href="/diagnostico">{diagnostic?'Ver status':'Fazer diagnóstico'} →</Link></article>
             <article className={styles.card}><span className={styles.cardLabel}>Modo operacional</span>
               <strong className={styles.cardValue}>{diagnostic?diagnostic.mode==='reversa'?'Reverso inicial':'Manual inicial':'Definido após o diagnóstico'}</strong>
@@ -99,8 +101,8 @@ export default function DashboardLogado() {
         </>}
         {tab==='pagamentos' && <section className={styles.panel}>
           <h2>Pagamentos e histórico</h2>
-          <p>Os pagamentos são consultados nos serviços autenticados da JENIOS PAY. Esta tela não calcula ganhos, saldos ou saques.</p>
-          <PaymentStatement embedded />
+          <p>O vínculo entre esta conta da Platform e a conta pagadora da JENIOS PAY ainda não foi homologado. Nenhum pedido da Social será apresentado como assinatura da Platform.</p>
+          <PlatformBillingStatus />
         </section>}
         {tab==='integracoes' && <section className={styles.panel}>
           <h2>Conexões com corretoras</h2>

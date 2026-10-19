@@ -4,7 +4,8 @@ import {readFileSync} from 'node:fs';
 const page = name => readFileSync(new URL('../app/'+name+'/page.js', import.meta.url),'utf8');
 test('dashboard-logado abre negociação sem desvio obrigatório para diagnóstico',()=>{
  const s=page('dashboard-logado');
- assert.match(s,/irParaDashboardOuOperar\s*=\s*\(\)\s*=>\s*window\.location\.assign\('\/dashboard'\)/);
+ assert.match(s,/href="\/dashboard"/);
+ assert.match(s,/href="\/mesa-operacoes"/);
  assert.doesNotMatch(s,/Protocolo Obrigatório/);
 });
 test('dashboard inclui CTA do laudo e nega autorização real pelo navegador',()=>{

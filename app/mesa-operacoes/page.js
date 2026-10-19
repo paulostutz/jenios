@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {loadUnifiedSimulationDiagnostic} from '../../lib/platform/unified-entry.mjs';
@@ -164,6 +165,7 @@ export default function MesaOperacoesPage() {
         <p role="status" style={{fontSize:11,color:'#64748b'}}>Diagnóstico: {diagnosticoBackend}</p>
       </section>
 
+      <BrandLockup tone="dark" context="Mesa"/>
       <nav className={terminal.bannerActions} aria-label="Atalhos"><a href="/dashboard-logado">Sala de controle</a><a href="/dashboard">Dashboard</a><a href="/diagnostico">Diagnóstico</a></nav>
             {/* BARRA SUPERIOR DE CONTROLE */}
       <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxSizing: 'border-box' }}>
@@ -432,6 +434,7 @@ export default function MesaOperacoesPage() {
       )}
 
       <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
+      <BrandFooter tone="dark" scope="Mesa de operações"/>
     </main>
   );
 }

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import PlatformAdminAccess from '../../components/platform/PlatformAdminAccess';
 import PlatformAdminOverview from '../../components/platform/PlatformAdminOverview';
 import PlatformResearchReadiness from '../../components/platform/PlatformResearchReadiness';
+import {BrandLockup,BrandFooter} from '../../components/brand/BrandSignature';
 
 export default function PlatformAdminHome(){
  return <PlatformAdminAccess permission="platform.admin">{permissions=>
@@ -13,6 +14,7 @@ export default function PlatformAdminHome(){
      <Link href="/dashboard" style={{color:'#6d28d9',fontSize:13}}>Dashboard</Link>
     </nav>
     <header style={{padding:'clamp(20px,4vw,36px)',borderRadius:20,background:'linear-gradient(120deg,#181739,#473184)',color:'#fff'}}>
+     <BrandLockup tone="dark" context="Admin"/>
      <span style={{fontSize:11,letterSpacing:1.8,color:'#c4b5fd',fontWeight:800}}>JENIOS PLATFORM · ADMINISTRATIVO EXCLUSIVO</span>
      <h1 style={{fontSize:'clamp(25px,4vw,36px)',margin:'12px 0'}}>Painel de homologação</h1>
      <p style={{maxWidth:750,lineHeight:1.6,fontSize:13,color:'#e2e8f0'}}>
@@ -32,6 +34,7 @@ export default function PlatformAdminHome(){
       </article>)}
     </div>
     <p role="note" style={{fontSize:12,color:'#475569',lineHeight:1.7}}>A área administrativa não cria ordens, ativa corretoras ou certifica rentabilidade. Não concede direitos automaticamente a usuários da Social.</p>
+    <BrandFooter tone="light" scope="Platform Admin"/>
    </div>
   </main>
  }</PlatformAdminAccess>;

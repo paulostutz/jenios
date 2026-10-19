@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {PLATFORM_SLOGAN} from '../lib/brand/identity.mjs';
+import {BrandMark,BrandFooter} from './components/brand/BrandSignature';
 
 export default function Home() {
   return (
@@ -20,21 +21,8 @@ export default function Home() {
         
         {/* Cabeçalho / Emblema Luminoso */}
         <div className="portal-heading" style={{ marginBottom: '40px' }}>
-          <div style={{ 
-            width: '52px', 
-            height: '52px', 
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)', 
-            borderRadius: '14px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            fontSize: '22px', 
-            fontWeight: 'bold', 
-            color: '#fff', 
-            margin: '0 auto 16px auto',
-            boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)'
-          }}>
-            J
+          <div style={{margin:'0 auto 16px',width:76,height:76,display:'grid',placeItems:'center'}}>
+            <BrandMark size={72}/>
           </div>
           <p style={{ fontSize: '11px', color: '#c084fc', letterSpacing: '2px', fontWeight: '700', textTransform: 'uppercase', marginBottom: '10px' }}>
             JENIOS ECOSYSTEM • PORTAL DE ENTRADA
@@ -171,9 +159,7 @@ export default function Home() {
           <p style={{ fontSize: '11.5px', color: '#c084fc', fontWeight: '800', letterSpacing: '0.8px', margin: '0 0 6px 0' }}>
             UMA IDENTIDADE · DOIS PRODUTOS COM PROPÓSITOS PRÓPRIOS
           </p>
-          <p style={{ fontSize: '11px', color: '#64748b', margin: 0, letterSpacing: '0.5px' }}>
-            JENIOS ECOSYSTEM • Todos os direitos reservados.
-          </p>
+          <BrandFooter tone="dark" scope="Ecossistema"/>
         </div>
 
       </div>

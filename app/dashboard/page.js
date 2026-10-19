@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
 import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import useTrendsData from '../components/useTrendsData';
 import {dashboardHubModule} from '../../lib/platform/dashboard-trends.mjs';
@@ -187,6 +188,7 @@ export default function DashboardPage() {
           
           {/* Lado Esquerdo: Saudação e Título */}
           <div>
+            <BrandLockup tone="light" context="Platform" priority/>
             <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#7c3aed', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
               JENIOS PLATFORM • SALA DE CONTROLO HFT
             </span>
@@ -523,6 +525,7 @@ export default function DashboardPage() {
         </div>
 
         <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
+        <BrandFooter tone="light" scope="Platform"/>
       </div>
     </main>
   );

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
 import { adminFetch } from '../../components/AdminAccess';
+import {BrandLockup,BrandFooter} from '../../components/brand/BrandSignature';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -57,8 +58,7 @@ export default function AdminLoginPage() {
     <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:20,background:'radial-gradient(circle at 15% 10%, #312e81 0%, #10172e 48%, #080c18 100%)',fontFamily:'system-ui,sans-serif',color:'#0f172a'}}>
       <section style={{width:'100%',maxWidth:430,background:'#fff',borderRadius:22,padding:'clamp(22px,4vw,36px)',boxShadow:'0 24px 80px rgba(0,0,0,.3)'}}>
         <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:26}}>
-          <span style={{display:'grid',placeItems:'center',width:44,height:44,background:'#5b21b6',color:'#fff',borderRadius:13,fontWeight:900,fontSize:19}}>J</span>
-          <div><strong style={{fontSize:15}}>JENIOS ADMIN</strong><p style={{fontSize:11,color:'#64748b',margin:'3px 0 0'}}>Acesso administrativo autorizado</p></div>
+          <div><BrandLockup tone="light" context="Admin"/><p style={{fontSize:11,color:'#64748b',margin:'3px 0 0'}}>Acesso administrativo autorizado</p></div>
         </div>
         <h1 style={{fontSize:24,margin:'0 0 8px'}}>Entrar no painel</h1>
         <p style={{fontSize:13,color:'#64748b',lineHeight:1.6,margin:'0 0 22px'}}>Use sua conta JENIOS. O acesso depende das permissões confirmadas no servidor.</p>
@@ -73,6 +73,7 @@ export default function AdminLoginPage() {
           <button type="submit" disabled={busy} style={{background:busy?'#a78bfa':'#6d28d9',color:'#fff',padding:14,border:0,borderRadius:10,fontWeight:800,cursor:busy?'progress':'pointer'}}>{busy?'Validando credenciais…':'Acessar área administrativa'}</button>
         </form>
         <p style={{margin:'20px 0 0'}}><Link href="/login" style={{color:'#6d28d9',fontSize:12}}>← Voltar à entrada da JENIOS</Link></p>
+        <BrandFooter tone="light" scope="Admin"/>
       </section>
     </main>
   );

@@ -14,6 +14,7 @@ const REMOTE_MEDIA = true;
 import CryptoValidator from '../components/CryptoValidator';
 import SocialSidebarPremium from '../components/SocialSidebarPremium';
 import SocialMobileRail from '../components/SocialMobileRail';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 import './jenios-theme.css';
 import SocialPostCard from '../components/SocialPostCard';
 import SocialPinnedPosts from '../components/SocialPinnedPosts';
@@ -1147,15 +1148,7 @@ const handleUploadCarrossel = async (e) => {
             }}
             onClick={() => setAbaAtiva('feed')}
           >
-            <span
-              style={{
-                fontSize: '14px',
-                fontWeight: '900',
-                color: '#7c3aed',
-              }}
-            >
-              JENIOS SOCIAL
-            </span>
+            <BrandLockup tone="light" context="Social" priority/>
 
             <span
               style={{
@@ -2844,6 +2837,7 @@ const handleUploadCarrossel = async (e) => {
           </div>
         </div>
       )}
+      <BrandFooter tone="light" scope="Social"/>
     </main>
   );
 }

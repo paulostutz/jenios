@@ -3,6 +3,7 @@ import Link from 'next/link';
 import AdminAccess from '../components/AdminAccess';
 import { supabase } from '../../lib/supabase';
 import styles from './page.module.css';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 
 const OPTIONS = [
   {
@@ -37,7 +38,7 @@ function AdminHome({permissions}) {
       <div className={styles.wrap}>
         <header className={styles.top}>
           <Link className={styles.logo} href="/admin">
-            <span className={styles.mark}>J</span><span>JENIOS · ADMIN</span>
+            <BrandLockup tone="dark" context="Admin" compact/>
           </Link>
           <div className={styles.topActions}>
             <Link className={styles.ghost} href="/dashboard-logado">Sala de controle</Link>
@@ -90,6 +91,7 @@ function AdminHome({permissions}) {
           <Link href="/admin/moderacao">Moderação existente</Link>
           <Link href="/dashboard-logado">Voltar ao ambiente do cliente</Link>
         </nav>
+        <BrandFooter tone="dark" scope="Admin"/>
       </div>
     </main>
   );

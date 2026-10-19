@@ -1,6 +1,7 @@
 'use client';
 import {PlatformPurpose,PlatformEducationalQuiz,PlatformFAQ} from '../components/PlatformPresentation';
 import {PLATFORM_SLOGAN} from '../../lib/brand/identity.mjs';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 
 export default function LandingPagePro() {
  return (
@@ -10,12 +11,9 @@ export default function LandingPagePro() {
         {/* CABEÇALHO */}
         <header className="lp-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ffffff', color: '#0f172a', padding: '16px 24px', borderRadius: '16px', border: '1px solid #cbd5e1', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '34px', height: '34px', borderRadius: '10px', backgroundColor: '#7c3aed', color: '#fff', fontWeight: '900', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(124, 58, 237, 0.4)' }}>
-              J
-            </div>
-            <div>
-              <span style={{ fontSize: '12px', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', display: 'block' }}>JENIOS</span>
-              <span style={{ fontSize: '9px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>MENOS IMPULSO. MAIS MÉTODO.</span>
+            <div style={{display:'grid',gap:3}}>
+              <BrandLockup tone="light" priority/>
+              <span style={{fontSize:9,color:'#556683',fontWeight:750,letterSpacing:'.055em'}}>MENOS IMPULSO. MAIS MÉTODO.</span>
             </div>
           </div>
           <nav className="lp-header-actions" aria-label="Acessos JENIOS" style={{ display: 'flex', gap: '10px' }}>
@@ -141,7 +139,7 @@ export default function LandingPagePro() {
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '30px' }}>
           <div style={{ fontSize: '12px', fontWeight: '900', color: '#a78bfa', letterSpacing: '2px', textTransform: 'uppercase' }}>{PLATFORM_SLOGAN}</div>
           <div style={{ fontSize: '11px', color: '#64748b' }}>Assinatura de marca que expressa nosso propósito, não uma promessa de resultado. Operações podem gerar perdas, inclusive superiores ao risco inicialmente estimado.</div>
-          <div style={{ fontSize: '11px', color: '#64748b' }}>JENIOS • Todos os direitos reservados.</div>
+          <BrandFooter tone="dark" scope="Platform"/>
         </div>
 
       </div>

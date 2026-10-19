@@ -11,6 +11,7 @@ import { platformSupabase as supabase } from '../../lib/platform/supabase-client
 import { observePlatformDiagnostic, loadAccountDiagnostic, currentPlatformSession } from '../../lib/platform/diagnostic-client.mjs';
 import { signOutPlatform } from '../../lib/platform/account-access.mjs';
 import styles from './control.module.css';
+import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 
 export default function DashboardLogado() {
   const portal=usePlatformPortalEntry();
@@ -69,7 +70,7 @@ export default function DashboardLogado() {
     <div className={styles.page}>
       <aside className={styles.sidebar}>
         <Link href="/dashboard-logado" className={styles.brand}>
-          <span className={styles.mark}>J</span><span>JENIOS PLATFORM<small>Sala de controle</small></span>
+          <BrandLockup tone="light" context="Platform" compact/>
         </Link>
         <nav className={styles.nav} aria-label="Navegação da conta">
           {buttons.map(([key,label])=>(
@@ -162,6 +163,7 @@ export default function DashboardLogado() {
             <li>Informações de losses evitados só devem considerar registros e comparações auditáveis.</li>
           </ol><p className={styles.notice}>Negociar envolve riscos. Simulações e análises não garantem resultado financeiro.</p>
         </section>}
+        <BrandFooter tone="light" scope="Sala de controle"/>
       </main>
     </div>
   );

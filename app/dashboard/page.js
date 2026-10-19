@@ -4,6 +4,7 @@ import NewTokenRadar from '../components/NewTokenRadar';
 import terminal from '../components/platform/Terminal.module.css';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
+import {loadUnifiedSimulationDiagnostic} from '../../lib/platform/unified-entry.mjs';
 import {readSimJournal,appendSimIntention} from '../../lib/platform/simulation-journal.mjs';
 import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
 import {readSimulatedBalance,writeSimulatedBalance,readSimulationPaused,writeSimulationPaused} from '../../lib/platform/simulation-account.mjs';
@@ -35,7 +36,7 @@ export default function DashboardPage() {
       status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
     const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
     setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
-  },loadAccountDiagnostic),[]);
+  },client=>loadUnifiedSimulationDiagnostic(client,loadAccountDiagnostic)),[]);
 
   useEffect(() => observePlatformDiagnostic(supabase,status=>{
     setRiskEvidence(status.evidenceStatus?status:NO_EVIDENCE);

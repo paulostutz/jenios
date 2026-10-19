@@ -1,47 +1,85 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {createContext,useContext,useEffect,useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
+import {resolveSocialPortalEntry,observeSocialPortalAuth} from '../../../lib/platform/unified-entry.mjs';
 
-/** Guard da área logada Platform: não reutilizar AuthGuard da JENIOS Social. */
+const PlatformEntryContext=createContext(null);
+export const usePlatformPortalEntry=()=>useContext(PlatformEntryContext);
+
+/**
+ * The Social session unlocks only the simulated control room.
+ * The Platform Supabase token remains mandatory for dedicated diagnostic,
+ * administrator, risk and subscription APIs.
+ */
 export default function PlatformAuthGuard({children}){
  const router=useRouter();
- const [state,setState]=useState('checking');
+ const [state,setState]=useState({phase:'checking',access:null});
  useEffect(()=>{
-  if(!platformSupabase?.auth){setState('unconfigured');return;}
-  let live=true,seq=0;
+  let live=true,seq=0,pendingTimer=null;
   async function validate(){
-   const revision=++seq;
-   setState('checking');
+   const rev=++seq;
+   setState({phase:'checking',access:null});
+   const social=await resolveSocialPortalEntry();
+   if(!live||rev!==seq)return;
+   if(social){
+    setState({phase:'authorized',access:social});
+    return;
+   }
+   if(!platformSupabase?.auth){
+    setState({phase:'unconfigured',access:null});
+    return;
+   }
    try{
     const {data,error}=await platformSupabase.auth.getUser();
-    if(!live || revision!==seq)return;
-    if(error||!data?.user?.id||data.user.is_anonymous){
-     setState('unauthorized');
+    if(!live||rev!==seq)return;
+    const user=data?.user;
+    if(!error&&user?.id&&!user.is_anonymous){
+     const label=String(user.user_metadata?.full_name||user.user_metadata?.name||
+       user.email?.split('@')[0]||'Operador').slice(0,80);
+     setState({phase:'authorized',access:{source:'platform',userId:user.id,label}});
+    }else{
+     setState({phase:'unauthorized',access:null});
      router.replace('/platform/entrar');
-    }else setState('authorized');
+    }
    }catch{
-    if(live && revision===seq){setState('unauthorized');router.replace('/platform/entrar');}
+    if(live&&rev===seq){
+     setState({phase:'unauthorized',access:null});
+     router.replace('/platform/entrar');
+    }
    }
   }
-  void validate();
-  let pendingTimer=null;
-  const sub=platformSupabase.auth.onAuthStateChange(event=>{
-   if(event==='TOKEN_REFRESHED' || event==='INITIAL_SESSION')return;
-   clearTimeout(pendingTimer);
+  function revalidate(){
+   clearTimeout(pendingTimer);seq++;
+   setState({phase:'checking',access:null});
    pendingTimer=setTimeout(()=>{if(live)void validate();},0);
+  }
+  void validate();
+  const platformSub=platformSupabase?.auth?.onAuthStateChange(event=>{
+   if(event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')return;
+   revalidate();
   });
-  return()=>{live=false;seq++;clearTimeout(pendingTimer);sub.data.subscription.unsubscribe();};
+  const socialSub=observeSocialPortalAuth(event=>{
+   if(event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')return;
+   revalidate();
+  });
+  const onFocus=()=>{if(live)revalidate();};
+  window.addEventListener('focus',onFocus);
+  return()=>{
+   live=false;seq++;clearTimeout(pendingTimer);
+   window.removeEventListener('focus',onFocus);
+   platformSub?.data?.subscription?.unsubscribe?.();
+   socialSub?.data?.subscription?.unsubscribe?.();
+  };
  },[router]);
-
- if(state==='authorized')return children;
+ if(state.phase==='authorized')return <PlatformEntryContext.Provider value={state.access}>{children}</PlatformEntryContext.Provider>;
  return <main style={{minHeight:'100vh',background:'#10162b',color:'#fff',display:'grid',placeItems:'center',padding:24,fontFamily:'system-ui'}}>
   <section role="status" style={{maxWidth:480,lineHeight:1.65,textAlign:'center'}}>
-   {state==='unconfigured'?<>
-     <h1>Homologação da Platform não configurada</h1>
-     <p>Informe apenas as variáveis públicas da Platform no ambiente de homologação. Não forneça chaves secretas neste formulário.</p>
-     <Link href="/dashboard" style={{color:'#c4b5fd'}}>Abrir simulador sem autenticação</Link>
+   {state.phase==='unconfigured'?<>
+     <h1>Acesso à Platform temporariamente indisponível</h1>
+     <p>Entre na Social para abrir a Sala de Controle ou procure o suporte. Nenhuma credencial será compartilhada entre bancos.</p>
+     <Link href="/login" style={{color:'#c4b5fd'}}>Entrar na JENIOS Social</Link>
    </>:<>Validando acesso à JENIOS Platform…</>}
   </section>
  </main>;

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
 import {isPlatformSignupEnabled,registerPlatformAccount} from '../../../lib/platform/account-access.mjs';
+import {resolveSocialPortalEntry} from '../../../lib/platform/unified-entry.mjs';
 
 const signupEnabled=isPlatformSignupEnabled(process.env.NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED);
 
@@ -17,12 +18,19 @@ export default function PlatformLogin(){
  const [error,setError]=useState('');
  const [message,setMessage]=useState('');
  useEffect(()=>{
-  if(!platformSupabase)return;
   let mounted=true;
-  platformSupabase.auth.getUser().then(({data})=>{
-   if(mounted && data?.user?.id && !data.user.is_anonymous)
-     router.replace('/dashboard-logado');
-  }).catch(()=>{});
+  async function routeExistingSession(){
+   try{
+    const {data}=platformSupabase?.auth ? await platformSupabase.auth.getUser():{data:null};
+    if(!mounted)return;
+    if(data?.user?.id && !data.user.is_anonymous){
+     router.replace('/dashboard-logado');return;
+    }
+    const social=await resolveSocialPortalEntry();
+    if(mounted && social)router.replace('/dashboard-logado');
+   }catch{/* Dedicated login remains available if sessions cannot be verified. */}
+  }
+  void routeExistingSession();
   return()=>{mounted=false;};
  },[router]);
  async function submit(event){

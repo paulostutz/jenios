@@ -4,12 +4,16 @@ import Link from 'next/link';
 import PlatformBillingStatus from '../components/platform/PlatformBillingStatus';
 import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
 import PlatformSimulationSummary from '../components/platform/PlatformSimulationSummary';
+import {usePlatformPortalEntry} from '../components/platform/PlatformAuthGuard';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import { observePlatformDiagnostic, loadAccountDiagnostic, currentPlatformSession } from '../../lib/platform/diagnostic-client.mjs';
 import { signOutPlatform } from '../../lib/platform/account-access.mjs';
 import styles from './control.module.css';
 
 export default function DashboardLogado() {
+  const portal=usePlatformPortalEntry();
+  const socialSession=portal?.source==='social';
+  const socialSimulationId=socialSession?portal.userId:null;
   const [tab,setTab] = useState('geral');
   const [userLabel,setUserLabel] = useState('Operador');
   const [diagnostic,setDiagnostic] = useState(null);
@@ -18,6 +22,7 @@ export default function DashboardLogado() {
   const [logoutError,setLogoutError]=useState('');
   async function logout(){
     if(loggingOut)return;
+    if(socialSession){window.location.assign('/social');return;}
     setLoggingOut(true);setLogoutError('');
     try{
       const session=await currentPlatformSession(supabase);
@@ -30,6 +35,11 @@ export default function DashboardLogado() {
   }
 
   useEffect(()=>{
+    if(socialSession){
+      setDiagnostic(null);setPlatformUserId(null);
+      setUserLabel(portal?.label||'Operador');
+      return;
+    }
     let live=true,revision=0;
     const stop=observePlatformDiagnostic(supabase,status=>{
       if(!live)return;
@@ -45,7 +55,7 @@ export default function DashboardLogado() {
       }).catch(()=>{});
     },loadAccountDiagnostic);
     return()=>{live=false;revision++;stop();};
-  },[]);
+  },[socialSession,portal?.userId,portal?.label]);
 
   const buttons=[
     ['geral','◈ Visão geral'],
@@ -69,7 +79,7 @@ export default function DashboardLogado() {
           <Link href="/mesa-operacoes" className={styles.navButton}>▥ Mesa e gráficos</Link>
           <Link href="/tendencias" className={styles.navButton}>↗ Hub de tendências</Link>
           <Link href="/social" className={styles.navButton}>◉ JENIOS Social (externo)</Link>
-          <PlatformAdminShortcut className={styles.navButton}/>
+          {!socialSession && <PlatformAdminShortcut className={styles.navButton}/>}
         </nav>
         <div className={styles.sidebarBottom}>Acesso à simulação independente do diagnóstico. Ordens reais exigem aprovação e validação próprias.</div>
       </aside>
@@ -82,7 +92,7 @@ export default function DashboardLogado() {
           <div className={styles.actions}>
             <Link className={`${styles.button} ${styles.secondary}`} href="/dashboard">Ir para Dashboard</Link>
             <Link className={styles.button} href="/mesa-operacoes">Abrir Mesa →</Link>
-            <button type="button" disabled={loggingOut} className={`${styles.button} ${styles.secondary}`} onClick={logout}>{loggingOut?'Saindo…':'Sair da Platform'}</button>
+            {socialSession ? <Link className={`${styles.button} ${styles.secondary}`} href="/social">Voltar à Social</Link> : <button type="button" disabled={loggingOut} className={`${styles.button} ${styles.secondary}`} onClick={logout}>{loggingOut?'Saindo…':'Sair da Platform'}</button>}
           </div>
         </header>
 
@@ -95,17 +105,18 @@ export default function DashboardLogado() {
             <p>Acompanhe seu diagnóstico, estude ativos e abra a mesa de negociação. Você não precisa concluir o diagnóstico para navegar ou utilizar a conta fictícia.</p>
             <div className={styles.heroActions}>
               <Link className={styles.heroLink} href="/dashboard">Entrar na negociação</Link>
-              <Link className={`${styles.heroLink} ${styles.heroGhost}`} href="/diagnostico">{diagnostic?'Consultar diagnóstico':'Iniciar diagnóstico'}</Link>
+              {!socialSession && <Link className={`${styles.heroLink} ${styles.heroGhost}`} href="/diagnostico">{diagnostic?'Consultar diagnóstico':'Iniciar diagnóstico'}</Link>}
             </div>
           </section>
           <section className={styles.panel} aria-label="Simulação da conta">
-            <PlatformSimulationSummary userId={platformUserId}/>
+            {socialSession ? <PlatformSimulationSummary userId={socialSimulationId}/> : <PlatformSimulationSummary userId={platformUserId}/>}
           </section>
+          {socialSession && <p className={styles.notice} role="status">Você entrou usando sua conta verificada da Social, sem outro login. A sala e o simulador são educacionais. Laudos privados e permissões administrativas da Platform continuam protegidos no banco exclusivo até o vínculo seguro das contas.</p>}
           <div className={styles.grid}>
             <article className={styles.card}><span className={styles.cardLabel}>Diagnóstico</span>
               <strong className={styles.cardValue}>{diagnostic?'Laudo inicial registrado':'Ainda não realizado'}</strong>
               <p>{diagnostic?'O laudo inicial está associado à sua conta da Platform. Isso não autoriza negociação real.':'Disponível na Dashboard. Não é requisito de acesso à simulação.'}</p>
-              <Link href="/diagnostico">{diagnostic?'Ver status':'Fazer diagnóstico'} →</Link></article>
+              {socialSession ? <span>Diagnóstico vinculado à Platform ainda não habilitado para a conta da Social.</span> : <Link href="/diagnostico">{diagnostic?'Ver status':'Fazer diagnóstico'} →</Link>}</article>
             <article className={styles.card}><span className={styles.cardLabel}>Modo operacional</span>
               <strong className={styles.cardValue}>{diagnostic?diagnostic.mode==='reversa'?'Reverso inicial':'Manual inicial':'Definido após o diagnóstico'}</strong>
               <p>O usuário pode mudar o modo na mesa. O status inicial é confirmado por laudo associado à sua conta.</p>
@@ -119,14 +130,15 @@ export default function DashboardLogado() {
             <ol className={styles.tips}>
               <li>Entre na Dashboard e escolha um ativo para estudar.</li>
               <li>Treine na conta fictícia, respeitando as travas de risco.</li>
-              <li>Quando decidir iniciar o processo para conta real, realize o diagnóstico comportamental.</li>
+              <li>Para solicitar uma conta real futuramente, o diagnóstico deverá ser associado à identidade autenticada da Platform e validado no servidor.</li>
               <li>A liberação real depende também da validação no servidor, corretora e demais requisitos de segurança.</li>
             </ol></section>
         </>}
         {tab==='pagamentos' && <section className={styles.panel}>
           <h2>Pagamentos e histórico</h2>
           <p>O vínculo entre esta conta da Platform e a conta pagadora da JENIOS PAY ainda não foi homologado. Nenhum pedido da Social será apresentado como assinatura da Platform.</p>
-          <PlatformBillingStatus />
+          {!socialSession && <PlatformBillingStatus />}
+          {socialSession && <p role="status">Sem vínculo de assinatura da Platform confirmado. O acesso com a Social não concede planos nem cobranças da Platform.</p>}
         </section>}
         {tab==='integracoes' && <section className={styles.panel}>
           <h2>Conexões com corretoras</h2>

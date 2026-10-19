@@ -28,3 +28,30 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: 'https://qa.invalid'
           NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_placeholder_not_a_secret'
         run: npm run build
+
+      - name: Package reviewed Platform hotfix source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-platform-backup
+          FILES=(
+            app/dashboard-logado/page.js
+            app/dashboard/page.js
+            app/diagnostico/page.js
+            app/mesa-operacao/page.js
+            app/mesa-operacoes/page.js
+            app/lp/page.js
+            lib/platform/diagnostic-routing.mjs
+            tests/platformDiagnosticRouting.test.mjs
+            tests/platformDiagnosticPages.test.mjs
+            .github/workflows/jenios-platform-diagnostico-private-qa.yml
+          )
+          sha256sum "${FILES[@]}" > .jenios-platform-backup/SHA256SUMS.txt
+          tar -czf .jenios-platform-backup/JENIOS-PLATFORM-SITE-UX-SOURCE.tar.gz "${FILES[@]}" .jenios-platform-backup/SHA256SUMS.txt
+      - name: Archive reviewed source (no deploy)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-site-ux-source
+          path: .jenios-platform-backup/JENIOS-PLATFORM-SITE-UX-SOURCE.tar.gz
+          if-no-files-found: error
+          retention-days: 30

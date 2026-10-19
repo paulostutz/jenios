@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
 import terminal from '../components/platform/Terminal.module.css';
-import { loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { supabase } from '../../lib/supabase';
 
 export default function DashboardPage() {
@@ -27,19 +27,15 @@ export default function DashboardPage() {
     }
   }, []);
 
-  useEffect(() => {
-    let live=true;
-    loadAccountDiagnostic(supabase).then(status=>{
-      if (!live) return;
-      setOperadorId(status.userId);
-      setDiagnosticoConcluido(status.verified===true);
-      setDiagnosticoBackend(status.verified?'Validado no servidor':
-        status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
-      const chosen=readSessionMode(window.sessionStorage,status.userId);
-      setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
-    });
-    return ()=>{live=false;};
-  }, []);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setOperadorId(status.userId);
+    setDiagnosticoConcluido(status.verified===true);
+    setDiagnosticoBackend(status.reason==='checking'?'Verificando':
+      status.verified?'Validado no servidor':
+      status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
+    const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
+    setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
+  },loadAccountDiagnostic),[]);
 
   const solicitarContaReal = () => {
     if (!diagnosticoConcluido) {

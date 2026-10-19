@@ -555,7 +555,7 @@ export default function DashboardPage() {
                   <p style={{margin:'4px 0',color:'#475569'}}>{whalePanel.describe(row)}</p>
                 </div>
               )):<p role="status" style={{fontSize:12,color:'#64748b'}}>{whalePanel.message}</p>}
-              <p style={{fontSize:11,color:'#64748b'}}>Transferências verificadas na rede Bitcoin não demonstram compra, propriedade institucional ou intenção de mercado.</p>
+              <p style={{fontSize:11,color:'#64748b'}}>Transferências verificadas na rede Bitcoin não demonstram compra, propriedade institucional ou intenção de mercado. Volume agregado de 24h não comprova movimentação de baleias.</p>
             </section>
 
             <NewTokenRadar />

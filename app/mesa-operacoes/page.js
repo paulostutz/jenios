@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
-import { supabase } from '../../lib/supabase';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {readSimJournal,appendSimIntention,clearSimJournal} from '../../lib/platform/simulation-journal.mjs';
 import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
 import terminal from '../components/platform/Terminal.module.css';

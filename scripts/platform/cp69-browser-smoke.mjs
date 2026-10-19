@@ -81,6 +81,11 @@ try {
  await connect();
  await send('Page.enable');await send('Runtime.enable');
  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+ await navigate('/social');
+ pass(await evalExpr(`(()=>{const link=document.querySelector('a.jenios-social-platform-link[href="/lp"]');
+  return !!link&&getComputedStyle(link).display!=='none'&&link.getBoundingClientRect().width>80;})()`),
+  'B121 public desktop Social has visible Conhecer a Platform link to /lp');
+ await screenshot('jenios-b121-platform-cta-desktop');
  await navigate('/dashboard');
  pass(await evalExpr(`document.body.innerText.includes('Diagnóstico Comportamental')`),'Dashboard diagnostic accessible');
  pass(await evalExpr(`document.body.innerText.includes('SIMULAR COMPRA')`),'Trading buttons explicitly fictitious');
@@ -213,6 +218,16 @@ try {
   'B110 new favicon, Next icon and Apple touch icon are served by app');
 
  // B75 smartphone Chromium smoke, no real tokens or private data.
+ await navigate('/social');
+ pass(await evalExpr(`(()=>{const nav=document.querySelector('.jenios-social-platform-mobile-nav'),a=nav?.querySelector('a[href="/lp"]');
+  const r=a?.getBoundingClientRect();return !!nav&&getComputedStyle(nav).display==='flex'&&!!r&&r.width>80&&r.height>=40&&r.right<=window.innerWidth+8&&document.documentElement.scrollWidth<=window.innerWidth+8;})()`),
+  'B121 phone displays visible and touch-sized Platform CTA without horizontal overflow');
+ await screenshot('jenios-b121-platform-cta-mobile');
+ pass(await evalExpr(`(()=>{const a=document.querySelector('.jenios-social-platform-mobile-nav a[href="/lp"]');if(!a)return false;a.click();return true;})()`),
+  'B121 phone CTA accepts tap without login');
+ await waitFor(`location.pathname==='/lp'`,8000);
+ pass(await evalExpr(`document.body.innerText.includes('MENOS IMPULSO')||document.body.innerText.includes('CLAREZA ANTES DO CLIQUE')`),
+  'B121 mobile CTA opens actual Platform LP');
  await navigate('/social');
  pass(await evalExpr(`(()=>{const e=document.querySelector('.jenios-mobile-rail');return !!e&&getComputedStyle(e).display==='flex'&&e.getBoundingClientRect().width<=58;})()`),
   'Smartphone Social icon rail is visible and compact');

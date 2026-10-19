@@ -49,3 +49,22 @@ test('B110 institutional footer stays accessible and never changes business rule
  assert.match(read('app/platform/admin/page.js'),/PlatformAdminAccess permission="platform.admin"/);
  assert.match(read('app/lp/page.js'),/BrandFooter tone="dark" scope="Platform"/);
 });
+
+ // B121: restore the public Platform LP CTA without changing authenticated routes.
+test('B121 Social desktop and mobile CTAs link directly to the public Platform LP',()=>{
+ const social=read('app/social/page.js');
+ const desktop='<Link className="social-header-link jenios-social-platform-link" href="/lp">Conhecer a Platform ↗</Link>';
+ assert.ok(social.includes(desktop),'Desktop Social CTA must be visible and point to /lp');
+ assert.match(social,/<nav className="jenios-social-platform-mobile-nav" aria-label="Conhecer a JENIOS Platform">\s*<Link href="\/lp" aria-label="Conhecer a Platform — apresentação">/);
+ assert.match(read('app/components/SocialMobileRail.js'),/link\('Conhecer a Platform','✦','\/lp'\)/);
+ assert.ok(read('app/lp/page.js').includes('export default function LandingPagePro'));
+ // Existing logged-in dashboard route is intentionally separate.
+ assert.ok(social.includes('href="/dashboard-logado">Sala de Controle'));
+});
+test('B121 mobile CTA remains displayed even though mobile hides header links',()=>{
+ const css=read('app/social/jenios-theme.css');
+ assert.match(css,/\.jenios-social-platform-mobile-nav \{display:none;\}/);
+ assert.match(css,/@media\(max-width:600px\) \{\s*\.jenios-social-surface \.jenios-social-platform-mobile-nav \{display:flex;/);
+ assert.match(css,/min-height:40px/);
+ assert.match(css,/\.jenios-social-surface \.social-main-header \.social-header-link/);
+});

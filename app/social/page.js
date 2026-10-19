@@ -1167,6 +1167,7 @@ const handleUploadCarrossel = async (e) => {
               alignItems: 'center',
             }}
           >
+            <Link className="social-header-link jenios-social-platform-link" href="/lp">Conhecer a Platform ↗</Link>
             <Link className="social-header-link" href="/dashboard-logado">Sala de Controle</Link>
             <Link className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></Link>
             {meuPerfil.autenticado ? (
@@ -1206,6 +1207,12 @@ const handleUploadCarrossel = async (e) => {
             )}
           </div>
         </div>
+
+        <nav className="jenios-social-platform-mobile-nav" aria-label="Conhecer a JENIOS Platform">
+          <Link href="/lp" aria-label="Conhecer a Platform — apresentação">
+            Conhecer a Platform <span aria-hidden="true">↗</span>
+          </Link>
+        </nav>
 
         <button type="button" className="jenios-social-direct-fab"
           aria-label={mensagensAberta?'Fechar mensagens':'Abrir mensagens'}

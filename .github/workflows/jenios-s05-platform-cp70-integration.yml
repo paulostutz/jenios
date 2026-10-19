@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release/jenios-s05-platform-cp70-integracao-20261019
+      - fix/jenios-b121-social-lp-cta-20261019
   workflow_dispatch:
 permissions:
   contents: read

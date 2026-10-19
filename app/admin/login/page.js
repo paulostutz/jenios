@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
       try {
         const response = await adminFetch('/api/admin/access');
         const result = await response.json();
-        if (active && Array.isArray(result.permissions) && result.permissions.length > 0) {
+        if (active && result.isMaster === true) {
           window.location.replace('/admin');
         }
       } catch { /* Usuário sem sessão ou sem autorização permanece no formulário */ }
@@ -41,8 +41,8 @@ export default function AdminLoginPage() {
       if (error) throw Error('Não foi possível autenticar com essas credenciais.');
       const response = await adminFetch('/api/admin/access');
       const result = await response.json();
-      if (!Array.isArray(result.permissions) || result.permissions.length === 0) {
-        throw Error('Esta conta não possui permissões administrativas.');
+      if (result.isMaster !== true) {
+        throw Error('A Central Administrativa é exclusiva do usuário Master.');
       }
       setSenha('');
       window.location.replace('/admin');

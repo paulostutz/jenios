@@ -1,31 +1,35 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { readLocalReport, MODE_KEY, adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
+import terminal from '../components/platform/Terminal.module.css';
 
 export default function MesaOperacoesPage() {
   const [modalBrokerAberto, setModalBrokerAberto] = useState(false);
   const [modalRiscoAberto, setModalRiscoAberto] = useState(false);
   
   // Estados de Plano e Assinatura
-  const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
+  // Selecionar mercado de estudo não altera plano ou direitos financeiros.
 
   // Estados de Conta e Saldo Sincronizado
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [modoOperacao, setModoOperacao] = useState('manual'); // laudo define o modo inicial
   const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
+  const [intencoes, setIntencoes] = useState([]);
+  const [pausaManual, setPausaManual] = useState(false);
+  const [bloqueiosDeRisco, setBloqueiosDeRisco] = useState(0);
 
   // Sincroniza o saldo simulado globalmente
   useEffect(() => {
     const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
-    if (saldoSalvo) {
+    if (saldoSalvo && Number.isFinite(Number(saldoSalvo)) && Number(saldoSalvo)>=0 && Number(saldoSalvo)<=100000000) {
       setSaldoSimulado(Number(saldoSalvo));
     }
   }, []);
 
   const atualizarSaldoSimulado = (novoValor) => {
-    setSaldoSimulado(novoValor);
-    localStorage.setItem('jenios_saldo_simulado', novoValor);
+    const n=Number(novoValor);if(!Number.isFinite(n)||n<0||n>100000000)return;
+    setSaldoSimulado(n);localStorage.setItem('jenios_saldo_simulado',String(n));
   };
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export default function MesaOperacoesPage() {
   const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
 
   // Gestão de Risco e Alocação (Baseada no Saldo Simulado Sincronizado)
-  const [capitalAlocar, setCapitalAlocar] = useState(10000);
+  const [capitalAlocar, setCapitalAlocar] = useState(1000);
   const [contratos, setContratos] = useState(5);
   
   const limiteMaximoRiscoPermitido = saldoSimulado * 0.05;
@@ -87,11 +91,7 @@ export default function MesaOperacoesPage() {
   };
 
   const mudarCategoria = (cat) => {
-    if (planoUsuario === 'basico' && (cat === 'cripto' || cat === 'forex')) {
-      alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
-      window.location.href = '/checkout';
-      return;
-    }
+    if (!['b3','cripto','forex'].includes(cat)) return;
     setCategoria(cat);
     if (atalhosPorMercado[cat] && atalhosPorMercado[cat].length > 0) {
       setAtivoSelecionado(atalhosPorMercado[cat][0].simbolo);
@@ -157,22 +157,15 @@ export default function MesaOperacoesPage() {
   }, [ativoSelecionado]);
 
   const executarOrdem = (direcao) => {
-    if (tipoConta !== 'simulada') { alert('Ordem real bloqueada: integração e validação do servidor pendentes.'); return; }
-    if (planoUsuario === 'basico' && categoria !== 'b3') {
-      alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
-      window.location.href = '/checkout';
+    if (tipoConta !== 'simulada') { alert('Ordens reais não autorizadas nesta interface.'); return; }
+    if (pausaManual) { setBloqueiosDeRisco(n=>n+1); return; }
+    const valor=Number(capitalAlocar),quantidade=Number(contratos);
+    if (!Number.isFinite(valor)||valor<=0||valor>limiteMaximoRiscoPermitido||!Number.isInteger(quantidade)||quantidade<1) {
+      setBloqueiosDeRisco(n=>n+1);
+      alert('Intenção fictícia bloqueada: revise o limite máximo de 5% e a quantidade de contratos.');
       return;
     }
-
-    if (capitalAlocar > limiteMaximoRiscoPermitido) {
-      alert(`⚠️ TRAVA DE SEGURANÇA ATIVADA: O capital alocado (R$ ${capitalAlocar}) ultrapassa o limite de 5% da sua banca simulada (R$ ${limiteMaximoRiscoPermitido.toFixed(2)}). Reduza o valor para operar.`);
-      return;
-    }
-
-    const riscoCalculado = capitalAlocar * 0.02; 
-    const alvoCalculado = riscoCalculado * 1.5; 
-
-    alert(`Prévia fictícia: ${direcao} para ${nomeAtivoExibicao}. Modo: ${modoOperacao === 'reversa' ? 'Reverso' : 'Manual'}. Nenhuma ordem foi enviada à corretora.`);
+    setIntencoes(current=>[{id:Date.now()+'-'+direcao,direcao,ativo:nomeAtivoExibicao,modo:modoOperacao,valor,hora:new Date().toLocaleTimeString('pt-BR')},...current].slice(0,6));
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
@@ -228,17 +221,7 @@ export default function MesaOperacoesPage() {
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', fontSize: '12px', fontFamily: 'monospace' }}>
           
-          <div style={{ backgroundColor: '#f1f5f9', padding: '4px 8px', borderRadius: '8px', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Plano:</span>
-            <select 
-              value={planoUsuario} 
-              onChange={(e) => setPlanoUsuario(e.target.value)}
-              style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none', cursor: 'pointer' }}
-            >
-              <option value="basico">Plano Básico (B3)</option>
-              <option value="completo">Plano Completo (B3 + Cripto + Global)</option>
-            </select>
-          </div>
+          <a href="/dashboard-logado" style={{background:'#f5f3ff',borderRadius:9,color:'#6d28d9',padding:'10px 12px',fontSize:11,fontWeight:800,textDecoration:'none'}}>Conferir assinatura ↗</a>
 
           {tipoConta === 'real' && (
             <button 
@@ -269,8 +252,8 @@ export default function MesaOperacoesPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <button onClick={() => mudarCategoria('b3')} style={{ backgroundColor: categoria === 'b3' ? '#7c3aed' : '#e2e8f0', color: categoria === 'b3' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>B3 (Brasil)</button>
-                <button onClick={() => mudarCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos {planoUsuario === 'basico' && '🔒'}</button>
-                <button onClick={() => mudarCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex {planoUsuario === 'basico' && '🔒'}</button>
+                <button onClick={() => mudarCategoria('cripto')} style={{ backgroundColor: categoria === 'cripto' ? '#7c3aed' : '#e2e8f0', color: categoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Criptoativos </button>
+                <button onClick={() => mudarCategoria('forex')} style={{ backgroundColor: categoria === 'forex' ? '#7c3aed' : '#e2e8f0', color: categoria === 'forex' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>Global / Forex </button>
               </div>
             </div>
 

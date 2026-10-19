@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import PlatformAdminAccess from '../../components/platform/PlatformAdminAccess';
+import PlatformAdminOverview from '../../components/platform/PlatformAdminOverview';
 
 export default function PlatformAdminHome(){
  return <PlatformAdminAccess permission="platform.admin">{permissions=>
@@ -18,6 +19,7 @@ export default function PlatformAdminHome(){
      </p>
      <span style={{fontSize:12}}>Permissões confirmadas pelo servidor: {permissions.join(', ')}</span>
     </header>
+    <PlatformAdminOverview/>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:14}}>
      {[
       ['Diagnóstico comportamental','Persistência por conta, classificação inicial e bloqueio de conta real sem autorização.'],

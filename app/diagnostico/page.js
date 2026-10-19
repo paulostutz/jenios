@@ -1,19 +1,27 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { classifyDiagnostic, persistLocalReport, readLocalReport } from '../../lib/platform/diagnostic-routing.mjs';
+import { classifyDiagnostic } from '../../lib/platform/diagnostic-routing.mjs';
+import { loadAccountDiagnostic, submitAccountDiagnostic, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { supabase } from '../../lib/supabase';
 
 export default function DiagnosticoPlatformPage() {
   const [jaFezAntes, setJaFezAntes] = useState(false);
+  const [verificando, setVerificando] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+  const [aviso, setAviso] = useState('');
   const [respostas, setRespostas] = useState([]);
   const [etapa, setEtapa] = useState(0);
   const [timelineSelecionada, setTimelineSelecionada] = useState('');
 
   useEffect(() => {
-    const report = readLocalReport(window.localStorage);
-    if (report) {
-      setJaFezAntes(true);
-    }
+    let ativo=true;
+    loadAccountDiagnostic(supabase).then(status=>{
+      if (!ativo) return;
+      setJaFezAntes(status.verified === true);
+      setVerificando(false);
+    });
+    return ()=>{ativo=false;};
   }, []);
 
   const perguntas = [
@@ -86,9 +94,16 @@ export default function DiagnosticoPlatformPage() {
     setTimelineSelecionada(tipo);
     setEtapa(perguntas.length + 1);
   };
-  const concluirEEntrarDiretoNaMesa = () => {
-    const report = persistLocalReport(window.localStorage, scores, timelineSelecionada);
-    if (!report) return;
+  const concluirEEntrarDiretoNaMesa = async () => {
+    if (salvando || respostas.length !== perguntas.length || !timelineSelecionada) return;
+    setSalvando(true);
+    setAviso('');
+    const status = await submitAccountDiagnostic(supabase, respostas, timelineSelecionada);
+    // Na ausência de backend ou conta, somente uma preferência transitória da sessão.
+    writeSessionMode(window.sessionStorage,status.userId,status.verified ? status.mode : recomendacao.mode);
+    if (!status.verified) {
+      setAviso('A avaliação não foi confirmada no servidor. Você pode estudar na simulação, mas não está habilitado para operações reais.');
+    }
     window.location.assign('/mesa-operacoes');
   };
 
@@ -96,14 +111,14 @@ export default function DiagnosticoPlatformPage() {
     <main style={{ backgroundColor: '#0f172a', color: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '30px', maxWidth: '600px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)', boxSizing: 'border-box' }}>
         
-        {jaFezAntes ? (
+        {verificando ? (<p role="status">Verificando diagnóstico da conta…</p>) : jaFezAntes ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#fef2f2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 20px auto', fontWeight: 'bold' }}>
               ⚠️
             </div>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px' }}>Diagnóstico Já Realizado</h2>
             <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', marginBottom: '25px' }}>
-              Seu laudo inicial já foi registrado neste navegador. Você pode abrir a área de negociações normalmente; a habilitação de ordens reais depende de validação adicional da sua conta no servidor.
+              Seu laudo foi identificado no servidor da JENIOS. Você pode estudar e alterar o modo na mesa. Isso não autoriza ordens reais ou o uso de corretoras.
             </p>
             <Link href="/dashboard" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', padding: '12px 24px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', display: 'inline-block' }}>
               ← Voltar para a Área de Negociação
@@ -171,7 +186,8 @@ export default function DiagnosticoPlatformPage() {
                   <p style={{fontSize:12,margin:0,color:'#334155',lineHeight:1.6}}>{recomendacao.rationale}</p>
                 </div>
                 <p style={{fontSize:12,color:'#475569'}}>A JENIOS aplicará esse modo inicialmente na simulação. Você poderá alterar manualmente depois. O laudo é orientativo, não prevê lucros e, isoladamente, não libera operações reais.</p>
-                <button onClick={concluirEEntrarDiretoNaMesa} style={{background:'#7c3aed',color:'#fff',border:0,borderRadius:10,padding:14,fontWeight:800,cursor:'pointer'}}>Entrar na área de negociações</button>
+                <button onClick={concluirEEntrarDiretoNaMesa} disabled={salvando} style={{background:'#7c3aed',color:'#fff',border:0,borderRadius:10,padding:14,fontWeight:800,cursor:salvando?'progress':'pointer'}}>{salvando?'Validando laudo…':'Entrar na área de negociações'}</button>
+                {aviso && <p role="status" style={{fontSize:12,color:'#92400e'}}>{aviso}</p>}
                 <button onClick={() => setEtapa(perguntas.length)} style={{background:'#e2e8f0',color:'#334155',border:0,borderRadius:10,padding:10,cursor:'pointer'}}>Revisar respostas</button>
               </section>
             )}

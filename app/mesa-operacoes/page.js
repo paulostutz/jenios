@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
+import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {loadUnifiedSimulationDiagnostic} from '../../lib/platform/unified-entry.mjs';
@@ -133,40 +134,7 @@ export default function MesaOperacoesPage() {
     setInputBuscaCustomizada('');
   };
 
-  useEffect(() => {
-    const carregarGrafico = () => {
-      const container = document.getElementById('tradingview_mesa_container');
-      if (container) container.innerHTML = '';
 
-      if (window.TradingView) {
-        new window.TradingView.widget({
-          "autosize": true,
-          "symbol": ativoSelecionado,
-          "interval": "5",
-          "timezone": "America/Sao_Paulo",
-          "theme": "dark",
-          "style": "1",
-          "locale": "br",
-          "toolbar_bg": "#1e293b",
-          "enable_publishing": false,
-          "hide_top_toolbar": false,
-          "save_image": false,
-          "container_id": "tradingview_mesa_container"
-        });
-      }
-    };
-
-    if (!document.getElementById('tradingview-widget-script')) {
-      const script = document.createElement('script');
-      script.id = 'tradingview-widget-script';
-      script.src = 'https://s3.tradingview.com/tv.js';
-      script.async = true;
-      script.onload = carregarGrafico;
-      document.head.appendChild(script);
-    } else {
-      carregarGrafico();
-    }
-  }, [ativoSelecionado]);
 
   const executarOrdem = (direcao) => {
     if (tipoConta !== 'simulada') { alert('Ordens reais não autorizadas nesta interface.'); return; }
@@ -320,14 +288,7 @@ export default function MesaOperacoesPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155' }}>Gráfico para estudo ({nomeAtivoExibicao})</span>
-            <span style={{ fontSize: '10px', color: '#059669', fontFamily: 'monospace', fontWeight: 'bold' }}>Widget externo · confira a fonte</span>
-          </div>
-          
-          <div style={{ flex: 1, minHeight: '420px', backgroundColor: '#0b0f19', borderRadius: '12px', overflow: 'hidden', border: '1px solid #334155', position: 'relative' }}>
-            <div id="tradingview_mesa_container" style={{ width: '100%', height: '100%' }}></div>
-          </div>
+          <ResponsiveTradingViewChart symbol={ativoSelecionado} label={nomeAtivoExibicao}/>
         </div>
 
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>

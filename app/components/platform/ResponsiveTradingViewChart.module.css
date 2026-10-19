@@ -1,0 +1,39 @@
+.shell{background:#0b0f19;border:1px solid #334155;border-radius:16px;padding:12px;
+ display:flex;flex-direction:column;box-sizing:border-box;width:100%;height:520px;min-width:0;min-height:0;color:#f8fafc}
+.rotatable{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 4px 12px;flex-wrap:wrap}
+.heading{display:grid;gap:4px;min-width:0}
+.heading strong{font-size:13px}
+.heading small{font-size:11px;color:#34d399;overflow-wrap:anywhere}
+.actions{display:none;gap:7px}
+.actions button{border:1px solid #a78bfa;padding:9px 12px;background:#221a3a;color:#f8fafc;border-radius:9px;font-size:12px;font-weight:750;cursor:pointer;min-height:39px}
+.actions button[aria-pressed="true"]{background:#6d28d9}
+.actions button:focus-visible,.exit:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
+.viewport{position:relative;flex:1;min-height:0;min-width:0;width:100%;background:#0b0f19;border-radius:8px}
+.widget{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+.fallback{position:absolute;inset:auto 9px 9px;background:#1e293bf5;border-radius:10px;border:1px solid #475569;padding:10px;font-size:11px;line-height:1.5;color:#f8fafc;z-index:2}
+.fallback a{display:block;color:#c4b5fd;margin-top:7px}
+.exit{display:none;position:fixed;right:calc(9px + env(safe-area-inset-right));top:calc(6px + env(safe-area-inset-top));z-index:12501;
+ border:2px solid #f8fafc;border-radius:50%;background:#6d28d9;color:#fff;width:36px;height:36px;font-size:22px;cursor:pointer}
+@media(max-width:900px){
+ .shell{height:clamp(420px,64dvh,740px);padding:9px;border-radius:12px}
+ .header{padding:3px 3px 10px}
+ .actions{display:flex}
+ .shell[data-mode="horizontal"]{position:fixed;inset:0;z-index:12490;
+  border:0;border-radius:0;padding:0;width:100vw;max-width:none;height:100dvh;max-height:100dvh;margin:0;background:#0b0f19}
+ .shell[data-mode="horizontal"] .rotatable{position:absolute;inset:0;padding:9px;box-sizing:border-box;min-height:0}
+ .shell[data-mode="horizontal"] .viewport{min-height:0}
+ .shell[data-mode="horizontal"] .exit{display:block}
+}
+@media(max-width:900px) and (orientation:landscape){
+ .shell[data-mode="vertical"]{height:clamp(260px,83dvh,660px)}
+ .shell[data-mode="horizontal"] .header{padding-right:55px}
+}
+@media(max-width:900px) and (orientation:portrait){
+ .shell[data-mode="horizontal"] .rotatable{
+  inset:auto;top:0;left:100vw;width:100dvh;height:100vw;
+  transform:rotate(90deg);transform-origin:top left;
+ }
+ .shell[data-mode="horizontal"] .header{padding-right:55px}
+}
+@media(prefers-reduced-motion:no-preference){.actions button{transition:background .16s ease}}

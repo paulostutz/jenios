@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
+import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import useTrendsData from '../components/useTrendsData';
 import {dashboardHubModule} from '../../lib/platform/dashboard-trends.mjs';
@@ -130,40 +131,7 @@ export default function DashboardPage() {
     setInputBuscaCustomizada('');
   };
 
-  useEffect(() => {
-    const carregarGrafico = () => {
-      const container = document.getElementById('tradingview_widget_container');
-      if (container) container.innerHTML = '';
 
-      if (window.TradingView) {
-        new window.TradingView.widget({
-          "autosize": true,
-          "symbol": ativoSelecionado,
-          "interval": "5",
-          "timezone": "America/Sao_Paulo",
-          "theme": "dark",
-          "style": "1",
-          "locale": "br",
-          "toolbar_bg": "#1e293b",
-          "enable_publishing": false,
-          "hide_top_toolbar": false,
-          "save_image": false,
-          "container_id": "tradingview_widget_container"
-        });
-      }
-    };
-
-    if (!document.getElementById('tradingview-widget-script')) {
-      const script = document.createElement('script');
-      script.id = 'tradingview-widget-script';
-      script.src = 'https://s3.tradingview.com/tv.js';
-      script.async = true;
-      script.onload = carregarGrafico;
-      document.head.appendChild(script);
-    } else {
-      carregarGrafico();
-    }
-  }, [ativoSelecionado]);
 
   const ativarModoReverso = () => {
     setModoReversoAtivo(!modoReversoAtivo);
@@ -431,18 +399,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div style={{ backgroundColor: '#0b0f19', border: '1px solid #334155', borderRadius: '16px', padding: '15px', height: '520px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <div>
-                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView</span>
-                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {nomeAtivoExibicao} • Widget externo (verifique a cotação)</span>
-                </div>
-              </div>
-
-              <div style={{ flex: 1, width: '100%', height: '100%', position: 'relative' }}>
-                <div id="tradingview_widget_container" style={{ width: '100%', height: '100%' }}></div>
-              </div>
-            </div>
+            <ResponsiveTradingViewChart symbol={ativoSelecionado} label={nomeAtivoExibicao}/>
 
             <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '25px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '12px' }}>

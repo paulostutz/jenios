@@ -95,7 +95,7 @@ jobs:
             tests/platformDiagnosticPages.test.mjs
             tests/platformDiagnosticRouting.test.mjs
             tests/platformDiagnosticServer.test.mjs
-            tests/platformCP65Isolation.test.mjs
+            tests/platformCP65Sessions.test.mjs
             scripts/platform/cp63-browser-smoke.mjs
             scripts/platform/cp64-database-isolation.sql
             .github/workflows/jenios-platform-diagnostico-private-qa.yml

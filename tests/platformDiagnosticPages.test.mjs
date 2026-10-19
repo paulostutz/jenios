@@ -39,5 +39,5 @@ test('LP não contém estatísticas sem lastro nem promete lucro automático',()
  assert.doesNotMatch(s,/Mais de 95% dos operadores/);
  assert.doesNotMatch(s,/falência da sua conta ocorrerá em menos de 90 dias/);
  assert.doesNotMatch(s,/transformamos o seu erro em lucro automatizado/);
- assert.match(s,/envolvem risco de perdas/);
+ assert.match(s,/Operações podem gerar perdas/);
 });

@@ -25,7 +25,7 @@ test('o gate existente continua aceitando uma permissão única',()=>{
 });
 test('sala logada preserva pagamentos reais e entrada direta no simulador',()=>{
  const s=page('app/dashboard-logado/page.js');
- assert.match(s,/PaymentStatement embedded/);
+ assert.match(s,/PlatformBillingStatus/);
  assert.match(s,/href="\/dashboard"/);
  assert.match(s,/href="\/mesa-operacoes"/);
  assert.match(s,/loadAccountDiagnostic/);
@@ -40,7 +40,7 @@ test('dashboard não permite editar seu plano no navegador',()=>{
 test('dashboard mostra só intenções fictícias e pausa reversível',()=>{
  const s=page('app/dashboard/page.js');
  assert.match(s,/setIntencoesFicticias/);
- assert.match(s,/setAntifuriaAcionado\(current=>!current\)/);
+ assert.match(s,/writeSimulationPaused\(window\.sessionStorage,operadorId,paused\)/);
  assert.match(s,/SIMULAR COMPRA|Simular compra/i);
  assert.doesNotMatch(s,/Roteamento HFT via API executado|17 operações impulsivas evitadas/);
 });

@@ -97,15 +97,22 @@ test('B66 adaptive suggestion requires 5 verified broker outcomes, no forced swi
 });
 test('B66 read-only risk query enforces user identity and returns evidence',async()=>{
  const rows=[event('one')];let filtered='';
- const db={from(table){assert.equal(table,RISK_TABLE);return{
- select(){return{eq(field,value){assert.equal(field,'user_id');filtered=value;return{
- order(){return{async limit(n){assert.equal(n,100);return{data:rows,error:null};}}};
- }};}};}}};
+ const query={
+   select(){return query;},
+   eq(field,value){assert.equal(field,'user_id');filtered=value;return query;},
+   order(){return query;},
+   async limit(n){assert.equal(n,100);return {data:rows,error:null};}
+ };
+ const db={from(table){assert.equal(table,RISK_TABLE);return query;}};
  const r=await loadVerifiedRiskSummary(db,{id:'user-1'});
  assert.equal(filtered,'user-1');assert.equal(r.verifiedBlocks,1);
 });
 test('B66 risk source errors do not create zero success',async()=>{
- const db={from(){return{select(){return{eq(){return{order(){return{async limit(){return {data:null,error:{message:'offline'}};}};}};}};}};}};
+ const query={
+   select(){return query;},eq(){return query;},order(){return query;},
+   async limit(){return {data:null,error:{message:'offline'}};}
+ };
+ const db={from(){return query;}};
  await assert.rejects(()=>loadVerifiedRiskSummary(db,{id:'A'}),{status:503});
 });
 test('B66 risk client rejects verified data after account changes',async()=>{

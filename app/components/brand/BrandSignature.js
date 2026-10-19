@@ -9,6 +9,7 @@ export const BRAND_ASSETS=Object.freeze({
 export function BrandMark({size=42,className='',decorative=false}){
  const width=Math.max(20,Math.min(80,Number(size)||42));
  return <Image src={BRAND_ASSETS.icon} width={width} height={width} unoptimized
+  style={{width:width,height:width,objectFit:'contain',flexShrink:0}}
   className={className||styles.mark} alt={decorative?'':'JENIOS — símbolo J'}
   aria-hidden={decorative?true:undefined}/>;
 }

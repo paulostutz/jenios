@@ -111,6 +111,8 @@ try {
 
  await navigate('/admin/login');
  pass(await evalExpr(`document.body.innerText.includes('Entrar no painel') && !document.body.innerText.includes('admin123')`),'Admin login does not expose demo password');
+ pass(await evalExpr(`(()=>{const foot=document.querySelector('footer[aria-label="Rodapé institucional JENIOS Admin"]');const img=foot?.querySelector('img');const card=foot?.closest('section');if(!img||!card)return false;const bounds=img.getBoundingClientRect(),container=card.getBoundingClientRect();return bounds.width>=20&&bounds.width<=38&&bounds.height>=20&&bounds.height<=38&&container.right<=window.innerWidth&&document.documentElement.scrollWidth<=window.innerWidth+8;})()`),
+  'B110-F institutional J stays 29px in Admin footer without excessive layout growth');
  await screenshot('admin-login-desktop');
 
  await navigate('/admin');

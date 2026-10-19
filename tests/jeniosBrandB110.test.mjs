@@ -17,6 +17,12 @@ test('B110 official transparent JENIOS assets are lightweight and local',()=>{
  assert.equal(readFileSync('app/favicon.ico').subarray(0,4).toString('hex'),'00000100');
  assert.equal(readFileSync('public/brand/jenios-j.webp').subarray(0,4).toString('ascii'),'RIFF');
 });
+test('B110 image size is fixed in all footers, preventing large intrinsic WebP dimensions',()=>{
+ const code=read('app/components/brand/BrandSignature.js');
+ assert.match(code,/style=\{\{width:width,height:width,objectFit:'contain',flexShrink:0\}\}/);
+ assert.match(code,/BrandMark size=\{29\} decorative/);
+ assert.match(code,/Math\.min\(80,Number\(size\)\|\|42\)/);
+});
 test('B110 new J replaces purple Next icon and Apple touch icon',()=>{
  assert.equal(existsSync('app/icon.svg'),false);
  assert.equal(existsSync('app/apple-icon.js'),false);

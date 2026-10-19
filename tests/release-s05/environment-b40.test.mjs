@@ -73,3 +73,17 @@ test('S05-B49 prior manual acceptance may not activate trial or optimized video'
  for(const key of ['JENIOS_TRIAL_ENABLED','JENIOS_TRIAL_ACTIVATION_APPROVED','NEXT_PUBLIC_SOCIAL_OPTIMIZED_VIDEO'])
   assert.equal(checkS05DeploymentScope({...manual,[key]:'true'}).ok,false);
 });
+
+test('S05 plus Platform preview accepts only exact integration branch and two isolated QA databases',()=>{
+ const integrated={...preview,VERCEL_GIT_COMMIT_REF:'release/jenios-s05-platform-cp70-integracao-20261019',
+   NEXT_PUBLIC_PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+   NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:'only-public-publishable-fixture'};
+ assert.deepEqual(checkS05DeploymentScope(integrated),{ok:true,mode:'preview-isolated-platform-integration'});
+ assert.equal(checkS05DeploymentScope({...integrated,NEXT_PUBLIC_SUPABASE_URL:prod.NEXT_PUBLIC_SUPABASE_URL}).ok,false);
+ assert.equal(checkS05DeploymentScope({...integrated,NEXT_PUBLIC_PLATFORM_SUPABASE_URL:prod.NEXT_PUBLIC_SUPABASE_URL}).ok,false);
+ assert.equal(checkS05DeploymentScope({...integrated,NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:undefined}).ok,false);
+ assert.equal(checkS05DeploymentScope({...integrated,VERCEL_GIT_COMMIT_REF:'unapproved-branch'}).ok,false);
+ assert.equal(checkS05DeploymentScope({...integrated,VERCEL_ENV:'production',
+   NEXT_PUBLIC_SUPABASE_URL:prod.NEXT_PUBLIC_SUPABASE_URL,SOCIAL_SUPABASE_URL:prod.SOCIAL_SUPABASE_URL,
+   ...Object.fromEntries(['SUPABASE_SECRET_KEY','JENIOS_S05_SCHEMA_CERTIFIED','JENIOS_S05_E2E_CERTIFIED'].map(k=>[k,prod[k]]))}).ok,false);
+});

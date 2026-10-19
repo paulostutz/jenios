@@ -27,12 +27,14 @@ export default function PlatformAdminAccess({permission='platform.admin',childre
    }catch(e){if(live&&rev===seq.current)setError(e.message);}
   }
   void load();
+  let pendingTimer=null;
   const sub=platformSupabase?.auth?.onAuthStateChange(event=>{
-   if(event==='TOKEN_REFRESHED')return;
+   if(event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION')return;
    seq.current++;setPermissions(null);
-   Promise.resolve().then(()=>{if(live)void load();});
+   clearTimeout(pendingTimer);
+   pendingTimer=setTimeout(()=>{if(live)void load();},0);
   });
-  return()=>{live=false;seq.current++;sub?.data?.subscription?.unsubscribe?.();};
+  return()=>{live=false;seq.current++;clearTimeout(pendingTimer);sub?.data?.subscription?.unsubscribe?.();};
  },[]);
  if(permissions===null)return <main style={{minHeight:'70vh',display:'grid',placeItems:'center',padding:24,background:'#0f172a',color:'white',fontFamily:'system-ui'}}>
   <section role="status" style={{textAlign:'center'}}>{error||'Verificando permissões da Platform…'}

@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { readLocalReport, MODE_KEY, adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 
 export default function MesaOperacoesPage() {
   const [modalBrokerAberto, setModalBrokerAberto] = useState(false);
@@ -10,7 +11,8 @@ export default function MesaOperacoesPage() {
 
   // Estados de Conta e Saldo Sincronizado
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
-  const [modoOperacao, setModoOperacao] = useState('reversa'); // 'manual' ou 'reversa'
+  const [modoOperacao, setModoOperacao] = useState('manual'); // laudo define o modo inicial
+  const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
 
   // Sincroniza o saldo simulado globalmente
@@ -25,6 +27,30 @@ export default function MesaOperacoesPage() {
     setSaldoSimulado(novoValor);
     localStorage.setItem('jenios_saldo_simulado', novoValor);
   };
+
+  useEffect(() => {
+    const report = readLocalReport(window.localStorage);
+    setDiagnosticoConcluido(Boolean(report));
+    const chosen = window.localStorage.getItem(MODE_KEY);
+    if (chosen === 'manual' || chosen === 'reversa') setModoOperacao(chosen);
+    else if (report) setModoOperacao(report.mode);
+  }, []);
+
+  const alterarModo = (mode) => {
+    if (!['manual', 'reversa'].includes(mode)) return;
+    setModoOperacao(mode);
+    window.localStorage.setItem(MODE_KEY, mode);
+  };
+  const solicitarContaReal = () => {
+    if (!diagnosticoConcluido) {
+      alert('Para iniciar operações reais é obrigatório concluir o Diagnóstico Comportamental disponível na Dashboard. O simulador continua acessível.');
+    } else {
+      alert('Seu diagnóstico inicial foi registrado. A execução real aguarda validação no servidor e conexão homologada da corretora. O navegador não autoriza ordens reais.');
+    }
+  };
+
+  // Sem histórico validado não há motivo para sugerir uma troca de modo.
+  const sugestaoAdaptativa = adaptiveModeSuggestion([], modoOperacao);
 
   // Estados de Ativos e Categoria
   const [categoria, setCategoria] = useState('b3');
@@ -131,6 +157,7 @@ export default function MesaOperacoesPage() {
   }, [ativoSelecionado]);
 
   const executarOrdem = (direcao) => {
+    if (tipoConta !== 'simulada') { alert('Ordem real bloqueada: integração e validação do servidor pendentes.'); return; }
     if (planoUsuario === 'basico' && categoria !== 'b3') {
       alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
       window.location.href = '/checkout';
@@ -145,10 +172,20 @@ export default function MesaOperacoesPage() {
     const riscoCalculado = capitalAlocar * 0.02; 
     const alvoCalculado = riscoCalculado * 1.5; 
 
-    alert(`🚀 Ordem de ${direcao} executada com sucesso!\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo Fictício: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Ativo: ${nomeAtivoExibicao} (${ativoSelecionado})\n• Modo: ${modoOperacao === 'reversa' ? 'Engenharia Reversa Adaptativa' : 'Manual Puro'}\n• Capital Alocado: R$ ${capitalAlocar}\n• Risco Controlado: R$ ${riscoCalculado.toFixed(2)}\n• Alvo Automático (1.5x): R$ ${alvoCalculado.toFixed(2)}`);
+    alert(`Prévia fictícia: ${direcao} para ${nomeAtivoExibicao}. Modo: ${modoOperacao === 'reversa' ? 'Reverso' : 'Manual'}. Nenhuma ordem foi enviada à corretora.`);
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
+      <section style={{background:'#ffffff',color:'#0f172a',borderRadius:12,padding:16,border:'1px solid #ddd6fe'}}>
+        <strong>Modo operacional: {modoOperacao === 'reversa' ? 'Reversão Adaptativa' : 'Manual'}</strong>
+        <p style={{fontSize:12,color:'#475569',margin:'6px 0 10px'}}>
+          {diagnosticoConcluido ? 'Modo inicial determinado pelo laudo; você pode alterá-lo abaixo a qualquer momento.' : 'Diagnóstico pendente. Você pode usar o simulador; o diagnóstico é obrigatório para solicitar acesso à conta real.'}
+        </p>
+        {!diagnosticoConcluido && <a href="/diagnostico" style={{display:'inline-block',background:'#7c3aed',color:'#fff',padding:'9px 12px',borderRadius:8,textDecoration:'none',fontSize:12,fontWeight:700}}>Fazer diagnóstico</a>}
+        <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>{sugestaoAdaptativa || 'Leitura adaptativa: aguardando histórico de operações verificadas. Não há recomendação baseada em perdas neste momento.'}</p>
+        <p style={{fontSize:11,color:'#64748b',margin:'6px 0 0'}}>Losses evitados: contador financeiro indisponível sem eventos e preços auditáveis. Bloquear uma tentativa não comprova valor poupado.</p>
+      </section>
+
       {/* BARRA SUPERIOR DE CONTROLE */}
       <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxSizing: 'border-box' }}>
         
@@ -169,7 +206,7 @@ export default function MesaOperacoesPage() {
               Simulador (Demo)
             </button>
             <button 
-              onClick={() => setTipoConta('real')} 
+              onClick={solicitarContaReal} 
               style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
             >
               Conta Real
@@ -297,20 +334,20 @@ export default function MesaOperacoesPage() {
             
             <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
               <h2 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', color: '#0f172a', margin: '0 0 4px 0' }}>Mesa de Execução HFT</h2>
-              <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>● Proteção Algorítmica Ativa</span>
+              <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold' }}>Simulação • Controles disponíveis</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155', fontFamily: 'monospace' }}>Modo Operacional</label>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                 <button 
-                  onClick={() => setModoOperacao('manual')}
+                  onClick={() => alterarModo('manual')}
                   style={{ backgroundColor: modoOperacao === 'manual' ? '#334155' : '#f1f5f9', color: modoOperacao === 'manual' ? '#fff' : '#334155', border: 'none', padding: '8px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
                   Manual Puro
                 </button>
                 <button 
-                  onClick={() => setModoOperacao('reversa')}
+                  onClick={() => alterarModo('reversa')}
                   style={{ backgroundColor: modoOperacao === 'reversa' ? '#7c3aed' : '#f1f5f9', color: modoOperacao === 'reversa' ? '#fff' : '#334155', border: 'none', padding: '8px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
                   Engenharia Reversa
@@ -351,7 +388,7 @@ export default function MesaOperacoesPage() {
 
             <div style={{ backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '12px', fontSize: '10px', color: '#78350f', display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <b>🛡️ Motor Adaptativo de Tendência:</b> 
-              <span>Se o ativo estiver em forte tendência e você entrar a favor dela, o robô respeita o fluxo e <b>não faz reversão</b>. A engenharia só atua em falsos rompimentos e exaustões.</span>
+              <span>Em simulações, a política pode preservar a direção em uma tendência confirmada, sempre sujeita aos limites de risco. Esta tela não valida tendências nem transmite ordens.</span>
             </div>
           </div>
 

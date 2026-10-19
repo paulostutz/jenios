@@ -189,8 +189,9 @@ try {
  const opened=await evalExpr(`(()=>{const toggle=document.querySelector('.jenios-mobile-rail-toggle');if(!toggle)return false;toggle.click();return true;})()`);
  pass(opened,'Smartphone menu control responds to touch');
  await waitFor(`!!document.querySelector('#jenios-mobile-rail-extra')`);
+ await waitFor(`(()=>{const w=document.querySelector('.jenios-mobile-rail')?.getBoundingClientRect().width;return w>175&&w<=260;})()`,5000);
  pass(await evalExpr(`(()=>{const w=document.querySelector('.jenios-mobile-rail')?.getBoundingClientRect().width;return w>175&&w<=260;})()`),
-  'Smartphone expanded rail stays narrow');
+  'Smartphone expanded rail stays narrow after transition');
  pass(await evalExpr(`document.querySelector('#jenios-mobile-rail-extra')?.innerText.includes('BankScore')`),
   'Expanded rail contains BankScore');
  await screenshot('social-mobile');

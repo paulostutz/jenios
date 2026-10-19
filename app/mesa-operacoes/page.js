@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
+import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {loadUnifiedSimulationDiagnostic} from '../../lib/platform/unified-entry.mjs';
@@ -469,6 +470,7 @@ export default function MesaOperacoesPage() {
         </div>
       )}
 
+      <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
     </main>
   );
 }

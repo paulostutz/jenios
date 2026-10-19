@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
+import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import useTrendsData from '../components/useTrendsData';
 import {dashboardHubModule} from '../../lib/platform/dashboard-trends.mjs';
 import terminal from '../components/platform/Terminal.module.css';
@@ -564,6 +565,7 @@ export default function DashboardPage() {
 
         </div>
 
+        <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
       </div>
     </main>
   );

@@ -82,9 +82,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .jenios-integration-qa
-          git diff --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD | grep -v '^.github/workflows/' > .jenios-integration-qa/integrated-files.txt
-          sha256sum $(cat .jenios-integration-qa/integrated-files.txt) > .jenios-integration-qa/SHA256SUMS.txt
-          tar -czf .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz -T .jenios-integration-qa/integrated-files.txt .jenios-integration-qa/SHA256SUMS.txt
+          # Record deletions separately: old R24 purple icons are intentionally replaced.
+          git diff --diff-filter=ACMRT --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD | grep -v '^.github/workflows/' > .jenios-integration-qa/integrated-files.txt
+          git diff --diff-filter=D --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD > .jenios-integration-qa/deleted-files.txt
+          while IFS= read -r file; do
+            if [ -n "$file" ]; then sha256sum "$file"; fi
+          done < .jenios-integration-qa/integrated-files.txt > .jenios-integration-qa/SHA256SUMS.txt
+          tar -czf .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz -T .jenios-integration-qa/integrated-files.txt .jenios-integration-qa/SHA256SUMS.txt .jenios-integration-qa/deleted-files.txt
       - name: Preserve integrated source package
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

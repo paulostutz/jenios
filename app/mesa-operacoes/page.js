@@ -5,6 +5,7 @@ import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writ
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {readSimJournal,appendSimIntention,clearSimJournal} from '../../lib/platform/simulation-journal.mjs';
 import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
+import {readSimulatedBalance,writeSimulatedBalance,readSimulationPaused,writeSimulationPaused} from '../../lib/platform/simulation-account.mjs';
 import terminal from '../components/platform/Terminal.module.css';
 
 export default function MesaOperacoesPage() {
@@ -26,22 +27,17 @@ export default function MesaOperacoesPage() {
   const [pausaManual, setPausaManual] = useState(false);
   const [bloqueiosDeRisco, setBloqueiosDeRisco] = useState(0);
 
-  // Sincroniza o saldo simulado globalmente
-  useEffect(() => {
-    const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
-    if (saldoSalvo && Number.isFinite(Number(saldoSalvo)) && Number(saldoSalvo)>=0 && Number(saldoSalvo)<=100000000) {
-      setSaldoSimulado(Number(saldoSalvo));
-    }
-  }, []);
-
   const atualizarSaldoSimulado = (novoValor) => {
-    const n=Number(novoValor);if(!Number.isFinite(n)||n<0||n>100000000)return;
-    setSaldoSimulado(n);localStorage.setItem('jenios_saldo_simulado',String(n));
+    if(!writeSimulatedBalance(window.sessionStorage,operadorId,novoValor))return;
+    setSaldoSimulado(Number(novoValor));
   };
 
   useEffect(() => observePlatformDiagnostic(supabase,status=>{
     setOperadorId(status.userId);
     setIntencoes(readSimJournal(window.sessionStorage,status.userId));
+    setSaldoSimulado(readSimulatedBalance(window.sessionStorage,status.userId));
+    setPausaManual(readSimulationPaused(window.sessionStorage,status.userId));
+    setBloqueiosDeRisco(0);
     setDiagnosticoConcluido(status.verified===true);
     setDiagnosticoBackend(status.reason==='checking'?'Verificando':
       status.verified?'Validado no servidor':
@@ -172,7 +168,7 @@ export default function MesaOperacoesPage() {
 
   const executarOrdem = (direcao) => {
     if (tipoConta !== 'simulada') { alert('Ordens reais não autorizadas nesta interface.'); return; }
-    if (pausaManual) { setBloqueiosDeRisco(n=>n+1); return; }
+    if (readSimulationPaused(window.sessionStorage,operadorId)) { setBloqueiosDeRisco(n=>n+1); return; }
     const valor=Number(capitalAlocar),quantidade=Number(contratos);
     if (!Number.isFinite(valor)||valor<=0||valor>limiteMaximoRiscoPermitido||!Number.isInteger(quantidade)||quantidade<1) {
       setBloqueiosDeRisco(n=>n+1);
@@ -401,7 +397,11 @@ export default function MesaOperacoesPage() {
             {intencoes.length===0 ? <p className={terminal.note}>Ainda não há decisões fictícias registradas nesta sessão.</p> :
               <ol>{intencoes.map(entry=><li key={entry.id}><span>{entry.hora} · {entry.ativo} · {entry.direcao}</span><span>R$ {entry.valor.toLocaleString('pt-BR')} · {entry.modo}</span></li>)}</ol>}
             <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap'}}>
-              <button type="button" onClick={()=>setPausaManual(x=>!x)} style={{background:pausaManual?'#059669':'#7c3aed',color:'#fff',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer',fontWeight:800}}>{pausaManual?'Retomar sessão':'Pausar sessão'}</button>
+              <button type="button" onClick={()=>{
+                const paused=!pausaManual;
+                if(!writeSimulationPaused(window.sessionStorage,operadorId,paused))return;
+                setPausaManual(paused);
+              }} style={{background:pausaManual?'#059669':'#7c3aed',color:'#fff',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer',fontWeight:800}}>{pausaManual?'Retomar sessão':'Pausar sessão'}</button>
               <button type="button" onClick={()=>{clearSimJournal(window.sessionStorage,operadorId);setIntencoes([]);}} disabled={intencoes.length===0} style={{background:'#e2e8f0',color:'#334155',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer'}}>Limpar diário</button>
             </div>
           </section>

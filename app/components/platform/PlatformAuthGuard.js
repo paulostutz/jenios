@@ -26,11 +26,13 @@ export default function PlatformAuthGuard({children}){
    }
   }
   void validate();
+  let pendingTimer=null;
   const sub=platformSupabase.auth.onAuthStateChange(event=>{
    if(event==='TOKEN_REFRESHED' || event==='INITIAL_SESSION')return;
-   void validate();
+   clearTimeout(pendingTimer);
+   pendingTimer=setTimeout(()=>{if(live)void validate();},0);
   });
-  return()=>{live=false;seq++;sub.data.subscription.unsubscribe();};
+  return()=>{live=false;seq++;clearTimeout(pendingTimer);sub.data.subscription.unsubscribe();};
  },[router]);
 
  if(state==='authorized')return children;

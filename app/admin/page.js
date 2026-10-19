@@ -18,7 +18,7 @@ const OPTIONS = [
     action:'Gerenciar cobranças'
   },
   {
-    id:'permissions',permission:'permissions.manage',href:'/admin/consultas',
+    id:'permissions',permission:'permissions.manage',href:'/admin/plataforma/permissoes',
     emoji:'🔐',title:'Permissões e auditoria',
     summary:'Gerencie permissões com verificação do servidor e registro de auditoria, sem criar administradores fictícios.',
     action:'Ver gestão de acesso'

@@ -1,0 +1,57 @@
+{
+  "project": "JENIOS Platform",
+  "checkpoint": "R45-B70",
+  "recorded_on": "2026-10-19",
+  "milestone_internal_percent": 70,
+  "baseline_percent": 69.5,
+  "source_branch": "fix/jenios-platform-cp69-lancamento-auth-20261019",
+  "source_commit": "410827b42e0b0554f582af6290bc3a4dbd13cef0",
+  "github_actions_run_id": 39258731670,
+  "github_actions_url": "https://github.com/paulostutz/jenios/actions/runs/39258731670",
+  "jobs": [
+    {
+      "name": "certification",
+      "id": 118080531018,
+      "conclusion": "success",
+      "automated_tests": 472,
+      "chromium_checks": 27,
+      "negative_http_checks": 6,
+      "next_build": "passed"
+    },
+    {
+      "name": "authenticated-qa",
+      "id": 118081525072,
+      "conclusion": "success",
+      "authenticated_checks": 15,
+      "synthetic_account_cleanup": "passed"
+    }
+  ],
+  "dedicated_supabase": {
+    "name": "jenios-platform-homologacao",
+    "ref": "xaicvhagftzjkqphnbgx",
+    "region": "sa-east-1",
+    "post_qa_counts": {
+      "auth_users": 0,
+      "diagnostic_rows": 0,
+      "risk_rows": 0,
+      "permission_rows": 0,
+      "audit_rows": 0
+    }
+  },
+  "remote_acceptance": {
+    "dedicatedPlatformSupabase": true,
+    "remoteMigrationReviewedAndApplied": true,
+    "realAuthenticatedEndToEnd": true,
+    "adminRoleMatrixVerifiedRemotely": true
+  },
+  "financial_release": {
+    "brokerIntegrationHomologated": false,
+    "licensedMarketDataVerified": false,
+    "prospectivePaperPilot": false,
+    "legalRiskReview": false
+  },
+  "no_public_deploy": true,
+  "no_production_merge": true,
+  "no_real_orders": true,
+  "backup_policy": "Preserve B68 and B69 checkpoints; this record never stores Supabase credentials."
+}

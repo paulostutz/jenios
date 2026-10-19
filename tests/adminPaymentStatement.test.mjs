@@ -29,10 +29,13 @@ test('invalid statuses are rejected before a query and profile errors fail close
   const db=mock();await assert.rejects(listAdminOrders(db,{status:'paid,or=true'}),{status:400});assert.equal(db.calls.length,0);
   await assert.rejects(listAdminOrders(mock({profileError:Error('unavailable')}),{customer:'QA'}));
 });
-test('financial route authorizes admin before list and dashboard no longer fabricates payment success',()=>{
+test('financial route preserves Social billing while Platform dashboard uses its own billing boundary',()=>{
   const route=readFileSync(new URL('../app/api/jenios-pay/admin/route.js',import.meta.url),'utf8');
   const authorization=route.indexOf("await requireAdminPermission(request, db, 'finance.manage')");
   assert.ok(authorization>=0&&authorization<route.indexOf('listAdminOrders(db,'));
   const dashboard=readFileSync(new URL('../app/dashboard-logado/page.js',import.meta.url),'utf8');
-  assert.match(dashboard,/<PaymentStatement embedded/);assert.doesNotMatch(dashboard,/Fatura de R\$ 199,90 processada com sucesso/);
+  assert.match(dashboard,/<PlatformBillingStatus\s*\/>/);
+  assert.doesNotMatch(dashboard,/<PaymentStatement embedded|Fatura de R\$ 199,90 processada com sucesso/);
+  const socialComponent=readFileSync(new URL('../app/components/PaymentStatement.js',import.meta.url),'utf8');
+  assert.match(socialComponent,/api\/jenios-pay\/orders/);
 });

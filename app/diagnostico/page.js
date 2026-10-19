@@ -1,19 +1,32 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { classifyDiagnostic } from '../../lib/platform/diagnostic-routing.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic, submitAccountDiagnostic, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 
 export default function DiagnosticoPlatformPage() {
   const [jaFezAntes, setJaFezAntes] = useState(false);
-  const [scores, setScores] = useState({ impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 });
+  const [verificando, setVerificando] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+  const [aviso, setAviso] = useState('');
+  const [respostas, setRespostas] = useState([]);
   const [etapa, setEtapa] = useState(0);
   const [timelineSelecionada, setTimelineSelecionada] = useState('');
 
-  useEffect(() => {
-    const status = localStorage.getItem('jenios_diagnostico_realizado');
-    if (status === 'true') {
-      setJaFezAntes(true);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    if(status.reason==='checking'){
+      setVerificando(true);
+      setJaFezAntes(false);
+      setRespostas([]);
+      setEtapa(0);
+      setTimelineSelecionada('');
+      setAviso('');
+      return;
     }
-  }, []);
+    setJaFezAntes(status.verified===true);
+    setVerificando(false);
+  },loadAccountDiagnostic),[]);
 
   const perguntas = [
     {
@@ -22,7 +35,8 @@ export default function DiagnosticoPlatformPage() {
         { t: "Sinto raiva, abro outra operação na hora com o dobro do lote para recuperar rápido (Viés de Vingança).", p: "impulsivo", v: 2 },
         { t: "Fico arrasado e encerro o computador por hoje com receio de perder o capital restante.", p: "ansioso", v: 2 },
         { t: "Recuso-me a aceitar o erro. Arrasto o Stop Loss para baixo, afinal o mercado vai voltar.", p: "teimoso", v: 2 },
-        { t: "Fico paralisado o resto do dia refazendo cálculos sem coragem de clicar novamente.", p: "hesitante", v: 2 }
+        { t: "Fico paralisado o resto do dia refazendo cálculos sem coragem de clicar novamente.", p: "hesitante", v: 2 },
+        { t: "Respeito o stop, registro a razão da entrada e só volto a operar quando houver configuração válida.", p: "tecnico_positivo", v: 2 }
       ]
     },
     {
@@ -31,7 +45,8 @@ export default function DiagnosticoPlatformPage() {
         { t: "Aumento a mão na operação para tentar arrancar R$ 1.000 de forma agressiva.", p: "impulsivo", v: 2 },
         { t: "Fecho o trade imediatamente e embolso os R$ 100 por medo de devolver (Mão de Alface).", p: "ansioso", v: 2 },
         { t: "Deixo o trade correr ignorando qualquer sinal técnico de reversão gráfica.", p: "teimoso", v: 2 },
-        { t: "Fico monitorando segundo a segundo, mudando de ideia a cada oscilação.", p: "hesitante", v: 2 }
+        { t: "Fico monitorando segundo a segundo, mudando de ideia a cada oscilação.", p: "hesitante", v: 2 },
+        { t: "Sigo o plano pré-definido de alvos e stops sem aumentar o lote por impulso.", p: "tecnico_positivo", v: 2 }
       ]
     },
     {
@@ -40,7 +55,8 @@ export default function DiagnosticoPlatformPage() {
         { t: "Clico em comprar repetidamente de forma furiosa, tentando adivinhar o fundo exato.", p: "impulsivo", v: 2 },
         { t: "Fico olhando a tela com o coração acelerado e a mente congelada, sem coragem de executar.", p: "ansioso", v: 2 },
         { t: "Abro novas compras a cada queda (Preço Médio), convicto de que o ativo está barato demais.", p: "teimoso", v: 2 },
-        { t: "Espero cair por horas. Quando decido entrar vendido, o mercado subitamente inverte.", p: "hesitante", v: 2 }
+        { t: "Espero cair por horas. Quando decido entrar vendido, o mercado subitamente inverte.", p: "hesitante", v: 2 },
+        { t: "Analiso a tendência e aguardo confirmação do meu setup, sem tentar adivinhar o fundo.", p: "tecnico_positivo", v: 2 }
       ]
     },
     {
@@ -49,7 +65,8 @@ export default function DiagnosticoPlatformPage() {
         { t: "Passo semanas ganhando, mas perco absolutamente tudo e quebro a conta em um único dia de fúria.", p: "impulsivo", v: 2 },
         { t: "Minha conta sangra aos poucos porque meus ganhos são minúsculos e minhas perdas são longas.", p: "ansioso", v: 2 },
         { t: "Tenho dias de lucros estrondosos, seguidos por perdas catastróficas que zeram meu patrimônio.", p: "teimoso", v: 2 },
-        { t: "Meus ganhos e perdas se equivalem, e meu saldo negativo real são apenas as taxas da corretora.", p: "hesitante", v: 2 }
+        { t: "Meus ganhos e perdas se equivalem, e meu saldo negativo real são apenas as taxas da corretora.", p: "hesitante", v: 2 },
+        { t: "Consolido os resultados, respeito meus limites diários e reviso o diário de operações.", p: "tecnico_positivo", v: 2 }
       ]
     },
     {
@@ -58,59 +75,59 @@ export default function DiagnosticoPlatformPage() {
         { t: "A raiva incontrolável e o arrependimento devastador após fechar um dia de fúria.", p: "impulsivo", v: 2 },
         { t: "A ansiedade crônica e a dor no estômago toda vez que vejo o saldo oscilar na tela.", p: "ansioso", v: 2 },
         { t: "A sensação de que o mercado me persegue e que os grandes bancos sabem meu stop.", p: "teimoso", v: 2 },
-        { t: "A frustração de estudar centenas de horas de teoria e não conseguir sair do lugar.", p: "hesitante", v: 2 }
+        { t: "A frustração de estudar centenas de horas de teoria e não conseguir sair do lugar.", p: "hesitante", v: 2 },
+        { t: "Quero ampliar a consistência no cumprimento do meu plano e da gestão de risco.", p: "tecnico_positivo", v: 2 }
       ]
     }
   ];
 
-  const responder = (pIndex, aIndex) => {
-    const alt = perguntas[pIndex].a[aIndex];
-    setScores(prev => ({ ...prev, [alt.p]: prev[alt.p] + alt.v }));
-    setEtapa(prev => prev + 1);
-  };
+  // Recalcula do zero: voltar/alterar respostas não duplica pontos do laudo.
+  const scores = perguntas.reduce((acc, question, index) => {
+    const choice = Number.isInteger(respostas[index]) ? question.a[respostas[index]] : null;
+    if (choice) acc[choice.p] += choice.v;
+    return acc;
+  }, { impulsivo: 0, ansioso: 0, teimoso: 0, hesitante: 0, tecnico_positivo: 0 });
+  const recomendacao = classifyDiagnostic(scores);
 
-  const voltarEtapa = () => {
-    if (etapa > 0) setEtapa(prev => prev - 1);
+  const responder = (index, choice) => {
+    setRespostas(prev => [...prev.slice(0, index), choice]);
+    setEtapa(index + 1);
   };
-
+  const voltarEtapa = () => setEtapa(prev => Math.max(0, prev - 1));
   const finalizarTimeline = (tipo) => {
     setTimelineSelecionada(tipo);
-    setScores(prev => {
-      const s = { ...prev };
-      if (tipo === 'RAPIDO') { s.impulsivo += 3; s.ansioso += 3; }
-      if (tipo === 'ESTRUTURADO') { s.hesitante += 3; s.ansioso += 1; }
-      if (tipo === 'SWING') { s.teimoso += 4; s.tecnico_positivo += 2; }
-      return s;
-    });
-    setEtapa(prev => prev + 1);
+    setEtapa(perguntas.length + 1);
   };
-
-  let aptidao = Math.min(100, (scores.tecnico_positivo / 10) * 100);
-
-  const concluirEEntrarDiretoNaMesa = (modoDefinido) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('jenios_diagnostico_realizado', 'true');
-      localStorage.setItem('jenios_diagnostico_data', new Date().toISOString());
-      localStorage.setItem('jenios_modo_operacional', modoDefinido);
+  const concluirEEntrarDiretoNaMesa = async () => {
+    if (salvando || respostas.length !== perguntas.length || !timelineSelecionada) return;
+    setSalvando(true);
+    setAviso('');
+    const status = await submitAccountDiagnostic(supabase, respostas, timelineSelecionada);
+    // Na ausência de backend ou conta, somente uma preferência transitória da sessão.
+    writeSessionMode(window.sessionStorage,status.userId,status.verified ? status.mode : recomendacao.mode);
+    if (!status.verified) {
+      setAviso('Não foi possível confirmar o diagnóstico no servidor. Você pode usar a simulação normalmente, mas não há habilitação de operações reais.');
+      setSalvando(false);
+      return;
     }
-    window.location.href = '/mesa-operacao';
+    window.location.assign('/mesa-operacoes');
   };
 
   return (
     <main style={{ backgroundColor: '#0f172a', color: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', fontFamily: 'Arial, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '30px', maxWidth: '600px', width: '100%', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)', boxSizing: 'border-box' }}>
         
-        {jaFezAntes ? (
+        {verificando ? (<p role="status">Verificando diagnóstico da conta…</p>) : jaFezAntes ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#fef2f2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', margin: '0 auto 20px auto', fontWeight: 'bold' }}>
               ⚠️
             </div>
             <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', marginBottom: '12px' }}>Diagnóstico Já Realizado</h2>
             <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', marginBottom: '25px' }}>
-              Você já concluiu o seu Diagnóstico Comportamental anteriormente. Por questões de segurança algorítmica e compliance, <b>não é permitido realizar novos testes no momento</b>. O próximo diagnóstico estará disponível somente após 90 dias da última calibração.
+              Seu laudo foi identificado no servidor da JENIOS. Você pode estudar e alterar o modo na mesa. Isso não autoriza ordens reais ou o uso de corretoras.
             </p>
-            <Link href="/dashboard-logado" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', padding: '12px 24px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', display: 'inline-block' }}>
-              ← Voltar para a Sala de Controle
+            <Link href="/dashboard" style={{ backgroundColor: '#7c3aed', color: '#fff', textDecoration: 'none', padding: '12px 24px', borderRadius: '10px', fontSize: '13px', fontWeight: 'bold', display: 'inline-block' }}>
+              ← Voltar para a Área de Negociação
             </Link>
           </div>
         ) : (
@@ -118,7 +135,7 @@ export default function DiagnosticoPlatformPage() {
             {etapa < perguntas.length && (
               <div>
                 <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '12px', display: 'block' }}>
-                  Onboarding Platform • Etapa {etapa + 1} de 6
+                  Onboarding Platform • Etapa {etapa + 1} de {perguntas.length + 1}
                 </span>
                 <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', lineHeight: '1.4', color: '#0f172a' }}>
                   {perguntas[etapa].q}
@@ -165,61 +182,23 @@ export default function DiagnosticoPlatformPage() {
             )}
 
             {etapa > perguntas.length && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div>
-                  <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>
-                    JENIOS DESK • MOTOR DE EXECUÇÃO
-                  </span>
-                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>
-                    Escolha o seu Modo Operacional
-                  </h2>
-                  <p style={{ fontSize: '12px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
-                    Selecione como o ecossistema JENIOS vai gerir as suas entradas e a proteção do seu capital nesta sessão.
+              <section style={{ display:'flex',flexDirection:'column',gap:16 }}>
+                <span style={{fontSize:11,fontWeight:800,color:'#7c3aed'}}>LAUDO INICIAL • ORIENTAÇÃO OPERACIONAL</span>
+                <h2 style={{color:'#0f172a',fontSize:22,margin:0}}>Diagnóstico concluído</h2>
+                <div style={{background:'#f5f3ff',padding:18,borderRadius:12,border:'1px solid #ddd6fe'}}>
+                  <p style={{margin:'0 0 8px',fontSize:14,fontWeight:800,color:'#4c1d95'}}>
+                    Modo inicial sugerido: {recomendacao.mode === 'reversa' ? 'Reversão Adaptativa' : 'Manual'}
                   </p>
+                  <p style={{fontSize:12,margin:0,color:'#334155',lineHeight:1.6}}>{recomendacao.rationale}</p>
                 </div>
-
-                {/* Opção 1: Reversão Adaptativa */}
-                <div style={{ border: '2px solid #7c3aed', borderRadius: '16px', padding: '20px', backgroundColor: '#fcf8ff', display: 'flex', flexDirection: 'column', gap: '12px', position: 'relative' }}>
-                  <span style={{ position: 'absolute', top: '-10px', left: '16px', backgroundColor: '#e9d5ff', color: '#7c3aed', fontSize: '9px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '9999px', textTransform: 'uppercase' }}>
-                    Recomendado
-                  </span>
-                  <div>
-                    <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 6px 0' }}>
-                      Modo Reversão Adaptativa
-                    </h3>
-                    <p style={{ fontSize: '11.5px', color: '#475569', margin: 0, lineHeight: '1.5' }}>
-                      O robô protege contra perdas e fúria. <b>Diferencial:</b> Ao detetar sequência de acertos consistentes, o sistema promove-o automaticamente para operar <i>sem reversão</i> (surfando a tendência livremente).
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => concluirEEntrarDiretoNaMesa('reversao')}
-                    style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textAlign: 'center', textTransform: 'uppercase', width: '100%' }}
-                  >
-                    Ativar Reversão Adaptativa
-                  </button>
-                </div>
-
-                {/* Opção 2: Modo Autónomo / Manual */}
-                <div style={{ border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', backgroundColor: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div>
-                    <span style={{ fontSize: '9px', backgroundColor: '#e2e8f0', color: '#334155', padding: '2px 8px', borderRadius: '9999px', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                      Controlo Total
-                    </span>
-                    <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '6px 0 6px 0' }}>
-                      Modo Autónomo / Manual
-                    </h3>
-                    <p style={{ fontSize: '11.5px', color: '#475569', margin: 0, lineHeight: '1.5' }}>
-                      Sem interferência do robô adaptativo. O operador define tudo: entradas, saídas, alvos e lotes de forma independente, discricionária ou puramente quantitativa.
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => concluirEEntrarDiretoNaMesa('manual')}
-                    style={{ backgroundColor: '#0f172a', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textAlign: 'center', textTransform: 'uppercase', width: '100%' }}
-                  >
-                    Ativar Modo Autónomo
-                  </button>
-                </div>
-              </div>
+                <p style={{fontSize:12,color:'#475569'}}>A JENIOS aplicará esse modo inicialmente na simulação. Você poderá alterar manualmente depois. O laudo é orientativo, não prevê lucros e, isoladamente, não libera operações reais.</p>
+                <button onClick={concluirEEntrarDiretoNaMesa} disabled={salvando} style={{background:'#7c3aed',color:'#fff',border:0,borderRadius:10,padding:14,fontWeight:800,cursor:salvando?'progress':'pointer'}}>{salvando?'Validando laudo…':'Entrar na área de negociações'}</button>
+                {aviso && <div role="status" style={{background:'#fff7ed',border:'1px solid #fed7aa',padding:12,borderRadius:10}}>
+                  <p style={{fontSize:12,color:'#92400e'}}>{aviso}</p>
+                  <Link href="/mesa-operacoes" style={{display:'inline-block',background:'#334155',color:'#fff',textDecoration:'none',padding:'9px 12px',borderRadius:8,fontSize:12,fontWeight:700}}>Continuar apenas no simulador</Link>
+                </div>}
+                <button onClick={() => setEtapa(perguntas.length)} style={{background:'#e2e8f0',color:'#334155',border:0,borderRadius:10,padding:10,cursor:'pointer'}}>Revisar respostas</button>
+              </section>
             )}
           </>
         )}

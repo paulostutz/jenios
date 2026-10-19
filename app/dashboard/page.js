@@ -1,31 +1,61 @@
 'use client';
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
+import terminal from '../components/platform/Terminal.module.css';
+import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
+import {readSimJournal,appendSimIntention} from '../../lib/platform/simulation-journal.mjs';
+import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
+import {readSimulatedBalance,writeSimulatedBalance,readSimulationPaused,writeSimulationPaused} from '../../lib/platform/simulation-account.mjs';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
+  const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
+  const [diagnosticoBackend, setDiagnosticoBackend] = useState('Verificando');
+  const [operadorId, setOperadorId] = useState(null);
+  const [bloqueiosSimulados, setBloqueiosSimulados] = useState(0);
+  const [intencoesFicticias, setIntencoesFicticias] = useState([]);
+  const [riskEvidence,setRiskEvidence]=useState(NO_EVIDENCE);
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
-  const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
+  const [statusMensagem, setStatusMensagem] = useState('Área de simulação · ordens reais indisponíveis nesta interface');
   
-  // Estados de Conta e Saldo Fictício Sincronizado via LocalStorage
+  // Estados de conta fictícia isolados por usuário e por sessão.
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
 
-  // Carrega e sincroniza o saldo simulado globalmente entre as páginas
-  useEffect(() => {
-    const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
-    if (saldoSalvo) {
-      setSaldoSimulado(Number(saldoSalvo));
-    }
-  }, []);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setOperadorId(status.userId);
+    setIntencoesFicticias(readSimJournal(window.sessionStorage,status.userId));
+    setSaldoSimulado(readSimulatedBalance(window.sessionStorage,status.userId));
+    setAntifuriaAcionado(readSimulationPaused(window.sessionStorage,status.userId));
+    setBloqueiosSimulados(0);
+    setDiagnosticoConcluido(status.verified===true);
+    setDiagnosticoBackend(status.reason==='checking'?'Verificando':
+      status.verified?'Validado no servidor':
+      status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
+    const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
+    setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
+  },loadAccountDiagnostic),[]);
 
-  const atualizarSaldoSimulado = (novoValor) => {
-    setSaldoSimulado(novoValor);
-    localStorage.setItem('jenios_saldo_simulado', novoValor);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setRiskEvidence(status.evidenceStatus?status:NO_EVIDENCE);
+  },()=>loadAccountRisk(supabase)),[]);
+
+  const solicitarContaReal = () => {
+    if (!diagnosticoConcluido) {
+      alert('Para iniciar a conta real é necessário concluir o Diagnóstico Comportamental, disponível nesta Dashboard. Você pode continuar no simulador.');
+      return;
+    }
+    alert('Diagnóstico inicial registrado. A conta real ainda requer validação no servidor, corretora homologada e autorização de execução. Nenhuma ordem real foi habilitada.');
   };
 
-  // Estados de Plano e Assinatura do Usuário
-  const [planoUsuario, setPlanoUsuario] = useState('completo'); // 'basico' ou 'completo'
+  const atualizarSaldoSimulado = (novoValor) => {
+    const num=Number(novoValor);
+    if(!writeSimulatedBalance(window.sessionStorage,operadorId,novoValor))return;
+    setSaldoSimulado(num);
+  };
+
+  // A assinatura não pode ser alterada por seleção local; consulte o backend em Meus pagamentos.
 
   // Estado do Ativo Selecionado e Categoria
   const [ativoSelecionado, setAtivoSelecionado] = useState('BMFBOVESPA:WIN1!');
@@ -98,12 +128,8 @@ export default function DashboardPage() {
   };
 
   const mudarMercado = (categoria) => {
-    if (planoUsuario === 'basico' && (categoria === 'cripto' || categoria === 'global')) {
-      alert('🔒 RECURSO BLOQUEADO: O seu plano atual (Básico) permite operar apenas na B3. Faça upgrade para o Plano Completo em /checkout para desbloquear Cripto e Global!');
-      window.location.href = '/checkout';
-      return;
-    }
-    setMercadoCategoria(categoria);
+    if (!['b3','cripto','global'].includes(categoria)) return;
+    setMercadoCategoria(categoria); // navegação de estudo, nunca permissão financeira
   };
 
   const handleBuscaCustomizada = (e) => {
@@ -165,36 +191,49 @@ export default function DashboardPage() {
 
   const ativarModoReverso = () => {
     setModoReversoAtivo(!modoReversoAtivo);
-    if (!modoReversoAtivo) {
-      setStatusMensagem('🚨 MODO REVERSO ATIVADO: Ordens impulsivas e stop-hunts estão a ser revertidas automaticamente em lucro!');
-    } else {
-      setStatusMensagem('Sistema HFT Ativo & Blindado');
-    }
+    const novoModo = !modoReversoAtivo ? 'reversa' : 'manual';
+    writeSessionMode(window.sessionStorage,operadorId,novoModo);
+    setStatusMensagem(novoModo === 'reversa' ? 'Modo reverso selecionado para simulação.' : 'Modo manual selecionado para simulação.');
   };
 
   const acionarAntifuria = () => {
-    setAntifuriaAcionado(true);
-    setStatusMensagem('🚨 BOTÃO ANTIFÚRIA ACIONADO! Novas ordens bloqueadas por 24h.');
-    alert('🚨 BOTÃO ANTIFÚRIA ACIONADO! O sistema bloqueou novas ordens impulsivas e ativou a blindagem emocional rigorosa.');
+    const paused=!antifuriaAcionado;
+    if(!writeSimulationPaused(window.sessionStorage,operadorId,paused)){
+      setStatusMensagem('Não foi possível salvar a trava de simulação. Nenhuma ordem é transmitida.');
+      return;
+    }
+    setAntifuriaAcionado(paused);
+    setStatusMensagem(paused?'Simulação pausada para esta conta.':'Simulação retomada manualmente para esta conta.');
   };
 
   const acionarTravaManual = () => {
-    alert('🚨 TRAVA MANUAL ACIONADA! Todos os cliques foram bloqueados e as posições em aberto foram fechadas com sucesso na corretora.');
+    if(!writeSimulationPaused(window.sessionStorage,operadorId,true)){
+      alert('Pausa local indisponível. Nenhuma ordem real é transmitida por este painel.');
+      return;
+    }
+    setAntifuriaAcionado(true);
+    setStatusMensagem('Simulador pausado nesta conta. Nenhuma corretora recebeu comando.');
   };
 
   const executarOrdem = (direcao) => {
-    if (antifuriaAcionado) {
-      alert('⚠️ Operação bloqueada pelo Botão Antifúria ativo!');
+    if (tipoConta !== 'simulada') { alert('Execução real bloqueada: autorização no servidor indisponível.'); return; }
+    if (readSimulationPaused(window.sessionStorage,operadorId)) {
+      setBloqueiosSimulados(n => n + 1);
+      alert('Tentativa fictícia bloqueada pelo Botão Antifúria. Não é possível calcular uma perda evitada com base nesse bloqueio.');
       return;
     }
 
-    if (planoUsuario === 'basico' && mercadoCategoria !== 'b3') {
-      alert('🔒 A sua assinatura atual (Plano Básico) não permite operações fora da B3. Visite /checkout para assinar o plano completo.');
-      window.location.href = '/checkout';
+    if (!Number.isFinite(Number(capitalAlocado)) || Number(capitalAlocado)<=0 || Number(capitalAlocado)>saldoSimulado || !Number.isInteger(Number(lotes)) || Number(lotes)<1) {
+      alert('Revise o capital fictício e a quantidade de lotes antes de registrar a intenção.');
       return;
     }
 
-    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo Fictício: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
+    const recorded=appendSimIntention(window.sessionStorage,operadorId,
+      {ativo:nomeAtivoExibicao,direcao,modo:modoReversoAtivo?'reversa':'manual',
+       capital:Number(capitalAlocado)});
+    if(!recorded.ok) {setStatusMensagem('Diário local indisponível; nenhuma ordem foi enviada.');return;}
+    setIntencoesFicticias(recorded.events);
+    setStatusMensagem('Intenção de negociação fictícia registrada. Nenhuma ordem transmitida.');
   };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', padding: '30px 20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -224,38 +263,27 @@ export default function DashboardPage() {
                   Simulador
                 </button>
                 <button 
-                  onClick={() => setTipoConta('real')} 
+                  onClick={solicitarContaReal} 
                   style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
-                  Real
+                  Real (validar)
                 </button>
               </div>
 
               {tipoConta === 'simulada' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderLeft: '1px solid #cbd5e1', paddingLeft: '8px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Saldo (R$):</span>
+                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Saldo fictício (R$):</span>
                   <input 
                     type="number" 
                     value={saldoSimulado} 
-                    onChange={(e) => atualizarSaldoSimulado(Number(e.target.value))}
+                    min="0" max="100000000" onChange={(e) => atualizarSaldoSimulado(e.target.value)}
                     style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', outline: 'none' }}
                   />
                 </div>
               )}
             </div>
 
-            {/* Seletor de Plano */}
-            <div style={{ backgroundColor: '#f8fafc', padding: '6px 12px', borderRadius: '12px', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Plano:</span>
-              <select 
-                value={planoUsuario} 
-                onChange={(e) => setPlanoUsuario(e.target.value)}
-                style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', outline: 'none', cursor: 'pointer' }}
-              >
-                <option value="basico">Básico (B3)</option>
-                <option value="completo">Completo (B3 + Cripto + Global)</option>
-              </select>
-            </div>
+            <a href="/dashboard-logado" style={{display:'inline-block',padding:'10px 12px',fontSize:11,color:'#6d28d9',background:'#f5f3ff',borderRadius:10,textDecoration:'none',fontWeight:800}}>Minha assinatura ↗</a>
 
             {/* Links Rápidos */}
             <div style={{ display: 'flex', gap: '6px' }}>
@@ -266,6 +294,23 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <section style={{background:'#ffffff',border:'1px solid #ddd6fe',borderRadius:14,padding:18,marginBottom:22}}>
+          <h2 style={{margin:'0 0 6px',fontSize:16,color:'#4c1d95'}}>Diagnóstico Comportamental</h2>
+          <p style={{fontSize:12,color:'#334155',margin:'0 0 12px'}}>
+            {diagnosticoConcluido ? 'Laudo inicial confirmado pelo servidor. Você pode continuar no modo indicado ou mudar depois.' : 'Você pode explorar o simulador sem diagnóstico. Para iniciar o processo de conta real, o laudo precisa ser validado pelo servidor.'}
+          </p>
+          <a href="/diagnostico" style={{display:'inline-block',padding:'10px 14px',background:'#7c3aed',color:'#fff',textDecoration:'none',fontSize:12,borderRadius:9,fontWeight:800}}>
+            {diagnosticoConcluido ? 'Consultar diagnóstico' : 'Fazer diagnóstico'}
+          </a>
+          <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>A autorização real também depende de autenticação, confirmação da conta e integração de corretora validada no servidor. Situação: {diagnosticoBackend}.</p>
+        </section>
+
+        <section className={terminal.banner} aria-label="Estado da negociação">
+          <div><strong>JENIOS · Mesa de estudos e simulação</strong>
+            <p>Navegue pelos ativos e registre decisões fictícias. O diagnóstico será necessário apenas para solicitar acesso à conta real, sujeito a autorização adicional.</p></div>
+          <nav className={terminal.bannerActions}><a href="/dashboard-logado">Área do cliente</a><a href="/mesa-operacoes">Mesa completa</a><a href="/diagnostico">Diagnóstico</a></nav>
+        </section>
+
         {/* 4 Cartões Principais do Topo */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           
@@ -274,7 +319,7 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>MODO DE RETIFICAÇÃO</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Modo Reverso Automático</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Intercepta impulsos e inverte ordens em 3ms.
+                Modo reverso disponível para estudo no simulador. Latência e roteamento real não certificados.
               </p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -292,21 +337,23 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#dc2626', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>BLINDAGEM EMOCIONAL</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Botão Antifúria</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Bloqueia o vício de vingança pós-loss por 24h.
+                Pausa novas tentativas nesta sessão de simulação.
               </p>
             </div>
             <button onClick={acionarAntifuria} style={{ backgroundColor: antifuriaAcionado ? '#991b1b' : '#dc2626', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '900', fontSize: '11px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}>
-              {antifuriaAcionado ? '🔒 Antifúria Ativo' : '🚨 Acionar Antifúria'}
+              {antifuriaAcionado ? '▶ Retomar simulação' : '🚨 Acionar Antifúria'}
             </button>
           </div>
 
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>ESTATÍSTICAS</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses Neutralizados</h3>
-              <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>R$ 6.293,00</div>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses evitados · eventos verificáveis</h3>
+              <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>—</div>
               <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
-                17 operações impulsivas evitadas.
+                {riskEvidence.verifiedBlocks===null?'Sem fonte de corretora verificada':
+                  riskEvidence.verifiedBlocks+' bloqueio(s) confirmado(s) por registro de corretora'}.
+                  {bloqueiosSimulados} bloqueio(s) fictício(s) nesta sessão. Sem valor financeiro de perda evitada comprovado.
               </p>
             </div>
             <button onClick={() => alert('Simulação de proteção ativa.')} style={{ backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '8px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer', width: '100%', marginTop: '10px' }}>
@@ -319,18 +366,18 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#e11d48', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>EMERGÊNCIA</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Trava Manual</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Zera posições e bloqueia novos cliques na corretora.
+                Bloqueia novas tentativas nesta simulação; não fecha posições na corretora.
               </p>
             </div>
             <button onClick={acionarTravaManual} style={{ backgroundColor: '#e11d48', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '900', fontSize: '11px', cursor: 'pointer', textTransform: 'uppercase', width: '100%', boxShadow: '0 4px 6px -1px rgba(225, 29, 72, 0.2)' }}>
-              🔒 ZERAR TUDO
+              🔒 PAUSAR SIMULADOR
             </button>
           </div>
 
         </div>
 
         {/* LAYOUT PRINCIPAL DO TERMINAL */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
+        <div className={terminal.workspace}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
             
@@ -352,13 +399,13 @@ export default function DashboardPage() {
                     onClick={() => mudarMercado('cripto')}
                     style={{ backgroundColor: mercadoCategoria === 'cripto' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'cripto' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
-                    Cripto {planoUsuario === 'basico' && '🔒'}
+                    Cripto
                   </button>
                   <button 
                     onClick={() => mudarMercado('global')}
                     style={{ backgroundColor: mercadoCategoria === 'global' ? '#7c3aed' : 'transparent', color: mercadoCategoria === 'global' ? '#fff' : '#334155', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
-                    Global / Forex {planoUsuario === 'basico' && '🔒'}
+                    Global / Forex
                   </button>
                 </div>
               </div>
@@ -412,7 +459,7 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                 <div>
                   <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f8fafc', display: 'block' }}>📈 Gráfico Profissional TradingView</span>
-                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {nomeAtivoExibicao} • Tempo Real Conectado</span>
+                  <span style={{ fontSize: '11px', color: '#34d399', fontFamily: 'monospace' }}>● {nomeAtivoExibicao} • Widget externo (verifique a cotação)</span>
                 </div>
               </div>
 
@@ -476,15 +523,25 @@ export default function DashboardPage() {
 
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+              <div className={terminal.actionButtons}>
                 <button onClick={() => executarOrdem('COMPRA (BUY)')} style={{ backgroundColor: '#059669', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(5, 150, 105, 0.2)' }}>
-                  🟢 COMPRAR A MERCADO (Lotes: {lotes})
+                  🟢 SIMULAR COMPRA (Lotes: {lotes})
                 </button>
                 <button onClick={() => executarOrdem('VENDA (SELL)')} style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.2)' }}>
-                  🔴 VENDER A MERCADO (Lotes: {lotes})
+                  🔴 SIMULAR VENDA (Lotes: {lotes})
                 </button>
               </div>
 
+              <div className={terminal.history} aria-live="polite">
+                <strong>Diário de intenções fictícias</strong>
+                {intencoesFicticias.length===0 ? <p className={terminal.note}>Nenhuma intenção registrada nesta sessão.</p> : (
+                  <ol>{intencoesFicticias.map(item=><li key={item.id}>
+                    <span>{item.hora} · {item.direcao} · {item.ativo}</span>
+                    <span>R$ {item.capital.toLocaleString('pt-BR')} · {item.modo}</span>
+                  </li>)}</ol>
+                )}
+                <p className={terminal.note}>Diário compartilhado entre Dashboard e Mesa nesta sessão. Os cliques não representam ordens executadas nem lucros.</p>
+              </div>
             </div>
 
           </div>

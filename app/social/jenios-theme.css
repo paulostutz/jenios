@@ -167,3 +167,20 @@
   }
   .jenios-mobile-rail:not(.jenios-mobile-rail-open):hover .jenios-mobile-rail-label {display:none;}
 }
+
+/* B76 profile-only controls. Never render the owner bar on visited profiles. */
+.jenios-my-profile-panel {margin:18px 0 10px;padding:16px;border:1px solid #ddd6fe;border-radius:16px;background:#faf8ff;}
+.jenios-my-profile-heading h3 {margin:0 0 5px;font-size:18px;color:#5120bd;}
+.jenios-my-profile-heading p {margin:0 0 14px;font-size:12px;line-height:1.5;color:#64748b;}
+.jenios-my-profile-nav {display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:8px;}
+.jenios-my-profile-nav button,.jenios-my-profile-nav a {box-sizing:border-box;min-height:43px;padding:10px;border:1px solid #e3d8ff;border-radius:10px;background:#fff;color:#5b21b6;text-decoration:none;font:700 12px system-ui,sans-serif;cursor:pointer;text-align:center;}
+.jenios-my-profile-nav [aria-current="page"] {background:#6d28d9;color:#fff;}
+.jenios-my-profile-nav button:focus-visible,.jenios-my-profile-nav a:focus-visible {outline:2px solid #7c3aed;outline-offset:2px;}
+.jenios-my-post-actions {display:flex;gap:6px;margin-top:6px;}
+.jenios-my-post-actions button {flex:1;padding:9px 5px;border:1px solid #e2d6ff;border-radius:9px;background:#fff;color:#6d28d9;font-size:11px;font-weight:700;cursor:pointer;}
+.jenios-my-post-actions button:last-child:not(:first-child) {color:#b91c1c;border-color:#fecaca;}
+@media(max-width:600px) {
+ .jenios-my-profile-panel {padding:12px;margin:14px 0;}
+ .jenios-my-profile-nav {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .jenios-my-post-actions {flex-direction:column;}
+}

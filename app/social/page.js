@@ -2143,7 +2143,7 @@ const handleUploadCarrossel = async (e) => {
                   flexWrap: 'wrap',
                 }}
               >
-                <Link href={"/social/destaques?ownerId="+encodeURIComponent(perfilVisitado.id)} style={{fontSize:12,color:"#7c3aed",fontWeight:700}}>Destaques deste perfil ↗</Link>
+                {perfilVisitado.id!==meuPerfil.id && <Link href={"/social/destaques?ownerId="+encodeURIComponent(perfilVisitado.id)} style={{fontSize:12,color:"#7c3aed",fontWeight:700}}>Destaques deste perfil ↗</Link>}
 
                 <button
                   type="button"
@@ -2158,7 +2158,7 @@ const handleUploadCarrossel = async (e) => {
                     padding: 0,
                   }}
                 >
-                  ← Voltar ao Feed Principal
+                  ← Voltar ao Acesso Público
                 </button>
 
                 <button
@@ -2350,13 +2350,36 @@ const handleUploadCarrossel = async (e) => {
                       seguindo
                     </div>
 
-                    <div>
-                      <b>—</b>{' '}
-                      views (30 dias)
-                    </div>
+                    {perfilVisitado.id===meuPerfil.id && meuPerfil.autenticado && <div>
+                      <Link href="/insights" style={{color:'#6d28d9',fontWeight:700,textDecoration:'none'}}>Meus Insights ↗</Link>
+                    </div>}
                   </div>
                 </div>
               </div>
+
+
+              {perfilVisitado.id===meuPerfil.id && meuPerfil.autenticado && (
+                <section className="jenios-my-profile-panel" aria-label="Ferramentas privadas do Meu Perfil">
+                  <div className="jenios-my-profile-heading">
+                    <h3>Meu Perfil</h3>
+                    <p>Suas publicações ficam salvas na grade do Feed. Arquive para ocultar ou exclua definitivamente.</p>
+                  </div>
+                  <nav className="jenios-my-profile-nav" aria-label="Seções do Meu Perfil">
+                    <button type="button" aria-current={abaGaleria==='posts'?'page':undefined}
+                      onClick={()=>setAbaGaleria('posts')}>▦ Feed</button>
+                    <button type="button" aria-current={abaGaleria==='reels'?'page':undefined}
+                      onClick={()=>setAbaGaleria('reels')}>▶ Reels</button>
+                    <Link href={"/social/destaques?ownerId="+encodeURIComponent(meuPerfil.id)}>✦ Destaques</Link>
+                    <button type="button" aria-current={abaGaleria==='arquivados'?'page':undefined}
+                      onClick={()=>{setAbaGaleria('arquivados');feed.loadArchived().catch(()=>setProfileError('Não foi possível carregar seus arquivos.'));}}>▤ Arquivados</button>
+                    <button type="button" onClick={()=>setBlocksOpen(true)}>⊘ Usuários bloqueados</button>
+                    <button type="button" aria-current={abaGaleria==='lives'?'page':undefined}
+                      onClick={()=>setAbaGaleria('lives')}>● Lives</button>
+                    <button type="button" onClick={()=>{setPerfilRascunho({...meuPerfil});setPerfilSaveError('');setPerfilSalvando(false);setModalEditarPerfil(true);}}>⚙ Editar perfil</button>
+                    <Link href="/insights">◷ Meus Insights</Link>
+                  </nav>
+                </section>
+              )}
 
               <SocialPinnedPosts ownerId={perfilVisitado.id} accountId={meuPerfil.id} candidatePosts={profilePosts} />
               {/* PUBLICAÇÕES DO PERFIL - jenios-galeria-v2 */}
@@ -2370,7 +2393,7 @@ const handleUploadCarrossel = async (e) => {
                   color: '#0f172a',
                   marginBottom: '15px',
                 }}>
-                  Publicações de {perfilVisitado.nome}
+                  Feed de {perfilVisitado.nome}
                 </h3>
 
                 <div style={{
@@ -2380,14 +2403,10 @@ const handleUploadCarrossel = async (e) => {
                   marginBottom: '20px',
                 }}>
                   {[
-                    ['posts', 'Posts'],
+                    ['posts', 'Feed'],
                     ['fotos', 'Fotos'],
                     ['videos', 'Vídeos'],
-                    ['arquivados', 'Arquivados'],
-                  ].filter(([tipo]) =>
-                    tipo !== 'arquivados' ||
-                    perfilVisitado.id === meuPerfil.id
-                  ).map(([tipo, nome]) => (
+                  ].map(([tipo, nome]) => (
                     <button
                       key={tipo}
                       type="button"
@@ -2409,10 +2428,12 @@ const handleUploadCarrossel = async (e) => {
                   ))}
                 </div>
 
-                {abaGaleria==='arquivados' && <p style={{color:'#64748b',fontSize:12}}>Só você pode ver estas publicações. Ao desarquivar, elas voltam ao perfil na data original.</p>}
+                {abaGaleria==='arquivados' && perfilVisitado.id===meuPerfil.id && <p style={{color:'#64748b',fontSize:12}}>Só você pode ver estas publicações. Ao desarquivar, elas voltam ao perfil na data original.</p>}
+                {abaGaleria==='lives' && perfilVisitado.id===meuPerfil.id && <SocialLives key={meuPerfil?.id} meuPerfil={meuPerfil} onLoad={feed.lives} onCreate={feed.createLive} onRemove={feed.deleteLive} onReport={feed.reportLive} />}
                 {profileBusy && <p role="status">Carregando perfil…</p>}
                 {profileError && <p role="alert">{profileError} <button onClick={()=>visitarPerfil(perfilVisitado,abaGaleria)}>Tentar novamente</button></p>}
                 {(() => {
+                  if(abaGaleria==='lives')return null;
                   const publicacoes = (abaGaleria==='arquivados'?feed.archivedPosts:profilePosts).filter((p) => {
                     const ehDoPerfil =
                       p.authorId === perfilVisitado.id;
@@ -2430,7 +2451,7 @@ const handleUploadCarrossel = async (e) => {
                       return p.imagens?.some(item=>item.tipo!=='video');
                     }
 
-                    if (abaGaleria === 'videos') {
+                    if (abaGaleria === 'reels' || abaGaleria === 'videos') {
                       return Boolean(p.youtubeUrl || p.videoUrl || p.imagens?.some(item=>item.tipo==='video'));
                     }
 
@@ -2522,14 +2543,17 @@ const handleUploadCarrossel = async (e) => {
                               <span>👁️ {p.views || 0}</span>
                             </div>
                           </button>
-                          {p.authorId===meuPerfil.id && <button type="button" disabled={archiveBusyId===p.id} onClick={async()=>{setProfileError('');try{await arquivarPost(p,abaGaleria!=='arquivados');}catch{setProfileError('Não foi possível atualizar o arquivo. Tente novamente.');}}} style={{padding:10,width:'100%',border:'1px solid #ddd6fe',borderRadius:8,color:'#6d28d9',background:'#fff',cursor:'pointer'}}>{abaGaleria==='arquivados'?'Desarquivar':'Arquivar'}</button>}
+                          {p.authorId===meuPerfil.id && perfilVisitado.id===meuPerfil.id && <div className="jenios-my-post-actions">
+                            <button type="button" disabled={archiveBusyId===p.id} onClick={async()=>{setProfileError('');try{await arquivarPost(p,abaGaleria!=='arquivados');}catch{setProfileError('Não foi possível atualizar o arquivo. Tente novamente.');}}}>{abaGaleria==='arquivados'?'Desarquivar':'Arquivar'}</button>
+                            {abaGaleria!=='arquivados'&&<button type="button" onClick={()=>{if(window.confirm('Excluir definitivamente esta publicação do Feed e do perfil?'))void excluirPost(p.id);}}>Excluir</button>}
+                          </div>}
                           </div>
                         );
                       })}
                     </div>
                   );
                 })()}
-                {(abaGaleria==='arquivados'?feed.archivedNext:profileNext)!==null && <button disabled={profileBusy} onClick={()=>abaGaleria==='arquivados'?feed.loadArchived(feed.archivedNext).catch(()=>setProfileError('Não foi possível carregar mais arquivados.')):visitarPerfil(perfilVisitado,abaGaleria,profileNext)}>Carregar mais publicações</button>}
+                {abaGaleria!=='lives' && (abaGaleria==='arquivados'?feed.archivedNext:profileNext)!==null && <button disabled={profileBusy} onClick={()=>abaGaleria==='arquivados'?feed.loadArchived(feed.archivedNext).catch(()=>setProfileError('Não foi possível carregar mais arquivados.')):visitarPerfil(perfilVisitado,abaGaleria,profileNext)}>Carregar mais publicações</button>}
               </div>
             </div>
           )}

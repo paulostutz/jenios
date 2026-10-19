@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { classifyDiagnostic } from '../../lib/platform/diagnostic-routing.mjs';
-import { loadAccountDiagnostic, submitAccountDiagnostic, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic, submitAccountDiagnostic, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { supabase } from '../../lib/supabase';
 
 export default function DiagnosticoPlatformPage() {
@@ -14,15 +14,19 @@ export default function DiagnosticoPlatformPage() {
   const [etapa, setEtapa] = useState(0);
   const [timelineSelecionada, setTimelineSelecionada] = useState('');
 
-  useEffect(() => {
-    let ativo=true;
-    loadAccountDiagnostic(supabase).then(status=>{
-      if (!ativo) return;
-      setJaFezAntes(status.verified === true);
-      setVerificando(false);
-    });
-    return ()=>{ativo=false;};
-  }, []);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    if(status.reason==='checking'){
+      setVerificando(true);
+      setJaFezAntes(false);
+      setRespostas([]);
+      setEtapa(0);
+      setTimelineSelecionada('');
+      setAviso('');
+      return;
+    }
+    setJaFezAntes(status.verified===true);
+    setVerificando(false);
+  },loadAccountDiagnostic),[]);
 
   const perguntas = [
     {

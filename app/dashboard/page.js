@@ -2,11 +2,14 @@
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
 import terminal from '../components/platform/Terminal.module.css';
-import { readLocalReport, MODE_KEY } from '../../lib/platform/diagnostic-routing.mjs';
+import { loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { supabase } from '../../lib/supabase';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
   const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
+  const [diagnosticoBackend, setDiagnosticoBackend] = useState('Verificando');
+  const [operadorId, setOperadorId] = useState(null);
   const [bloqueiosSimulados, setBloqueiosSimulados] = useState(0);
   const [intencoesFicticias, setIntencoesFicticias] = useState([]);
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
@@ -25,10 +28,17 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    const report = readLocalReport(window.localStorage);
-    setDiagnosticoConcluido(Boolean(report));
-    const chosen = window.localStorage.getItem(MODE_KEY);
-    setModoReversoAtivo((chosen === 'manual' || chosen === 'reversa' ? chosen : report?.mode) === 'reversa');
+    let live=true;
+    loadAccountDiagnostic(supabase).then(status=>{
+      if (!live) return;
+      setOperadorId(status.userId);
+      setDiagnosticoConcluido(status.verified===true);
+      setDiagnosticoBackend(status.verified?'Validado no servidor':
+        status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
+      const chosen=readSessionMode(window.sessionStorage,status.userId);
+      setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
+    });
+    return ()=>{live=false;};
   }, []);
 
   const solicitarContaReal = () => {
@@ -183,7 +193,7 @@ export default function DashboardPage() {
   const ativarModoReverso = () => {
     setModoReversoAtivo(!modoReversoAtivo);
     const novoModo = !modoReversoAtivo ? 'reversa' : 'manual';
-    localStorage.setItem(MODE_KEY, novoModo);
+    writeSessionMode(window.sessionStorage,operadorId,novoModo);
     setStatusMensagem(novoModo === 'reversa' ? 'Modo reverso selecionado para simulação.' : 'Modo manual selecionado para simulação.');
   };
 
@@ -275,12 +285,12 @@ export default function DashboardPage() {
         <section style={{background:'#ffffff',border:'1px solid #ddd6fe',borderRadius:14,padding:18,marginBottom:22}}>
           <h2 style={{margin:'0 0 6px',fontSize:16,color:'#4c1d95'}}>Diagnóstico Comportamental</h2>
           <p style={{fontSize:12,color:'#334155',margin:'0 0 12px'}}>
-            {diagnosticoConcluido ? 'Laudo inicial registrado. Você pode continuar no modo indicado ou mudar depois.' : 'Você pode explorar a mesa e operar no simulador sem o diagnóstico. Ele será exigido antes de qualquer operação em conta real.'}
+            {diagnosticoConcluido ? 'Laudo inicial confirmado pelo servidor. Você pode continuar no modo indicado ou mudar depois.' : 'Você pode explorar o simulador sem diagnóstico. Para iniciar o processo de conta real, o laudo precisa ser validado pelo servidor.'}
           </p>
           <a href="/diagnostico" style={{display:'inline-block',padding:'10px 14px',background:'#7c3aed',color:'#fff',textDecoration:'none',fontSize:12,borderRadius:9,fontWeight:800}}>
             {diagnosticoConcluido ? 'Consultar diagnóstico' : 'Fazer diagnóstico'}
           </a>
-          <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>A autorização real também depende de autenticação, confirmação da conta e integração de corretora validada no servidor.</p>
+          <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>A autorização real também depende de autenticação, confirmação da conta e integração de corretora validada no servidor. Situação: {diagnosticoBackend}.</p>
         </section>
 
         <section className={terminal.banner} aria-label="Estado da negociação">

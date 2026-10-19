@@ -104,11 +104,16 @@ export default function PublicProfile() {
           {safe(data.profile?.avatar_url) && <img src={data.profile.avatar_url} alt="" width={90} height={90} style={{ borderRadius: '50%', objectFit: 'cover' }} />}
           <h1>{data.profile?.display_name || data.profile?.handle || 'Perfil'}</h1>
           <p>@{String(data.profile?.handle || '').replace(/^@/, '')}</p>
+          {viewerId && viewerId!==data.profile?.id && data.profile?.handle && <Link
+             href={'/social?perfil='+encodeURIComponent(data.profile.handle)+'&direct=1'}
+             style={{display:'inline-block',padding:'10px 15px',borderRadius:10,background:'#7c3aed',color:'#fff',fontWeight:700,textDecoration:'none',marginBottom:14}}>
+             ✉ Enviar mensagem
+          </Link>}
           <p style={{ whiteSpace: 'pre-wrap' }}>{data.profile?.bio}</p>
           {safe(data.profile?.website) && <a href={data.profile.website} target="_blank" rel="noopener noreferrer">Site informado no perfil ↗</a>}
         </header>
         <SocialPinnedPosts ownerId={data.profile?.id} accountId={viewerId} candidatePosts={data.posts}/>
-        <h2>Publicações</h2>
+        <h2>Feed</h2>
         <p style={{ fontSize: 13, color: '#64748b' }}>
           {Number(data.postsCount) || 0} publicações visíveis. Selecione uma miniatura para abrir o conteúdo.
         </p>

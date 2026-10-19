@@ -184,3 +184,48 @@
  .jenios-my-profile-nav {grid-template-columns:repeat(2,minmax(0,1fr));}
  .jenios-my-post-actions {flex-direction:column;}
 }
+
+
+/* B76 – Inbox floating at bottom right, chat only loads when opened. */
+.jenios-social-direct-fab {position:fixed;right:18px;bottom:calc(17px + env(safe-area-inset-bottom,0px));
+ z-index:5500;min-height:48px;display:flex;align-items:center;gap:8px;padding:10px 15px;
+ border:0;border-radius:30px;background:#6d28d9;color:#fff;box-shadow:0 7px 25px #32108d55;
+ cursor:pointer;font:700 13px system-ui,sans-serif;}
+.jenios-social-direct-fab span:first-child {font-size:23px;line-height:1;}
+.jenios-social-direct-fab:focus-visible {outline:3px solid #ffcb59;outline-offset:3px;}
+.jenios-social-direct-drawer {position:fixed;right:18px;bottom:calc(78px + env(safe-area-inset-bottom,0px));
+ z-index:5400;width:min(380px,calc(100vw - 22px));max-height:min(610px,calc(100dvh - 115px));
+ display:flex;flex-direction:column;border:1px solid #ddd6fe;border-radius:18px;
+ background:#fff;box-shadow:0 15px 45px #12063650;overflow:hidden;color:#172033;}
+.jenios-social-direct-drawer-header {flex-shrink:0;display:flex;align-items:center;justify-content:space-between;
+ padding:12px 16px;border-bottom:1px solid #eee9fa;color:#4c1d95;}
+.jenios-social-direct-drawer-header button {background:#f5f3ff;border:0;border-radius:9px;
+ font-size:23px;min-width:35px;min-height:35px;cursor:pointer;color:#6d28d9;}
+.jenios-direct-body {padding:14px;overflow-y:auto;min-height:170px;box-sizing:border-box;}
+.jenios-direct-hint {font-size:12px;line-height:1.55;color:#64748b;}
+.jenios-direct-error {padding:10px;border-radius:9px;background:#fff1f2;color:#9f1239;font-size:12px;}
+.jenios-direct-threads {display:grid;gap:7px;}
+.jenios-direct-threads button {display:flex;align-items:center;gap:10px;width:100%;min-height:51px;
+ border:1px solid #e2e8f0;border-radius:12px;background:#fafaff;padding:9px;color:#172033;cursor:pointer;text-align:left;}
+.jenios-direct-threads button span:nth-child(2) {flex:1;min-width:0;}
+.jenios-direct-threads button small {display:block;font-size:11px;color:#64748b;margin-top:3px;}
+.jenios-direct-avatar {font-size:22px;color:#7c3aed;}
+.jenios-direct-back {padding:5px 0;background:none;border:0;color:#6d28d9;font-weight:800;cursor:pointer;}
+.jenios-direct-contact {font-size:15px;margin:8px 0 12px;}
+.jenios-direct-messages {min-height:130px;max-height:310px;overflow:auto;display:grid;align-content:start;gap:8px;
+ border:1px solid #e9e5f2;background:#fcfbff;border-radius:12px;padding:12px;}
+.jenios-direct-bubble {max-width:90%;justify-self:start;overflow-wrap:anywhere;
+ background:#e2e8f0;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.45;}
+.jenios-direct-bubble.own {justify-self:end;background:#ede9fe;color:#4c1d95;}
+.jenios-direct-bubble p {margin:0;white-space:pre-wrap;}
+.jenios-direct-bubble small {display:block;font-size:10px;margin-top:5px;color:#64748b;text-align:right;}
+.jenios-direct-compose {display:flex;gap:8px;margin-top:10px;}
+.jenios-direct-compose input {min-width:0;flex:1;padding:11px;border:1px solid #e2e8f0;border-radius:10px;}
+.jenios-direct-compose button {border:0;border-radius:10px;padding:9px 13px;background:#6d28d9;color:#fff;cursor:pointer;}
+.jenios-direct-compose button:disabled {opacity:.6;}
+@media(max-width:600px) {
+ .jenios-social-direct-fab {right:12px;bottom:calc(13px + env(safe-area-inset-bottom,0px));min-width:49px;min-height:49px;justify-content:center;padding:11px 14px;}
+ .jenios-social-direct-fab-label {display:none;}
+ .jenios-social-direct-drawer {right:8px;bottom:calc(72px + env(safe-area-inset-bottom,0px));
+  width:calc(100vw - 16px);max-height:min(590px,calc(100dvh - 125px));}
+}

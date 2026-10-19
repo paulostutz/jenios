@@ -90,8 +90,6 @@ function SocialContent() {
   const [postEmFoco, setPostEmFoco] = useState(null);
   const [chatAtivo, setChatAtivo] = useState(null);
   const directAutoOpened=useRef(false);
-  const [textoMensagem, setTextoMensagem] = useState('');
-  const [mensagensDirect, setMensagensDirect] = useState({});
   const [mensagensAberta, setMensagensAberta] = useState(false);
 
   // Modais
@@ -114,8 +112,16 @@ function SocialContent() {
   const {profile:meuPerfil,setProfile:setMeuPerfil,posts,setPosts,ready:postsProntos,error:erroPosts}=feed;
   const sessionOwnerRef=useRef(null);sessionOwnerRef.current=meuPerfil.id;
   useEffect(()=>{if(modalAutenticacao)window.location.href='/login';},[modalAutenticacao]);
-  useEffect(()=>{setArchivedPreview(null);setBlocksOpen(false);setNovoTexto('');setYoutubeLink('');setImagensPreview([]);setModalEditarPerfil(false);setPerfilVisitado(null);setPostEmFoco(null);setErroPostEmFoco('');setMensagensAberta(false);setChatAtivo(null);setTextoMensagem('');profileRequest.current++;setProfilePosts([]);setProfileNext(null);setProfileBusy(false);setProfileError('');setModalLista(null);setFollowRows([]);},[meuPerfil.id]);
-  useEffect(()=>{if(postsProntos&&!directAutoOpened.current&&searchParams.get('direct')==='1'){directAutoOpened.current=true;setMensagensAberta(true);}},[postsProntos,meuPerfil.id,searchParams]);
+  useEffect(()=>{setArchivedPreview(null);setBlocksOpen(false);setNovoTexto('');setYoutubeLink('');setImagensPreview([]);setModalEditarPerfil(false);setPerfilVisitado(null);setPostEmFoco(null);setErroPostEmFoco('');setMensagensAberta(false);setChatAtivo(null);profileRequest.current++;setProfilePosts([]);setProfileNext(null);setProfileBusy(false);setProfileError('');setModalLista(null);setFollowRows([]);},[meuPerfil.id]);
+  useEffect(()=>{
+    if(!postsProntos||directAutoOpened.current||searchParams.get('direct')!=='1'||!meuPerfil.autenticado)return;
+    if(perfilUrl){
+      if(!perfilVisitado?.id||perfilVisitado.id===meuPerfil.id)return;
+      setChatAtivo(perfilVisitado);
+    }else setChatAtivo(null);
+    directAutoOpened.current=true;
+    setMensagensAberta(true);
+  },[postsProntos,meuPerfil.id,meuPerfil.autenticado,perfilUrl,perfilVisitado?.id,searchParams]);
 
   // Ranking Top 10 Semanal Completo
   const rankingOperadores = [];
@@ -593,40 +599,6 @@ const handleUploadCarrossel = async (e) => {
     setModalLista(kind);setFollowError('');if(!offset){setFollowRows([]);setFollowNext(null);}
     try{const result=await feed.followList(owner,kind==='seguidores'?'followers':'following',offset);if(owner===sessionOwnerRef.current){setFollowRows(old=>offset?[...old,...result.profiles]:result.profiles);setFollowNext(result.nextOffset);}}
     catch{if(owner===sessionOwnerRef.current)setFollowError('Não foi possível carregar esta lista.');}
-  };
-
-  const enviarMensagemDirect = (e) => {
-    e.preventDefault();
-
-    if (!textoMensagem.trim() || !chatAtivo) return;
-
-    const handleDest = chatAtivo.handle;
-
-    const conversaAtual =
-      mensagensDirect[handleDest] || [];
-
-    const novaMensagem = {
-      remetente: meuPerfil.handle,
-      texto: textoMensagem,
-      hora: 'Agora',
-    };
-
-    const novasConversas = {
-      ...mensagensDirect,
-      [handleDest]: [
-        ...conversaAtual,
-        novaMensagem,
-      ],
-    };
-
-    setMensagensDirect(novasConversas);
-
-    localStorage.setItem(
-      'jenios_social_directs',
-      JSON.stringify(novasConversas)
-    );
-
-    setTextoMensagem('');
   };
 
   const copiarLinkPost = (id) => {
@@ -1242,10 +1214,26 @@ const handleUploadCarrossel = async (e) => {
           </div>
         </div>
 
-        {mensagensAberta && <div className="social-message-backdrop" onClick={() => setMensagensAberta(false)}><section className="social-message-dialog" role="dialog" aria-modal="true" aria-label="Mensagens" onClick={e=>e.stopPropagation()}>
-          <button autoFocus className="social-header-link" onClick={() => setMensagensAberta(false)}>Fechar</button><h2>Mensagens</h2>
-          <SocialDirectSession initialPerson={chatAtivo}/>
-        </section></div>}
+        <button type="button" className="jenios-social-direct-fab"
+          aria-label={mensagensAberta?'Fechar mensagens':'Abrir mensagens'}
+          aria-expanded={mensagensAberta}
+          onClick={()=>{
+            if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
+            if(!mensagensAberta)setChatAtivo(null);
+            setMensagensAberta(v=>!v);
+          }}>
+          <span aria-hidden="true">{mensagensAberta?'×':'✉'}</span>
+          <span className="jenios-social-direct-fab-label">Mensagens</span>
+        </button>
+        {mensagensAberta && meuPerfil.autenticado && (
+          <section className="jenios-social-direct-drawer" role="dialog" aria-label="Mensagens da Social">
+            <div className="jenios-social-direct-drawer-header">
+              <strong>Mensagens</strong>
+              <button type="button" aria-label="Fechar Direct" onClick={()=>setMensagensAberta(false)}>×</button>
+            </div>
+            <SocialDirectSession initialPerson={chatAtivo}/>
+          </section>
+        )}
 
         {/* PERFIL HEADER */}
         <div

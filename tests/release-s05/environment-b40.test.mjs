@@ -87,3 +87,35 @@ test('S05 plus Platform preview accepts only exact integration branch and two is
    NEXT_PUBLIC_SUPABASE_URL:prod.NEXT_PUBLIC_SUPABASE_URL,SOCIAL_SUPABASE_URL:prod.SOCIAL_SUPABASE_URL,
    ...Object.fromEntries(['SUPABASE_SECRET_KEY','JENIOS_S05_SCHEMA_CERTIFIED','JENIOS_S05_E2E_CERTIFIED'].map(k=>[k,prod[k]]))}).ok,false);
 });
+
+test('Integrated CP70 release cannot reach jenios.com.br without dedicated Platform server configuration',()=>{
+ const integration={
+  ...prod,
+  VERCEL_GIT_COMMIT_REF:'release/jenios-s05-platform-cp70-integracao-20261019',
+  PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+  NEXT_PUBLIC_PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+  NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:'pub-key-only-fixture',
+  PLATFORM_SUPABASE_SERVICE_ROLE_KEY:'server-fixture-not-a-real-key-1234567890'
+ };
+ assert.deepEqual(checkS05DeploymentScope(integration),{
+  ok:true,mode:'production-s05-platform-dedicated-auth-ready'
+ });
+ assert.equal(checkS05DeploymentScope({...integration,PLATFORM_SUPABASE_SERVICE_ROLE_KEY:undefined}).reason,
+  'PLATFORM_PRODUCTION_SERVER_SECRET_MISSING');
+ assert.equal(checkS05DeploymentScope({...integration,PLATFORM_SUPABASE_SERVICE_ROLE_KEY:'x'}).reason,
+  'PLATFORM_PRODUCTION_SERVER_SECRET_MISSING');
+ assert.equal(checkS05DeploymentScope({...integration,PLATFORM_SUPABASE_URL:prod.NEXT_PUBLIC_SUPABASE_URL}).reason,
+  'PLATFORM_PRODUCTION_DEDICATED_SUPABASE_URL_MISSING');
+ assert.equal(checkS05DeploymentScope({...integration,NEXT_PUBLIC_PLATFORM_SUPABASE_URL:preview.NEXT_PUBLIC_SUPABASE_URL}).reason,
+  'PLATFORM_PRODUCTION_DEDICATED_SUPABASE_URL_MISSING');
+ assert.equal(checkS05DeploymentScope({...integration,NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:undefined}).reason,
+  'PLATFORM_PRODUCTION_PUBLIC_KEY_MISSING');
+ assert.equal(checkS05DeploymentScope({...integration,NEXT_PUBLIC_SUPABASE_URL:preview.NEXT_PUBLIC_SUPABASE_URL}).reason,
+  'S05_PRODUCTION_SUPABASE_SCOPE_NOT_CONFIRMED');
+ assert.equal(checkS05DeploymentScope({...integration,JENIOS_S05_SCHEMA_CERTIFIED:'false'}).reason,
+  'S05_PRODUCTION_GATES_NOT_CERTIFIED');
+ assert.equal(checkS05DeploymentScope({...integration,JENIOS_TRIAL_ENABLED:'true'}).reason,
+  'S05_TRIAL_NOT_CERTIFIED');
+ assert.equal(checkS05DeploymentScope({...integration,NEXT_PUBLIC_SOCIAL_OPTIMIZED_VIDEO:'true'}).reason,
+  'S05_FFMPEG_OPTIMIZATION_NOT_CERTIFIED');
+});

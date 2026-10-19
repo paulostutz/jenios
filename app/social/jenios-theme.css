@@ -138,3 +138,32 @@
  .jenios-mobile-rail:hover .jenios-mobile-rail-label {display:inline;}
  .jenios-mobile-rail-item:hover {background:#ede9fe;}
 }
+
+
+/* B76 – three-dot launcher only, no persistent side icons or lost mobile width. */
+@media (max-width:600px) {
+  .jenios-social-surface {padding-left:0 !important;padding-right:0 !important;}
+  .jenios-mobile-rail {
+    left:8px;top:max(84px,env(safe-area-inset-top,0px));
+    width:44px !important;max-width:44px !important;max-height:calc(100dvh - 100px);
+  }
+  .jenios-mobile-rail-open {
+    width:min(254px,calc(100vw - 35px)) !important;
+    max-width:min(254px,calc(100vw - 35px)) !important;
+  }
+  .jenios-mobile-rail:not(.jenios-mobile-rail-open) {overflow:hidden;}
+  .jenios-mobile-rail-toggle {min-height:42px;}
+  .jenios-mobile-rail-toggle .jenios-mobile-rail-icon {font-size:28px;}
+  .jenios-mobile-rail-extra {display:grid;gap:3px;padding:6px 4px;}
+  .jenios-mobile-rail-open .jenios-mobile-rail-label {display:inline;}
+  .jenios-social-surface .social-main-header {
+    padding-left:58px !important;
+    padding-right:9px !important;
+  }
+}
+@media (max-width:600px) and (hover:hover) and (pointer:fine) {
+  .jenios-mobile-rail:not(.jenios-mobile-rail-open):hover {
+    width:44px !important;max-width:44px !important;
+  }
+  .jenios-mobile-rail:not(.jenios-mobile-rail-open):hover .jenios-mobile-rail-label {display:none;}
+}

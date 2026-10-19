@@ -675,11 +675,7 @@ const handleUploadCarrossel = async (e) => {
           }else setAbaAtiva(destino);
           window.scrollTo({top:0,behavior:'smooth'});
         }}
-        onMessages={()=>{setChatAtivo(null);setMensagensAberta(true);}}
-        onEdit={()=>{if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}
-          setPerfilRascunho({...meuPerfil});setPerfilSaveError('');setPerfilSalvando(false);setModalEditarPerfil(true);}}
         onAuth={()=>setModalAutenticacao(true)}
-        onExit={fazerLogout}
       />}{blocksOpen&&<SocialBlocks key={meuPerfil.id} onLoad={feed.blocks} onUnblock={feed.unblock} onClose={()=>setBlocksOpen(false)}/>}
       {/* MODAL CÂMERA */}
       {modalCamera && (
@@ -1206,23 +1202,10 @@ const handleUploadCarrossel = async (e) => {
               alignItems: 'center',
             }}
           >
-            <Link className="social-header-link" href="/lp">Conheça a Tecnologia JENIOS ↗</Link>
-            <button className="social-header-link" onClick={() => {setChatAtivo(abaAtiva==='perfil-visita'&&perfilVisitado?.id!==meuPerfil.id?perfilVisitado:null);setMensagensAberta(true);}}>Mensagens</button>
-            <Link className="social-header-link" href="/social/reels" aria-label="Reels JENIOS">Reels</Link>
-            <Link className="social-header-link" href="/social/destaques" aria-label="Destaques dos Stories">Destaques</Link>
+            <Link className="social-header-link" href="/dashboard-logado">Sala de Controle</Link>
             <Link className="social-header-link" href="/notifications" aria-label="Notificações"><svg width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></Link>
             {meuPerfil.autenticado ? (
               <>
-                <span
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    color: '#059669',
-                  }}
-                >
-                  {meuPerfil.handle}
-                </span>
-
                 <button className="social-header-user-signout"
                   onClick={fazerLogout}
                   style={{
@@ -1236,7 +1219,7 @@ const handleUploadCarrossel = async (e) => {
                     cursor: 'pointer',
                   }}
                 >
-                  🚪 Sair
+                  Sair
                 </button>
               </>
             ) : (
@@ -1268,7 +1251,7 @@ const handleUploadCarrossel = async (e) => {
         <div
           style={{
             backgroundColor: '#ffffff',
-            display: abaAtiva === 'perfil-visita' ? 'none' : 'block',
+            display: 'none',
             padding: '24px',
             borderRadius: '16px',
             border: '1px solid #e2e8f0',
@@ -1569,12 +1552,9 @@ const handleUploadCarrossel = async (e) => {
         {/* JENIOS V4: navegacao compacta */}
         <nav className="social-desktop-nav" aria-label="Navegação da JENIOS Social" style={{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap',margin:'12px 0 14px'}}>
           {[
-            ['feed','🏠 Feed'],
+            ['feed','🌐 Acesso Público'],
             ['ranking','🏆 Ranking'],
-            ['lives','🔴 Lives'],
-            ['perfil','👤 Meu Perfil'],
-            ['arquivados','Arquivados'],
-            ['bloqueados','Usuários bloqueados']
+            ...(meuPerfil.autenticado?[['perfil','👤 Meu Perfil']]:[])
           ].map(([destino,rotulo]) => (
             <button key={destino} type="button" onClick={() => {
               if(destino==='bloqueados'){if(!meuPerfil.autenticado){setModalAutenticacao(true);return;}setBlocksOpen(true);return;}
@@ -1597,13 +1577,10 @@ const handleUploadCarrossel = async (e) => {
             ["Hub de Tendências","/tendencias"],
             ["BankScore","/bankscore"],
             ["Especialistas","/especialistas"],
-            ["Insights","/insights"],
             ["Impulsionar","/impulsionar"]
           ].map(([titulo,url])=><Link key={url} href={url} onClick={e=>{if(url==='/insights'&&!meuPerfil.autenticado){e.preventDefault();setModalAutenticacao(true);}}} style={{padding:"9px 14px",borderRadius:10,border:"1px solid #ddd6fe",color:"#6d28d9",background:"#faf5ff",fontWeight:700,fontSize:12,textDecoration:"none"}}>{titulo} ↗</Link>)}
         </nav>
         {abaAtiva==='feed' && <nav className="social-mobile-quick-nav" aria-label="Acesso rápido aos módulos da Social">
-          <Link href="/social/reels">Reels</Link>
-          <Link href="/social/destaques">Destaques</Link>
           <a href="#jenios-ranking">Ranking</a>
           <a href="#jenios-megapulse">Tendências</a>
           <a href="#jenios-bankscore">BankScore</a>

@@ -203,6 +203,12 @@ try {
  const mobileAdmin=await evalExpr(`({viewport:window.innerWidth,content:document.documentElement.scrollWidth})`);
  pass(mobileAdmin.content<=mobileAdmin.viewport+8,'Admin login mobile no major overflow: '+JSON.stringify(mobileAdmin));
  await screenshot('admin-login-mobile');
+ pass(await evalExpr(`document.querySelector('img[src*="jenios-logo-horizontal.webp"]')!==null`),
+  'B110 Admin login uses approved new horizontal JENIOS logo');
+ pass(await evalExpr(`(async()=>{const checks=await Promise.all(['/icon.png','/apple-icon.png','/favicon.ico'].map(async url=>{
+   const r=await fetch(url,{cache:'no-store'});return r.ok&&Number(r.headers.get('content-length')||100)>0;
+  }));return checks.every(Boolean)})()`),
+  'B110 new favicon, Next icon and Apple touch icon are served by app');
 
  // B75 smartphone Chromium smoke, no real tokens or private data.
  await navigate('/social');
@@ -222,9 +228,21 @@ try {
  pass(await evalExpr(`document.querySelector('#jenios-mobile-rail-extra')?.innerText.includes('BankScore')`),
   'Expanded rail contains BankScore');
  await screenshot('social-mobile');
+ pass(await evalExpr(`document.querySelector('img[src*="jenios-logo-horizontal.webp"]')!==null
+  &&document.querySelector('footer[aria-label*="Rodapé institucional JENIOS Social"]')!==null`),
+  'B110 Social shows minimal JENIOS logo and institutional footer on phone');
+ await navigate('/lp');
+ pass(await evalExpr(`document.querySelector('img[src*="jenios-logo-horizontal.webp"]')!==null
+  &&document.querySelector('footer[aria-label*="Rodapé institucional JENIOS Platform"]')!==null`),
+  'B110 landing page logo and footer match the approved brand');
+ await screenshot('jenios-b110-lp-mobile');
  await navigate('/dashboard');
  pass(await evalExpr(`document.body.innerText.includes('HUB JENIOS') && document.body.innerText.includes('Radar de Baleias') && !document.body.innerText.includes('Fonte institucional não conectada')`),
   'Dashboard uses shared JENIOS Hub instead of hardcoded empty whales');
+ pass(await evalExpr(`document.querySelector('img[src*="jenios-logo-horizontal.webp"]')!==null
+  &&document.querySelector('footer[aria-label*="Rodapé institucional JENIOS Platform"]')!==null`),
+  'B110 Dashboard logo and footer use approved JENIOS identity');
+ await screenshot('jenios-b110-dashboard-mobile');
 
  console.log('CP69_BROWSER_SMOKE_PASS='+checks);
 }finally{

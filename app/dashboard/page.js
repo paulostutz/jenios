@@ -75,7 +75,7 @@ export default function DashboardPage() {
   const [stopDiario, setStopDiario] = useState(500);
 
   // Single authoritative hub snapshot; shared cache also feeds the Social and /tendencias.
-  const {data:hub,loading:hubLoading,error:hubError,clock:hubClock}=useTrendsData();
+  const {data:hub,loading:hubLoading,error:hubError,clock:hubClock}=useTrendsData('/api/tendencias');
   const tokenPanel=dashboardHubModule('tokens',hub,hubClock);
   const megaPanel=dashboardHubModule('megapulse',hub,hubClock);
   const whalePanel=dashboardHubModule('baleias',hub,hubClock);

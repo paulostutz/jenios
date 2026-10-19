@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {dashboardHubModule} from '../lib/platform/dashboard-trends.mjs';
 const now=Date.parse('2026-10-19T16:00:00Z');
 test('B75 dashboard consumes same named Hub modules, not CoinGecko as MegaPulse',()=>{
@@ -24,8 +25,8 @@ test('B75 provider failure cannot show cached values without valid status',()=>{
  assert.deepEqual(result.rows,[]);assert.equal(result.message,'offline');
 });
 test('B75 real source reused in dashboard and classic source removed',()=>{
- const s=(await import('node:fs')).readFileSync('app/dashboard/page.js','utf8');
- assert.match(s,/useTrendsData\(\)/);
+ const s=readFileSync('app/dashboard/page.js','utf8');
+ assert.match(s,/useTrendsData\('\\/api\\/tendencias'\)/);
  assert.match(s,/dashboardHubModule\('megapulse'/);
  assert.match(s,/dashboardHubModule\('baleias'/);
  assert.doesNotMatch(s,/const baleias = \[\]/);

@@ -117,10 +117,10 @@
   .jenios-social-post-frame {content-visibility:auto;contain-intrinsic-size:auto 550px;}
   .jenios-mobile-rail-backdrop {display:block;position:fixed;inset:0;border:0;background:#0f172a66;z-index:4900;cursor:pointer;}
   .jenios-mobile-rail {display:flex;flex-direction:column;position:fixed;left:5px;top:max(90px,env(safe-area-inset-top,0px));z-index:4901;max-height:calc(100dvh - 110px);
-    width:42px;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;
+    width:42px !important;max-width:42px !important;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;
     border:1px solid #ded4fc;border-radius:15px;background:#fffefaed;backdrop-filter:blur(8px);
     box-shadow:0 5px 22px #26154525;transition:width .18s ease;}
-  .jenios-mobile-rail-open {width:min(244px,calc(100vw - 65px));}
+  .jenios-mobile-rail-open {width:min(244px,calc(100vw - 65px)) !important;max-width:min(244px,calc(100vw - 65px)) !important;}
   .jenios-mobile-rail-top,.jenios-mobile-rail-extra {display:grid;gap:3px;padding:4px;}
   .jenios-mobile-rail-extra {border-top:1px solid #e9e1fc;}
   .jenios-mobile-rail-item {min-height:38px;display:flex;align-items:center;gap:10px;box-sizing:border-box;
@@ -134,7 +134,7 @@
   .jenios-mobile-rail-toggle {background:#f2ebff;}
 }
 @media (max-width:600px) and (hover:hover) and (pointer:fine) {
- .jenios-mobile-rail:hover {width:min(244px,calc(100vw - 65px));}
+ .jenios-mobile-rail:hover {width:min(244px,calc(100vw - 65px)) !important;max-width:min(244px,calc(100vw - 65px)) !important;}
  .jenios-mobile-rail:hover .jenios-mobile-rail-label {display:inline;}
  .jenios-mobile-rail-item:hover {background:#ede9fe;}
 }

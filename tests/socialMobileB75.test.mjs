@@ -10,6 +10,8 @@ test('B75 smartphone rail replaces repeated button rows but preserves them for d
  assert.match(css,/@media \(max-width:600px\)/);
  assert.match(css,/\.social-desktop-nav,/);
  assert.match(css,/\.jenios-mobile-rail/);
+ assert.match(css,/width:42px !important;max-width:42px !important/);
+ assert.match(css,/\.jenios-mobile-rail-open \{width:min\(244px/);
  assert.match(css,/\.social-feed-tools \{order:1 !important/);
  assert.match(css,/\.social-feed-primary \{order:0 !important/);
 });

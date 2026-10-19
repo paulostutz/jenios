@@ -179,8 +179,9 @@ try {
 
  // B75 smartphone Chromium smoke, no real tokens or private data.
  await navigate('/social');
- pass(await evalExpr(`(()=>{const e=document.querySelector('.jenios-mobile-rail');return !!e&&getComputedStyle(e).display==='flex';})()`),
-  'Smartphone Social icon rail is visible');
+ pass(await evalExpr(`(()=>{const e=document.querySelector('.jenios-mobile-rail');return !!e&&getComputedStyle(e).display==='flex'&&e.getBoundingClientRect().width<=58;})()`),
+  'Smartphone Social icon rail is visible and compact');
+ await screenshot('social-mobile-collapsed');
  pass(await evalExpr(`([...document.querySelectorAll('.social-desktop-nav')].length===2 && [...document.querySelectorAll('.social-desktop-nav')].every(e=>getComputedStyle(e).display==='none'))`),
   'Smartphone repeated navigation rows are hidden');
  pass(await evalExpr(`(()=>{const f=document.querySelector('.social-feed-primary'),t=document.querySelector('.social-feed-tools');return !!f&&!!t&&Number(getComputedStyle(t).order)>Number(getComputedStyle(f).order);})()`),
@@ -188,6 +189,8 @@ try {
  const opened=await evalExpr(`(()=>{const toggle=document.querySelector('.jenios-mobile-rail-toggle');if(!toggle)return false;toggle.click();return true;})()`);
  pass(opened,'Smartphone menu control responds to touch');
  await waitFor(`!!document.querySelector('#jenios-mobile-rail-extra')`);
+ pass(await evalExpr(`(()=>{const w=document.querySelector('.jenios-mobile-rail')?.getBoundingClientRect().width;return w>175&&w<=260;})()`),
+  'Smartphone expanded rail stays narrow');
  pass(await evalExpr(`document.querySelector('#jenios-mobile-rail-extra')?.innerText.includes('BankScore')`),
   'Expanded rail contains BankScore');
  await screenshot('social-mobile');

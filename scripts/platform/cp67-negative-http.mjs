@@ -13,7 +13,7 @@ async function attempt(path,options={},allowed=[503]){
 await attempt('/api/platform/diagnostico',{},[503]);
 await attempt('/api/platform/risk-summary',{},[503]);
 await attempt('/api/platform/diagnostico',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({answers:[4,4,4,4,4],timeframe:'SWING'})},[503]);
-await attempt('/api/admin/access',{},[503]);
+await attempt('/api/admin/access',{},[401]); // ausência de token: autenticação recusada antes do acesso ao banco
 const forbidden=await fetch(origin+'/api/platform/risk-summary',{method:'POST'});
 assert.equal(forbidden.status,405,'The risk summary endpoint must be read-only');
 checks++;console.log('PASS_PRIVATE_API 405 /api/platform/risk-summary POST');

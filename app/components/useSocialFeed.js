@@ -4,6 +4,7 @@ import {supabase} from '../../lib/supabase';
 import {createScopedFeedClient} from '../../lib/social/session-client.mjs';
 import {createSessionFence} from '../../lib/social/session-fence.mjs';
 import {visitorProfile,profileView,postView,commentViews} from '../../lib/social/feed-view.mjs';
+import {optimisticPostLike,optimisticCommentLike,appendConfirmedComment,hasCommentParent} from '../../lib/social/feed-optimistic.mjs';
 
 // Short-lived memory cache, cleared on identity changes. Never persist another account's feed.
 let feedSnapshot=null;
@@ -14,6 +15,8 @@ export default function useSocialFeed(){
  const [savedPosts,setSavedPosts]=useState([]),[savedNext,setSavedNext]=useState(null);
  const [archivedPosts,setArchivedPosts]=useState([]),[archivedNext,setArchivedNext]=useState(null);
  const fence=useRef(createSessionFence()),busy=useRef(new Map()),reloadRef=useRef(null),postRevision=useRef(0);
+ const postsRef=useRef([]),commentRevisions=useRef(new Map());
+ useEffect(()=>{postsRef.current=posts;},[posts]);
  const clientFor=ticket=>createScopedFeedClient({auth:supabase.auth,fence:fence.current,ticket});
  async function profilesFor(ids){
   if(!ids.length)return new Map();
@@ -45,7 +48,7 @@ export default function useSocialFeed(){
   async function refresh(){
    if(!live)return;
    let ticket=fence.current.change();
-   setProfile({...visitorProfile});setPosts([]);setCursor(null);setError('');setReady(false);setLoading(false);setSavedPosts([]);setSavedNext(null);setArchivedPosts([]);setArchivedNext(null);setStories([]);setStoriesNext(null);setStoriesError('');busy.current.clear();
+   setProfile({...visitorProfile});setPosts([]);setCursor(null);setError('');setReady(false);setLoading(false);setSavedPosts([]);setSavedNext(null);setArchivedPosts([]);setArchivedNext(null);setStories([]);setStoriesNext(null);setStoriesError('');busy.current.clear();commentRevisions.current.clear();postsRef.current=[];
    try{
     const r=await supabase?.auth.getUser();
     if(!live||!fence.current.current(ticket))return;
@@ -108,22 +111,40 @@ export default function useSocialFeed(){
   return r.post;
  });}
  async function like(post){return action('like:'+post.id,async(ticket,client)=>{
-  await(post.curtido?client.unlikePost(post.id):client.likePost(post.id));
-  const l=await client.getLikes(post.id);
-  if(fence.current.current(ticket))setPosts(old=>old.map(p=>p.id===post.id?{...p,likes:l.count,curtido:l.liked}:p));
+  const wanted=!Boolean(post.curtido);
+  // Immediate visual feedback. Only one server request; count remains unknown if it was unknown.
+  if(fence.current.current(ticket))setPosts(old=>optimisticPostLike(old,post.id,wanted));
+  try{
+   await(wanted?client.likePost(post.id):client.unlikePost(post.id));
+  }catch(e){
+   if(fence.current.current(ticket))setPosts(old=>old.map(p=>p.id===post.id&&Boolean(p.curtido)===wanted?
+    {...p,curtido:Boolean(post.curtido),likes:post.likes}:p));
+   throw e;
+  }
  });}
  async function remove(id){return action('delete:'+id,async(ticket,client)=>{
   await client.deletePost(id);
   if(fence.current.current(ticket)){postRevision.current++;setPosts(old=>old.filter(p=>p.id!==id));setProfile(p=>({...p,postsCount:Math.max(0,(p.postsCount||0)-1)}));}
  });}
  async function comments(postId,ticket=fence.current.capture()){
+  const version=commentRevisions.current.get(postId)||0;
   const r=await clientFor(ticket).listComments(postId);
   if(!fence.current.current(ticket))return;
   const profiles=await profilesFor(r.comments.map(x=>x.author_id));
-  if(fence.current.current(ticket))setPosts(old=>old.map(p=>p.id===postId?{...p,comentarios:commentViews(r.comments,profiles)}:p));
+  if(fence.current.current(ticket)&&commentRevisions.current.get(postId)===version)
+   setPosts(old=>old.map(p=>p.id===postId?{...p,comentarios:commentViews(r.comments,profiles)}:p));
  }
  async function comment(postId,body,parentId=null){return action('comment:'+postId,async(ticket,client)=>{
-  await client.createComment({postId,body,parentId});await comments(postId,ticket);
+  const result=await client.createComment({postId,body,parentId});
+  if(!fence.current.current(ticket))return;
+  commentRevisions.current.set(postId,(commentRevisions.current.get(postId)||0)+1);
+  const row=result?.comment,visible=postsRef.current.find(p=>p.id===postId);
+  if(!row||row.post_id!==postId||row.author_id!==ticket.owner||
+     !visible||(parentId&&!hasCommentParent(visible,parentId))){
+   await comments(postId,ticket);return;
+  }
+  // Server-confirmed comment already includes identity and timestamp; avoid refetching the full thread.
+  setPosts(old=>appendConfirmedComment(old,postId,row,profile));
  });}
  async function lives(offset=0){return action('lives',async(_ticket,client)=>{const result=await client.lives(offset),profiles=await profilesFor(result.lives.map(x=>x.host_id));return {...result,lives:result.lives.map(x=>({...x,autor:profileView(profiles.get(x.host_id)).nome}))};});}
  async function createLive(data){return action('live-create',async(_ticket,client)=>client.createLive(data));}
@@ -135,7 +156,13 @@ export default function useSocialFeed(){
  });}
  async function unblock(id){return action('unblock:'+id,async(ticket,client)=>{await client.unblock(id);await load(ticket);await loadStories(0,ticket);});}
  async function likeComment(postId,item){return action('comment-like:'+item.id,async(ticket,client)=>{
-  await(item.curtido?client.unlikeComment(item.id):client.likeComment(item.id));await comments(postId,ticket);
+  const wanted=!Boolean(item.curtido);
+  if(fence.current.current(ticket))setPosts(old=>optimisticCommentLike(old,postId,item.id,wanted));
+  try{await(wanted?client.likeComment(item.id):client.unlikeComment(item.id));}
+  catch(e){
+   if(fence.current.current(ticket))setPosts(old=>optimisticCommentLike(old,postId,item.id,Boolean(item.curtido)));
+   throw e;
+  }
  });}
  async function report(postId,reason,details){return action('report:'+postId,async(_ticket,client)=>client.report(postId,reason,details));}
  async function removeComment(postId,id){return action('comment-delete:'+id,async(ticket,client)=>{

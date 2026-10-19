@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
+import useTrendsData from '../components/useTrendsData';
+import {dashboardHubModule} from '../../lib/platform/dashboard-trends.mjs';
 import terminal from '../components/platform/Terminal.module.css';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
@@ -72,39 +74,11 @@ export default function DashboardPage() {
   const [lotes, setLotes] = useState(1);
   const [stopDiario, setStopDiario] = useState(500);
 
-  // 🌐 DADOS REAIS DE MERCADO EM TEMPO REAL (Megatendências, Baleias e Tokens Explosivos)
-  const [megatendencias, setMegatendencias] = useState([
-    { ativo: 'Carregando dados...', tendencia: 'Sincronizando...', cor: '#64748b' }
-  ]);
-
-  const baleias = [];
-  const [marketMessage, setMarketMessage] = useState('Consultando tendências de busca…');
-
-  useEffect(() => {
-    let active = true, busy = false;
-    const controller = new AbortController();
-    async function buscarDadosReaisDashboard() {
-      if (busy || document.visibilityState !== 'visible') return;
-      busy = true;
-      try {
-        const res = await fetch('/api/tendencias', { cache: 'no-store', signal: controller.signal });
-        const payload = await res.json();
-        if (!res.ok) throw Error('Fonte indisponível');
-        if (!active) return;
-        const dados = Array.isArray(payload.tokens) && (payload.disponivel || payload.stale) ? payload.tokens : [];
-        const label = payload.stale ? 'Última leitura, fonte não confirmada agora' : 'Tendência de pesquisa';
-        setMegatendencias(dados.slice(0, 5).map(coin => ({ ativo: `${coin.nome} (${coin.simbolo})`, tendencia: label, cor: payload.stale ? '#92400e' : '#6d28d9' })));
-        setMarketMessage(dados.length ? 'Fonte: CoinGecko Search Trending. Não é fluxo institucional, lançamento ou recomendação.' : 'Tendências temporariamente indisponíveis.');
-      } catch (e) {
-        if (active) { setMegatendencias([]); setMarketMessage('Não foi possível confirmar uma leitura atual da fonte.'); }
-      } finally { busy = false; }
-    }
-
-    buscarDadosReaisDashboard();
-    const intervalDashboard = setInterval(buscarDadosReaisDashboard, 60000);
-    document.addEventListener('visibilitychange', buscarDadosReaisDashboard);
-    return () => { active = false; controller.abort(); clearInterval(intervalDashboard); document.removeEventListener('visibilitychange', buscarDadosReaisDashboard); };
-  }, []);
+  // Single authoritative hub snapshot; shared cache also feeds the Social and /tendencias.
+  const {data:hub,loading:hubLoading,error:hubError,clock:hubClock}=useTrendsData();
+  const tokenPanel=dashboardHubModule('tokens',hub,hubClock);
+  const megaPanel=dashboardHubModule('megapulse',hub,hubClock);
+  const whalePanel=dashboardHubModule('baleias',hub,hubClock);
 
   const atalhosPorMercado = {
     b3: [
@@ -549,37 +523,40 @@ export default function DashboardPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             
-            {/* Megatendências Reais */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>PESQUISAS NO COINGECKO</span>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Ativos pesquisados</h3>
-              <div style={{ backgroundColor: '#f8fafc', padding: '12px', borderRadius: '10px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '8px', border: '1px solid #cbd5e1' }}>
-                {megatendencias.map((item, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#475569' }}>{item.ativo}:</span>
-                    <span style={{ color: item.cor, fontWeight: 'bold' }}>{item.tendencia}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Hub único: nunca inferir baleias por volume agregado nem perpetuar cotação antiga. */}
+            <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}>
+              <span style={{fontSize:10,color:'#7c3aed',fontWeight:800,letterSpacing:1}}>HUB JENIOS · LEITURA COMPARTILHADA</span>
+              <h3 style={{fontSize:17,margin:'8px 0'}}>Tendências de busca e MegaPulse</h3>
+              <a href="/tendencias" style={{fontSize:12,color:'#6d28d9'}}>Abrir Hub de Tendências ↗</a>
+              {hubError&&<p role="status" style={{fontSize:12,color:'#92400e'}}>Atualização do Hub indisponível. {hubError}</p>}
+              {hubLoading&&!hub&&<p role="status">Consultando a mesa do Hub…</p>}
+              {[tokenPanel,megaPanel].map(panel=>(
+                <div key={panel.id} style={{marginTop:16,borderTop:'1px solid #e2e8f0',paddingTop:12,fontSize:12}}>
+                  <strong style={{color:'#172033'}}>{panel.label}</strong>
+                  {panel.stale&&<p style={{color:'#92400e'}}>Última leitura válida, não confirmada agora.</p>}
+                  {panel.rows.length?panel.rows.map(row=><div key={row.id||row.simbolo}
+                    style={{padding:'8px 0',borderBottom:'1px solid #f1f5f9'}}>
+                    <strong>{row.nome} · {row.simbolo}</strong>
+                    <p style={{margin:'4px 0',color:'#475569'}}>{panel.describe(row)}</p>
+                  </div>):<p role="status" style={{color:'#64748b'}}>{panel.message}</p>}
+                </div>
+              ))}
+              <p style={{fontSize:11,color:'#64748b'}}>CoinGecko representa interesse de busca; MegaPulse mostra apenas cotações intradiárias recentes confirmadas. Nenhum deles constitui recomendação de investimento.</p>
+            </section>
 
-            {/* Radar de Baleias Reais */}
-            <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-              <span style={{ fontSize: '10px', color: '#059669', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>🐋 MOVIMENTOS INSTITUCIONAIS</span>
-              <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#0f172a' }}>Radar de Baleias</h3>
-              <p style={{ fontSize: 12, color: '#92400e' }}>Fonte institucional não conectada. Volume agregado de 24h não comprova movimentação de baleias.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px' }}>
-                {baleias.map((b) => (
-                  <div key={b.id} style={{ backgroundColor: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
-                      <span style={{ color: '#059669', fontWeight: 'bold' }}>Detectado</span>
-                      <span style={{ color: '#64748b', fontSize: '9px' }}>{b.tempo}</span>
-                    </div>
-                    <span style={{ color: '#334155' }}>{b.info}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}>
+              <span style={{fontSize:10,color:'#047857',fontWeight:800}}>MOVIMENTOS BTC CONFIRMADOS</span>
+              <h3 style={{fontSize:17,margin:'8px 0'}}>Radar de Baleias</h3>
+              {whalePanel.historical&&<p role="status" style={{fontSize:12,color:'#92400e'}}>Últimos três registros · histórico, não movimentos atuais.</p>}
+              {whalePanel.stale&&<p style={{fontSize:12,color:'#92400e'}}>Fonte não confirmada nesta atualização.</p>}
+              {whalePanel.rows.length?whalePanel.rows.map(row=>(
+                <div key={row.id} style={{padding:'9px 0',borderBottom:'1px solid #e2e8f0',fontSize:12}}>
+                  <a href={row.url} target="_blank" rel="noopener noreferrer" style={{color:'#065f46',fontWeight:800}}>Transferência confirmada · BTC ↗</a>
+                  <p style={{margin:'4px 0',color:'#475569'}}>{whalePanel.describe(row)}</p>
+                </div>
+              )):<p role="status" style={{fontSize:12,color:'#64748b'}}>{whalePanel.message}</p>}
+              <p style={{fontSize:11,color:'#64748b'}}>Transferências verificadas na rede Bitcoin não demonstram compra, propriedade institucional ou intenção de mercado.</p>
+            </section>
 
             <NewTokenRadar />
 

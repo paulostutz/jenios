@@ -4,7 +4,9 @@
 create table if not exists public.jenios_platform_diagnostics (
   user_id uuid primary key references auth.users(id) on delete cascade,
   answers smallint[] not null
-    check (array_length(answers,1)=5 and array_position(answers,null) is null),
+    check (array_ndims(answers)=1 and array_length(answers,1)=5
+      and array_position(answers,null) is null
+      and answers <@ ARRAY[0,1,2,3,4]::smallint[]),
   timeframe text not null check (timeframe in ('RAPIDO','ESTRUTURADO','SWING')),
   initial_mode text not null check (initial_mode in ('manual','reversa')),
   scores jsonb not null,
@@ -16,3 +18,7 @@ revoke all on public.jenios_platform_diagnostics from public,anon,authenticated;
 grant select,insert on public.jenios_platform_diagnostics to service_role;
 comment on table public.jenios_platform_diagnostics is
   'Laudos educacionais vinculados a auth.users; imutáveis na interface. Não autorizam execução real.';
+
+-- Apenas perfis de serviço podem ler/gravar; clientes autenticados nunca
+-- usam esta tabela diretamente. O servidor filtra por user_id autenticado.
+-- Esta migração continua NÃO APLICADA em qualquer Supabase remoto.

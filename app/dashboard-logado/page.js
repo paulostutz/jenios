@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PaymentStatement from '../components/PaymentStatement';
 import { supabase } from '../../lib/supabase';
-import { loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
 import styles from './control.module.css';
 
 export default function DashboardLogado() {
@@ -12,22 +12,20 @@ export default function DashboardLogado() {
   const [diagnostic,setDiagnostic] = useState(null);
 
   useEffect(()=>{
-    let mounted=true;
-    loadAccountDiagnostic(supabase).then(status=>{
-      if(mounted) setDiagnostic(status.verified ? status : null);
-    });
-    async function identify(){
-      try {
-        if(!supabase?.auth) return;
-        const {data,error}=await supabase.auth.getUser();
-        if(error || !data?.user || !mounted) return;
+    let live=true,revision=0;
+    const stop=observePlatformDiagnostic(supabase,status=>{
+      if(!live)return;
+      const rev=++revision;
+      setDiagnostic(status.verified?status:null);
+      setUserLabel('Operador');
+      if(!status.userId || !supabase?.auth) return;
+      supabase.auth.getUser().then(({data})=>{
+        if(!live || rev!==revision || data?.user?.id!==status.userId)return;
         const u=data.user;
-        const label=u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Operador';
-        setUserLabel(String(label).slice(0,80));
-      } catch { /* Não apresentar identidade fabricada em caso de erro */ }
-    }
-    void identify();
-    return()=>{mounted=false};
+        setUserLabel(String(u.user_metadata?.full_name||u.user_metadata?.name||u.email?.split('@')[0]||'Operador').slice(0,80));
+      }).catch(()=>{});
+    },loadAccountDiagnostic);
+    return()=>{live=false;revision++;stop();};
   },[]);
 
   const buttons=[

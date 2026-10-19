@@ -26,7 +26,7 @@ test('B75 provider failure cannot show cached values without valid status',()=>{
 });
 test('B75 real source reused in dashboard and classic source removed',()=>{
  const s=readFileSync('app/dashboard/page.js','utf8');
- assert.match(s,/useTrendsData\('\\/api\\/tendencias'\)/);
+ assert.match(s,/useTrendsData\('\/api\/tendencias'\)/);
  assert.match(s,/dashboardHubModule\('megapulse'/);
  assert.match(s,/dashboardHubModule\('baleias'/);
  assert.doesNotMatch(s,/const baleias = \[\]/);

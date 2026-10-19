@@ -97,7 +97,7 @@ try {
  await clickText('Simular compra');
  pass(await evalExpr(`document.body.innerText.includes('Bloqueios simulados: 1')`),'Paused session blocks intention');
  await navigate('/dashboard');
- pass(await evalExpr(`document.body.innerText.includes('Retomar simulação')`),
+ pass(await evalExpr(`([...document.querySelectorAll('button')].some(b=>(b.textContent||'').toLowerCase().includes('retomar simulação')))`),
   'Dashboard receives paused status from the Mesa for the same session');
  await clickText('Retomar simulação');
  await navigate('/mesa-operacoes');

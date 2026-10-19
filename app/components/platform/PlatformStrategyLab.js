@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {studyHistoricalCandles} from '../../../lib/platform/market-study.mjs';
 import {inspectHistoricalBars} from '../../../lib/platform/historical-quality.mjs';
 import {replayHistoricalScenario} from '../../../lib/platform/paper-replay.mjs';
@@ -7,6 +7,7 @@ import {assessPaperStrategy,simulationModeLabels} from '../../../lib/platform/pa
 import {readSimulatedBalance,readSimulationPaused} from '../../../lib/platform/simulation-account.mjs';
 import {readSimJournal} from '../../../lib/platform/simulation-journal.mjs';
 import {observeSimulatedBehavior} from '../../../lib/platform/behavioral-observation.mjs';
+import {captureProspectiveObservation,readProspectiveObservations,prospectiveCoverage} from '../../../lib/platform/prospective-observation.mjs';
 
 const inputCss={width:'100%',boxSizing:'border-box',background:'#fff',border:'1px solid #cbd5e1',padding:10,borderRadius:8,font:'inherit'};
 const panelCss={border:'1px solid #d8cafa',borderRadius:16,padding:'clamp(14px,3vw,22px)',background:'#fff',margin:'20px 0',color:'#172033'};
@@ -33,6 +34,10 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
  const [mode,setMode]=useState('direto'),[allocation,setAllocation]=useState(1000);
  const [stop,setStop]=useState(500),[result,setResult]=useState(null),[error,setError]=useState('');
  const [quality,setQuality]=useState(null),[replay,setReplay]=useState(null);
+ const [publicProduct,setPublicProduct]=useState('BTC-USD'),[publicInterval,setPublicInterval]=useState(300);
+ const [sourceLoading,setSourceLoading]=useState(false),[publicCapture,setPublicCapture]=useState(null);
+ const [prospectiveRows,setProspectiveRows]=useState([]);
+ const requestVersion=useRef(0);
  const [paused,setPaused]=useState(false),[simBalance,setSimBalance]=useState(balance);
  useEffect(()=>{
   const refresh=()=>{
@@ -43,11 +48,50 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
   refresh();window.addEventListener('focus',refresh);
   return()=>window.removeEventListener('focus',refresh);
  },[userId,balance]);
+ useEffect(()=>{
+  requestVersion.current++;
+  setSourceLoading(false);setPublicCapture(null);
+  if(!userId){setProspectiveRows([]);return;}
+  setProspectiveRows(readProspectiveObservations(window.sessionStorage,userId,publicProduct,publicInterval));
+  return()=>{requestVersion.current++;};
+ },[userId,publicProduct,publicInterval]);
  const observations=userId&&typeof window!=='undefined'?
   observeSimulatedBehavior({events:readSimJournal(window.sessionStorage,userId),paused,selectedMode:mode}):null;
  const plan=assessPaperStrategy({mode,balance:simBalance,allocation:Number(allocation),dailyStop:Number(stop),paused,analysis:result,observations});
+ async function loadPublicSample(){
+  const rev=++requestVersion.current;
+  setSourceLoading(true);setError('');setPublicCapture(null);setReplay(null);
+  try{
+   const params=new URLSearchParams({product:publicProduct,granularity:String(publicInterval)});
+   const response=await fetch('/api/platform/market-observation?'+params,{
+    method:'GET',cache:'no-store'
+   });
+   const data=await response.json();
+   if(!response.ok||data?.available!==true||!Array.isArray(data?.candles))
+    throw Error('A fonte pública não confirmou candles recentes completos nesta consulta.');
+   const quality=inspectHistoricalBars(data.candles);
+   if(!quality.replayEligible)throw Error('A série pública apresenta lacunas incompatíveis com o estudo.');
+   const studied=studyHistoricalCandles(data.candles,{timeframe});
+   if(requestVersion.current!==rev)return;
+   setInput(JSON.stringify(data.candles));setResult(studied);setQuality(quality);
+   setPublicCapture(data);setReplay(null);
+  }catch(e){
+   if(requestVersion.current===rev)setError(e?.message||'Fonte pública indisponível.');
+  }finally{if(requestVersion.current===rev)setSourceLoading(false);}
+ }
+ function saveProspectiveSnapshot(){
+  if(!userId||!publicCapture){setError('Entre na Social ou Platform e consulte primeiro a fonte pública.');return;}
+  const recorded=captureProspectiveObservation(window.sessionStorage,userId,publicCapture);
+  if(!recorded.ok){
+   setError(recorded.reason==='NO_NEW_COMPLETE_CANDLE'?
+    'O último candle já foi registrado. Volte quando um novo candle estiver completo.':
+    'Não foi possível confirmar o horário desta observação. Consulte a fonte novamente.');
+   return;
+  }
+  setProspectiveRows(recorded.rows);setError('');
+ }
  function calculate(){
-  setError('');setResult(null);setQuality(null);setReplay(null);
+  setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);
   try{
    const bars=parseLocalBars(input);
    const audit=inspectHistoricalBars(bars);
@@ -72,13 +116,48 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
   <span style={{color:'#6d28d9',fontSize:11,fontWeight:800,letterSpacing:1}}>LABORATÓRIO B79–B80 · SEM OPERAÇÕES REAIS</span>
   <h2 style={{fontSize:21,margin:'8px 0'}}>Estudo do momento e estratégias</h2>
   <p style={{fontSize:12,lineHeight:1.6}}>Importe 60–500 candles históricos OHLCV em JSON ou CSV, ordenados do mais antigo ao mais recente. A análise usa dez leituras técnicas reproduzíveis. Dados enviados pelo usuário não são cotação de mercado validada.</p>
+  <div aria-label="Fonte pública de candles" style={{marginTop:15,padding:14,background:'#f8fafc',border:'1px solid #e2e8f0',borderRadius:12}}>
+   <h3 style={{fontSize:15,margin:'0 0 8px'}}>Candles públicos recentes · Coinbase Exchange</h3>
+   <p style={{fontSize:12,color:'#475569',lineHeight:1.55}}>Coleta apenas quando você solicitar. Não é streaming; candles podem chegar atrasados ou faltar. Sem login na corretora, sem sinais automáticos e sem operações reais.</p>
+   <div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'end'}}>
+    <label style={{fontSize:12}}>Par público
+     <select value={publicProduct} style={{...inputCss,marginTop:5}} onChange={e=>setPublicProduct(e.target.value)}>
+      {['BTC-USD','ETH-USD','SOL-USD'].map(x=><option key={x} value={x}>{x}</option>)}
+     </select>
+    </label>
+    <label style={{fontSize:12}}>Candles
+     <select value={publicInterval} style={{...inputCss,marginTop:5}}
+       onChange={e=>setPublicInterval(Number(e.target.value))}>
+      <option value={60}>1 minuto</option><option value={300}>5 minutos</option><option value={3600}>1 hora</option>
+     </select>
+    </label>
+    <button type="button" onClick={loadPublicSample} disabled={sourceLoading}
+     style={{padding:'11px 13px',background:'#6d28d9',color:'#fff',border:0,borderRadius:9,cursor:'pointer',fontWeight:700}}>
+     {sourceLoading?'Consultando…':'Consultar fonte pública'}
+    </button>
+   </div>
+   {publicCapture&&<div role="status" style={{fontSize:12,lineHeight:1.6,marginTop:10}}>
+    <p>{publicCapture.product} · {publicCapture.sampleCount} candles completos. Último candle: {new Date(publicCapture.lastCompleteCandle).toLocaleString('pt-BR')}.
+       {' '}Observação coletada: {new Date(publicCapture.obtainedAt).toLocaleString('pt-BR')}.</p>
+    <p>Fonte: API pública Coinbase Exchange. Estes dados alimentam a análise histórica local, não um motor conectado à corretora.</p>
+    {userId&&<button type="button" onClick={saveProspectiveSnapshot}
+      style={{background:'#fff',padding:'10px 12px',border:'1px solid #8b5cf6',borderRadius:9,color:'#5b21b6',fontWeight:700}}>
+      Registrar observação prospectiva
+    </button>}
+   </div>}
+   {userId&&prospectiveRows.length>0&&<p role="status" style={{fontSize:12,color:'#475569'}}>
+    Diário prospectivo local: {prospectiveRows.length} candles únicos registrados ao longo de {prospectiveCoverage(prospectiveRows).hours} hora(s).
+    {' '}Esse diário não comprova lucros, acurácia de sinais nem desempenho dos robôs.
+   </p>}
+  </div>
+
   <label style={{display:'grid',gap:6,fontSize:12,fontWeight:700}}>Candles históricos
-   <textarea value={input} rows={4} maxLength={180000} onChange={e=>{setInput(e.target.value);setResult(null);setQuality(null);setReplay(null);}}
+   <textarea value={input} rows={4} maxLength={180000} onChange={e=>{requestVersion.current++;setInput(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}}
     style={{...inputCss,resize:'vertical'}} placeholder={'JSON: [{"time":"2026-10-16T14:00:00Z","open":100,"high":102,"low":99,"close":101,"volume":1200}, ...]'} />
   </label>
   <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'end',marginTop:12}}>
    <label style={{fontSize:12}}>Horizonte<br/>
-    <select value={timeframe} onChange={e=>{setTimeframe(e.target.value);setResult(null);setQuality(null);setReplay(null);}} style={inputCss}>
+    <select value={timeframe} onChange={e=>{requestVersion.current++;setTimeframe(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}} style={inputCss}>
      <option value="intraday">Intradiário histórico</option><option value="swing">Swing trade histórico</option>
     </select>
    </label>
@@ -87,7 +166,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
     <input type="file" accept=".json,.csv,text/csv,application/json" onChange={async e=>{
      const file=e.target.files?.[0];if(!file)return;
      if(file.size>180000){setError('Arquivo maior que o limite de 180 KB.');return;}
-     try{setInput(await file.text());setError('');setResult(null);setQuality(null);setReplay(null);}
+     try{requestVersion.current++;setInput(await file.text());setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}
      catch{setError('Não foi possível ler o arquivo local.');}
     }} style={{display:'block',maxWidth:230}}/>
    </label>

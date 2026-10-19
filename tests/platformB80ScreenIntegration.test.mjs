@@ -23,7 +23,9 @@ test('B80 laboratory does not request broker credentials or authorize money exec
  const ui=text('app/components/platform/PlatformStrategyLab.js');
  for(const token of ['studyHistoricalCandles','simulationModeLabels','assessPaperStrategy',
   'readSimulationPaused','readSimulatedBalance','CSV','JSON','Analisar amostra'])assert.ok(ui.includes(token),token);
- assert.doesNotMatch(ui,/\/api\/platform\/checkout|fetch\(|signInWithPassword|brokerOrder=/);
+ assert.match(ui,/fetch\('\/api\/platform\/market-observation\?/);
+ assert.match(ui,/method:'GET'/);
+ assert.doesNotMatch(ui,/\/api\/platform\/checkout|method:'POST'|signInWithPassword|brokerOrder=/);
  const policy=text('lib/platform/paper-policy.mjs');
  assert.match(policy,/realExecutionAllowed:false/);
  assert.match(policy,/brokerOrder:null/);

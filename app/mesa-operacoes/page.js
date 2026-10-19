@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { readLocalReport, MODE_KEY, adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
+import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
+import { loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { supabase } from '../../lib/supabase';
 import terminal from '../components/platform/Terminal.module.css';
 
 export default function MesaOperacoesPage() {
@@ -14,6 +16,8 @@ export default function MesaOperacoesPage() {
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [modoOperacao, setModoOperacao] = useState('manual'); // laudo define o modo inicial
   const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
+  const [operadorId, setOperadorId] = useState(null);
+  const [diagnosticoBackend, setDiagnosticoBackend] = useState('Verificando');
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
   const [intencoes, setIntencoes] = useState([]);
   const [pausaManual, setPausaManual] = useState(false);
@@ -33,17 +37,23 @@ export default function MesaOperacoesPage() {
   };
 
   useEffect(() => {
-    const report = readLocalReport(window.localStorage);
-    setDiagnosticoConcluido(Boolean(report));
-    const chosen = window.localStorage.getItem(MODE_KEY);
-    if (chosen === 'manual' || chosen === 'reversa') setModoOperacao(chosen);
-    else if (report) setModoOperacao(report.mode);
+    let live=true;
+    loadAccountDiagnostic(supabase).then(status=>{
+      if (!live) return;
+      setOperadorId(status.userId);
+      setDiagnosticoConcluido(status.verified===true);
+      setDiagnosticoBackend(status.verified?'Validado no servidor':
+        status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
+      const chosen=readSessionMode(window.sessionStorage,status.userId);
+      setModoOperacao(chosen || (status.verified?status.mode:'manual'));
+    });
+    return ()=>{live=false;};
   }, []);
 
   const alterarModo = (mode) => {
     if (!['manual', 'reversa'].includes(mode)) return;
     setModoOperacao(mode);
-    window.localStorage.setItem(MODE_KEY, mode);
+    writeSessionMode(window.sessionStorage,operadorId,mode);
   };
   const solicitarContaReal = () => {
     if (!diagnosticoConcluido) {
@@ -172,11 +182,12 @@ export default function MesaOperacoesPage() {
       <section style={{background:'#ffffff',color:'#0f172a',borderRadius:12,padding:16,border:'1px solid #ddd6fe'}}>
         <strong>Modo operacional: {modoOperacao === 'reversa' ? 'Reversão Adaptativa' : 'Manual'}</strong>
         <p style={{fontSize:12,color:'#475569',margin:'6px 0 10px'}}>
-          {diagnosticoConcluido ? 'Modo inicial determinado pelo laudo; você pode alterá-lo abaixo a qualquer momento.' : 'Diagnóstico pendente. Você pode usar o simulador; o diagnóstico é obrigatório para solicitar acesso à conta real.'}
+          {diagnosticoConcluido ? 'Laudo confirmado no servidor. Você pode alterar o modo abaixo a qualquer momento.' : 'Acesso à simulação liberado; o diagnóstico precisa ser validado no servidor antes de solicitar a conta real.'}
         </p>
         {!diagnosticoConcluido && <a href="/diagnostico" style={{display:'inline-block',background:'#7c3aed',color:'#fff',padding:'9px 12px',borderRadius:8,textDecoration:'none',fontSize:12,fontWeight:700}}>Fazer diagnóstico</a>}
         <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>{sugestaoAdaptativa || 'Leitura adaptativa: aguardando histórico de operações verificadas. Não há recomendação baseada em perdas neste momento.'}</p>
         <p style={{fontSize:11,color:'#64748b',margin:'6px 0 0'}}>Losses evitados: contador financeiro indisponível sem eventos e preços auditáveis. Bloquear uma tentativa não comprova valor poupado.</p>
+        <p role="status" style={{fontSize:11,color:'#64748b'}}>Diagnóstico: {diagnosticoBackend}</p>
       </section>
 
       <nav className={terminal.bannerActions} aria-label="Atalhos"><a href="/dashboard-logado">Sala de controle</a><a href="/dashboard">Dashboard</a><a href="/diagnostico">Diagnóstico</a></nav>

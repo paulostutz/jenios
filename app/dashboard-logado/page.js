@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PaymentStatement from '../components/PaymentStatement';
 import { supabase } from '../../lib/supabase';
-import { readLocalReport } from '../../lib/platform/diagnostic-routing.mjs';
+import { loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
 import styles from './control.module.css';
 
 export default function DashboardLogado() {
@@ -13,7 +13,9 @@ export default function DashboardLogado() {
 
   useEffect(()=>{
     let mounted=true;
-    setDiagnostic(readLocalReport(window.localStorage));
+    loadAccountDiagnostic(supabase).then(status=>{
+      if(mounted) setDiagnostic(status.verified ? status : null);
+    });
     async function identify(){
       try {
         if(!supabase?.auth) return;
@@ -82,7 +84,7 @@ export default function DashboardLogado() {
               <Link href="/diagnostico">{diagnostic?'Ver status':'Fazer diagnóstico'} →</Link></article>
             <article className={styles.card}><span className={styles.cardLabel}>Modo operacional</span>
               <strong className={styles.cardValue}>{diagnostic?diagnostic.mode==='reversa'?'Reverso inicial':'Manual inicial':'Definido após o diagnóstico'}</strong>
-              <p>O usuário pode mudar o modo na mesa. A leitura adaptativa não executa trocas financeiras automáticas por esta interface.</p>
+              <p>O usuário pode mudar o modo na mesa. O status inicial é confirmado por laudo associado à sua conta.</p>
               <Link href="/mesa-operacoes">Abrir controle →</Link></article>
             <article className={styles.card}><span className={styles.cardLabel}>Conta e assinatura</span>
               <strong className={styles.cardValue}>Consulte os registros</strong>

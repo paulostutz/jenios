@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { classifyDiagnostic } from '../../lib/platform/diagnostic-routing.mjs';
 import { observePlatformDiagnostic, loadAccountDiagnostic, submitAccountDiagnostic, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
-import { supabase } from '../../lib/supabase';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 
 export default function DiagnosticoPlatformPage() {
   const [jaFezAntes, setJaFezAntes] = useState(false);

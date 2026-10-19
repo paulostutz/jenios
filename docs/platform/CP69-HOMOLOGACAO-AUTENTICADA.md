@@ -40,3 +40,9 @@ A criação de uma **nova** instância Vercel e sua eventual computação podem 
 ## Rollback
 Voltar à branch `fix/jenios-platform-cp68-integracao-areas-20261019` e seu backup da Biblioteca.
 Nenhuma migração extra é necessária neste CP69. Não há ordem real, e-mail a terceiros ou pagamento.
+
+## Acionamento protegido da homologação — 19/10/2026
+
+O usuário informou que cadastrou `PLATFORM_CP69_REMOTE_QA_ENABLED=true` no GitHub Actions do repositório e apresentou capturas mostrando, no environment `jenios-platform-auth-qa`, revisão obrigatória por `paulostutz`, ausência de bypass administrativo, uma única branch autorizada e os segredos `PLATFORM_SUPABASE_SERVICE_ROLE_KEY` e `PLATFORM_QA_PUBLISHABLE_KEY` cadastrados. **As capturas não revelam os valores**; o runner ainda precisa verificar as credenciais e o resultado do teste.
+
+Este registro atualiza apenas o roteiro de homologação; sua alteração na branch aciona uma execução GitHub Actions. A certificação só poderá ser declarada após o job `authenticated-qa` concluir com sucesso e confirmar a exclusão das contas fictícias. Se ficar `skipped`, `waiting`, ou `failure`, não creditar o aceite.

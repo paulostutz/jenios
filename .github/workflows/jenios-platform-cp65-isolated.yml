@@ -2,7 +2,7 @@ name: JENIOS Platform CP65 isolacao e seguranca
 on:
   push:
     branches:
-      - fix/jenios-platform-cp65-auditoria-isolada-20261019
+      - fix/jenios-platform-cp65-diagnostico-contas-20261019
   workflow_dispatch:
 permissions:
   contents: read

@@ -5,6 +5,7 @@ import PlatformBillingStatus from '../components/platform/PlatformBillingStatus'
 import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
 import PlatformSimulationSummary from '../components/platform/PlatformSimulationSummary';
 import PlatformBehaviorReview from '../components/platform/PlatformBehaviorReview';
+import PlatformIdentityInspection from '../components/platform/PlatformIdentityInspection';
 import {usePlatformPortalEntry} from '../components/platform/PlatformAuthGuard';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import { observePlatformDiagnostic, loadAccountDiagnostic, currentPlatformSession } from '../../lib/platform/diagnostic-client.mjs';
@@ -115,6 +116,7 @@ export default function DashboardLogado() {
           <PlatformBehaviorReview userId={socialSession?socialSimulationId:platformUserId}
              diagnostic={socialSession?null:diagnostic}/>
           {socialSession && <p className={styles.notice} role="status">Você entrou usando sua conta verificada da Social, sem outro login. A sala e o simulador são educacionais. Laudos privados e permissões administrativas da Platform continuam protegidos no banco exclusivo até o vínculo seguro das contas.</p>}
+          <PlatformIdentityInspection/>
           <div className={styles.grid}>
             <article className={styles.card}><span className={styles.cardLabel}>Diagnóstico</span>
               <strong className={styles.cardValue}>{diagnostic?'Laudo inicial registrado':'Ainda não realizado'}</strong>

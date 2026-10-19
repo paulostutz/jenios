@@ -4,6 +4,8 @@ import NewTokenRadar from '../components/NewTokenRadar';
 import terminal from '../components/platform/Terminal.module.css';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { supabase } from '../../lib/supabase';
+import {readSimJournal,appendSimIntention} from '../../lib/platform/simulation-journal.mjs';
+import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
@@ -12,6 +14,7 @@ export default function DashboardPage() {
   const [operadorId, setOperadorId] = useState(null);
   const [bloqueiosSimulados, setBloqueiosSimulados] = useState(0);
   const [intencoesFicticias, setIntencoesFicticias] = useState([]);
+  const [riskEvidence,setRiskEvidence]=useState(NO_EVIDENCE);
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Área de simulação · ordens reais indisponíveis nesta interface');
   
@@ -29,6 +32,7 @@ export default function DashboardPage() {
 
   useEffect(() => observePlatformDiagnostic(supabase,status=>{
     setOperadorId(status.userId);
+    setIntencoesFicticias(readSimJournal(window.sessionStorage,status.userId));
     setDiagnosticoConcluido(status.verified===true);
     setDiagnosticoBackend(status.reason==='checking'?'Verificando':
       status.verified?'Validado no servidor':
@@ -36,6 +40,10 @@ export default function DashboardPage() {
     const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
     setModoReversoAtivo((chosen || (status.verified?status.mode:'manual'))==='reversa');
   },loadAccountDiagnostic),[]);
+
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setRiskEvidence(status.evidenceStatus?status:NO_EVIDENCE);
+  },()=>loadAccountRisk(supabase)),[]);
 
   const solicitarContaReal = () => {
     if (!diagnosticoConcluido) {
@@ -216,7 +224,11 @@ export default function DashboardPage() {
       return;
     }
 
-    setIntencoesFicticias(current=>[{id:Date.now()+'-'+direcao,ativo:nomeAtivoExibicao,direcao,modo:modoReversoAtivo?'reversa':'manual',capital:Number(capitalAlocado),hora:new Date().toLocaleTimeString('pt-BR')},...current].slice(0,6));
+    const recorded=appendSimIntention(window.sessionStorage,operadorId,
+      {ativo:nomeAtivoExibicao,direcao,modo:modoReversoAtivo?'reversa':'manual',
+       capital:Number(capitalAlocado)});
+    if(!recorded.ok) {setStatusMensagem('Diário local indisponível; nenhuma ordem foi enviada.');return;}
+    setIntencoesFicticias(recorded.events);
     setStatusMensagem('Intenção de negociação fictícia registrada. Nenhuma ordem transmitida.');
   };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', padding: '30px 20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%' }}>
@@ -335,7 +347,9 @@ export default function DashboardPage() {
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses evitados · eventos verificáveis</h3>
               <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>—</div>
               <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
-                {bloqueiosSimulados} bloqueio(s) fictício(s) nesta sessão. Ainda sem valor de perda evitada auditado.
+                {riskEvidence.verifiedBlocks===null?'Sem fonte de corretora verificada':
+                  riskEvidence.verifiedBlocks+' bloqueio(s) confirmado(s) por registro de corretora'}.
+                  {bloqueiosSimulados} bloqueio(s) fictício(s) nesta sessão. Sem valor financeiro de perda evitada comprovado.
               </p>
             </div>
             <button onClick={() => alert('Simulação de proteção ativa.')} style={{ backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '8px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer', width: '100%', marginTop: '10px' }}>
@@ -522,7 +536,7 @@ export default function DashboardPage() {
                     <span>R$ {item.capital.toLocaleString('pt-BR')} · {item.modo}</span>
                   </li>)}</ol>
                 )}
-                <p className={terminal.note}>Registro de cliques para estudo: não representa execução nem lucro ou perda financeira.</p>
+                <p className={terminal.note}>Diário compartilhado entre Dashboard e Mesa nesta sessão. Os cliques não representam ordens executadas nem lucros.</p>
               </div>
             </div>
 

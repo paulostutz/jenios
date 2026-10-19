@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import PaymentStatement from '../components/PaymentStatement';
-import { supabase } from '../../lib/supabase';
+import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import { observePlatformDiagnostic, loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
 import styles from './control.module.css';
 

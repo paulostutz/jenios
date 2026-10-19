@@ -50,7 +50,7 @@ export default function SocialMobileRail({active,authenticated,onTab,onAuth}){
     {link('Validador de Tokens','◇','/social#jenios-cripto-mobile')}
     {link('Especialistas','♧','/especialistas')}
     {link('Sala de Controle','▣','/dashboard-logado')}
-    {link('Apresentação JENIOS','✦','/lp')}
+    {link('Conhecer a Platform','✦','/lp')}
     {!authenticated&&button('entrar','Entrar','⇥',onAuth)}
    </nav>}
   </aside>

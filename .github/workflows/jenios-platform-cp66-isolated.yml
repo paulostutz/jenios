@@ -66,7 +66,7 @@ jobs:
           cat /tmp/jenios-cp66-server.log
           exit 1
       - name: Verify non-auth browser pathways in isolated Chromium
-        run: node scripts/platform/cp63-browser-smoke.mjs
+        run: node scripts/platform/cp66-browser-smoke.mjs
       - name: Create SHA256 archive of approved CP66 private sources
         if: success()
         shell: bash
@@ -107,6 +107,7 @@ jobs:
             tests/platformCP65Sessions.test.mjs
             tests/platformCP66Evidence.test.mjs
             scripts/platform/cp63-browser-smoke.mjs
+            scripts/platform/cp66-browser-smoke.mjs
             scripts/platform/cp64-database-isolation.sql
             .github/workflows/jenios-platform-diagnostico-private-qa.yml
             .github/workflows/jenios-platform-control-ui-cp62.yml

@@ -1,0 +1,106 @@
+name: JENIOS Platform CP63 homologacao privada
+on:
+  push:
+    branches:
+      - fix/jenios-platform-cp63-homologacao-privada-20261019
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependency lock without hooks
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run full test regression
+        run: npm test
+      - name: Compile Next app with fictitious credentials only
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://qa.invalid'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_public_placeholder_not_a_secret'
+          NEXT_PUBLIC_SUP_PUBLISHABLE_KEY: 'qa_public_placeholder_not_a_secret'
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'qa_public_placeholder_not_a_secret'
+        run: npm run build
+      - name: Check Chromium availability
+        run: |
+          which google-chrome || which chromium || exit 1
+          (google-chrome --version || chromium --version)
+      - name: Start isolated local server
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://qa.invalid'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_public_placeholder_not_a_secret'
+        run: |
+          nohup node_modules/.bin/next start -p 3127 > /tmp/platform-cp63-server.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/dashboard; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/platform-cp63-server.log
+          exit 1
+      - name: Isolated Chromium interaction and viewport tests
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: node scripts/platform/cp63-browser-smoke.mjs
+      - name: Pack cumulative private source and checksums
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-platform-qa
+          FILES=(
+            app/dashboard-logado/page.js
+            app/dashboard-logado/control.module.css
+            app/dashboard/page.js
+            app/mesa-operacoes/page.js
+            app/mesa-operacao/page.js
+            app/diagnostico/page.js
+            app/lp/page.js
+            app/admin/page.js
+            app/admin/page.module.css
+            app/admin/login/page.js
+            app/components/AdminAccess.js
+            app/components/platform/Terminal.module.css
+            lib/platform/diagnostic-routing.mjs
+            lib/platform/diagnostic-client.mjs
+            lib/platform/diagnostic-server.mjs
+            app/api/platform/diagnostico/route.js
+            supabase/migrations/20261019014500_platform_diagnostic_private_cp63.sql
+            tests/platformDiagnosticPages.test.mjs
+            tests/platformDiagnosticRouting.test.mjs
+            tests/platformDiagnosticServer.test.mjs
+            tests/platformControlUI.test.mjs
+            scripts/platform/cp63-browser-smoke.mjs
+            .github/workflows/jenios-platform-diagnostico-private-qa.yml
+            .github/workflows/jenios-platform-control-ui-cp62.yml
+            .github/workflows/jenios-platform-cp63-private.yml
+          )
+          sha256sum "${FILES[@]}" > .jenios-platform-qa/SHA256SUMS.txt
+          tar -czf .jenios-platform-qa/JENIOS-PLATFORM-CP63-SOURCE.tar.gz "${FILES[@]}" .jenios-platform-qa/SHA256SUMS.txt
+      - name: Store QA source artifact
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-cp63-private-source
+          path: .jenios-platform-qa/JENIOS-PLATFORM-CP63-SOURCE.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve screenshots and server diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-cp63-visual-evidence
+          path: |
+            .jenios-platform-qa/screenshots/*.png
+            /tmp/platform-cp63-server.log
+          if-no-files-found: warn
+          retention-days: 14

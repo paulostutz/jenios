@@ -6,6 +6,7 @@ import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writ
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
 import {readSimJournal,appendSimIntention} from '../../lib/platform/simulation-journal.mjs';
 import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
+import {readSimulatedBalance,writeSimulatedBalance,readSimulationPaused,writeSimulationPaused} from '../../lib/platform/simulation-account.mjs';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
@@ -18,21 +19,16 @@ export default function DashboardPage() {
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Área de simulação · ordens reais indisponíveis nesta interface');
   
-  // Estados de Conta e Saldo Fictício Sincronizado via LocalStorage
+  // Estados de conta fictícia isolados por usuário e por sessão.
   const [tipoConta, setTipoConta] = useState('simulada'); // 'simulada' ou 'real'
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
-
-  // Carrega e sincroniza o saldo simulado globalmente entre as páginas
-  useEffect(() => {
-    const saldoSalvo = localStorage.getItem('jenios_saldo_simulado');
-    if (saldoSalvo && Number.isFinite(Number(saldoSalvo)) && Number(saldoSalvo) >= 0 && Number(saldoSalvo) <= 100000000) {
-      setSaldoSimulado(Number(saldoSalvo));
-    }
-  }, []);
 
   useEffect(() => observePlatformDiagnostic(supabase,status=>{
     setOperadorId(status.userId);
     setIntencoesFicticias(readSimJournal(window.sessionStorage,status.userId));
+    setSaldoSimulado(readSimulatedBalance(window.sessionStorage,status.userId));
+    setAntifuriaAcionado(readSimulationPaused(window.sessionStorage,status.userId));
+    setBloqueiosSimulados(0);
     setDiagnosticoConcluido(status.verified===true);
     setDiagnosticoBackend(status.reason==='checking'?'Verificando':
       status.verified?'Validado no servidor':
@@ -55,9 +51,8 @@ export default function DashboardPage() {
 
   const atualizarSaldoSimulado = (novoValor) => {
     const num=Number(novoValor);
-    if (!Number.isFinite(num) || num<0 || num>100000000) return;
+    if(!writeSimulatedBalance(window.sessionStorage,operadorId,novoValor))return;
     setSaldoSimulado(num);
-    localStorage.setItem('jenios_saldo_simulado', String(num));
   };
 
   // A assinatura não pode ser alterada por seleção local; consulte o backend em Meus pagamentos.
@@ -202,18 +197,27 @@ export default function DashboardPage() {
   };
 
   const acionarAntifuria = () => {
-    setAntifuriaAcionado(current=>!current);
-    setStatusMensagem(antifuriaAcionado ? 'Simulação retomada manualmente.' : 'Simulação pausada. Novas intenções fictícias serão bloqueadas.');
+    const paused=!antifuriaAcionado;
+    if(!writeSimulationPaused(window.sessionStorage,operadorId,paused)){
+      setStatusMensagem('Não foi possível salvar a trava de simulação. Nenhuma ordem é transmitida.');
+      return;
+    }
+    setAntifuriaAcionado(paused);
+    setStatusMensagem(paused?'Simulação pausada para esta conta.':'Simulação retomada manualmente para esta conta.');
   };
 
   const acionarTravaManual = () => {
+    if(!writeSimulationPaused(window.sessionStorage,operadorId,true)){
+      alert('Pausa local indisponível. Nenhuma ordem real é transmitida por este painel.');
+      return;
+    }
     setAntifuriaAcionado(true);
-    alert('Novos cliques bloqueados nesta simulação. O sistema não enviou pedido de encerramento a nenhuma corretora.');
+    setStatusMensagem('Simulador pausado nesta conta. Nenhuma corretora recebeu comando.');
   };
 
   const executarOrdem = (direcao) => {
     if (tipoConta !== 'simulada') { alert('Execução real bloqueada: autorização no servidor indisponível.'); return; }
-    if (antifuriaAcionado) {
+    if (readSimulationPaused(window.sessionStorage,operadorId)) {
       setBloqueiosSimulados(n => n + 1);
       alert('Tentativa fictícia bloqueada pelo Botão Antifúria. Não é possível calcular uma perda evitada com base nesse bloqueio.');
       return;
@@ -268,11 +272,11 @@ export default function DashboardPage() {
 
               {tipoConta === 'simulada' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderLeft: '1px solid #cbd5e1', paddingLeft: '8px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Saldo (R$):</span>
+                  <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Saldo fictício (R$):</span>
                   <input 
                     type="number" 
                     value={saldoSimulado} 
-                    onChange={(e) => atualizarSaldoSimulado(Number(e.target.value))}
+                    min="0" max="100000000" onChange={(e) => atualizarSaldoSimulado(e.target.value)}
                     style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', outline: 'none' }}
                   />
                 </div>

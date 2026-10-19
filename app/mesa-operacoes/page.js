@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { supabase } from '../../lib/supabase';
+import {readSimJournal,appendSimIntention,clearSimJournal} from '../../lib/platform/simulation-journal.mjs';
+import {loadAccountRisk,NO_EVIDENCE} from '../../lib/platform/risk-client.mjs';
 import terminal from '../components/platform/Terminal.module.css';
 
 export default function MesaOperacoesPage() {
@@ -20,6 +22,7 @@ export default function MesaOperacoesPage() {
   const [diagnosticoBackend, setDiagnosticoBackend] = useState('Verificando');
   const [saldoSimulado, setSaldoSimulado] = useState(100000.00);
   const [intencoes, setIntencoes] = useState([]);
+  const [riskEvidence,setRiskEvidence]=useState(NO_EVIDENCE);
   const [pausaManual, setPausaManual] = useState(false);
   const [bloqueiosDeRisco, setBloqueiosDeRisco] = useState(0);
 
@@ -38,6 +41,7 @@ export default function MesaOperacoesPage() {
 
   useEffect(() => observePlatformDiagnostic(supabase,status=>{
     setOperadorId(status.userId);
+    setIntencoes(readSimJournal(window.sessionStorage,status.userId));
     setDiagnosticoConcluido(status.verified===true);
     setDiagnosticoBackend(status.reason==='checking'?'Verificando':
       status.verified?'Validado no servidor':
@@ -45,6 +49,10 @@ export default function MesaOperacoesPage() {
     const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
     setModoOperacao(chosen || (status.verified?status.mode:'manual'));
   },loadAccountDiagnostic),[]);
+
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setRiskEvidence(status.evidenceStatus?status:NO_EVIDENCE);
+  },()=>loadAccountRisk(supabase)),[]);
 
   const alterarModo = (mode) => {
     if (!['manual', 'reversa'].includes(mode)) return;
@@ -60,7 +68,7 @@ export default function MesaOperacoesPage() {
   };
 
   // Sem histórico validado não há motivo para sugerir uma troca de modo.
-  const sugestaoAdaptativa = adaptiveModeSuggestion([], modoOperacao);
+  const sugestaoAdaptativa = adaptiveModeSuggestion(riskEvidence.verifiedTrades, modoOperacao);
 
   // Estados de Ativos e Categoria
   const [categoria, setCategoria] = useState('b3');
@@ -171,7 +179,10 @@ export default function MesaOperacoesPage() {
       alert('Intenção fictícia bloqueada: revise o limite máximo de 5% e a quantidade de contratos.');
       return;
     }
-    setIntencoes(current=>[{id:Date.now()+'-'+direcao,direcao,ativo:nomeAtivoExibicao,modo:modoOperacao,valor,hora:new Date().toLocaleTimeString('pt-BR')},...current].slice(0,6));
+    const recorded=appendSimIntention(window.sessionStorage,operadorId,
+      {ativo:nomeAtivoExibicao,direcao,modo:modoOperacao,valor});
+    if(!recorded.ok){alert('Não foi possível salvar o diário de simulação. Nenhuma ordem foi enviada.');return;}
+    setIntencoes(recorded.events);
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
@@ -182,7 +193,8 @@ export default function MesaOperacoesPage() {
         </p>
         {!diagnosticoConcluido && <a href="/diagnostico" style={{display:'inline-block',background:'#7c3aed',color:'#fff',padding:'9px 12px',borderRadius:8,textDecoration:'none',fontSize:12,fontWeight:700}}>Fazer diagnóstico</a>}
         <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>{sugestaoAdaptativa || 'Leitura adaptativa: aguardando histórico de operações verificadas. Não há recomendação baseada em perdas neste momento.'}</p>
-        <p style={{fontSize:11,color:'#64748b',margin:'6px 0 0'}}>Losses evitados: contador financeiro indisponível sem eventos e preços auditáveis. Bloquear uma tentativa não comprova valor poupado.</p>
+        <p style={{fontSize:11,color:'#64748b',margin:'6px 0 0'}}>Bloqueios confirmados: {riskEvidence.verifiedBlocks===null?'fonte indisponível':riskEvidence.verifiedBlocks}.
+          Losses evitados em R$: não calculáveis sem contrafactual auditado; bloqueios não equivalem a prejuízo evitado.</p>
         <p role="status" style={{fontSize:11,color:'#64748b'}}>Diagnóstico: {diagnosticoBackend}</p>
       </section>
 
@@ -386,11 +398,11 @@ export default function MesaOperacoesPage() {
           <section className={terminal.history} aria-live="polite">
             <strong>Histórico de intenções fictícias</strong>
             <p className={terminal.note}>Intenções: {intencoes.length}. Bloqueios simulados: {bloqueiosDeRisco}. Valor de prejuízo evitado não apurado.</p>
-            {intencoes.length===0 ? <p className={terminal.note}>Ainda não há decisões registradas.</p> :
+            {intencoes.length===0 ? <p className={terminal.note}>Ainda não há decisões fictícias registradas nesta sessão.</p> :
               <ol>{intencoes.map(entry=><li key={entry.id}><span>{entry.hora} · {entry.ativo} · {entry.direcao}</span><span>R$ {entry.valor.toLocaleString('pt-BR')} · {entry.modo}</span></li>)}</ol>}
             <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap'}}>
               <button type="button" onClick={()=>setPausaManual(x=>!x)} style={{background:pausaManual?'#059669':'#7c3aed',color:'#fff',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer',fontWeight:800}}>{pausaManual?'Retomar sessão':'Pausar sessão'}</button>
-              <button type="button" onClick={()=>setIntencoes([])} disabled={intencoes.length===0} style={{background:'#e2e8f0',color:'#334155',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer'}}>Limpar diário</button>
+              <button type="button" onClick={()=>{clearSimJournal(window.sessionStorage,operadorId);setIntencoes([]);}} disabled={intencoes.length===0} style={{background:'#e2e8f0',color:'#334155',padding:'9px 12px',border:0,borderRadius:8,cursor:'pointer'}}>Limpar diário</button>
             </div>
           </section>
                     <div style={{ backgroundColor: '#f3e8ff', border: '1px solid #e9d5ff', borderRadius: '10px', padding: '10px', fontSize: '10px', color: '#581c87', marginTop: '16px' }}>

@@ -4,13 +4,28 @@ import Link from 'next/link';
 import PlatformBillingStatus from '../components/platform/PlatformBillingStatus';
 import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
 import { platformSupabase as supabase } from '../../lib/platform/supabase-client';
-import { observePlatformDiagnostic, loadAccountDiagnostic } from '../../lib/platform/diagnostic-client.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic, currentPlatformSession } from '../../lib/platform/diagnostic-client.mjs';
+import { signOutPlatform } from '../../lib/platform/account-access.mjs';
 import styles from './control.module.css';
 
 export default function DashboardLogado() {
   const [tab,setTab] = useState('geral');
   const [userLabel,setUserLabel] = useState('Operador');
   const [diagnostic,setDiagnostic] = useState(null);
+  const [loggingOut,setLoggingOut]=useState(false);
+  const [logoutError,setLogoutError]=useState('');
+  async function logout(){
+    if(loggingOut)return;
+    setLoggingOut(true);setLogoutError('');
+    try{
+      const session=await currentPlatformSession(supabase);
+      await signOutPlatform(supabase?.auth,window.sessionStorage,session?.user?.id);
+      window.location.replace('/platform/entrar');
+    }catch{
+      setLogoutError('Não foi possível encerrar a sessão. Tente novamente.');
+      setLoggingOut(false);
+    }
+  }
 
   useEffect(()=>{
     let live=true,revision=0;
@@ -64,8 +79,11 @@ export default function DashboardLogado() {
           <div className={styles.actions}>
             <Link className={`${styles.button} ${styles.secondary}`} href="/dashboard">Ir para Dashboard</Link>
             <Link className={styles.button} href="/mesa-operacoes">Abrir Mesa →</Link>
+            <button type="button" disabled={loggingOut} className={`${styles.button} ${styles.secondary}`} onClick={logout}>{loggingOut?'Saindo…':'Sair da Platform'}</button>
           </div>
         </header>
+
+        {logoutError&&<p role="alert" className={styles.notice}>{logoutError}</p>}
 
         {tab==='geral' && <>
           <section className={styles.hero}>

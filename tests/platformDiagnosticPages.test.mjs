@@ -15,9 +15,9 @@ test('dashboard inclui CTA do laudo e nega autorização real pelo navegador',()
  assert.match(s,/onClick=\{solicitarContaReal\}/);
  assert.doesNotMatch(s,/Roteamento HFT via API executado/);
 });
-test('questionário não força escolha de modo e armazena laudo do perfil',()=>{
+test('questionário não força escolha e solicita laudo por usuário no servidor',()=>{
  const s=page('diagnostico');
- assert.match(s,/persistLocalReport\(window\.localStorage, scores, timelineSelecionada\)/);
+ assert.match(s,/submitAccountDiagnostic\(supabase, respostas, timelineSelecionada\)/);
  assert.match(s,/Modo inicial sugerido/);
  assert.doesNotMatch(s,/Escolha o seu Modo Operacional/);
  assert.equal((s.match(/p: "tecnico_positivo", v: 2/g)||[]).length,5);

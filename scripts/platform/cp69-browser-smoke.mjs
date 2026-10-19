@@ -177,6 +177,24 @@ try {
  pass(mobileAdmin.content<=mobileAdmin.viewport+8,'Admin login mobile no major overflow: '+JSON.stringify(mobileAdmin));
  await screenshot('admin-login-mobile');
 
+ // B75 smartphone Chromium smoke, no real tokens or private data.
+ await navigate('/social');
+ pass(await evalExpr(`(()=>{const e=document.querySelector('.jenios-mobile-rail');return !!e&&getComputedStyle(e).display==='flex';})()`),
+  'Smartphone Social icon rail is visible');
+ pass(await evalExpr(`([...document.querySelectorAll('.social-desktop-nav')].length===2 && [...document.querySelectorAll('.social-desktop-nav')].every(e=>getComputedStyle(e).display==='none'))`),
+  'Smartphone repeated navigation rows are hidden');
+ pass(await evalExpr(`(()=>{const f=document.querySelector('.social-feed-primary'),t=document.querySelector('.social-feed-tools');return !!f&&!!t&&Number(getComputedStyle(t).order)>Number(getComputedStyle(f).order);})()`),
+  'Smartphone feed appears before heavy extra modules');
+ const opened=await evalExpr(`(()=>{const toggle=document.querySelector('.jenios-mobile-rail-toggle');if(!toggle)return false;toggle.click();return true;})()`);
+ pass(opened,'Smartphone menu control responds to touch');
+ await waitFor(`!!document.querySelector('#jenios-mobile-rail-extra')`);
+ pass(await evalExpr(`document.querySelector('#jenios-mobile-rail-extra')?.innerText.includes('BankScore')`),
+  'Expanded rail contains BankScore');
+ await screenshot('social-mobile');
+ await navigate('/dashboard');
+ pass(await evalExpr(`document.body.innerText.includes('HUB JENIOS') && document.body.innerText.includes('Radar de Baleias') && !document.body.innerText.includes('Fonte institucional não conectada')`),
+  'Dashboard uses shared JENIOS Hub instead of hardcoded empty whales');
+
  console.log('CP69_BROWSER_SMOKE_PASS='+checks);
 }finally{
  try{socket?.close();}catch{}

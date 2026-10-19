@@ -103,7 +103,7 @@
  */
 .jenios-mobile-rail,.jenios-mobile-rail-backdrop { display:none; }
 @media (max-width:600px) {
-  .jenios-social-surface {padding-left:49px; box-sizing:border-box;}
+  .jenios-social-surface {padding-left:49px !important; padding-right:7px !important; box-sizing:border-box;}
   .jenios-social-surface .social-main-header {padding:11px 12px !important; gap:6px;}
   .jenios-social-surface .social-main-header .social-header-link,
   .jenios-social-surface .social-header-user-signout,
@@ -132,9 +132,9 @@
   .jenios-mobile-rail-item[aria-current="page"] {background:#ede9fe;}
   .jenios-mobile-rail-item:focus-visible {outline:2px solid #7c3aed;outline-offset:-2px;}
   .jenios-mobile-rail-toggle {background:#f2ebff;}
-  @media (hover:hover) and (pointer:fine) {
-    .jenios-mobile-rail:hover {width:min(244px,calc(100vw - 65px));}
-    .jenios-mobile-rail:hover .jenios-mobile-rail-label {display:inline;}
-    .jenios-mobile-rail-item:hover {background:#ede9fe;}
-  }
+}
+@media (max-width:600px) and (hover:hover) and (pointer:fine) {
+ .jenios-mobile-rail:hover {width:min(244px,calc(100vw - 65px));}
+ .jenios-mobile-rail:hover .jenios-mobile-rail-label {display:inline;}
+ .jenios-mobile-rail-item:hover {background:#ede9fe;}
 }

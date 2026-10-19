@@ -1,9 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import NewTokenRadar from '../components/NewTokenRadar';
+import { readLocalReport, MODE_KEY } from '../../lib/platform/diagnostic-routing.mjs';
 
 export default function DashboardPage() {
   const [modoReversoAtivo, setModoReversoAtivo] = useState(false);
+  const [diagnosticoConcluido, setDiagnosticoConcluido] = useState(false);
+  const [bloqueiosSimulados, setBloqueiosSimulados] = useState(0);
   const [antifuriaAcionado, setAntifuriaAcionado] = useState(false);
   const [statusMensagem, setStatusMensagem] = useState('Sistema HFT Ativo & Blindado');
   
@@ -18,6 +21,21 @@ export default function DashboardPage() {
       setSaldoSimulado(Number(saldoSalvo));
     }
   }, []);
+
+  useEffect(() => {
+    const report = readLocalReport(window.localStorage);
+    setDiagnosticoConcluido(Boolean(report));
+    const chosen = window.localStorage.getItem(MODE_KEY);
+    setModoReversoAtivo((chosen === 'manual' || chosen === 'reversa' ? chosen : report?.mode) === 'reversa');
+  }, []);
+
+  const solicitarContaReal = () => {
+    if (!diagnosticoConcluido) {
+      alert('Para iniciar a conta real é necessário concluir o Diagnóstico Comportamental, disponível nesta Dashboard. Você pode continuar no simulador.');
+      return;
+    }
+    alert('Diagnóstico inicial registrado. A conta real ainda requer validação no servidor, corretora homologada e autorização de execução. Nenhuma ordem real foi habilitada.');
+  };
 
   const atualizarSaldoSimulado = (novoValor) => {
     setSaldoSimulado(novoValor);
@@ -165,26 +183,27 @@ export default function DashboardPage() {
 
   const ativarModoReverso = () => {
     setModoReversoAtivo(!modoReversoAtivo);
-    if (!modoReversoAtivo) {
-      setStatusMensagem('🚨 MODO REVERSO ATIVADO: Ordens impulsivas e stop-hunts estão a ser revertidas automaticamente em lucro!');
-    } else {
-      setStatusMensagem('Sistema HFT Ativo & Blindado');
-    }
+    const novoModo = !modoReversoAtivo ? 'reversa' : 'manual';
+    localStorage.setItem(MODE_KEY, novoModo);
+    setStatusMensagem(novoModo === 'reversa' ? 'Modo reverso selecionado para simulação.' : 'Modo manual selecionado para simulação.');
   };
 
   const acionarAntifuria = () => {
     setAntifuriaAcionado(true);
     setStatusMensagem('🚨 BOTÃO ANTIFÚRIA ACIONADO! Novas ordens bloqueadas por 24h.');
-    alert('🚨 BOTÃO ANTIFÚRIA ACIONADO! O sistema bloqueou novas ordens impulsivas e ativou a blindagem emocional rigorosa.');
+    alert('Pausa da simulação ativada nesta sessão. Isso não envia comandos a nenhuma corretora.');
   };
 
   const acionarTravaManual = () => {
-    alert('🚨 TRAVA MANUAL ACIONADA! Todos os cliques foram bloqueados e as posições em aberto foram fechadas com sucesso na corretora.');
+    setAntifuriaAcionado(true);
+    alert('Novos cliques bloqueados nesta simulação. O sistema não enviou pedido de encerramento a nenhuma corretora.');
   };
 
   const executarOrdem = (direcao) => {
+    if (tipoConta !== 'simulada') { alert('Execução real bloqueada: autorização no servidor indisponível.'); return; }
     if (antifuriaAcionado) {
-      alert('⚠️ Operação bloqueada pelo Botão Antifúria ativo!');
+      setBloqueiosSimulados(n => n + 1);
+      alert('Tentativa fictícia bloqueada pelo Botão Antifúria. Não é possível calcular uma perda evitada com base nesse bloqueio.');
       return;
     }
 
@@ -194,7 +213,7 @@ export default function DashboardPage() {
       return;
     }
 
-    alert(`Ordem de ${direcao} enviada para ${nomeAtivoExibicao} (${ativoSelecionado})!\n• Conta: ${tipoConta.toUpperCase()} ${tipoConta === 'simulada' ? `(Saldo Fictício: R$ ${saldoSimulado.toFixed(2)})` : ''}\n• Plano Ativo: ${planoUsuario.toUpperCase()}\n• Capital Alocado: R$ ${capitalAlocado}\n• Alavancagem: ${alavancagem}\n• Lotes: ${lotes}\n• Stop Diário: R$ ${stopDiario}\nRoteamento HFT via API executado.`);
+    alert(`Intenção fictícia registrada: ${direcao} em ${nomeAtivoExibicao}.\\nCapital informado: R$ ${capitalAlocado}.\\nNão foi enviada ordem à corretora; este painel não simula resultado financeiro.`);
   };return (
     <main style={{ backgroundColor: '#f1f5f9', color: '#0f172a', minHeight: '100vh', padding: '30px 20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -224,10 +243,10 @@ export default function DashboardPage() {
                   Simulador
                 </button>
                 <button 
-                  onClick={() => setTipoConta('real')} 
+                  onClick={solicitarContaReal} 
                   style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
-                  Real
+                  Real (validar)
                 </button>
               </div>
 
@@ -266,6 +285,17 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <section style={{background:'#ffffff',border:'1px solid #ddd6fe',borderRadius:14,padding:18,marginBottom:22}}>
+          <h2 style={{margin:'0 0 6px',fontSize:16,color:'#4c1d95'}}>Diagnóstico Comportamental</h2>
+          <p style={{fontSize:12,color:'#334155',margin:'0 0 12px'}}>
+            {diagnosticoConcluido ? 'Laudo inicial registrado. Você pode continuar no modo indicado ou mudar depois.' : 'Você pode explorar a mesa e operar no simulador sem o diagnóstico. Ele será exigido antes de qualquer operação em conta real.'}
+          </p>
+          <a href="/diagnostico" style={{display:'inline-block',padding:'10px 14px',background:'#7c3aed',color:'#fff',textDecoration:'none',fontSize:12,borderRadius:9,fontWeight:800}}>
+            {diagnosticoConcluido ? 'Consultar diagnóstico' : 'Fazer diagnóstico'}
+          </a>
+          <p style={{fontSize:11,color:'#64748b',margin:'10px 0 0'}}>A autorização real também depende de autenticação, confirmação da conta e integração de corretora validada no servidor.</p>
+        </section>
+
         {/* 4 Cartões Principais do Topo */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', marginBottom: '30px' }}>
           
@@ -274,7 +304,7 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>MODO DE RETIFICAÇÃO</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Modo Reverso Automático</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Intercepta impulsos e inverte ordens em 3ms.
+                Modo reverso disponível para estudo no simulador. Latência e roteamento real não certificados.
               </p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -292,7 +322,7 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#dc2626', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>BLINDAGEM EMOCIONAL</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Botão Antifúria</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Bloqueia o vício de vingança pós-loss por 24h.
+                Pausa novas tentativas nesta sessão de simulação.
               </p>
             </div>
             <button onClick={acionarAntifuria} style={{ backgroundColor: antifuriaAcionado ? '#991b1b' : '#dc2626', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '900', fontSize: '11px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}>
@@ -303,10 +333,10 @@ export default function DashboardPage() {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>ESTATÍSTICAS</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses Neutralizados</h3>
-              <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>R$ 6.293,00</div>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses evitados · eventos verificáveis</h3>
+              <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>—</div>
               <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
-                17 operações impulsivas evitadas.
+                {bloqueiosSimulados} bloqueio(s) fictício(s) nesta sessão. Ainda sem valor de perda evitada auditado.
               </p>
             </div>
             <button onClick={() => alert('Simulação de proteção ativa.')} style={{ backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '8px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer', width: '100%', marginTop: '10px' }}>
@@ -319,11 +349,11 @@ export default function DashboardPage() {
               <span style={{ fontSize: '10px', color: '#e11d48', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>EMERGÊNCIA</span>
               <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Trava Manual</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
-                Zera posições e bloqueia novos cliques na corretora.
+                Bloqueia novas tentativas nesta simulação; não fecha posições na corretora.
               </p>
             </div>
             <button onClick={acionarTravaManual} style={{ backgroundColor: '#e11d48', color: '#fff', border: 'none', padding: '10px', borderRadius: '8px', fontWeight: '900', fontSize: '11px', cursor: 'pointer', textTransform: 'uppercase', width: '100%', boxShadow: '0 4px 6px -1px rgba(225, 29, 72, 0.2)' }}>
-              🔒 ZERAR TUDO
+              🔒 PAUSAR SIMULADOR
             </button>
           </div>
 

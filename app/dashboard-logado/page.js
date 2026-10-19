@@ -4,7 +4,6 @@ import Link from 'next/link';
 import PaymentStatement from '../components/PaymentStatement';
 
 export default function DashboardLogado() {
-  const [diagnosticoFeito, setDiagnosticoFeito] = useState(false);
   const [abaAtiva, setAbaAtiva] = useState('geral');
 
   // Dados do Plano e Permissões de Mercado
@@ -31,23 +30,8 @@ export default function DashboardLogado() {
 
   const [nossaApiKeyBridge] = useState('jn_live_bridge_889347192847192_sec');
 
-  useEffect(() => {
-    const status = localStorage.getItem('jenios_diagnostico_realizado');
-    if (status === 'true') {
-      setDiagnosticoFeito(true);
-    }
-  }, []);
-
-  // Direcionamento corrigido para a Dashboard oficial após validar o Diagnóstico
-  const irParaDashboardOuOperar = () => {
-    const jaFez = localStorage.getItem('jenios_diagnostico_realizado') === 'true';
-    if (!jaFez && !diagnosticoFeito) {
-      alert('⚠️ Protocolo Obrigatório: Você precisa concluir o Diagnóstico Comportamental antes de operar.');
-      window.location.href = '/diagnostico';
-      return;
-    }
-    window.location.href = '/dashboard';
-  };
+  // A navegação não exige diagnóstico. A execução real é autorizada no servidor.
+  const irParaDashboardOuOperar = () => window.location.assign('/dashboard');
 
   const conectarCorretora = (e) => {
     e.preventDefault();
@@ -135,9 +119,6 @@ export default function DashboardLogado() {
           <button onClick={irParaDashboardOuOperar} style={{ textAlign: 'left', background: 'none', border: 'none', padding: '10px 14px', borderRadius: '8px', color: '#334155', fontSize: '14px', cursor: 'pointer', fontWeight: '600' }}>
             ⚡ Operar
           </button>
-          <Link href="/diagnostico" style={{ padding: '10px 14px', borderRadius: '8px', color: '#0284c7', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
-            🧠 Diagnóstico Comportamental
-          </Link>
           <Link href="/tendencias" style={{ padding: '10px 14px', borderRadius: '8px', color: '#059669', textDecoration: 'none', fontSize: '14px', fontWeight: '700' }}>
             🚀 Hub de Tendências
           </Link>

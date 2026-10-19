@@ -140,13 +140,13 @@ jobs:
             .github/workflows/jenios-platform-cp67-isolated.yml
           )
           sha256sum "${FILES[@]}" > .jenios-platform-qa/SHA256SUMS-CP67R1.txt
-          tar -czf .jenios-platform-qa/JENIOS-PLATFORM-CP67R1-SOURCE.tar.gz "${FILES[@]}" .jenios-platform-qa/SHA256SUMS-CP67.txt
+          tar -czf .jenios-platform-qa/JENIOS-PLATFORM-CP67R1-SOURCE.tar.gz "${FILES[@]}" .jenios-platform-qa/SHA256SUMS-CP67R1.txt
       - name: Store private integrity archive
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: jenios-platform-cp67r1-dedicated-source
-          path: .jenios-platform-qa/JENIOS-PLATFORM-CP67-SOURCE.tar.gz
+          path: .jenios-platform-qa/JENIOS-PLATFORM-CP67R1-SOURCE.tar.gz
           retention-days: 30
           if-no-files-found: error
       - name: Store browser QA screenshots

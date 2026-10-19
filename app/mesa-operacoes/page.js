@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
-import { loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
+import { observePlatformDiagnostic, loadAccountDiagnostic, readSessionMode, writeSessionMode } from '../../lib/platform/diagnostic-client.mjs';
 import { supabase } from '../../lib/supabase';
 import terminal from '../components/platform/Terminal.module.css';
 
@@ -36,19 +36,15 @@ export default function MesaOperacoesPage() {
     setSaldoSimulado(n);localStorage.setItem('jenios_saldo_simulado',String(n));
   };
 
-  useEffect(() => {
-    let live=true;
-    loadAccountDiagnostic(supabase).then(status=>{
-      if (!live) return;
-      setOperadorId(status.userId);
-      setDiagnosticoConcluido(status.verified===true);
-      setDiagnosticoBackend(status.verified?'Validado no servidor':
-        status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
-      const chosen=readSessionMode(window.sessionStorage,status.userId);
-      setModoOperacao(chosen || (status.verified?status.mode:'manual'));
-    });
-    return ()=>{live=false;};
-  }, []);
+  useEffect(() => observePlatformDiagnostic(supabase,status=>{
+    setOperadorId(status.userId);
+    setDiagnosticoConcluido(status.verified===true);
+    setDiagnosticoBackend(status.reason==='checking'?'Verificando':
+      status.verified?'Validado no servidor':
+      status.reason==='auth_required'?'Conta não autenticada':'Aguardando validação no servidor');
+    const chosen=status.reason==='checking'?null:readSessionMode(window.sessionStorage,status.userId);
+    setModoOperacao(chosen || (status.verified?status.mode:'manual'));
+  },loadAccountDiagnostic),[]);
 
   const alterarModo = (mode) => {
     if (!['manual', 'reversa'].includes(mode)) return;

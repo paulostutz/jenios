@@ -7,6 +7,9 @@ import {assessPaperStrategy,simulationModeLabels} from '../../../lib/platform/pa
 import {readSimulatedBalance,readSimulationPaused} from '../../../lib/platform/simulation-account.mjs';
 import {readSimJournal} from '../../../lib/platform/simulation-journal.mjs';
 import {observeSimulatedBehavior} from '../../../lib/platform/behavioral-observation.mjs';
+import {multiTimeframeStudy} from '../../../lib/platform/multi-timeframe-study.mjs';
+import {evaluateRollingPaperWindows} from '../../../lib/platform/rolling-paper-validation.mjs';
+import {auditLocalProspectiveCohort,prospectiveReadinessLabel} from '../../../lib/platform/prospective-cohort.mjs';
 import {captureProspectiveObservation,readProspectiveObservations,prospectiveCoverage} from '../../../lib/platform/prospective-observation.mjs';
 
 const inputCss={width:'100%',boxSizing:'border-box',background:'#fff',border:'1px solid #cbd5e1',padding:10,borderRadius:8,font:'inherit'};
@@ -34,6 +37,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
  const [mode,setMode]=useState('direto'),[allocation,setAllocation]=useState(1000);
  const [stop,setStop]=useState(500),[result,setResult]=useState(null),[error,setError]=useState('');
  const [quality,setQuality]=useState(null),[replay,setReplay]=useState(null);
+ const [multiStudy,setMultiStudy]=useState(null),[rollingEvaluation,setRollingEvaluation]=useState(null);
  const [publicProduct,setPublicProduct]=useState('BTC-USD'),[publicInterval,setPublicInterval]=useState(300);
  const [sourceLoading,setSourceLoading]=useState(false),[publicCapture,setPublicCapture]=useState(null);
  const [prospectiveRows,setProspectiveRows]=useState([]);
@@ -50,17 +54,18 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
  },[userId,balance]);
  useEffect(()=>{
   requestVersion.current++;
-  setSourceLoading(false);setPublicCapture(null);
+  setSourceLoading(false);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);
   if(!userId){setProspectiveRows([]);return;}
   setProspectiveRows(readProspectiveObservations(window.sessionStorage,userId,publicProduct,publicInterval));
   return()=>{requestVersion.current++;};
  },[userId,publicProduct,publicInterval]);
+ const localAudit=prospectiveRows.length?auditLocalProspectiveCohort(prospectiveRows,{granularity:publicInterval}):null;
  const observations=userId&&typeof window!=='undefined'?
   observeSimulatedBehavior({events:readSimJournal(window.sessionStorage,userId),paused,selectedMode:mode}):null;
  const plan=assessPaperStrategy({mode,balance:simBalance,allocation:Number(allocation),dailyStop:Number(stop),paused,analysis:result,observations});
  async function loadPublicSample(){
   const rev=++requestVersion.current;
-  setSourceLoading(true);setError('');setPublicCapture(null);setReplay(null);
+  setSourceLoading(true);setError('');setPublicCapture(null);setReplay(null);setMultiStudy(null);setRollingEvaluation(null);
   try{
    const params=new URLSearchParams({product:publicProduct,granularity:String(publicInterval)});
    const response=await fetch('/api/platform/market-observation?'+params,{
@@ -72,8 +77,13 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    const quality=inspectHistoricalBars(data.candles);
    if(!quality.replayEligible)throw Error('A série pública apresenta lacunas incompatíveis com o estudo.');
    const studied=studyHistoricalCandles(data.candles,{timeframe});
+   let grouped=null;
+   if(quality.replayEligible&&data.candles.length>=180){
+    try{grouped=multiTimeframeStudy(data.candles,{baseIntervalMs:quality.typicalIntervalMs,timeframe});}
+    catch{grouped=null;}
+   }
    if(requestVersion.current!==rev)return;
-   setInput(JSON.stringify(data.candles));setResult(studied);setQuality(quality);
+   setInput(JSON.stringify(data.candles));setResult(studied);setQuality(quality);setMultiStudy(grouped);
    setPublicCapture(data);setReplay(null);
   }catch(e){
    if(requestVersion.current===rev)setError(e?.message||'Fonte pública indisponível.');
@@ -91,16 +101,21 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
   setProspectiveRows(recorded.rows);setError('');
  }
  function calculate(){
-  setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);
+  setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);
   try{
    const bars=parseLocalBars(input);
    const audit=inspectHistoricalBars(bars);
    const next=studyHistoricalCandles(bars,{timeframe});
-   setQuality(audit);setResult(next);
+   let grouped=null;
+   if(audit.replayEligible&&bars.length>=180){
+    try{grouped=multiTimeframeStudy(bars,{baseIntervalMs:audit.typicalIntervalMs,timeframe});}
+    catch{grouped=null;}
+   }
+   setQuality(audit);setResult(next);setMultiStudy(grouped);
   }catch(e){setError(e?.message||'Não foi possível validar os candles.');}
  }
  function simulateReplay(){
-  setError('');setReplay(null);
+  setError('');setReplay(null);setRollingEvaluation(null);
   if(!plan.rehearsalAllowed){setError('A pausa, alocação ou os limites fictícios impedem o replay nesta conta.');return;}
   try{
    const bars=parseLocalBars(input);
@@ -110,6 +125,12 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    });
    if(!hypothetical.ok){setError('Dados insuficientes ou com lacunas para o replay; confira a qualidade da série.');return;}
    setReplay(hypothetical);
+   if(bars.length>=180){
+    const rolling=evaluateRollingPaperWindows(bars,{
+     initialBalance:simBalance,allocationPct:Number(allocation)/simBalance
+    });
+    setRollingEvaluation(rolling.valid?rolling:null);
+   }
   }catch(e){setError(e?.message||'Não foi possível executar o replay histórico.');}
  }
  return <section style={panelCss} aria-label="Laboratório técnico da JENIOS Platform">
@@ -147,17 +168,18 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    </div>}
    {userId&&prospectiveRows.length>0&&<p role="status" style={{fontSize:12,color:'#475569'}}>
     Diário prospectivo local: {prospectiveRows.length} candles únicos registrados ao longo de {prospectiveCoverage(prospectiveRows).hours} hora(s).
-    {' '}Esse diário não comprova lucros, acurácia de sinais nem desempenho dos robôs.
+    {' '}{prospectiveReadinessLabel(localAudit)}
+    {' '}Os horários do navegador não são testemunhados por servidor independente e não demonstram lucros ou desempenho de robôs.
    </p>}
   </div>
 
   <label style={{display:'grid',gap:6,fontSize:12,fontWeight:700}}>Candles históricos
-   <textarea value={input} rows={4} maxLength={180000} onChange={e=>{requestVersion.current++;setInput(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}}
+   <textarea value={input} rows={4} maxLength={180000} onChange={e=>{requestVersion.current++;setInput(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);}}
     style={{...inputCss,resize:'vertical'}} placeholder={'JSON: [{"time":"2026-10-16T14:00:00Z","open":100,"high":102,"low":99,"close":101,"volume":1200}, ...]'} />
   </label>
   <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'end',marginTop:12}}>
    <label style={{fontSize:12}}>Horizonte<br/>
-    <select value={timeframe} onChange={e=>{requestVersion.current++;setTimeframe(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}} style={inputCss}>
+    <select value={timeframe} onChange={e=>{requestVersion.current++;setTimeframe(e.target.value);setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);}} style={inputCss}>
      <option value="intraday">Intradiário histórico</option><option value="swing">Swing trade histórico</option>
     </select>
    </label>
@@ -166,7 +188,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
     <input type="file" accept=".json,.csv,text/csv,application/json" onChange={async e=>{
      const file=e.target.files?.[0];if(!file)return;
      if(file.size>180000){setError('Arquivo maior que o limite de 180 KB.');return;}
-     try{requestVersion.current++;setInput(await file.text());setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);}
+     try{requestVersion.current++;setInput(await file.text());setError('');setResult(null);setQuality(null);setReplay(null);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);}
      catch{setError('Não foi possível ler o arquivo local.');}
     }} style={{display:'block',maxWidth:230}}/>
    </label>
@@ -183,6 +205,18 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
    </div>
    <p style={{fontSize:11,color:'#92400e'}}>{result.caution}</p>
   </div>}
+  {multiStudy&&<section aria-label="Estudo de três tempos gráficos" style={{marginTop:15,padding:15,border:'1px solid #ddd6fe',borderRadius:12,background:'#faf9ff'}}>
+   <h3 style={{fontSize:16,margin:'0 0 8px'}}>Confluência histórica de três tempos gráficos</h3>
+   <p style={{fontSize:12}}>Leitura: <strong>{multiStudy.consensus.replaceAll('_',' ')}</strong>. {multiStudy.comment}</p>
+   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:9}}>
+    {multiStudy.series.map(x=><article key={x.multiple} style={{border:'1px solid #e2e8f0',borderRadius:9,padding:12,background:'#fff',fontSize:12}}>
+     <strong>{x.minutes} minutos · {x.closedBars} candles completos</strong>
+     <p>Tendência: {x.bias.replaceAll('_',' ')} · Alta/baixa: {x.up}/{x.down}</p>
+     <small>Suporte: {x.support.toFixed(2)} · Resistência: {x.resistance.toFixed(2)}</small>
+    </article>)}
+   </div>
+   <p style={{fontSize:11,color:'#92400e'}}>Acumulação ou distribuição não estão comprovadas por fluxo. Não é aconselhamento personalizado nem ordem.</p>
+  </section>}
   {quality&&<div aria-label="Qualidade da série histórica" style={{borderTop:'1px solid #e2e8f0',marginTop:15,paddingTop:13,fontSize:12}}>
     <strong>Auditoria da série importada</strong>
     <p>{quality.count} candles · Intervalo típico: {Math.round(quality.typicalIntervalMs/1000)} segundos
@@ -195,14 +229,14 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
     <div style={{marginTop:18,paddingTop:12,borderTop:'1px solid #e2e8f0'}}>
    <h3 style={{fontSize:16}}>Três modos — apenas roteiro de estudo</h3>
    <label style={{fontSize:12}}>Modo simulado
-    <select value={mode} onChange={e=>setMode(e.target.value)} style={{...inputCss,marginTop:6}}>
+    <select value={mode} onChange={e=>{setMode(e.target.value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,marginTop:6}}>
      {simulationModeLabels().map(x=><option value={x.code} key={x.code}>{x.label}</option>)}
     </select>
    </label>
    <p style={{fontSize:12}}>{plan.playbook}</p>
    <div style={{display:'flex',gap:9,flexWrap:'wrap'}}>
-    <label style={{fontSize:12}}>Alocação fictícia (R$)<input type="number" min="0" value={allocation} onChange={e=>setAllocation(e.target.value)} style={{...inputCss,width:145}}/></label>
-    <label style={{fontSize:12}}>Limite diário fictício (R$)<input type="number" min="0" value={stop} onChange={e=>setStop(e.target.value)} style={{...inputCss,width:145}}/></label>
+    <label style={{fontSize:12}}>Alocação fictícia (R$)<input type="number" min="0" value={allocation} onChange={e=>{setAllocation(e.target.value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
+    <label style={{fontSize:12}}>Limite diário fictício (R$)<input type="number" min="0" value={stop} onChange={e=>{setStop(e.target.value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
    </div>
    <p style={{fontSize:12}}>Saldo virtual identificado: R$ {simBalance.toLocaleString('pt-BR')} · Antifúria: {paused?'pausado':'não pausado'}.</p>
    {plan.reasons.length>0&&<ul style={{fontSize:12,lineHeight:1.6,color:'#92400e',paddingLeft:18}}>
@@ -220,6 +254,19 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
          {' '}Queda máxima estimada: {replay.hypotheticalMaxDrawdownPct.toLocaleString('pt-BR')}%.</p>
       <p style={{color:'#92400e'}}>{replay.caution}</p>
     </div>}
+   </div>}
+   {rollingEvaluation&&<div aria-label="Avaliação em janelas consecutivas" style={{border:'1px solid #ddd6fe',background:'#faf9ff',borderRadius:10,padding:13,marginTop:12,fontSize:12}}>
+    <strong>Estresse histórico com janelas de avaliação não sobrepostas</strong>
+    <p>{rollingEvaluation.windows.length} janelas · {rollingEvaluation.scenarioRows.length} cenários com custos e stops fixados antes da avaliação. Não são operações dos robôs originais.</p>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(165px,1fr))',gap:8}}>
+     {rollingEvaluation.modeSummary.map(x=><article key={x.mode} style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:9,padding:11}}>
+      <strong>{x.mode} (ilustrativo)</strong>
+      <p>Retorno mediano hipotético: {x.hypotheticalMedianReturnPct}%</p>
+      <p>Pior cenário: {x.hypotheticalWorstReturnPct}%</p>
+      <p>Maior drawdown hipotético: {x.hypotheticalWorstDrawdownPct}%</p>
+     </article>)}
+    </div>
+    <p style={{color:'#92400e'}}>{rollingEvaluation.caution}</p>
    </div>}
    <small style={{color:'#64748b'}}>Este laboratório não executa operações, não altera os motores protegidos e não atribui resultados financeiros. Limites de 25% e 2% são barreiras internas demonstrativas, não orientação personalizada.</small>
   </div>

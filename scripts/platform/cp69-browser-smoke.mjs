@@ -145,8 +145,9 @@ try {
  pass(await evalExpr(`!document.body.innerText.includes('Painel de homologação')`),
   'Dedicated Platform admin refuses unconfigured anonymous access');
  await navigate('/dashboard-logado');
- pass(await evalExpr(`document.body.innerText.includes('Homologação da Platform não configurada')`),
-  'Logged-in Platform dashboard does not fall back to the Social session');
+ await sleep(650);
+ pass(await evalExpr(`(location.pathname==='/platform/entrar' || document.body.innerText.includes('Homologação da Platform não configurada')) && !document.body.innerText.includes('Seu centro de controle')`),
+  'Unauthenticated Platform user is redirected to its isolated login without Social fallback');
 
  await send('Emulation.setDeviceMetricsOverride',{width:768,height:900,deviceScaleFactor:1,mobile:false});
   await navigate('/dashboard');

@@ -172,6 +172,33 @@ try {
  pass(mobileMesa.content<=mobileMesa.viewport+8,'Mesa mobile no major horizontal overflow: '+JSON.stringify(mobileMesa));
  await screenshot('mesa-mobile');
 
+ // B87 TradingView mobile portrait and physical-landscape Chromium validation.
+ // External widget network availability is not a certified market quotation.
+ pass(await evalExpr(`(()=>{const e=document.querySelector('[data-jenios-tv-chart]');
+  return !!e&&!!document.querySelector('[data-tv-vertical]')&&!!document.querySelector('[data-tv-horizontal]');})()`),
+  'TradingView orientation controls render in mobile portrait');
+ const switched=await evalExpr(`(()=>{const b=document.querySelector('[data-tv-horizontal]');if(!b)return false;b.click();return true;})()`);
+ pass(switched,'Touch can switch TradingView to horizontal mode');
+ await waitFor(`document.querySelector('[data-jenios-tv-chart]')?.dataset.mode==='horizontal'`,5000);
+ pass(await evalExpr(`(()=>{const e=document.querySelector('[data-jenios-tv-chart]');const b=e?.getBoundingClientRect();
+  return !!b&&b.width>=window.innerWidth-3&&b.height>=window.innerHeight-3&&
+  !!document.querySelector('[aria-label="Retornar ao gráfico vertical"]');})()`),
+  'Horizontal TradingView fills viewport on portrait-locked phone');
+ await screenshot('tradingview-horizontal-portrait');
+ const exit=await evalExpr(`(()=>{const b=document.querySelector('[aria-label="Retornar ao gráfico vertical"]');if(!b)return false;b.click();return true;})()`);
+ pass(exit,'Return to vertical is accessible by touch');
+ await waitFor(`document.querySelector('[data-jenios-tv-chart]')?.dataset.mode==='vertical'`,5000);
+ pass(await evalExpr(`document.documentElement.scrollWidth<=window.innerWidth+8`),
+  'Back to portrait without horizontal page overflow');
+ await send('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:1,mobile:true});
+ await navigate('/mesa-operacoes');
+ pass(await evalExpr(`(()=>{const e=document.querySelector('[data-jenios-tv-chart]');
+  return !!e&&e.getBoundingClientRect().height>240&&
+  document.documentElement.scrollWidth<=window.innerWidth+8;})()`),
+  'Physical landscape resizes TradingView without sideways overflow');
+ await screenshot('tradingview-phone-landscape');
+ await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+
  await navigate('/admin/login');
  const mobileAdmin=await evalExpr(`({viewport:window.innerWidth,content:document.documentElement.scrollWidth})`);
  pass(mobileAdmin.content<=mobileAdmin.viewport+8,'Admin login mobile no major overflow: '+JSON.stringify(mobileAdmin));

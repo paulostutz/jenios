@@ -1,0 +1,123 @@
+name: JENIOS Platform CP64 isolacao e seguranca
+on:
+  push:
+    branches:
+      - fix/jenios-platform-cp64-auditoria-isolada-20261019
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: cp64_disposable_not_a_real_password
+          POSTGRES_DB: jenios_cp64
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d jenios_cp64"
+          --health-interval 3s --health-timeout 3s --health-retries 15
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: cp64_disposable_not_a_real_password
+      PGDATABASE: jenios_cp64
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validate isolated PostgreSQL and Supabase-like privileges
+        run: psql -v ON_ERROR_STOP=1 -f scripts/platform/cp64-database-isolation.sql
+      - name: Full code regression
+        run: npm test
+      - name: Compile without active credentials
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://qa.invalid'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_public_placeholder_not_a_secret'
+          NEXT_PUBLIC_SUP_PUBLISHABLE_KEY: 'qa_public_placeholder_not_a_secret'
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'qa_public_placeholder_not_a_secret'
+        run: npm run build
+      - name: Start fake-credentials Next server for browser smoke
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://qa.invalid'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_public_placeholder_not_a_secret'
+        run: |
+          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-cp64-server.log 2>&1 &
+          for i in $(seq 1 50); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/dashboard; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/jenios-cp64-server.log
+          exit 1
+      - name: Verify non-auth browser pathways in isolated Chromium
+        run: node scripts/platform/cp63-browser-smoke.mjs
+      - name: Create SHA256 archive of approved CP64 private sources
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-platform-qa
+          FILES=(
+            app/admin/page.js
+            app/admin/page.module.css
+            app/admin/login/page.js
+            app/admin/plataforma/permissoes/page.js
+            app/components/AdminAccess.js
+            app/dashboard-logado/page.js
+            app/dashboard-logado/control.module.css
+            app/dashboard/page.js
+            app/diagnostico/page.js
+            app/mesa-operacao/page.js
+            app/mesa-operacoes/page.js
+            app/lp/page.js
+            app/components/platform/Terminal.module.css
+            lib/platform/diagnostic-routing.mjs
+            lib/platform/diagnostic-client.mjs
+            lib/platform/diagnostic-server.mjs
+            lib/platform/request-limit.mjs
+            app/api/platform/diagnostico/route.js
+            supabase/migrations/20261019014500_platform_diagnostic_private_cp63.sql
+            tests/platformControlUI.test.mjs
+            tests/platformDiagnosticPages.test.mjs
+            tests/platformDiagnosticRouting.test.mjs
+            tests/platformDiagnosticServer.test.mjs
+            tests/platformCP64Isolation.test.mjs
+            scripts/platform/cp63-browser-smoke.mjs
+            scripts/platform/cp64-database-isolation.sql
+            .github/workflows/jenios-platform-diagnostico-private-qa.yml
+            .github/workflows/jenios-platform-control-ui-cp62.yml
+            .github/workflows/jenios-platform-cp63-private.yml
+            .github/workflows/jenios-platform-cp64-isolated.yml
+          )
+          sha256sum "${FILES[@]}" > .jenios-platform-qa/SHA256SUMS-CP64.txt
+          tar -czf .jenios-platform-qa/JENIOS-PLATFORM-CP64-SOURCE.tar.gz "${FILES[@]}" .jenios-platform-qa/SHA256SUMS-CP64.txt
+      - name: Upload private CP64 source and hashes
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-cp64-private-source
+          path: .jenios-platform-qa/JENIOS-PLATFORM-CP64-SOURCE.tar.gz
+          retention-days: 30
+          if-no-files-found: error
+      - name: Upload synthetic UI evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: jenios-platform-cp64-ui-checks
+          path: .jenios-platform-qa/screenshots/*.png
+          retention-days: 14
+          if-no-files-found: warn

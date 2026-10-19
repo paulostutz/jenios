@@ -28,7 +28,7 @@ test('sala logada preserva pagamentos reais e entrada direta no simulador',()=>{
  assert.match(s,/PaymentStatement embedded/);
  assert.match(s,/href="\/dashboard"/);
  assert.match(s,/href="\/mesa-operacoes"/);
- assert.match(s,/readLocalReport/);
+ assert.match(s,/loadAccountDiagnostic/);
  assert.doesNotMatch(s,/R\$ 45\.820|R\$ 5\.630|API Key gerada|novaSenha/);
 });
 test('dashboard não permite editar seu plano no navegador',()=>{

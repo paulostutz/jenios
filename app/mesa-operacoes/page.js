@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import BrokerGuideLinks from '../components/platform/BrokerGuideLinks';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
 import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
@@ -166,7 +167,7 @@ export default function MesaOperacoesPage() {
       </section>
 
       <BrandLockup tone="dark" context="Mesa"/>
-      <nav className={terminal.bannerActions} aria-label="Atalhos"><a href="/dashboard-logado">Sala de controle</a><a href="/dashboard">Dashboard</a><a href="/diagnostico">Diagnóstico</a></nav>
+      <nav className={terminal.bannerActions} aria-label="Atalhos"><a href="/dashboard-logado">Sala de controle</a><a href="/dashboard">Dashboard</a><a href="/diagnostico">Diagnóstico</a><a href="/integracoes">Conexões e guias</a></nav>
             {/* BARRA SUPERIOR DE CONTROLE */}
       <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', boxSizing: 'border-box' }}>
         
@@ -407,22 +408,14 @@ export default function MesaOperacoesPage() {
 
       {modalBrokerAberto && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(15, 23, 42, 0.8)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 50 }}>
-          <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '420px', width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '520px', width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>
                 JENIOS BROKER GATEWAY • Conexão Segura
               </span>
-              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Vincular Conta Real</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Conectar minha corretora</h2>
             </div>
-            <select style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '12px', color: '#0f172a' }}>
-              <option>XP Investimentos (B3 / Futuros)</option>
-              <option>Clear Corretora (B3 / Mini-Índice & Dólar)</option>
-              <option>Binance (Cripto Derivativos)</option>
-            </select>
-            <p style={{fontSize:12,color:'#92400e',lineHeight:1.6}}>As integrações de conta real ainda exigem homologação do gateway. Não informe senhas ou tokens nesta página. Nenhuma corretora será conectada aqui.</p>
-            <button disabled style={{ backgroundColor: '#94a3b8', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'not-allowed', textTransform: 'uppercase' }}>
-              Aguardando integração validada
-            </button>
+            <BrokerGuideLinks/>
             <button 
               onClick={() => setModalBrokerAberto(false)}
               style={{ backgroundColor: '#f1f5f9', color: '#334155', border: 'none', padding: '10px', borderRadius: '10px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer' }}

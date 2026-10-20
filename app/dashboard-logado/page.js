@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import BrokerGuideLinks from '../components/platform/BrokerGuideLinks';
 import PlatformBillingStatus from '../components/platform/PlatformBillingStatus';
 import PlatformAdminShortcut from '../components/platform/PlatformAdminShortcut';
 import PlatformSimulationSummary from '../components/platform/PlatformSimulationSummary';
@@ -155,8 +156,7 @@ export default function DashboardLogado() {
         </section>}
         {tab==='integracoes' && <section className={styles.panel}>
           <h2>Conexões com corretoras</h2>
-          <p>O cadastro de corretoras só deverá aceitar tokens quando houver integração homologada, armazenamento seguro no servidor e autorização explícita. Não envie chaves aqui.</p>
-          <p className={styles.notice} role="status">Não há conexão de corretora verificada por esta tela. Nenhuma credencial é solicitada ou armazenada no navegador.</p>
+          <BrokerGuideLinks/>
           <Link className={styles.button} href="/dashboard">Voltar à simulação →</Link>
         </section>}
         {tab==='apoio' && <section className={styles.panel}>

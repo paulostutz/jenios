@@ -2,6 +2,7 @@ name: JENIOS S05 + Platform CP70 integration regression
 on:
   push:
     branches:
+      - fix/jenios-b147-university-monthly-20261020
       - fix/jenios-b141-b146-university-pro-completion-20261020
       - fix/jenios-b135-b140-free-social-pro-20261020
       - release/jenios-s05-platform-cp70-integracao-20261019
@@ -51,10 +52,20 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b146-catalog-sql-test.sql
       - name: Verify server-only subscription read privileges
         run: psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b146-pay-read-sql-test.sql
+      - name: Verify least privileges against Supabase-style broad defaults
+        run: psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b147-wallet-privileges-sql-test.sql
+      - name: Install private monthly University catalog and ledger atomically
+        run: |
+          psql -X -1 -v ON_ERROR_STOP=1 -f db/schema/university-monthly-b147.sql
+          psql -X -1 -v ON_ERROR_STOP=1 -f db/schema/university-monthly-b147.sql
+      - name: Verify monthly calendar, receipts, renewal, isolation and included plans
+        run: psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b147-university-sql-test.sql
       - name: Verify arithmetic, privileges, entitlements and reconciliation
         run: psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b143-wallet-sql-test.sql
       - name: Verify duplicate requests and shared budgets with simultaneous SQL sessions
         run: node scripts/platform/b143-wallet-concurrency.mjs
+      - name: Verify simultaneous University purchase and payment confirmation
+        run: node scripts/platform/b147-university-concurrency.mjs
   verify-integrated-release:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -82,12 +93,12 @@ jobs:
           import assert from 'node:assert/strict';
           const base='f4232312a6704aa27ba4d2fc0d0e6181bba0a426';
           const paths=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'utf8'}).split('\n').filter(Boolean);
-          const reviewed=new Set(['lib/pay/auth.mjs','lib/pay/catalog.mjs','lib/admin-access.mjs','lib/admin-users.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
-           'db/schema/pro-wallet-b143.sql','db/schema/university-pro-catalog-b146.sql','db/schema/university-pro-pay-read-b146.sql','tests/payAccess.test.mjs','tests/jeniosUniversityCompletionB141.test.mjs','tests/jeniosProPrecisionB142.test.mjs','tests/jeniosProLifecycleB144.test.mjs','tests/jeniosProInterfaceB145.test.mjs','tests/jeniosProTopupsB146.test.mjs','tests/jeniosProCreditsInterfaceB146.test.mjs',
+          const reviewed=new Set(['app/components/SocialAccessForm.js','app/components/social-auth-return.mjs','lib/pay/auth.mjs','lib/pay/catalog.mjs','lib/admin-access.mjs','lib/admin-users.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
+           'db/schema/pro-wallet-b143.sql','db/schema/pro-wallet-privileges-b147.sql','db/schema/university-monthly-b147.sql','db/schema/university-pro-catalog-b146.sql','db/schema/university-pro-pay-read-b146.sql','tests/payAccess.test.mjs','tests/jeniosUniversityCompletionB141.test.mjs','tests/jeniosProPrecisionB142.test.mjs','tests/jeniosProLifecycleB144.test.mjs','tests/jeniosProInterfaceB145.test.mjs','tests/jeniosProTopupsB146.test.mjs','tests/jeniosProCreditsInterfaceB146.test.mjs','tests/jeniosUniversityMonthlyB147.test.mjs','tests/jeniosUniversityInterfaceB147.test.mjs',
            'app/api/admin/access/route.js','app/api/admin/ecosystem/route.js','app/api/admin/users/route.js','app/api/platform/assistant/route.js','app/api/platform/learning/route.js',
            'db/schema/assistant-r27.sql','db/schema/learning-r26.sql','tests/jeniosHubB123.test.mjs','tests/socialMediaB124.test.mjs',
            'tests/assistantR27.test.mjs','tests/jeniosUniversityPassB140.test.mjs','tests/jeniosSocialFreeGeniosB136.test.mjs','tests/jeniosFreeNeverBillsB140.test.mjs','tests/jeniosProPricingB135.test.mjs','tests/jeniosProEntitlementsB137.test.mjs','tests/jeniosProAccessB139.test.mjs','tests/jeniosMasterFinanceB132.test.mjs','tests/jeniosGenerativeBudgetB131.test.mjs','tests/jeniosGenioKnowledgeB131.test.mjs','tests/jeniosMasterUsersB129.test.mjs','tests/jeniosUniversityDailyB130.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
-          const allowed=paths.every(p=>reviewed.has(p)||p.startsWith('app/components/assistant/')||p.startsWith('app/components/learning/')||p.startsWith('app/api/assistant/')||p.startsWith('app/genios-pro/')||p==='app/social/layout.js'||
+          const allowed=paths.every(p=>reviewed.has(p)||p.startsWith('app/components/assistant/')||p.startsWith('app/components/learning/')||p.startsWith('app/api/assistant/')||p.startsWith('app/genios-pro/')||p.startsWith('app/universidade/')||p==='app/social/layout.js'||
            p.startsWith('lib/assistant/')||p.startsWith('lib/learning/')||p.startsWith('public/assistentes/')||
            p.startsWith('app/platform/aprender/')||p.startsWith('app/platform/assistente/')||
            p.startsWith('app/components/brand/')||p.startsWith('public/brand/')||new Set(['app/icon.png','app/icon.svg','app/favicon.ico','app/apple-icon.png','app/apple-icon.js','app/page.js','app/lp/page.js','tests/jeniosBrandB110.test.mjs','tests/socialR24.test.mjs']).has(p)||p.startsWith('app/platform/')||p.startsWith('app/components/platform/')||p.startsWith('app/api/platform/admin/')||p.startsWith('app/api/platform/diagnostico/')||p.startsWith('app/api/platform/risk-summary/')||p==='app/api/platform/market-observation/route.js'||p.startsWith('lib/platform/')||p.startsWith('scripts/platform/')||p.startsWith('docs/platform/')||(p.startsWith('supabase/migrations/20261019')||p==='supabase/migrations/20261020010000_ai_budget_b131_REVIEW_ONLY.sql'||p==='supabase/migrations/20261020025500_jenios_pro_credits_b138_REVIEW_ONLY.sql'||p==='supabase/migrations/20261020031500_university_addon_b140_REVIEW_ONLY.sql')||p.startsWith('tests/platform')||p==='tests/adminPaymentStatement.test.mjs'||p.startsWith('app/dashboard')||p.startsWith('app/mesa-operacoes/')||p.startsWith('app/mesa-operacao/')||p.startsWith('app/diagnostico/')||p.startsWith('app/admin/')||p==='app/components/AdminAccess.js'||p==='lib/release/environment-scope.mjs'||p==='tests/release-s05/environment-b40.test.mjs'||p==='.github/workflows/jenios-s05-platform-cp70-integration.yml'||new Set(['app/social/page.js','app/social/jenios-theme.css','app/components/SocialMobileRail.js','app/components/useSocialFeed.js','lib/social/feed-optimistic.mjs','tests/socialFeedOptimistic.test.mjs','tests/socialMobileB75.test.mjs','tests/release-s05/mobile-nav-b41.test.mjs','docs/platform/B75-MOBILE-HUB.md','app/components/SocialDirect.js','app/social/perfil/[id]/page.js','tests/socialProfileB76.test.mjs','tests/release-s05/reels-b51.test.mjs','tests/release-s05/highlights-b52.test.mjs','docs/platform/B76-PERFIL-DIRECT.md']).has(p));
@@ -97,6 +108,13 @@ jobs:
           const preservedPrefixes=['app/social/','app/bankscore/','app/api/bankscore/','lib/bankscore/','app/api/jenios-pay/','lib/jenios-pay/','lib/platform/','app/components/platform/','app/mesa-operacoes/','app/mesa-operacao/'];
           const preservedFiles=['lib/jenios-pay-admin.js','app/api/assistant/free/route.js','app/components/assistant/FreeAssistantRoom.js','app/components/assistant/AssistantEntry.js','lib/assistant/free-service.mjs'];
           assert.deepEqual(changedSinceB140.filter(p=>preservedFiles.includes(p)||preservedPrefixes.some(prefix=>p.startsWith(prefix))||p.startsWith('lib/pay/')&&p!=='lib/pay/catalog.mjs'),[],'B141+ must preserve free Social, BankScore, original PAY, TradingView and robot sources');
+          const originalAuth=execFileSync('git',['show','8271a61061df1a5c16de92b42885b84cf0410766:app/components/SocialAccessForm.js'],{encoding:'utf8'});
+          const restoredAuth=readFileSync('app/components/SocialAccessForm.js','utf8')
+           .replace('import {socialAuthReturnPath} from "./social-auth-return.mjs";\n','')
+           .replace("{ initialRegistration = false, returnTo = '/social' }","{ initialRegistration = false }")
+           .replace('  const destination = socialAuthReturnPath(returnTo);\n','')
+           .replaceAll('router.push(destination);','router.push("/social");');
+          assert.equal(restoredAuth,originalAuth,'University must reuse the original Social authentication; only its approved return destination may differ');
           for(const p of ['app/login/page.js','package.json','package-lock.json','next.config.js']){
             const before=execFileSync('git',['show',base+':'+p],{encoding:'utf8'});
             const now=readFileSync(p,'utf8');
@@ -145,6 +163,8 @@ jobs:
         run: node scripts/platform/cp69-browser-smoke.mjs
       - name: Pro guest, mobile, financial gates and private API browser smoke
         run: node scripts/platform/b145-pro-ui-smoke.mjs
+      - name: Independent University price, guest gates and mobile browser smoke
+        run: node scripts/platform/b147-university-ui-smoke.mjs
       - name: Save integrity manifest of integrated source changes
         shell: bash
         run: |

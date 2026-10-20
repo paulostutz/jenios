@@ -7,10 +7,12 @@ import { supabase } from "../../lib/supabase";
 import SocialHandleField from "./SocialHandleField";
 import {checkHandleAvailability} from "../../lib/social/handle-policy.mjs";
 import {prepareSocialSignup} from "../../lib/social/signup-policy.mjs";
+import {socialAuthReturnPath} from "./social-auth-return.mjs";
 import "../social/account-controls.css";
 
-export default function SocialAccessForm({ initialRegistration = false }) {
+export default function SocialAccessForm({ initialRegistration = false, returnTo = '/social' }) {
   const router = useRouter();
+  const destination = socialAuthReturnPath(returnTo);
   const submitting = useRef(false);
 
   const [isCadastro, setIsCadastro] = useState(initialRegistration);
@@ -72,7 +74,7 @@ export default function SocialAccessForm({ initialRegistration = false }) {
         }
 
         if (data.session) {
-          router.push("/social");
+          router.push(destination);
           router.refresh();
         } else {
           setMensagem(
@@ -94,7 +96,7 @@ export default function SocialAccessForm({ initialRegistration = false }) {
           throw new Error("Não foi possível iniciar a sessão.");
         }
 
-        router.push("/social");
+        router.push(destination);
         router.refresh();
       }
     } catch (error) {

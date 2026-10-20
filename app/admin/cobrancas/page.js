@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../../lib/supabase';
 import { moneyToCents } from '../../../lib/pay/catalog.mjs';
+import AdminAccess from '../../components/AdminAccess';
 
 const field = { padding: 12, border: '1px solid #cbd5e1', borderRadius: 9, width: '100%', boxSizing: 'border-box' };
 const money = n => (n / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-export default function AdminCharges() {
+function AdminChargesContent() {
   const [data, setData] = useState(null), [drafts, setDrafts] = useState({}), [message, setMessage] = useState(''), [busy, setBusy] = useState(false);
   const [email, setEmail] = useState(''), [password, setPassword] = useState('');
   const [customer,setCustomer] = useState(''), [status,setStatus] = useState('');
@@ -15,6 +16,7 @@ export default function AdminCharges() {
   const [ready,setReady] = useState(false);
   useEffect(() => {
     setReady(true);
+    void load();
     const subscription = supabase?.auth.onAuthStateChange(event => { if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') return; epoch.current++; setData(null); setDrafts({}); setBusy(false); });
     return () => { epoch.current++; subscription?.data?.subscription?.unsubscribe(); };
   },[]);
@@ -53,7 +55,7 @@ export default function AdminCharges() {
     finally{if(version===epoch.current)setBusy(false);}
   }
   return <main style={{ minHeight: '100vh', background: '#f4f3fa', color: '#172033', padding: '32px 16px', fontFamily: 'system-ui' }}><div style={{ maxWidth: 1120, margin: 'auto' }}><Link href="/admin">← Administração</Link><h1>Preços e cobranças</h1><p>JENIOS PAY · catálogo de serviços Social e planos Platform separados.</p>
-    {!data && <section style={{ maxWidth: 440, background: 'white', padding: 24, borderRadius: 16 }}><h2>Acesso financeiro</h2><form onSubmit={login} style={{ display: 'grid', gap: 12 }}><label>E-mail<input type="email" required value={email} onChange={e => setEmail(e.target.value)} autoComplete="username" style={field}/></label><label>Senha<input type="password" required value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" style={field}/></label><button disabled={!ready||busy}>Entrar e carregar gestão</button></form><button disabled={!ready||busy} onClick={load} style={{ marginTop: 14 }}>Usar minha sessão atual</button><p>Somente contas com permissão financeira validada pelo servidor.</p></section>}
+    {!data && !message && <p role="status">Carregando gestão financeira da sessão Master…</p>}
     {message && <p role="status" style={{ padding: 14, background: '#fff7ed', borderRadius: 10 }}>{message}</p>}
     {data?.products?.some(product=>!product.id)&&<section style={{padding:18,background:'white',margin:'18px 0',borderRadius:12}}><p>Cadastre de uma vez os valores iniciais aprovados. Produtos já cadastrados mantêm seus preços e disponibilidade.</p><button disabled={busy} onClick={initializeCatalog}>Cadastrar valores iniciais</button></section>}
     {data && <><InterAdminPanel/><Link href="/admin/consultas">Consultas administrativas</Link><button onClick={load} disabled={busy}>Atualizar cobranças</button><div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,310px),1fr))', gap: 16, marginTop: 20 }}>{data.products.map(p => <section key={p.code} style={{ background: 'white', padding: 22, borderRadius: 16, border: '1px solid #e2e8f0' }}><small>{p.category === 'platform' ? 'PLATFORM · CHECKOUT SEPARADO' : 'SOCIAL'}</small><h2 style={{ fontSize: 19 }}>{p.name}</h2><p>{p.id ? 'Cadastrado' : 'Valor inicial aprovado · salvar para cadastrar'}</p>{p.variable_amount ? <p>{p.code === 'social-specialist-offer' ? 'Preço definido na oferta do especialista. Comissão JENIOS de 10%.' : 'Orçamento escolhido pelo cliente. Sem preço fixo.'}</p> : <label>Preço em reais{p.billing_type === 'monthly' ? ' / mês' : ' / consulta'}<input type="number" min="0.01" step="0.01" value={drafts[p.code]?.price || ''} onChange={e => edit(p.code, { price: e.target.value })} style={field}/></label>}<p><label><input type="checkbox" checked={drafts[p.code]?.active || false} onChange={e => edit(p.code, { active: e.target.checked })}/> Disponível para contratação</label></p><button disabled={busy} onClick={() => save(p)}>Salvar produto</button></section>)}</div>
@@ -79,3 +81,5 @@ export default function AdminCharges() {
     </section></>}
   </div></main>;
 }
+
+export default function AdminCharges(){return <AdminAccess permission="finance.manage" loginRedirect="/admin/login"><AdminChargesContent/></AdminAccess>;}

@@ -19,7 +19,8 @@ const COLORS = {
   blue: '#0284c7'
 };
 
-const MODULES = TREND_MODULES;
+// Search-popularity trends are a legacy dataset, not an approved Social Hub module.
+const MODULES = TREND_MODULES.filter(item => item.id !== 'tokens');
 
 function formatTime(value) {
   if (!value) return 'Aguardando atualização';
@@ -49,7 +50,7 @@ function StatusBadge({ available, stale }) {
 
 export default function TrendsHub({ embedded = false }) {
   const Heading = embedded ? 'h2' : 'h1';
-  const [active, setActive] = useState('tokens');
+  const [active, setActive] = useState('megapulse');
   useEffect(()=>{const selected=new URLSearchParams(window.location.search).get('modulo');if(MODULES.some(x=>x.id===selected))setActive(selected);if(selected==='novos')document.getElementById('radar-novos')?.scrollIntoView();},[]);
   const {data,loading,error,refresh,clock}=useTrendsData();
 
@@ -83,7 +84,7 @@ export default function TrendsHub({ embedded = false }) {
               </div>
               <Heading style={{ margin: '7px 0 5px', fontSize: 'clamp(25px,4vw,38px)' }}>Hub de Tendências</Heading>
               <p style={{ margin: 0, maxWidth: 720, color: COLORS.muted, lineHeight: 1.6 }}>
-                Acompanhe tendências de busca, tokens recentes e movimentações de mercado.
+                Acompanhe MegaPulse, movimentações verificáveis de baleias e o radar de Tokens Explosivos.
               </p>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -146,9 +147,9 @@ export default function TrendsHub({ embedded = false }) {
                 {MODULES.find((module) => module.id === active)?.label}<TrendHelp kind={active}/>
               </h2>
               <p style={{ margin: 0, color: COLORS.muted, fontSize: 13 }}>
-                {active === 'tokens'
-                  ? 'Ativos em alta nas pesquisas; não significa lançamento recente, fluxo institucional ou recomendação.'
-                  : active === 'megapulse' ? 'Cotações reais de ações monitoradas, com horário de negociação de até 2 minutos. Futuros só serão exibidos com leitura intradiária confirmada.' : 'Grandes transferências confirmadas em Bitcoin. Consulta em até 3 blocos recentes, com verificação das transações candidatas; compras e identidade institucional não são confirmadas.'}
+                {active === 'megapulse'
+                  ? 'Cotações reais de ações monitoradas, com horário de negociação de até 2 minutos. Futuros só serão exibidos com leitura intradiária confirmada.'
+                  : 'Grandes transferências confirmadas em Bitcoin. Consulta em até 3 blocos recentes, com verificação das transações candidatas; compras e identidade institucional não são confirmadas.'}
               </p>
             </div>
             <div>{moduleStatus.parcial && <p role="status">Cobertura parcial nesta atualização.</p>}{moduleStatus.historico && <p role="status">Últimos três movimentos registrados · histórico</p>}<StatusBadge available={!error&&Boolean(moduleStatus.disponivel)&&(active!=='megapulse'||rows.length>0)&&!moduleStatus.historico} stale={Boolean(moduleStatus.historico)||(active!=='megapulse'&&(Boolean(moduleStatus.stale)||(Boolean(error)&&rows.length>0)))} /></div>
@@ -197,7 +198,7 @@ export default function TrendsHub({ embedded = false }) {
 
           <TrendAlertButton key={active} module={active}/>
           <footer style={{ marginTop: 22, color: COLORS.muted, fontSize: 11, lineHeight: 1.6 }}>
-            {active === 'megapulse' ? 'Somente cotações com horário recente são exibidas. A variação é do pregão; não representa sinal de compra ou venda.' : active==='baleias'?'O valor representa a maior saída da transação e pode incluir troco ou transferência entre carteiras da mesma pessoa.':'Tendências de pesquisa não medem qualidade, segurança, liquidez ou potencial de valorização.'}
+            {active === 'megapulse' ? 'Somente cotações com horário recente são exibidas. A variação é do pregão; não representa sinal de compra ou venda.' : active==='baleias'?'O valor representa a maior saída da transação e pode incluir troco ou transferência entre carteiras da mesma pessoa.':'Tokens e alertas são informativos; não representam orientação de compra ou venda.'}
           </footer>
         </section>
       </div>

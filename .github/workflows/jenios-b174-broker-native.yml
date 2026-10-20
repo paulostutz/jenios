@@ -1,0 +1,84 @@
+name: JENIOS B174 native customer broker API bridge
+on:
+  push:
+    branches: [fix/jenios-b174-native-broker-adapters-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-native-broker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check B173 preserved and edits tightly scoped
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {execFileSync} from 'node:child_process';
+          const base='cfc671b4ebc7b021549755edc6c6d072bcb134f3';
+          const allow=new Set(['lib/platform/connections/native-broker-bridge.mjs','lib/platform/connections/alpaca-native-paper-order-lookup.mjs','tests/platformNativeBrokerBridge.test.mjs','app/integracoes/page.js','docs/platform/B174-BROKER-NATIVE-BRIDGE.md','.github/workflows/jenios-b174-broker-native.yml']);
+          const diffs=execFileSync('git',['diff','--no-renames','--name-status',base,'HEAD'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
+          for(const r of diffs){const [status,path]=r.split('\t');assert.ok(allow.has(path),'Out of scope: '+path);assert.ok(status==='A'||(status==='M'&&path==='app/integracoes/page.js'),'Mutation not allowed: '+r);}
+          for(const path of ['package.json','package-lock.json','lib/platform/connections/paper-order-proposal.mjs','lib/platform/connections/paper-order-observation.mjs','lib/platform/connections/demo-service.mjs','lib/platform/connections/demo-vault.mjs','lib/platform/pilot-prep/paper-ledger.mjs','lib/platform/pilot-prep/risk.mjs','lib/release/environment-scope.mjs']){
+            assert.equal(execFileSync('git',['rev-parse',base+':'+path],{encoding:'utf8'}).trim(),execFileSync('git',['rev-parse','HEAD:'+path],{encoding:'utf8'}).trim(),'Protected: '+path);
+          }
+          console.log('B174 checked '+diffs.length+' paths; original B173 engines preserved');
+          NODE
+      - name: Test native broker API with mock paper accounts
+        run: node --test tests/platformNativeBrokerBridge.test.mjs tests/platformPaperOrderProposal.test.mjs tests/platformPaperOrderObservation.test.mjs tests/platformProviderPaths.test.mjs
+      - name: Install locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, S05, Next build
+        shell: bash
+        run: |
+          mkdir -p .jenios-b174-qa/ci
+          npm run build > .jenios-b174-qa/ci/build-and-tests.log 2>&1 || { tail -n 100 .jenios-b174-qa/ci/build-and-tests.log; exit 1; }
+          tail -n 30 .jenios-b174-qa/ci/build-and-tests.log
+      - name: Start isolated Next server
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b174-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 80 /tmp/jenios-b174-server.log
+          exit 1
+      - name: Preserve B160 guides and free assistants
+        run: node scripts/platform/connections/browser-smoke.mjs
+      - name: Preserve Social Direct boost and persona
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Preserve Pro and University
+        run: |
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive tested source and digest
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b174-qa/ci/JENIOS_B174_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-b174-qa/ci/COMMIT.txt
+          sha256sum .jenios-b174-qa/ci/JENIOS_B174_PUBLIC_SOURCE.zip > .jenios-b174-qa/ci/SHA256SUMS.txt
+      - name: Store redacted evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B174_NATIVE_BROKER_CI
+          path: .jenios-b174-qa/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

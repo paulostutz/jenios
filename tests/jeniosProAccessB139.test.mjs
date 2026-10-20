@@ -1,13 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {handlePro} from '../lib/assistant/pro-service.mjs';
 const src=p=>readFileSync(p,'utf8');
-test('B139 Pro plan endpoint requires identity and never claims unpaid wallet credits',()=>{
+test('B139 Pro plan endpoint requires identity and never claims unpaid wallet credits',async()=>{
  const route=src('app/api/assistant/pro/access/route.js');
- assert.match(route,/requirePayUser/);assert.match(route,/verifiedPlatformPlan/);
- assert.match(route,/proPlanAccess/);assert.match(route,/paidGenerationEnabled:false/);
- assert.match(route,/paymentStatus:'not_enabled'/);
- assert.match(route,/paid_retail_micro_usd,reserved_retail_micro_usd/);
+ assert.match(route,/requirePayToken\(request\)/);assert.match(route,/handlePro\(request/);
+ let ledgerReads=0;
+ const options={action:'access',db:{},env:{},authorize:async()=>({id:'verified-test-account'}),planResolver:async()=>null,passResolver:async()=>null,repository:()=>({config:async()=>({installed:false,generationEnabled:false}),status:async()=>{ledgerReads++;throw Error('Must not read uninstalled ledger');}})};
+ const request=new Request('https://jenios.test/api/assistant/pro/access');
+ let response=await handlePro(request,options),body=await response.json();
+ assert.equal(response.status,200);assert.equal(body.paidGenerationEnabled,false);assert.equal(body.paymentStatus,'not_enabled');
+ assert.equal(body.wallet.status,'not_provisioned');assert.equal(body.wallet.totalNanoUsd,null);assert.equal(body.allowance.totalNanoUsd,null);assert.equal(ledgerReads,0);
+ response=await handlePro(request,{...options,authorize:async()=>({id:'guest',is_anonymous:true})});body=await response.json();
+ assert.equal(response.status,401);assert.equal(body.wallet,undefined);assert.equal(body.answer,undefined);
 });
 test('B139 customer sees honest payment status and existing University access',()=>{
  const page=src('app/genios-pro/page.js');

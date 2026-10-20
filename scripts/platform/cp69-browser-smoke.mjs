@@ -86,6 +86,16 @@ try {
   return !!link&&getComputedStyle(link).display!=='none'&&link.getBoundingClientRect().width>80;})()`),
   'B121 public desktop Social has visible Conhecer a Platform link to /lp');
  await screenshot('jenios-b121-platform-cta-desktop');
+  await waitFor(`!!document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]')`,12000);
+  pass(await evalExpr(`(()=>{const b=document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]');return !!b&&b.getBoundingClientRect().height>=44;})()`),
+   'B136 public Social offers free minimized Genio/Genia');
+  pass(await evalExpr(`(()=>{const b=document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]');if(!b)return false;b.click();return true;})()`),
+   'B136 public Social assistant opens without account');
+  await waitFor(`!!document.querySelector('[aria-label="Atendimento gratuito da JENIOS"] textarea')`,9000);
+  pass(await evalExpr(`!!document.querySelector('[aria-label="Atendimento gratuito da JENIOS"] [aria-pressed="true"]')`),
+   'B136 public assistant allows character choice');
+  await screenshot('jenios-b136-social-free-assistant-desktop');
+
  await navigate('/dashboard');
  pass(await evalExpr(`document.body.innerText.includes('Diagnóstico Comportamental')`),'Dashboard diagnostic accessible');
  pass(await evalExpr(`document.body.innerText.includes('SIMULAR COMPRA')`),'Trading buttons explicitly fictitious');
@@ -219,6 +229,18 @@ try {
 
  // B75 smartphone Chromium smoke, no real tokens or private data.
  await navigate('/social');
+  await waitFor(`!!document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]')`,12000);
+  pass(await evalExpr(`(()=>{const b=document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]'),r=b?.getBoundingClientRect();return !!r&&r.left>=-8&&r.right<=window.innerWidth+8&&r.height>=40;})()`),
+   'B136 Social phone free bot stays inside viewport');
+  pass(await evalExpr(`(()=>{const b=document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="false"]');if(!b)return false;b.click();return true;})()`),
+   'B136 phone free bot opens on tap');
+  await waitFor(`!!document.querySelector('[aria-label="Atendimento gratuito da JENIOS"] textarea')`,10000);
+  pass(await evalExpr(`!!document.querySelector('[aria-label="Atendimento gratuito da JENIOS"] a[href="/genios-pro"]')`),
+   'B136 phone free bot links to optional Pro, without auto purchase');
+  await screenshot('jenios-b136-social-free-assistant-mobile');
+  pass(await evalExpr(`(()=>{const b=document.querySelector('[data-jenios-assistant="social-free"] button[aria-expanded="true"]');if(!b)return false;b.click();return true;})()`),
+   'B136 phone free bot minimizes on tap');
+
  pass(await evalExpr(`(()=>{const nav=document.querySelector('.jenios-social-platform-mobile-nav'),a=nav?.querySelector('a[href="/lp"]');
   const r=a?.getBoundingClientRect();return !!nav&&getComputedStyle(nav).display==='flex'&&!!r&&r.width>80&&r.height>=40&&r.right<=window.innerWidth+8&&document.documentElement.scrollWidth<=window.innerWidth+8;})()`),
   'B121 phone displays visible and touch-sized Platform CTA without horizontal overflow');

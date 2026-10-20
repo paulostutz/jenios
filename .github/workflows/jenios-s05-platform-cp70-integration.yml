@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release/jenios-s05-platform-cp70-integracao-20261019
+      - fix/jenios-b133-b134-university-genios-retention-20261020
       - fix/jenios-b129-b132-master-users-learning-ai-20261020
       - fix/jenios-b128-genio-genia-floating-university-20261020
       - fix/jenios-b122-b125-master-hub-media-assistant-20261019

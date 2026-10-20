@@ -65,10 +65,12 @@ export default function LearningRoom(){
  {s.dailyStudy&&<section className={styles.card} aria-label="Agenda de estudo diário">
   <div className={styles.tag}>SUA ROTINA DE ESTUDOS · {s.dailyStudy.minutes} MINUTOS</div>
   <h2>Aprenda um pouco todos os dias</h2>
-  <p>Revisões hoje: <strong>{s.dailyStudy.studiedToday}</strong> · Sequência de estudos: <strong>{s.dailyStudy.streakDays} dia(s)</strong> · Revisões registradas: <strong>{s.dailyStudy.totalReviewSessions}</strong>.</p>
+  <p>Revisões hoje: <strong>{s.dailyStudy.studiedToday}</strong> · Sequência de estudos: <strong>{s.dailyStudy.streakDays} dia(s)</strong> {s.dailyStudy.studiedDay?'· atividade registrada hoje':''} · Revisões registradas: <strong>{s.dailyStudy.totalReviewSessions}</strong>.</p>
   {s.dailyStudy.due.length>0?<p role="status">Revisões recomendadas: {s.dailyStudy.due.map(t=>t.title).join(' · ')}.</p>:<p>Pratique no seu ritmo. As revisões são recomendadas conforme sua evolução.</p>}
+  {!!s.dailyStudy.reinforcement?.length&&<p role="status">Para reforçar: {s.dailyStudy.reinforcement.map(t=>t.title).join(' · ')}. Retome os temas com calma.</p>}
   {s.dailyStudy.suggestedLesson&&<button className={styles.primary} disabled={saving} onClick={()=>openLesson(s.dailyStudy.suggestedLesson.id)}>
    {s.dailyStudy.suggestedLesson.completed?'Rever aula de hoje':'Estudar aula recomendada'}: {s.dailyStudy.suggestedLesson.title}
+  <span className={styles.small}> · {s.dailyStudy.suggestedLesson.reason}</span>
   </button>}
   <p className={styles.small}>Mesmo após concluir todas as trilhas, continue revisitando aulas e reavaliando seus conhecimentos. Revisão registrada não altera notas.</p>
  </section>}

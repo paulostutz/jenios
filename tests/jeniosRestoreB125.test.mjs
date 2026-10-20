@@ -27,7 +27,7 @@ test('B125 master preview is server authorized and never grants paid subscriptio
 });
 test('B131 restored services keep paid AI disabled without explicit model, budget and protected key',()=>{
  for(const route of ['app/api/platform/assistant/route.js','app/api/platform/learning/route.js']){
-  const s=read(route);assert.match(s,/configuredGenerativeEnv\(process\.env\)/);
+  const s=read(route);assert.match(s,/OPENAI_API_KEY:''/);
  }
  const assistant=read('lib/assistant/contracts.mjs');
  assert.match(assistant,/executionEnabled:false/);

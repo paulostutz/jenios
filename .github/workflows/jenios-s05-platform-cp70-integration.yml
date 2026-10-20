@@ -42,7 +42,7 @@ jobs:
           const reviewed=new Set(['lib/pay/auth.mjs','lib/pay/catalog.mjs','lib/admin-access.mjs','lib/admin-users.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
            'app/api/admin/access/route.js','app/api/admin/ecosystem/route.js','app/api/admin/users/route.js','app/api/platform/assistant/route.js','app/api/platform/learning/route.js',
            'db/schema/assistant-r27.sql','db/schema/learning-r26.sql','tests/jeniosHubB123.test.mjs','tests/socialMediaB124.test.mjs',
-           'tests/assistantR27.test.mjs','tests/jeniosUniversityPassB140.test.mjs','tests/jeniosSocialFreeGeniosB136.test.mjs','tests/jeniosProPricingB135.test.mjs','tests/jeniosProEntitlementsB137.test.mjs','tests/jeniosProAccessB139.test.mjs','tests/jeniosMasterFinanceB132.test.mjs','tests/jeniosGenerativeBudgetB131.test.mjs','tests/jeniosGenioKnowledgeB131.test.mjs','tests/jeniosMasterUsersB129.test.mjs','tests/jeniosUniversityDailyB130.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
+           'tests/assistantR27.test.mjs','tests/jeniosUniversityPassB140.test.mjs','tests/jeniosSocialFreeGeniosB136.test.mjs','tests/jeniosFreeNeverBillsB140.test.mjs','tests/jeniosProPricingB135.test.mjs','tests/jeniosProEntitlementsB137.test.mjs','tests/jeniosProAccessB139.test.mjs','tests/jeniosMasterFinanceB132.test.mjs','tests/jeniosGenerativeBudgetB131.test.mjs','tests/jeniosGenioKnowledgeB131.test.mjs','tests/jeniosMasterUsersB129.test.mjs','tests/jeniosUniversityDailyB130.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
           const allowed=paths.every(p=>reviewed.has(p)||p.startsWith('app/components/assistant/')||p.startsWith('app/components/learning/')||p.startsWith('app/api/assistant/')||p.startsWith('app/genios-pro/')||p==='app/social/layout.js'||
            p.startsWith('lib/assistant/')||p.startsWith('lib/learning/')||p.startsWith('public/assistentes/')||
            p.startsWith('app/platform/aprender/')||p.startsWith('app/platform/assistente/')||
@@ -70,7 +70,7 @@ jobs:
           assert.match(readFileSync('app/components/TrendsHub.js','utf8'),/item\.id !== 'tokens'/,'Social Hub must omit search trends');
           assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/,'Preserve independent Platform guard');
           assert.match(readFileSync('app/dashboard-logado/page.js','utf8'),/href="\/platform\/assistente"/,'Restore Genio/Genia via on-demand links');
-          assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/configuredGenerativeEnv\(process\.env\)/,'Budget-gated, disabled-by-default learning provider required');
+          assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/OPENAI_API_KEY:''/,'University free tutoring must never call a paid model');
           console.log('CP70_INTEGRATION_S05_PRESERVED='+paths.length);
           NODE
       - name: Install exact Social S05 locked dependencies

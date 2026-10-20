@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - release/jenios-s05-platform-cp70-integracao-20261019
+      - fix/jenios-b129-b132-master-users-learning-ai-20261020
       - fix/jenios-b128-genio-genia-floating-university-20261020
       - fix/jenios-b122-b125-master-hub-media-assistant-20261019
   workflow_dispatch:
@@ -36,14 +37,14 @@ jobs:
           import assert from 'node:assert/strict';
           const base='f4232312a6704aa27ba4d2fc0d0e6181bba0a426';
           const paths=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'utf8'}).split('\n').filter(Boolean);
-          const reviewed=new Set(['lib/admin-access.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
-           'app/api/admin/access/route.js','app/api/admin/ecosystem/route.js','app/api/platform/assistant/route.js','app/api/platform/learning/route.js',
+          const reviewed=new Set(['lib/pay/auth.mjs','lib/admin-access.mjs','lib/admin-users.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
+           'app/api/admin/access/route.js','app/api/admin/ecosystem/route.js','app/api/admin/users/route.js','app/api/platform/assistant/route.js','app/api/platform/learning/route.js',
            'db/schema/assistant-r27.sql','db/schema/learning-r26.sql','tests/jeniosHubB123.test.mjs','tests/socialMediaB124.test.mjs',
-           'tests/assistantR27.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
+           'tests/assistantR27.test.mjs','tests/jeniosMasterFinanceB132.test.mjs','tests/jeniosGenerativeBudgetB131.test.mjs','tests/jeniosGenioKnowledgeB131.test.mjs','tests/jeniosMasterUsersB129.test.mjs','tests/jeniosUniversityDailyB130.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
           const allowed=paths.every(p=>reviewed.has(p)||p.startsWith('app/components/assistant/')||p.startsWith('app/components/learning/')||
            p.startsWith('lib/assistant/')||p.startsWith('lib/learning/')||p.startsWith('public/assistentes/')||
            p.startsWith('app/platform/aprender/')||p.startsWith('app/platform/assistente/')||
-           p.startsWith('app/components/brand/')||p.startsWith('public/brand/')||new Set(['app/icon.png','app/icon.svg','app/favicon.ico','app/apple-icon.png','app/apple-icon.js','app/page.js','app/lp/page.js','tests/jeniosBrandB110.test.mjs','tests/socialR24.test.mjs']).has(p)||p.startsWith('app/platform/')||p.startsWith('app/components/platform/')||p.startsWith('app/api/platform/admin/')||p.startsWith('app/api/platform/diagnostico/')||p.startsWith('app/api/platform/risk-summary/')||p==='app/api/platform/market-observation/route.js'||p.startsWith('lib/platform/')||p.startsWith('scripts/platform/')||p.startsWith('docs/platform/')||p.startsWith('supabase/migrations/20261019')||p.startsWith('tests/platform')||p==='tests/adminPaymentStatement.test.mjs'||p.startsWith('app/dashboard')||p.startsWith('app/mesa-operacoes/')||p.startsWith('app/mesa-operacao/')||p.startsWith('app/diagnostico/')||p.startsWith('app/admin/')||p==='app/components/AdminAccess.js'||p==='lib/release/environment-scope.mjs'||p==='tests/release-s05/environment-b40.test.mjs'||p==='.github/workflows/jenios-s05-platform-cp70-integration.yml'||new Set(['app/social/page.js','app/social/jenios-theme.css','app/components/SocialMobileRail.js','app/components/useSocialFeed.js','lib/social/feed-optimistic.mjs','tests/socialFeedOptimistic.test.mjs','tests/socialMobileB75.test.mjs','tests/release-s05/mobile-nav-b41.test.mjs','docs/platform/B75-MOBILE-HUB.md','app/components/SocialDirect.js','app/social/perfil/[id]/page.js','tests/socialProfileB76.test.mjs','tests/release-s05/reels-b51.test.mjs','tests/release-s05/highlights-b52.test.mjs','docs/platform/B76-PERFIL-DIRECT.md']).has(p));
+           p.startsWith('app/components/brand/')||p.startsWith('public/brand/')||new Set(['app/icon.png','app/icon.svg','app/favicon.ico','app/apple-icon.png','app/apple-icon.js','app/page.js','app/lp/page.js','tests/jeniosBrandB110.test.mjs','tests/socialR24.test.mjs']).has(p)||p.startsWith('app/platform/')||p.startsWith('app/components/platform/')||p.startsWith('app/api/platform/admin/')||p.startsWith('app/api/platform/diagnostico/')||p.startsWith('app/api/platform/risk-summary/')||p==='app/api/platform/market-observation/route.js'||p.startsWith('lib/platform/')||p.startsWith('scripts/platform/')||p.startsWith('docs/platform/')||(p.startsWith('supabase/migrations/20261019')||p==='supabase/migrations/20261020010000_ai_budget_b131_REVIEW_ONLY.sql')||p.startsWith('tests/platform')||p==='tests/adminPaymentStatement.test.mjs'||p.startsWith('app/dashboard')||p.startsWith('app/mesa-operacoes/')||p.startsWith('app/mesa-operacao/')||p.startsWith('app/diagnostico/')||p.startsWith('app/admin/')||p==='app/components/AdminAccess.js'||p==='lib/release/environment-scope.mjs'||p==='tests/release-s05/environment-b40.test.mjs'||p==='.github/workflows/jenios-s05-platform-cp70-integration.yml'||new Set(['app/social/page.js','app/social/jenios-theme.css','app/components/SocialMobileRail.js','app/components/useSocialFeed.js','lib/social/feed-optimistic.mjs','tests/socialFeedOptimistic.test.mjs','tests/socialMobileB75.test.mjs','tests/release-s05/mobile-nav-b41.test.mjs','docs/platform/B75-MOBILE-HUB.md','app/components/SocialDirect.js','app/social/perfil/[id]/page.js','tests/socialProfileB76.test.mjs','tests/release-s05/reels-b51.test.mjs','tests/release-s05/highlights-b52.test.mjs','docs/platform/B76-PERFIL-DIRECT.md']).has(p));
           assert.ok(allowed,'Blocked modification outside Platform integration allowlist: '+paths.filter(p=>!allowed).join(','));
           for(const p of ['app/login/page.js','package.json','package-lock.json','next.config.js']){
             const before=execFileSync('git',['show',base+':'+p],{encoding:'utf8'});
@@ -67,7 +68,7 @@ jobs:
           assert.match(readFileSync('app/components/TrendsHub.js','utf8'),/item\.id !== 'tokens'/,'Social Hub must omit search trends');
           assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/,'Preserve independent Platform guard');
           assert.match(readFileSync('app/dashboard-logado/page.js','utf8'),/href="\/platform\/assistente"/,'Restore Genio/Genia via on-demand links');
-          assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/OPENAI_API_KEY:''/,'No-cost learning mode required');
+          assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/configuredGenerativeEnv\(process\.env\)/,'Budget-gated, disabled-by-default learning provider required');
           console.log('CP70_INTEGRATION_S05_PRESERVED='+paths.length);
           NODE
       - name: Install exact Social S05 locked dependencies

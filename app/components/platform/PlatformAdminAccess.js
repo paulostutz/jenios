@@ -2,16 +2,35 @@
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
+/**
+ * Dedicated Platform sessions retain their original API behavior.
+ * Social Masters may only use two read-only, backend-gated ADMIN aggregation endpoints.
+ * No Social token is ever forwarded to a dedicated Platform authentication route.
+ */
 export async function platformAdminFetch(url,options={}){
- if(!platformSupabase?.auth)throw Error('Acesso exclusivo da Platform não configurado.');
- const {data,error}=await platformSupabase.auth.getSession();
- if(error||!data?.session?.access_token||data.session.user?.is_anonymous)
-  throw Error('Entre em sua conta da Platform.');
- const response=await fetch(url,{...options,cache:'no-store',
-   headers:{...options.headers,authorization:'Bearer '+data.session.access_token}});
- if(!response.ok){const body=await response.json().catch(()=>({}));
-   throw Error(body.error||'Não foi possível validar o acesso.');}
- return response;
+ let platformSession;
+ try{const r=await platformSupabase?.auth?.getSession();if(!r?.error)platformSession=r?.data?.session;}catch{}
+ if(platformSession?.access_token&&!platformSession.user?.is_anonymous){
+  const response=await fetch(url,{...options,cache:'no-store',headers:{...options.headers,authorization:'Bearer '+platformSession.access_token}});
+  if(response.ok)return response;
+ }
+ if(!['/api/platform/admin/access','/api/platform/admin/overview'].includes(url))
+  throw Error('Acesso avançado disponível apenas com sessão administrativa exclusiva da Platform.');
+ const socialClient=(await import('../../../lib/supabase')).supabase;
+ const auth=await socialClient?.auth?.getSession(),socialSession=auth?.data?.session;
+ if(auth?.error||!socialSession?.access_token||socialSession.user?.is_anonymous)
+  throw Error('Entre com sua conta Master da JENIOS Social.');
+ const headers={authorization:'Bearer '+socialSession.access_token};
+ const check=await fetch('/api/admin/access',{cache:'no-store',headers});
+ if(!check.ok)throw Error('Não foi possível verificar o Master.');
+ const grants=await check.json();
+ if(grants.isMaster!==true)throw Error('Apenas Masters podem acessar a gestão administrativa.');
+ if(url==='/api/platform/admin/access')return Response.json({permissions:['platform.admin','platform.reports'],masterSource:'jenios_social_verified'});
+ const resp=await fetch('/api/admin/ecosystem',{cache:'no-store',headers,signal:options.signal});
+ if(!resp.ok)throw Error('Indicadores indisponíveis.');
+ const body=await resp.json();
+ if(body.status!=='ready'||body.source!=='platform_dedicated_database')throw Error('Banco exclusivo da Platform indisponível.');
+ return Response.json({...body,verified:true,source:'platform_dedicated_database'});
 }
 export default function PlatformAdminAccess({permission='platform.admin',children}){
  const [permissions,setPermissions]=useState(null),[error,setError]=useState('');

@@ -30,6 +30,7 @@ const LINKS={
   ['BankScore e Tokens','Consultas administrativas completas','/admin/consultas','▧']
  ],
  acessos:[
+  ['Cadastros de usuários e Masters','Convidar contas e gerir Masters com auditoria','/admin/usuarios','👥'],
   ['Permissões operacionais','Concessões permitidas e auditadas',MASTER_OPERATIONS.href,'🔐']
  ],
  sistemas:[

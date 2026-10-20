@@ -1,0 +1,78 @@
+name: JENIOS B160 connection guides and safe readers
+on:
+  push:
+    branches: [fix/jenios-b155-b160-connection-guides-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-connections:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify exact protected source and limited changes
+        run: node scripts/platform/connections/integrity.mjs
+      - name: Install existing locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, Social release and Next build
+        shell: bash
+        run: |
+          mkdir -p .jenios-connections-qa/ci
+          set +e
+          npm run build > .jenios-connections-qa/ci/build-and-tests.log 2>&1
+          code=$?
+          tail -n 65 .jenios-connections-qa/ci/build-and-tests.log
+          if [ "$code" -ne 0 ]; then grep -n -B 4 -A 40 'not ok\|Error:\|Failed to compile' .jenios-connections-qa/ci/build-and-tests.log; fi
+          exit "$code"
+      - name: Start isolated local server
+        shell: bash
+        run: |
+          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-b160-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/jenios-b160-server.log
+          exit 1
+      - name: All guide pages, both free assistants, security and mobile layout
+        run: set -o pipefail; node scripts/platform/connections/browser-smoke.mjs | tee .jenios-connections-qa/ci/browser-guides.log
+      - name: Preserve B148 boost, Direct and remembered character behavior
+        run: set -o pipefail; node scripts/platform/b148-browser-smoke.mjs | tee .jenios-connections-qa/ci/browser-b148.log
+      - name: Preserve Pro and University access behavior
+        run: |
+          set -euo pipefail
+          node scripts/platform/b145-pro-ui-smoke.mjs | tee .jenios-connections-qa/ci/browser-pro.log
+          node scripts/platform/b147-university-ui-smoke.mjs | tee .jenios-connections-qa/ci/browser-university.log
+      - name: Archive approved public source and checksums
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-connections-qa/ci/JENIOS_B160_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-connections-qa/ci/COMMIT.txt
+          sha256sum .jenios-connections-qa/ci/JENIOS_B160_PUBLIC_SOURCE.zip > .jenios-connections-qa/ci/SHA256SUMS.txt
+          git diff --stat 0e2952961d150c8b5a808a0345c522c2ef8cb3e1 HEAD > .jenios-connections-qa/ci/CHANGES.txt
+      - name: Keep test evidence and screenshots, without credentials
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B160_CONNECTIONS_CI
+          path: |
+            .jenios-connections-qa/
+            .jenios-platform-qa/screenshots/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

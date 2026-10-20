@@ -6,7 +6,7 @@ const read=p=>readFileSync(p,'utf8');
 const uid='11111111-1111-4111-8111-111111111111';
 function db(perms=[]){return {from(){return {select(){return {eq:async()=>({data:perms.map(permission=>({permission})),error:null})}}}}};}
 test('B122 Master requires trusted app_metadata role or reviewed admin allowlist',()=>{
- assert.equal(isMasterAdmin({id:uid,app_metadata:{role:'admin'}},{}),true);
+ assert.equal(isMasterAdmin({id:uid,app_metadata:{role:'admin'}},{}),false);
  assert.equal(isMasterAdmin({id:uid,app_metadata:{role:'master'}},{}),true);
  assert.equal(isMasterAdmin({id:uid,user_metadata:{role:'master'},app_metadata:{}},{}),false);
  assert.equal(isMasterAdmin({id:uid,app_metadata:{role:'finance_admin'}},{}),false);

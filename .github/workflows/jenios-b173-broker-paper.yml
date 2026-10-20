@@ -1,0 +1,83 @@
+name: JENIOS B173 broker readiness and PAPER order contracts
+on:
+  push:
+    branches: [fix/jenios-b171-b173-paper-gateway-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-b173:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: B170 protected source and no private-core leakage
+        run: node scripts/platform/connections/b173-integrity.mjs
+      - name: New provider and PAPER tests
+        run: node --test tests/platformProviderPaths.test.mjs tests/platformPaperOrderProposal.test.mjs tests/platformPaperOrderObservation.test.mjs
+      - name: Install existing locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, S05 and Next.js build
+        shell: bash
+        run: |
+          mkdir -p .jenios-b173-qa
+          set +e
+          npm run build > .jenios-b173-qa/build.log 2>&1
+          code=$?
+          tail -n 80 .jenios-b173-qa/build.log
+          exit "$code"
+      - name: Start private isolated preview server
+        shell: bash
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b173-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/api/platform/broker-readiness; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/jenios-b173-server.log
+          exit 1
+      - name: Factual public readiness; do not advertise trading
+        run: |
+          node --input-type=module -e '
+            const r=await fetch("http://127.0.0.1:3127/api/platform/broker-readiness");
+            const x=await r.json();
+            if(r.status!==200 || x.providerRoutes?.length!==12 || x.demoOrdersCertified!==false || x.realOrdersEnabled!==false || x.credentialsAccepted!==false)process.exit(1);
+            console.log("B173 factual readiness: 12 guides; 0 certified orders; 0 key intake");
+          '
+      - name: Preserve B160 integrations, Gênio and Gênia
+        run: node scripts/platform/connections/browser-smoke.mjs
+      - name: Preserve B148 boosts, Direct and preference
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Preserve Pro and Universidade
+        run: |
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive public source after complete verification
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b173-qa/JENIOS_B173_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-b173-qa/COMMIT.txt
+          sha256sum .jenios-b173-qa/JENIOS_B173_PUBLIC_SOURCE.zip > .jenios-b173-qa/SHA256SUMS.txt
+      - name: Keep redacted evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B173_PAPER_NO_EXECUTION_CI
+          path: .jenios-b173-qa/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

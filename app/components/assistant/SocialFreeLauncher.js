@@ -7,7 +7,7 @@ import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import {validPersona,personaPreferenceKey,readPersonaPreference,savePersonaPreference} from '../../../lib/assistant/persona-preference.mjs';
 import s from './AssistantEntry.module.css';
 const FreeAssistantRoom=dynamic(()=>import('./FreeAssistantRoom'),{ssr:false});
-export default function SocialFreeLauncher(){
+export default function SocialFreeLauncher({guideQuestion=null}){
  const [mounted,setMounted]=useState(false),[open,setOpen]=useState(false),[expanded,setExpanded]=useState(false),[persona,setPersona]=useState(null),[scope,setScope]=useState('visitor'),[choosing,setChoosing]=useState(false),[saveNotice,setSaveNotice]=useState('');
  const owner=useRef('visitor'),epoch=useRef(0),choice=useRef(0);
  useEffect(()=>{
@@ -62,7 +62,7 @@ export default function SocialFreeLauncher(){
     <h2 style={{fontSize:20}}>Com quem deseja conversar?</h2><p>Escolha Gênio ou Gênia. Você pode mudar quando quiser.</p>
     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>{PERSONAS.map(p=><button type="button" key={p.id} aria-pressed={p.id===persona} onClick={()=>void selectPersona(p.id)} style={{border:'1px solid #c4b5fd',borderRadius:14,background:'#faf5ff',color:'#4c1d95',padding:16,cursor:'pointer',display:'grid',justifyItems:'center',gap:10,fontWeight:800}}><img src={p.image} alt="" width="78" height="78" style={{borderRadius:'50%',objectFit:'cover'}}/>Conversar com {p.name}</button>)}</div>
     <p style={{fontSize:12}}>Sem cobrança. A preferência é salva na sua conta quando você está conectado; visitantes usam este navegador.</p>
-   </section>:<><button type="button" onClick={()=>setChoosing(true)} style={{margin:'10px 12px 0',padding:'8px 12px',background:'#f5f3ff',border:'1px solid #ddd6fe',borderRadius:8,color:'#5b21b6',cursor:'pointer'}}>Trocar assistente</button><FreeAssistantRoom key={scope+':'+persona} initialPersona={persona} onPersonaChange={selectPersona}/></>}
+   </section>:<><button type="button" onClick={()=>setChoosing(true)} style={{margin:'10px 12px 0',padding:'8px 12px',background:'#f5f3ff',border:'1px solid #ddd6fe',borderRadius:8,color:'#5b21b6',cursor:'pointer'}}>Trocar assistente</button><FreeAssistantRoom key={scope+':'+persona} initialPersona={persona} onPersonaChange={selectPersona} guideQuestion={guideQuestion}/></>}
    {saveNotice&&<p role="status" style={{padding:12,fontSize:12,color:'#92400e'}}>{saveNotice}</p>}</div>
   </section>
   <button type="button" className={s.launcher} aria-controls="jenios-social-assistant" aria-expanded={open} aria-label={open?'Minimizar atendimento gratuito':character?'Abrir '+character.name+' gratuito':'Abrir Gênio e Gênia gratuitos'} onClick={()=>setOpen(v=>!v)}>

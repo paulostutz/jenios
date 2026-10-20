@@ -1,3 +1,4 @@
+import {connectionSecret} from '../../../../lib/platform/connections/support.mjs';
 import {HELP_ARTICLES,helpFor} from '../../../../lib/assistant/knowledge.mjs';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'};
@@ -25,6 +26,7 @@ export async function POST(request){
  if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).some(k=>!['persona','message'].includes(k)))return error('Campos não permitidos.');
  const {message,persona}=body;
  if(!['genio','genia'].includes(persona)||typeof message!=='string'||!message.trim()||message.length>1000)return error('Escolha um personagem e faça uma pergunta de até mil caracteres.');
+ if(connectionSecret(message))return error('Não envie credenciais ao atendimento. Revogue no fornecedor qualquer chave real exposta. Nenhuma conta foi conectada.');
  const found=helpFor(message);
  const name=persona==='genia'?'Gênia':'Gênio';
  return Response.json({ok:true,free:true,paidAi:false,persona,name,mode:'guided',

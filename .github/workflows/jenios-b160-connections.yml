@@ -42,7 +42,7 @@ jobs:
       - name: Start isolated local server
         shell: bash
         run: |
-          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-b160-server.log 2>&1 &
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b160-server.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
             sleep 1
@@ -50,7 +50,7 @@ jobs:
           cat /tmp/jenios-b160-server.log
           exit 1
       - name: All guide pages, both free assistants, security and mobile layout
-        run: set -o pipefail; node scripts/platform/connections/browser-smoke.mjs | tee .jenios-connections-qa/ci/browser-guides.log
+        run: set -o pipefail; node scripts/platform/connections/browser-smoke.mjs 2>&1 | tee .jenios-connections-qa/ci/browser-guides.log
       - name: Preserve B148 boost, Direct and remembered character behavior
         run: set -o pipefail; node scripts/platform/b148-browser-smoke.mjs | tee .jenios-connections-qa/ci/browser-b148.log
       - name: Preserve Pro and University access behavior

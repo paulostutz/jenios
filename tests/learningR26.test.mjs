@@ -76,3 +76,10 @@ test('source graph keeps private question bank out of frontend and tutor imports
 test('schema closes all client grade writes and does not alter shared tables',()=>{const sql=readFileSync(new URL('../db/schema/learning-r26.sql',import.meta.url),'utf8');assert.match(sql,/ENABLE ROW LEVEL SECURITY/);assert.match(sql,/REVOKE ALL.*FROM PUBLIC, anon, authenticated/);assert.doesNotMatch(sql,/UPDATE auth\.users|DROP TABLE|ALTER TABLE public\.(posts|jenios_pay)/i);});
 test('direct lesson requests also reject an obsolete curriculum version',()=>{const s=placed();s.version='obsolete';assert.throws(()=>projectLesson(s,'risco',NOW),{code:'CURRICULUM_CHANGED'});});
 test('a JSON-like media type is not accepted as JSON',async()=>{await assert.rejects(boundedJson(new Request('https://qa.invalid',{method:'POST',headers:{'content-type':'application/json-custom'},body:'{}'})),{status:415});assert.deepEqual(await boundedJson(new Request('https://qa.invalid',{method:'POST',headers:{'content-type':'application/json; charset=utf-8'},body:'{}'})),{});});
+test('B137 Nacional R$ 99,90 does not include University; the two higher tiers do',async()=>{
+ await assert.rejects(requireLearner(req(),authDb({code:'platform-nacional'}),NOW),{status:402});
+ for(const code of ['platform-global-crypto','platform-internacional-pro']){
+  const right=await requireLearner(req(),authDb({code}),NOW);
+  assert.equal(right.access.kind,'subscription');assert.equal(right.access.productCode,code);
+ }
+});

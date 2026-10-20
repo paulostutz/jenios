@@ -13,7 +13,7 @@ test('B125 original male/female persona names, images and persistent contract re
 });
 function PERAS_NAMES(){return PERSONAS.map(x=>x.name);}
 test('B125 University keeps subscription security and its original five learning tracks',()=>{
- assert.equal(LEARNING_PRODUCTS.length,3);
+ assert.equal(LEARNING_PRODUCTS.length,2);
  const s=read('lib/learning/access.mjs');
  assert.match(s,/jenios_pay_subscriptions/);assert.match(s,/current_period_end/);
  assert.match(s,/SUBSCRIPTION_REQUIRED/);

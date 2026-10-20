@@ -32,3 +32,8 @@ test('B134 answers show grounded follow-up actions without granting tools',async
  assert.match(room,/aria-label="Perguntas relacionadas"/);
  assert.match(room,/onAsk={q=>send/);
 });
+
+test('B134 singular lesson words match plural questions without hallucinating nonexistent features',()=>{
+ assert.equal(helpFor('Como são as aulas?')[0]?.id,'school');
+ assert.equal(helpFor('Como cadastrar usuários e Masters?')[0]?.id,'master-users');
+});

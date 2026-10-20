@@ -33,8 +33,16 @@ try{
  pass(await value(`document.body.innerText.includes('Sua corretora.')&&!document.body.innerText.includes('Gateway Operacional')&&!document.body.innerText.includes('jn_live_')`),'legacy fictitious gateway replaced');
  pass(await value(`document.querySelectorAll('[data-provider]').length===12`),'all 12 documented providers are discoverable');
  for(const g of CONNECTION_GUIDES){
-  await value(`document.querySelector('[data-provider="${g.id}"]').click()`);await wait(`document.querySelector('[data-connection-guide]')?.dataset.connectionGuide==='${g.id}'`);
-  pass(await value(`new URLSearchParams(location.search).get('provider')==='${g.id}'&&document.querySelectorAll('article input[type="checkbox"]').length===6&&document.querySelector('article').innerText.includes('Campos e permissões explicados')`),g.name+' deep link and six steps');
+  // The first SSR button can exist before Next.js hydrates React's onClick handler.
+  // Retry the *real browser action* until URL, guide and checklist all reflect it.
+  const navigated=`new URLSearchParams(location.search).get('provider')==='${g.id}'&&document.querySelector('[data-connection-guide]')?.dataset.connectionGuide==='${g.id}'&&document.querySelectorAll('article input[type="checkbox"]').length===6&&document.querySelector('article').innerText.includes('Campos e permissões explicados')`;
+  let activated=false;
+  for(let retry=0;retry<45;retry++){
+   await value(`document.querySelector('[data-provider="${g.id}"]').click()`);
+   if(await value(navigated)){activated=true;break;}
+   await sleep(150);
+  }
+  pass(activated&&await value(navigated),g.name+' deep link and six steps');
  }
  pass(await value(`document.querySelectorAll('input[type="password"]').length===0&&document.body.innerText.includes('não recebe credenciais')`),'no secret intake on guide');
  await value(`document.querySelector('[data-provider="binance"]').click()`);await wait(`document.querySelector('[data-connection-guide]')?.dataset.connectionGuide==='binance'`);

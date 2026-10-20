@@ -10,11 +10,13 @@ const allow=new Set([
  'tests/platformAlpacaPaperLedgerReconcile.test.mjs',
  'docs/platform/B175-B177-ALPACA-PAPER-RISK-CONTINUITY.md',
  'scripts/platform/connections/b177-integrity.mjs',
+ 'scripts/platform/connections/browser-smoke.mjs',
  '.github/workflows/jenios-b177-alpaca-risk.yml'
 ]);
 const changes=execFileSync('git',['diff','--name-status','--no-renames',base,'HEAD'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
 for(const s of changes){const [status,path]=s.split('\t');assert.ok(allow.has(path),'B177 path not allowed '+s);
- assert.ok((path==='lib/platform/pilot-prep/contracts.mjs'&&status==='M')||(path!=='lib/platform/pilot-prep/contracts.mjs'&&status==='A'),'B177 unexpected source edit: '+s);}
+ const modified=path==='lib/platform/pilot-prep/contracts.mjs'||path==='scripts/platform/connections/browser-smoke.mjs';
+ assert.ok((modified&&status==='M')||(!modified&&status==='A'),'B177 unexpected source edit: '+s);}
 const protectedPaths=['package.json','package-lock.json','lib/platform/pilot-prep/paper-ledger.mjs',
  'lib/platform/pilot-prep/risk.mjs','lib/platform/connections/native-broker-bridge.mjs',
  'lib/platform/connections/demo-vault.mjs','lib/platform/connections/demo-http.mjs',
@@ -31,4 +33,13 @@ for(const path of ['lib/platform/connections/alpaca-paper-risk-rehearsal.mjs','l
  const src=readFileSync(path,'utf8');assert.doesNotMatch(src,/\bfetch\s*\(|\bPOST\b|sendRealOrder\(|api\.alpaca\.markets\/v2\/orders|\bwithdraw\b/i,'No native order transport');
  assert.match(src,/VERCEL_ENV==='production'/);assert.match(src,/JENIOS_PRIVATE_PAPER_REHEARSAL/);
 }
+// Only the hydration-safe click retry may change the original B160 browser smoke.
+const originalSmoke=execFileSync('git',['show',base+':scripts/platform/connections/browser-smoke.mjs'],{encoding:'utf8'});
+const freshSmoke=readFileSync('scripts/platform/connections/browser-smoke.mjs','utf8');
+assert.equal(freshSmoke.split('for(const g of CONNECTION_GUIDES){')[0],originalSmoke.split('for(const g of CONNECTION_GUIDES){')[0]);
+const afterMarker='pass(await value(`document.querySelectorAll(\'input[type=\"password\"]\')';
+assert.ok(originalSmoke.includes(afterMarker)&&freshSmoke.includes(afterMarker),'Missing unchanged browser regression tail');
+assert.equal(freshSmoke.split(afterMarker)[1],originalSmoke.split(afterMarker)[1],'B160 browser tail must be unchanged');
+assert.match(freshSmoke,/Retry the \*real browser action\*/);
+assert.match(freshSmoke,/activated&&await value\(navigated\)/);
 console.log('B177_SOURCE_INTEGRITY_PASS; preserved B174 and original paper-ledger/risk; no order transport');

@@ -16,6 +16,8 @@ Data: 20/10/2026. Branch de homologação derivada do B174 `4ed83bfb6de0d2805d54
 
 **B177-R2:** corrigido e testado o identificador estável da ligação: a reserva B152 deriva `ownershipConfirmedAtMs` da criação imutável `created_at` da conexão, não de `last_sync_at`, que muda a cada consulta. A primeira leitura pode ocorrer antes da inserção no banco, portanto não se exige que `last_sync_at >= created_at`. O teste força sincronização posterior seguida de reconciliação sem perder a identidade do ledger. O primeiro build preparado foi cancelado antes da promoção ao detectar a deriva.
 
+**B177-R3:** a CI detectou uma condição de corrida no teste de navegação herdado B160: o HTML renderizado no servidor já mostrava os botões, mas o evento `onClick` React ainda podia não estar hidratado. Ajustado **somente o teste de navegador** para repetir o clique real até URL, seleção e seis itens do guia serem confirmados (tempo máximo delimitado), sem mascarar comportamento incorreto. Mantidos demais testes e fluxo de aplicação. A compilação R2 passou, mas a promoção foi retida após essa falha de navegador.
+
 **B177:** regressão cruzada, teste de reinício SQLite, isolamento entre usuários e proteção da base B174; Next.js e Social continuam intactos. Nenhum requisito de credencial, cobrança, migração, novo serviço ou infraestrutura foi introduzido.
 
 ## Limitações obrigatórias

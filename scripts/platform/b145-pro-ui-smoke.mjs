@@ -73,6 +73,8 @@ try{
  pass(requests.every(r=>!r.url.includes('/api/assistant/pro/')&&!/^https?:\/\/(?:[^/]+\.)?openai\.com\//.test(r.url)),'public interactions never call the private Pro API or model');
  const gates=await evaluate(`(async()=>{const out=[];for(const [path,method] of [['access','GET'],['history','GET'],['quote','POST'],['chat','POST']]){const response=await fetch('/api/assistant/pro/'+path,{method,cache:'no-store',...(method==='POST'?{headers:{'content-type':'application/json'},body:'{}'}:{})});const body=await response.json();out.push({path,status:response.status,ok:body.ok,private:!!(body.wallet||body.items||body.answer||body.quote)});}return out;})()`);
  for(const gate of gates)pass(gate.status===401&&gate.ok===false&&!gate.private,gate.path+' rejects missing authentication before exposing private information');
+ const credits=await evaluate(`(async()=>{const out=[];for(const [path,method] of [['quote','POST'],['checkout','POST'],['status?orderId=10000000-0000-4000-8000-000000000001','GET']]){const response=await fetch('/api/assistant/pro/credits/'+path,{method,cache:'no-store',...(method==='POST'?{headers:{'content-type':'application/json'},body:'{}'}:{})});const body=await response.json();out.push({path,status:response.status,ok:body.ok,credited:body.credited,private:!!(body.orderId||body.quote||body.pixCode||body.checkoutUrl)});}return out;})()`);
+ for(const gate of credits)pass([401,503].includes(gate.status)&&gate.ok===false&&gate.credited===false&&!gate.private,'credits '+gate.path.split('?')[0]+' blocks unauthenticated purchase and credit creation');
  console.log('B145_PRO_BROWSER_SMOKE_PASS='+checks);
 }finally{
  for(const entry of pending.values())clearTimeout(entry.timer);

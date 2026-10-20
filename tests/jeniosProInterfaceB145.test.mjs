@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {formatNanoUsd,nanoAmount,verifiedWallet,verifiedAllowance,taskAvailability,validQuote,canPrepareQuote,unresolvedRequest,fileProblem} from '../app/genios-pro/pro-client.mjs';
+import {PRO_UI_TASKS,initialProTask,formatNanoUsd,nanoAmount,verifiedWallet,verifiedAllowance,taskAvailability,validQuote,canPrepareQuote,unresolvedRequest,fileProblem} from '../app/genios-pro/pro-client.mjs';
+
+test('B145 entrada da Universidade seleciona somente uma tarefa permitida, sem importar pergunta ou consentimento',()=>{
+ for(const task of PRO_UI_TASKS)assert.equal(initialProTask('?task='+task.id),task.id);
+ assert.equal(initialProTask('?task=university_tutor&lesson=mercado&prompt=pergunta&consent=true'),'university_tutor');
+ for(const search of ['',null,'?task=unknown','?task=__proto__','?task=university_tutor&task=manual_support','?prompt=pergunta&consent=true','?task=university_tutor&extra='+'x'.repeat(2048)])assert.equal(initialProTask(search),'advanced_question');
+});
 
 test('B145 a fração de centavo é exibida sem arredondar um consumo mínimo para cima',()=>{
  assert.equal(formatNanoUsd(200),'US$\u00a00,0000002');
@@ -43,8 +49,8 @@ test('B145 análise de captura exige imagem e pergunta comum não aceita anexos'
  assert.equal(canPrepareQuote({...draft,image:{mime:'image/png'}}),true);
  assert.equal(canPrepareQuote({...draft,taskId:'advanced_question',image:{mime:'image/png'}}),false);
  assert.equal(fileProblem({type:'image/svg+xml',size:100}).includes('PNG'),true);
- assert.equal(fileProblem({type:'image/png',size:4_000_001}).includes('4 MB'),true);
- assert.equal(fileProblem({type:'image/webp',size:4_000_000}),'');
+ assert.equal(fileProblem({type:'image/png',size:3_000_001}).includes('3 MB'),true);
+ assert.equal(fileProblem({type:'image/webp',size:3_000_000}),'');
 });
 test('B145 consentimento não pode usar orçamento vencido, origem diferente ou teto inválido',()=>{
  const now=Date.parse('2026-10-20T12:00:00Z');

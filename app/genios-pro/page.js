@@ -3,8 +3,9 @@ import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {supabase} from '../../lib/supabase';
 import {PERSONAS} from '../../lib/assistant/contracts.mjs';
+import ProCredits from './ProCredits';
 import {PRO_UI_TASKS,PRO_PLAN_LABELS,PRO_TIMEFRAME_LABELS,formatNanoUsd,formatProDate,
- verifiedWallet,verifiedAllowance,taskAvailability,validQuote,requestStateLabel,fileProblem,canPrepareQuote,unresolvedRequest} from './pro-client.mjs';
+ verifiedWallet,verifiedAllowance,taskAvailability,validQuote,requestStateLabel,fileProblem,canPrepareQuote,unresolvedRequest,initialProTask} from './pro-client.mjs';
 import styles from './pro.module.css';
 
 function BalanceRows({rows}){return <dl className={styles.amounts}>{rows.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{formatNanoUsd(value)}</dd></div>)}</dl>;}
@@ -51,7 +52,7 @@ export default function GeniosPro(){
  function invalidateQuote(){setQuote(null);setConsent(false);setError('');setNotice('');}
  function clearPrivateState(){
   clearImage();setPrompt('');setQuote(null);setConsent(false);setPendingKey(null);setAnswers([]);setNotice('');setError('');
-  setHistory({kind:'loading',items:[],error:''});setPersona('genio');setTaskId('advanced_question');setSymbol('');setTimeframe('');setSource('prepaid');
+  setHistory({kind:'loading',items:[],error:''});setPersona('genio');setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('prepaid');
  }
  async function sessionFor(expectedOwner){
   const result=await supabase?.auth.getSession(),session=result?.data?.session;
@@ -62,8 +63,15 @@ export default function GeniosPro(){
   const response=await fetch('/api/assistant/pro/'+path,{method:body?'POST':'GET',cache:'no-store',signal,
    headers:{authorization:'Bearer '+token,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
   let value;try{value=await response.json();}catch{throw Error('O serviço não confirmou a resposta. Atualize o status antes de tentar novamente.');}
-  if(!response.ok||value?.ok===false)throw Object.assign(Error(typeof value?.error==='string'?value.error:'Não foi possível concluir esta solicitação.'),{proState:value?.state,requestId:value?.requestId,status:response.status});
+  if(!response.ok||value?.ok===false)throw Object.assign(Error(typeof value?.error==='string'?value.error:'Não foi possível concluir esta solicitação.'),{proState:value?.state,requestId:value?.requestId,status:response.status,proBody:value});
   return value;
+ }
+ async function requestCredits(path,body){
+  const ticket=epoch.current,expectedOwner=owner.current,session=await sessionFor(expectedOwner);
+  if(ticket!==epoch.current)throw new DOMException('Sua sessão mudou.','AbortError');
+  const result=await api('credits/'+path,session.access_token,{body,signal:controller.current.signal});
+  if(ticket!==epoch.current)throw new DOMException('Sua sessão mudou.','AbortError');
+  return result;
  }
  function historyItems(value){if(!Array.isArray(value?.items))throw Error('Não foi possível confirmar seu histórico. Atualize antes de continuar.');return value.items;}
  function acceptAccess(value){
@@ -201,7 +209,7 @@ export default function GeniosPro(){
     <p className={styles.taskHelp}>{task?.description}</p>
     {task?.requiresCurrentData&&<div className={styles.fields}><label htmlFor="pro-symbol">Ativo<select id="pro-symbol" value={symbol} disabled={locked||!symbols.length} onChange={e=>{setSymbol(e.target.value);invalidateQuote();}}>{!symbols.length&&<option value="">Aguardando ativos disponíveis</option>}{symbols.map(s=><option key={s} value={s}>{s}</option>)}</select></label><label htmlFor="pro-timeframe">Intervalo do gráfico<select id="pro-timeframe" value={timeframe} disabled={locked||!timeframes.length} onChange={e=>{setTimeframe(e.target.value);invalidateQuote();}}>{!timeframes.length&&<option value="">Aguardando intervalos disponíveis</option>}{timeframes.map(t=><option key={t} value={t}>{PRO_TIMEFRAME_LABELS[t]}</option>)}</select></label></div>}
     <label htmlFor="pro-prompt">Sua pergunta<textarea id="pro-prompt" value={prompt} rows={4} maxLength={2500} disabled={locked||account.kind!=='ready'} onChange={e=>{setPrompt(e.target.value);invalidateQuote();}} placeholder={taskId==='chart_screenshot'?'Ex.: quais padrões estão visíveis neste gráfico e o que a imagem não permite concluir?':'Descreva o que deseja entender e o contexto da sua dúvida.'}/><span className={styles.counter}>{prompt.length}/2.500</span></label>
-    {task?.acceptsImage&&<div className={styles.upload}><label htmlFor="pro-image">{taskId==='chart_screenshot'?'Captura do gráfico':'Captura do gráfico (opcional)'}<input ref={fileInput} id="pro-image" type="file" accept="image/png,image/jpeg,image/webp" disabled={locked||account.kind!=='ready'} onChange={chooseImage}/></label><p className={styles.small}>PNG, JPEG ou WebP de até 4 MB. A imagem será enviada ao provedor somente após sua confirmação.</p>{imageReading&&<p role="status">Preparando a imagem…</p>}{attachment&&<div className={styles.preview}><img src={attachment.preview} alt="Prévia da captura que será analisada"/><div><strong>{attachment.name}</strong><small>{attachment.width} × {attachment.height} pixels</small><button type="button" className={styles.secondary} disabled={Boolean(busy)||hasPending} onClick={()=>{clearImage();invalidateQuote();}}>Remover imagem</button></div></div>}</div>}
+    {task?.acceptsImage&&<div className={styles.upload}><label htmlFor="pro-image">{taskId==='chart_screenshot'?'Captura do gráfico':'Captura do gráfico (opcional)'}<input ref={fileInput} id="pro-image" type="file" accept="image/png,image/jpeg,image/webp" disabled={locked||account.kind!=='ready'} onChange={chooseImage}/></label><p className={styles.small}>PNG, JPEG ou WebP de até 3 MB. A imagem será enviada ao provedor somente após sua confirmação.</p>{imageReading&&<p role="status">Preparando a imagem…</p>}{attachment&&<div className={styles.preview}><img src={attachment.preview} alt="Prévia da captura que será analisada"/><div><strong>{attachment.name}</strong><small>{attachment.width} × {attachment.height} pixels</small><button type="button" className={styles.secondary} disabled={Boolean(busy)||hasPending} onClick={()=>{clearImage();invalidateQuote();}}>Remover imagem</button></div></div>}</div>}
     {task?.reason&&data.paidGenerationEnabled&&!task.available&&<p className={styles.availability}>{task.reason}</p>}
     {account.kind==='ready'&&error&&<p role="alert" className={styles.error}>{error}</p>}{notice&&<p role="status" className={styles.notice}>{notice}</p>}
     <div className={styles.actions}><button type="submit" className={styles.primary} disabled={!canPrepare}>{busy==='quote'?'Conferindo limite…':'Ver limite de consumo'}</button><p className={styles.small}>Consultar o limite não debita seu saldo.</p></div>
@@ -211,6 +219,6 @@ export default function GeniosPro(){
   </section>
   {!!answers.length&&<section className={styles.panel} aria-label="Respostas desta sessão"><h2>Respostas desta sessão</h2><div className={styles.answers}>{answers.map(result=><article key={result.id}><div className={styles.answerHeading}><strong>{PERSONAS.find(p=>p.id===result.persona)?.name||'Gênio'} Pro</strong><small>Consumo: {formatNanoUsd(result.chargedNanoUsd)}</small></div><p className={styles.question}>{result.question}</p><div className={styles.answer}>{result.answer}</div><VerifiedSource source={result.sourceInfo}/></article>)}</div><p className={styles.small}>As consultas concluídas também podem ser consultadas no histórico desta conta.</p></section>}
   {account.kind==='ready'&&<History state={history.kind} error={history.error} items={history.items} onRefresh={refreshLedger} busy={Boolean(busy)||imageReading}/>}
-  <section className={styles.panel}><div className={styles.sectionHeading}><div><h2>Créditos JENIOS Pro</h2><p>Seu consumo corresponde a <strong>duas vezes o custo efetivo da API</strong>, preservando frações de centavo. Créditos comprados e franquia do plano são acompanhados separadamente.</p></div><button type="button" className={styles.secondary} disabled>Comprar créditos</button></div><p className={styles.small}><strong>Contratação ainda não habilitada.</strong> O valor e a moeda do pacote inicial serão confirmados e exibidos antes de qualquer pagamento.</p></section>
+  <ProCredits key={account.kind==='ready'?owner.current:'visitor'} userId={account.kind==='ready'?owner.current:null} offer={account.kind==='ready'?data.creditsOffer:null} request={requestCredits} onCredited={refreshLedger}/>
  </div></main>;
 }

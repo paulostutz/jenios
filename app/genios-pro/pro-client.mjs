@@ -13,6 +13,11 @@ export const PRO_PLAN_LABELS=Object.freeze({
  'platform-internacional-pro':'Global · R$ 199,90/mês'
 });
 export const PRO_TIMEFRAME_LABELS=Object.freeze({'1m':'1 minuto','5m':'5 minutos','15m':'15 minutos','1h':'1 hora','4h':'4 horas','1d':'1 dia'});
+export function initialProTask(search=''){
+ if(typeof search!=='string'||search.length>2048)return 'advanced_question';
+ const tasks=new URLSearchParams(search).getAll('task');
+ return tasks.length===1&&PRO_UI_TASKS.some(task=>task.id===tasks[0])?tasks[0]:'advanced_question';
+}
 const pendingStates=new Set(['reserved','dispatched','needs_reconciliation']);
 export const unresolvedRequest=state=>pendingStates.has(state);
 export function nanoAmount(value){
@@ -58,7 +63,7 @@ export function requestStateLabel(state){
 }
 export function fileProblem(file){
  if(!file||!['image/png','image/jpeg','image/webp'].includes(file.type))return 'Escolha uma imagem PNG, JPEG ou WebP.';
- if(!Number.isSafeInteger(file.size)||file.size<1||file.size>4_000_000)return 'A imagem precisa ter até 4 MB.';
+ if(!Number.isSafeInteger(file.size)||file.size<1||file.size>3_000_000)return 'A imagem precisa ter até 3 MB.';
  return '';
 }
 export function canPrepareQuote({data,taskId,source,prompt,image,hasPending=false,locked=false}){

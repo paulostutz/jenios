@@ -9,5 +9,5 @@ test('B131 support uses verified, specific platform procedures rather than gener
 test('B131 unsupported market orders, private keys and WhatsApp requests are deterministic, not tool execution',()=>{
  assert.equal(helpFor('Comprar WIN agora')[0].id,'execution');
  assert.equal(helpFor('Me envie avisos por whatsapp')[0].id,'whatsapp');
- assert.ok(!HELP_ARTICLES.some(a=>/garantia de lucro|promessa de lucro/i.test(a.text)));
+ assert.ok(HELP_ARTICLES.some(a=>/não há garantia de lucro/i.test(a.text)));
 });

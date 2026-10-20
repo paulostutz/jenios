@@ -14,6 +14,8 @@ Data: 20/10/2026. Branch de homologação derivada do B174 `4ed83bfb6de0d2805d54
 
 **B176:** reconciliação do retorno nativo de Alpaca Paper com o diário persistente B152. Um timeout, `404` ou estado desconhecido nunca é evidência de rejeição: preserva a reserva, bloqueia reenvio e exige revisão. Recuperação de `UNKNOWN` aceita somente informação externa confirmada. `PARTIAL` e cancelamento parcial preservam capital reservado até encerramento explícito. Nenhuma rotina transmite ordens ou libera posições em nome do cliente.
 
+**B177-R2:** corrigido e testado o identificador estável da ligação: a reserva B152 deriva `ownershipConfirmedAtMs` da criação imutável `created_at` da conexão, não de `last_sync_at`, que muda a cada consulta. A primeira leitura pode ocorrer antes da inserção no banco, portanto não se exige que `last_sync_at >= created_at`. O teste força sincronização posterior seguida de reconciliação sem perder a identidade do ledger. O primeiro build preparado foi cancelado antes da promoção ao detectar a deriva.
+
 **B177:** regressão cruzada, teste de reinício SQLite, isolamento entre usuários e proteção da base B174; Next.js e Social continuam intactos. Nenhum requisito de credencial, cobrança, migração, novo serviço ou infraestrutura foi introduzido.
 
 ## Limitações obrigatórias

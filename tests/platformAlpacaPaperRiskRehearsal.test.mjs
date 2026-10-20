@@ -10,7 +10,7 @@ const user='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7';
 const nowMs=1792525000000;
 const env={VERCEL_ENV:'preview',JENIOS_PRIVATE_PAPER_REHEARSAL:'true'};
 const storedConnection={id:'50b85e9d-339c-4d32-b2bf-82c467673832',user_id:user,provider:'alpaca',environment:'paper',status:'active',
- external_digest:'d'.repeat(64),last_sync_at:new Date(nowMs-1000).toISOString(),identity_verified:true};
+ external_digest:'d'.repeat(64),last_sync_at:new Date(nowMs-1000).toISOString(),created_at:new Date(nowMs-500).toISOString(),identity_verified:true};
 const session={userId:user,authenticated:true,diagnosticCompleted:true};
 const mode='direct';
 const signal={originalCoreSha256:CORE_SHA.engine,executionEnabled:false,mode,side:'buy',contextDigest:'a'.repeat(64),reviewStatus:'allow'};
@@ -40,6 +40,14 @@ test('B175 Alpaca PAPER is the sole added B152 provider without weakening Live g
  assert.throws(()=>alpacaPaperLedgerConnection(user,storedConnection,{env:{...env,VERCEL_ENV:'production'},now:nowMs}),/PRIVATE_REHEARSAL_DISABLED/);
  assert.throws(()=>alpacaPaperLedgerConnection(user,storedConnection,{env:{...env,JENIOS_PRIVATE_PAPER_REHEARSAL:'false'},now:nowMs}),/PRIVATE_REHEARSAL_DISABLED/);
 });
+test('B175 B177-R2 stable broker binding survives refresh of last_sync_at',()=>fixture((ledger,c)=>{
+ const later={...storedConnection,last_sync_at:new Date(nowMs-500).toISOString()};
+ const changed=alpacaPaperLedgerConnection(user,later,{env,now:nowMs});
+ assert.deepEqual(changed,c);
+ const risk=reserve(ledger);assert.equal(risk.riskState,'RESERVED');
+ assert.equal(ledger.snapshot(session,changed)[0].state,'RESERVED');
+ assert.throws(()=>alpacaPaperLedgerConnection(user,{...later,created_at:new Date(nowMs+100).toISOString()},{env,now:nowMs}));
+}));
 test('B175 original risk ledger reserves protected Alpaca Paper draft with no broker API transport',()=>fixture((ledger,c)=>{
  const r=reserve(ledger);
  assert.equal(r.riskState,'RESERVED');assert.equal(r.duplicate,false);

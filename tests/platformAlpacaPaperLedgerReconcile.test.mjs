@@ -10,7 +10,7 @@ import {reconcileOwnAlpacaPaperLedger,resubmitAmbiguousPaperOrder} from '../lib/
 const user='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7',now=1792526000000;
 const env={VERCEL_ENV:'preview',JENIOS_PRIVATE_PAPER_REHEARSAL:'true'};
 const storedConnection={id:'50b85e9d-339c-4d32-b2bf-82c467673832',user_id:user,provider:'alpaca',environment:'paper',status:'active',
- external_digest:'f'.repeat(64),last_sync_at:new Date(now-800).toISOString(),identity_verified:true};
+ external_digest:'f'.repeat(64),last_sync_at:new Date(now-800).toISOString(),created_at:new Date(now-100).toISOString(),identity_verified:true};
 const session={userId:user,authenticated:true,diagnosticCompleted:true};
 const order={clientOrderId:'ord_b176',mode:'direct',side:'buy',symbol:'AAPL',quantity:'1',entry:'100',stop:'98',target:'104'};
 const proposal={session,storedConnection,mode:'direct',order,nowMs:now,
@@ -32,6 +32,13 @@ const reconcile=(db,lookup,patch={})=>reconcileOwnAlpacaPaperLedger({session,sto
  clientOrderId:order.clientOrderId,symbol:order.symbol,nowMs:now+1,credentials:{apiKey:'fixtureonly'},...patch},
  {ledger:db,env,lookup});
 
+test('B177-R2 after a legal account sync the reconciliation uses the same durable connection binding',()=>fixture(async(db,c)=>{
+ const refreshed={...storedConnection,last_sync_at:new Date(now-300).toISOString()};
+ const r=await reconcile(db,async()=>observation('ACK','0'),{storedConnection:refreshed});
+ assert.equal(r.state,'ACK');assert.equal(db.snapshot(session,c)[0].state,'ACK');
+ const later=alpacaPaperLedgerConnection(user,refreshed,{now,env});
+ assert.deepEqual(c,later);
+}));
 test('B176 official Paper partial receipt keeps B152 risk reserved',()=>fixture(async(db,c)=>{
  const r=await reconcile(db,async()=>observation('PARTIAL','0.4'));
  assert.equal(r.state,'PARTIAL');assert.equal(r.ordersSent,0);assert.equal(r.automaticResubmissionAllowed,false);

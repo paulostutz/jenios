@@ -31,3 +31,11 @@ test('B130 legacy saved states are forward-compatible with optional review diary
  const s=state();delete s.reviewDiary;assert.equal(dailyStudyPlan(s,NOW).studiedToday,0);
  assert.equal(transition(s,{action:'review_lesson',lessonId:'mercado'},NOW).state.reviewDiary.length,1);
 });
+
+test('B130 University UI has daily agenda and actually saves review actions through the existing state machine',()=>{
+ const code=readFileSync('app/components/learning/LearningRoom.js','utf8');
+ assert.match(code,/aria-label="Agenda de estudo diário"/);
+ assert.match(code,/action\(\{action:'review_lesson',lessonId:lesson\.id\}\)/);
+ assert.match(code,/s\.dailyStudy\?\.reviewedToday\.includes/);
+ assert.match(code,/openLesson\(s\.dailyStudy\.suggestedLesson\.id\)/);
+});

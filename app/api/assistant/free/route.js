@@ -1,20 +1,16 @@
+import {assistantSameOrigin} from '../../../../lib/platform/connections/request-origin.mjs';
 import {connectionSecret} from '../../../../lib/platform/connections/support.mjs';
 import {HELP_ARTICLES,helpFor} from '../../../../lib/assistant/knowledge.mjs';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'};
 const error=(message,status=400)=>Response.json({ok:false,error:message},{status,headers});
-function safeOrigin(request){
- const origin=request.headers.get('origin');
- if(origin&&origin!==new URL(request.url).origin)return false;
- return true;
-}
 export async function GET(){
  return Response.json({ok:true,free:true,paidAi:false,personas:['genio','genia'],
   topics:HELP_ARTICLES.filter(x=>['start','school','trends','bankscore','university-daily'].includes(x.id))
    .map(x=>({id:x.id,title:x.title,href:x.href}))},{headers});
 }
 export async function POST(request){
- if(!safeOrigin(request))return error('Origem não autorizada.',403);
+ if(!assistantSameOrigin(request))return error('Origem não autorizada.',403);
  if(!/^application\/json(?:;|$)/i.test(request.headers.get('content-type')||''))return error('Informe JSON.',415);
  if(Number(request.headers.get('content-length')||0)>3500)return error('Pergunta muito longa.',413);
  let body;

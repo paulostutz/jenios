@@ -27,6 +27,11 @@ jobs:
           cache: npm
       - name: Verify exact protected source and limited changes
         run: node scripts/platform/connections/integrity.mjs
+      - name: Verify exact origin and loopback handling without foreign-site bypass
+        run: |
+          mkdir -p .jenios-connections-qa/ci
+          set -o pipefail
+          node --test scripts/platform/connections/origin.test.mjs | tee .jenios-connections-qa/ci/origin-tests.tap
       - name: Install existing locked dependencies without scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full regression, Social release and Next build

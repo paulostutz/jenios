@@ -1,0 +1,70 @@
+name: JENIOS B177 Alpaca PAPER risk ledger and restart reconciliation
+on:
+  push:
+    branches: [fix/jenios-b175-b177-alpaca-paper-risk-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-alpaca-paper:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify B174 preservation and minimal B152 contract extension
+        run: node scripts/platform/connections/b177-integrity.mjs
+      - name: Test Alpaca PAPER risk idempotence and ledger recovery
+        run: node --test tests/platformAlpacaPaperRiskRehearsal.test.mjs tests/platformAlpacaPaperLedgerReconcile.test.mjs tests/platformPilotPrep.test.mjs
+      - name: Install existing pinned dependencies without install scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: All general tests, Social regression, Next.js build
+        run: |
+          mkdir -p .jenios-b177-ci
+          npm run build > .jenios-b177-ci/build.log 2>&1 || { tail -n 130 .jenios-b177-ci/build.log; exit 1; }
+          tail -n 20 .jenios-b177-ci/build.log
+      - name: Start isolated preview server
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b177-server.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b177-server.log
+          exit 1
+      - name: Preserve original broker guides and free assistants
+        run: node scripts/platform/connections/browser-smoke.mjs
+      - name: Preserve Social Direct, boosts and chosen assistant
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Preserve Gênios Pro and University
+        run: |
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive validated public source and checksums
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b177-ci/JENIOS_B177_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-b177-ci/COMMIT.txt
+          sha256sum .jenios-b177-ci/JENIOS_B177_PUBLIC_SOURCE.zip > .jenios-b177-ci/SHA256SUMS.txt
+      - name: Save redacted CI evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B177_PAPER_LEDGER_CI
+          path: .jenios-b177-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

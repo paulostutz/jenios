@@ -11,3 +11,24 @@ test('B131 unsupported market orders, private keys and WhatsApp requests are det
  assert.equal(helpFor('Me envie avisos por whatsapp')[0].id,'whatsapp');
  assert.ok(HELP_ARTICLES.some(a=>/não há garantia de lucro/i.test(a.text)));
 });
+
+test('B134 matching favors specific help phrases, rejects accidental substrings and preserves unknowns',()=>{
+ assert.equal(helpFor('quero rever uma aula com revisão diária')[0]?.id,'university-daily');
+ assert.equal(helpFor('Como fazer um cadastro de Master?')[0]?.id,'master-users');
+ assert.equal(helpFor('Pode ativar o Whatsapp para mim?')[0]?.id,'whatsapp');
+ assert.equal(helpFor('Comprar WIN agora')[0]?.id,'execution');
+ assert.deepEqual(helpFor('ZZZ nova ferramenta não documentada XYZ'),[]);
+ assert.ok(helpFor('Onde ver gráfico do TradingView').some(a=>a.id==='trading-view'));
+});
+test('B134 answers show grounded follow-up actions without granting tools',async()=>{
+ const {answerSupport}=await import('../lib/assistant/reply.mjs');
+ const response=await answerSupport('Como funciona a escola para aprender?',{persona:'genia',aiConsent:false},{env:{}});
+ assert.equal(response.mode,'guided');
+ assert.equal(response.name,'Gênia');
+ assert.ok(response.followUps.length);
+ assert.ok(response.articles.every(a=>a.href.startsWith('/')));
+ const client=await import('node:fs');
+ const room=client.readFileSync('app/components/assistant/AssistantRoom.js','utf8');
+ assert.match(room,/aria-label="Perguntas relacionadas"/);
+ assert.match(room,/onAsk={q=>send/);
+});

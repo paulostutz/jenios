@@ -5,7 +5,7 @@ import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import s from './AssistantRoom.module.css';
 const quick=['Como começar na plataforma?','Como funcionam as trilhas de aprendizado?','Qual a diferença entre day e swing trade?','O modo reverso garante lucro?'];
 const networks=['ethereum','bitcoin','bsc','tron','solana','polygon','arbitrum','base','avalanche'];
-function ResultCard({r,onChooseBank}){
+function ResultCard({r,onChooseBank,onAsk}){
  if(!r)return null;
  return <article className={s.reply}>
   <div className={s.tag}>{r.mode==='ai'?'Resposta de IA':r.mode==='tool'?'Consulta ao serviço':'Material de suporte'}</div>
@@ -19,6 +19,9 @@ function ResultCard({r,onChooseBank}){
   {r.notices?.map((n,i)=><p className={s.small} key={i}>{n}</p>)}
   {r.notice&&<p className={s.small}>{r.notice}</p>}
   <div className={s.actions}>{(r.links||r.articles||[]).map((l,i)=><a className={s.link} key={i} href={l.href}>{l.label||l.title}</a>)}</div>
+  {!!r.followUps?.length&&<div className={s.choices} aria-label="Perguntas relacionadas">
+   {r.followUps.map(q=><button type="button" key={q} onClick={()=>onAsk?.(q)}>{q}</button>)}
+  </div>}
  </article>;
 }
 export default function AssistantRoom({embedded=false,onPersonaChange=null}){
@@ -93,7 +96,7 @@ export default function AssistantRoom({embedded=false,onPersonaChange=null}){
      </div>
      {error&&<div className={s.error} role="alert">{error} <button disabled={busy} onClick={()=>setRefresh(x=>x+1)}>Atualizar atendimento</button></div>}
      {busy&&<p className={s.status} role="status">Aguarde a confirmação do serviço…</p>}
-     <div aria-live="polite" className={s.chat}>{chat.map(item=>item.question?<p className={s.question} key={item.id}>{item.question}</p>:<ResultCard key={item.id} r={item.result} onChooseBank={(i,periodo)=>{setBank({codigo:i.codigo,periodo:String(periodo||'')});setBankName(i.nome);setTab('bankscore');}}/>)}</div>
+     <div aria-live="polite" className={s.chat}>{chat.map(item=>item.question?<p className={s.question} key={item.id}>{item.question}</p>:<ResultCard key={item.id} r={item.result} onAsk={q=>send({action:'ask',message:q})} onChooseBank={(i,periodo)=>{setBank({codigo:i.codigo,periodo:String(periodo||'')});setBankName(i.nome);setTab('bankscore');}}/>)}</div>
      {chat.length>0&&<button className={s.clear} disabled={busy} onClick={()=>setChat([])}>Limpar conversa desta aba</button>}
     </section>
    </div>

@@ -1,0 +1,84 @@
+name: JENIOS B184 isolated PAPER broker execution rehearsal
+on:
+  push:
+    branches: [fix/jenios-b178-b184-private-paper-gateway-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-no-live-execution:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify B177 preserved and private PAPER endpoint never imported into production
+        run: node scripts/platform/connections/b184-integrity.mjs
+      - name: Test outbox, signed consent, native PAPER GET and POST, and bracket protective legs (mock only)
+        run: node --test tests/platformAlpacaPaper*.test.mjs
+      - name: Install existing pinned dependencies without install scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, Social regressions and Next.js production build
+        run: |
+          mkdir -p .jenios-b184-ci
+          npm run build > .jenios-b184-ci/build.log 2>&1 || { tail -n 150 .jenios-b184-ci/build.log; exit 1; }
+          tail -n 22 .jenios-b184-ci/build.log
+      - name: Start protected no-secret localhost Next server
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b184-server.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 120 /tmp/jenios-b184-server.log
+          exit 1
+      - name: Production-analog routes never accept a PAPER order or a customer's secret
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          for(const path of ['/api/platform/broker-providers','/api/platform/broker-readiness','/integracoes']) {
+            const response=await fetch('http://127.0.0.1:3127'+path);assert.equal(response.status,200,path);
+            const html=await response.text();assert.doesNotMatch(html,/JENIOS_PAPER_WORKER_SIGNING_KEY_B64/);
+          }
+          const disabled=await fetch('http://127.0.0.1:3127/api/platform/broker-connections');assert.equal(disabled.status,404);
+          const probe=await fetch('http://127.0.0.1:3127/api/platform/broker-execution',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({provider:'alpaca',environment:'paper'})});
+          assert.equal(probe.status,404);
+          console.log('B184_PROD_LIKE_BLOCKED; no order route and no public credentials');
+          JS
+      - name: Preserve browser guides and free Gênio/Gênia
+        run: node scripts/platform/connections/browser-smoke.mjs
+      - name: Preserve Social Direct, boost, persona choice
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Preserve Gênios Pro and Universidade
+        run: |
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive verified public files without private core
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b184-ci/JENIOS_B184_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-b184-ci/COMMIT.txt
+          sha256sum .jenios-b184-ci/JENIOS_B184_PUBLIC_SOURCE.zip > .jenios-b184-ci/SHA256SUMS.txt
+      - name: Save CI evidence without any secret
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B184_PRIVATE_PAPER_CI
+          path: .jenios-b184-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

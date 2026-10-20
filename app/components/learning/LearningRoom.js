@@ -45,7 +45,7 @@ export default function LearningRoom(){
  return <main className={styles.shell}><div className={styles.wrap}>
  <header className={styles.header}><div><span className={styles.brand}>JENIOS PLATFORM · UNIVERSIDADE JENIOS</span><h1>Universidade JENIOS <span style={{color:'#a78bfa'}}>Aprender para decidir melhor.</span></h1><p>Do primeiro conceito ao laboratório avançado. Uma trilha no seu ritmo, com prática, revisão e perguntas que ajudam a pensar.</p></div><Link className={styles.link} href="/dashboard-logado">← Gestão da Platform</Link></header>
  {error&&<div role="alert" className={styles.error}>{error} {owner.current&&!saving&&<button className={styles.secondary} onClick={load}>Atualizar</button>}</div>}
- {busy?<div className={styles.banner} role="status">Verificando sua conta e seu progresso…</div>:!s?<section className={styles.card}><h2>Seu próximo passo começa aqui</h2><p>O ambiente de ensino está incluído nos três planos da JENIOS Platform. O progresso é individual e exige uma assinatura vigente.</p><div className={styles.actions}><Link className={styles.primary} href="/login">Entrar na minha conta</Link><Link className={styles.secondary} href="/planos">Conhecer os três planos</Link></div><p className={styles.small}>{errorCode==='SUBSCRIPTION_REQUIRED'?'Não identificamos uma assinatura vigente.':'Aulas só são carregadas depois da verificação de acesso.'}</p></section>:<>
+ {busy?<div className={styles.banner} role="status">Verificando sua conta e seu progresso…</div>:!s?<section className={styles.card}><h2>Seu próximo passo começa aqui</h2><p>Seu aprendizado está incluído nos planos de R$ 149,90 e R$ 199,90. Com outros planos ou sem assinatura, é necessário contratar a Universidade à parte. Seu progresso é individual e permanece salvo.</p><div className={styles.actions}><Link className={styles.primary} href="/login">Entrar na minha conta</Link><Link className={styles.secondary} href="/genios-pro">Universidade e créditos Pro</Link></div><p className={styles.small}>{errorCode==='SUBSCRIPTION_REQUIRED'?'Não identificamos uma assinatura vigente.':'Aulas só são carregadas depois da verificação de acesso.'}</p></section>:<>
  {data.access.kind==='admin-preview'&&<p className={styles.banner}>Prévia administrativa · acesso de teste autorizado, não concessão de assinatura.</p>}
  {!s.onboarding?<div className={styles.hero}><section className={styles.card}><div className={styles.tag}>Seu ponto de partida</div><h2>Vamos montar sua jornada?</h2><p>Conte um pouco sobre seu estudo. Depois, 12 perguntas ajudam a identificar conceitos para revisar — sem avaliar sua inteligência ou prometer desempenho no mercado.</p>
  <form onSubmit={e=>{e.preventDefault();action({action:'onboard',...form});}}>
@@ -65,10 +65,12 @@ export default function LearningRoom(){
  {s.dailyStudy&&<section className={styles.card} aria-label="Agenda de estudo diário">
   <div className={styles.tag}>SUA ROTINA DE ESTUDOS · {s.dailyStudy.minutes} MINUTOS</div>
   <h2>Aprenda um pouco todos os dias</h2>
-  <p>Revisões hoje: <strong>{s.dailyStudy.studiedToday}</strong> · Sequência de estudos: <strong>{s.dailyStudy.streakDays} dia(s)</strong> · Revisões registradas: <strong>{s.dailyStudy.totalReviewSessions}</strong>.</p>
+  <p>Revisões hoje: <strong>{s.dailyStudy.studiedToday}</strong> · Sequência de estudos: <strong>{s.dailyStudy.streakDays} dia(s)</strong> {s.dailyStudy.studiedDay?'· atividade registrada hoje':''} · Revisões registradas: <strong>{s.dailyStudy.totalReviewSessions}</strong>.</p>
   {s.dailyStudy.due.length>0?<p role="status">Revisões recomendadas: {s.dailyStudy.due.map(t=>t.title).join(' · ')}.</p>:<p>Pratique no seu ritmo. As revisões são recomendadas conforme sua evolução.</p>}
+  {!!s.dailyStudy.reinforcement?.length&&<p role="status">Para reforçar: {s.dailyStudy.reinforcement.map(t=>t.title).join(' · ')}. Retome os temas com calma.</p>}
   {s.dailyStudy.suggestedLesson&&<button className={styles.primary} disabled={saving} onClick={()=>openLesson(s.dailyStudy.suggestedLesson.id)}>
    {s.dailyStudy.suggestedLesson.completed?'Rever aula de hoje':'Estudar aula recomendada'}: {s.dailyStudy.suggestedLesson.title}
+  <span className={styles.small}> · {s.dailyStudy.suggestedLesson.reason}</span>
   </button>}
   <p className={styles.small}>Mesmo após concluir todas as trilhas, continue revisitando aulas e reavaliando seus conhecimentos. Revisão registrada não altera notas.</p>
  </section>}

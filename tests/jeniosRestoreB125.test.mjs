@@ -13,9 +13,9 @@ test('B125 original male/female persona names, images and persistent contract re
 });
 function PERAS_NAMES(){return PERSONAS.map(x=>x.name);}
 test('B125 University keeps subscription security and its original five learning tracks',()=>{
- assert.equal(LEARNING_PRODUCTS.length,3);
+ assert.equal(LEARNING_PRODUCTS.length,2);
  const s=read('lib/learning/access.mjs');
- assert.match(s,/jenios_pay_subscriptions/);assert.match(s,/current_period_end/);
+ assert.match(read('lib/assistant/pro-access.mjs'),/jenios_pay_subscriptions/);assert.match(read('lib/assistant/pro-access.mjs'),/current_period_end/);
  assert.match(s,/SUBSCRIPTION_REQUIRED/);
  assert.match(read('app/components/learning/LearningRoom.js'),/Universidade JENIOS/);
  assert.equal(existsSync('app/platform/aprender/page.js'),true);
@@ -27,7 +27,7 @@ test('B125 master preview is server authorized and never grants paid subscriptio
 });
 test('B131 restored services keep paid AI disabled without explicit model, budget and protected key',()=>{
  for(const route of ['app/api/platform/assistant/route.js','app/api/platform/learning/route.js']){
-  const s=read(route);assert.match(s,/configuredGenerativeEnv\(process\.env\)/);
+  const s=read(route);assert.match(s,/OPENAI_API_KEY:''/);
  }
  const assistant=read('lib/assistant/contracts.mjs');
  assert.match(assistant,/executionEnabled:false/);

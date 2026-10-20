@@ -39,3 +39,36 @@ test('B130 University UI has daily agenda and actually saves review actions thro
  assert.match(code,/s\.dailyStudy\?\.reviewedToday\.includes/);
  assert.match(code,/openLesson\(s\.dailyStudy\.suggestedLesson\.id\)/);
 });
+
+test('B133 completing the first lesson counts as study without inventing a review or grade',()=>{
+ const s=state();s.completedLessons=[];
+ const r=transition(s,{action:'complete_lesson',lessonId:'mercado'},NOW);
+ assert.equal(dailyStudyPlan(r.state,NOW).studiedDay,true);
+ assert.equal(dailyStudyPlan(r.state,NOW).streakDays,1);
+ assert.equal(dailyStudyPlan(r.state,NOW).totalReviewSessions,0);
+ assert.deepEqual(r.state.mastery,{});
+ const again=transition(r.state,{action:'complete_lesson',lessonId:'mercado'},NOW);
+ assert.equal(again.state.studyDays.length,1);
+});
+test('B133 repeated reviews remain idempotent while total review count survives truncated diary',()=>{
+ let s=state();
+ for(let i=0;i<185;i++){const when=NOW+(i+1)*86400000;s=transition(s,{action:'review_lesson',lessonId:'mercado'},when).state;}
+ assert.equal(s.reviewDiary.length,180);
+ assert.equal(s.reviewTotal,185);
+ assert.equal(dailyStudyPlan(s,NOW+186*86400000).totalReviewSessions,185);
+ const copy=transition(s,{action:'review_lesson',lessonId:'mercado'},NOW+185*86400000);
+ assert.equal(copy.state.reviewTotal,185);
+});
+test('B133 two initial study days count towards a streak even without repeated reviews',()=>{
+ let s=state();s.completedLessons=[];
+ s=transition(s,{action:'complete_lesson',lessonId:'mercado'},NOW).state;
+ s=transition(s,{action:'complete_lesson',lessonId:'day-swing'},NOW+86400000).state;
+ const plan=dailyStudyPlan(s,NOW+86400000);
+ assert.equal(plan.streakDays,2);assert.equal(plan.studiedToday,0);
+});
+test('B133 failed prior assessment prioritizes remediation while keeping previous approved lessons',()=>{
+ const s=state();s.mastery={fundamentos:{passed:true,lastPassed:false,score:35,reviewAt:new Date(NOW).toISOString()}};
+ const plan=dailyStudyPlan(s,NOW);assert.equal(plan.suggestedLesson.id,'mercado');
+ assert.equal(plan.suggestedLesson.reason,'Reforçar avaliação anterior');
+ assert.ok(plan.reinforcement.some(t=>t.id==='fundamentos'));
+});

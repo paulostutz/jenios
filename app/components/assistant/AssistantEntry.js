@@ -59,6 +59,7 @@ export default function AssistantEntry(){
    <nav className={s.shortcuts} aria-label="Acessos do assistente">
     <a href="/platform/aprender">🎓 Universidade JENIOS</a>
     <a href="/platform/assistente">↗ Ver atendimento completo</a>
+    <a href="/genios-pro">✦ Gênio/Gênia Pro</a>
    </nav>
    <div className={s.body}>
     {access.source==='platform'?<section className={s.connect}>

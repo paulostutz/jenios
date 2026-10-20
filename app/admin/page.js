@@ -11,6 +11,7 @@ const SECTIONS=[
  ['financeiro','▤ Financeiro'],['platform','▥ Platform'],
  ['acessos','🔐 Acessos'],['sistemas','⚙ Sistemas']
 ];
+const MASTER_OPERATIONS={href:'/admin/plataforma/permissoes'};
 const LINKS={
  geral:[
   ['JENIOS Social','Publicações, perfis, denúncias e comunidade','/social','◉'],
@@ -29,7 +30,7 @@ const LINKS={
   ['BankScore e Tokens','Consultas administrativas completas','/admin/consultas','▧']
  ],
  acessos:[
-  ['Permissões operacionais','Concessões permitidas e auditadas','/admin/plataforma/permissoes','🔐']
+  ['Permissões operacionais','Concessões permitidas e auditadas',MASTER_OPERATIONS.href,'🔐']
  ],
  sistemas:[
   ['Dashboard','Visão geral da negociação educacional','/dashboard','▧'],

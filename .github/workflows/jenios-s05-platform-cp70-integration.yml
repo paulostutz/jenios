@@ -64,7 +64,8 @@ jobs:
           assert.match(readFileSync('app/admin/page.js','utf8'),/AdminAccess permission/);
           assert.match(readFileSync('lib/admin-access.mjs','utf8'),/if\(!isMasterAdmin\(user\)\)/,'Master backend gate required');
           assert.match(readFileSync('app/components/TrendsHub.js','utf8'),/item\.id !== 'tokens'/,'Social Hub must omit search trends');
-          assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/AssistantEntry/,'Preserve recovered assistant access');
+          assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/,'Preserve independent Platform guard');
+          assert.match(readFileSync('app/dashboard-logado/page.js','utf8'),/href="\/platform\/assistente"/,'Restore Genio/Genia via on-demand links');
           assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/OPENAI_API_KEY:''/,'No-cost learning mode required');
           console.log('CP70_INTEGRATION_S05_PRESERVED='+paths.length);
           NODE

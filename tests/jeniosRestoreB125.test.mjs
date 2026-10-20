@@ -33,7 +33,7 @@ test('B125 external AI is explicitly disabled in restored API handlers even if a
  assert.match(assistant,/executionEnabled:false/);
 });
 test('B125 assistant shortcut is discoverable on Dashboard, never mounted in the Social feed',()=>{
- assert.match(read('app/dashboard-logado/layout.js'),/AssistantEntry/);
+ assert.match(read('app/dashboard-logado/layout.js'),/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/);
  const page=read('app/dashboard-logado/page.js');
  assert.match(page,/href="\/platform\/assistente"/);
  assert.match(page,/href="\/platform\/aprender"/);

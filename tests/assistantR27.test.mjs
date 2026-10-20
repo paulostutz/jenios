@@ -37,7 +37,9 @@ test('assistant is only mounted on allowed Platform paths, never Social',()=>{
  for(const p of ['/dashboard','/dashboard-logado','/mesa-operacoes','/platform/aprender','/platform/assistente'])assert(assistantPath(p));
  for(const p of ['/social','/social/consulta-detalhada','/social/perfil/a','/lp','/admin','/platformevil','https://evil.test/platform'])assert(!assistantPath(p));
  const social=readFileSync('app/social/page.js','utf8'),root=readFileSync('app/layout.js','utf8');assert(!social.includes('AssistantEntry'));assert(!root.includes('AssistantEntry'));
- assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/<PlatformAuthGuard>\{children\}<AssistantEntry\/>/);
+ const layout=readFileSync('app/dashboard-logado/layout.js','utf8');
+ assert.match(layout,/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/);
+ assert.match(readFileSync('app/dashboard-logado/page.js','utf8'),/href="\/platform\/assistente"/);
 });
 test('public assistant capabilities do not expose quota, keys, order capability or stored transcript',()=>{
  const p=projectAssistant({revision:1,state:INITIAL_ASSISTANT_STATE()},{OPENAI_API_KEY:'never-expose',JENIOS_ASSISTANT_MODEL:'m'});

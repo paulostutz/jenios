@@ -1,0 +1,42 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import {PERSONAS,assistantPath} from '../lib/assistant/contracts.mjs';
+import {LEARNING_PRODUCTS} from '../lib/learning/access.mjs';
+const read=p=>readFileSync(p,'utf8');
+test('B125 original male/female persona names, images and persistent contract restored',()=>{
+ assert.deepEqual(PERAS_NAMES(),['Gênio','Gênia']);
+ assert.equal(existsSync('public/assistentes/genio.webp'),true);
+ assert.equal(existsSync('public/assistentes/genia.webp'),true);
+ assert.match(read('app/components/assistant/AssistantRoom.js'),/PERSONAS/);
+ assert.match(read('app/components/assistant/AssistantRoom.js'),/Universidade JENIOS/);
+});
+function PERAS_NAMES(){return PERSONAS.map(x=>x.name);}
+test('B125 University keeps subscription security and its original five learning tracks',()=>{
+ assert.equal(LEARNING_PRODUCTS.length,3);
+ const s=read('lib/learning/access.mjs');
+ assert.match(s,/jenios_pay_subscriptions/);assert.match(s,/current_period_end/);
+ assert.match(s,/SUBSCRIPTION_REQUIRED/);
+ assert.match(read('app/components/learning/LearningRoom.js'),/Universidade JENIOS/);
+ assert.equal(existsSync('app/platform/aprender/page.js'),true);
+});
+test('B125 master preview is server authorized and never grants paid subscription',()=>{
+ const s=read('lib/learning/access.mjs');
+ assert.match(s,/user.app_metadata\?\.role==='admin'/);
+ assert.doesNotMatch(s,/user_metadata\?\.role/);
+});
+test('B125 external AI is explicitly disabled in restored API handlers even if a key exists',()=>{
+ for(const route of ['app/api/platform/assistant/route.js','app/api/platform/learning/route.js']){
+  const s=read(route);assert.match(s,/OPENAI_API_KEY:''/);
+ }
+ const assistant=read('lib/assistant/contracts.mjs');
+ assert.match(assistant,/executionEnabled:false/);
+});
+test('B125 assistant shortcut is discoverable on Dashboard, never mounted in the Social feed',()=>{
+ assert.match(read('app/dashboard-logado/layout.js'),/AssistantEntry/);
+ const page=read('app/dashboard-logado/page.js');
+ assert.match(page,/href="\/platform\/assistente"/);
+ assert.match(page,/href="\/platform\/aprender"/);
+ assert.doesNotMatch(read('app/social/page.js'),/AssistantEntry/);
+ assert.equal(assistantPath('/social'),false);
+});

@@ -37,7 +37,7 @@ const LINKS={
   ['Hub','Cotações e observações atuais','/tendencias','↗']
  ]
 };
-function Item({data}){return <Link href={data[2]} className={styles.card}>
+function Item({data,onSection}){return <Link href={data[2]} onClick={data[2]==='/admin?area=platform'?e=>{e.preventDefault();onSection('platform');}:undefined} className={styles.card}>
  <span className={styles.icon} aria-hidden="true">{data[3]}</span>
  <strong>{data[0]}</strong><p>{data[1]}</p><small>Abrir módulo →</small>
  </Link>;}
@@ -56,7 +56,9 @@ function PlatformPanel(){
     {[[state.diagnostics,'Diagnósticos'],[state.riskEvents,'Eventos de risco'],[state.adminPermissions,'Autorizações Platform']].map(([value,name])=><div key={name}><strong>{value}</strong><small>{name}</small></div>)}
   </div>:<p role="status">{state.status==='loading'?'Verificando dados…':'Indicadores indisponíveis. Não exibimos totais fictícios.'}</p>}
   <p>O painel avançado da Platform mantém sua própria autenticação até que o vínculo administrativo entre os dois projetos seja homologado. Não há concessão automática de permissões.</p>
-  <Link className={styles.action} href="/platform/admin">Consultar painel da Platform ↗</Link>
+  <div className={styles.actions}><Link className={styles.action} href="/platform/admin">Painel da Platform ↗</Link>
+   <Link className={styles.action} href="/platform/assistente">Gênio / Gênia ↗</Link>
+   <Link className={styles.action} href="/platform/aprender">Universidade JENIOS ↗</Link></div>
  </section>;
 }
 function Home(){
@@ -79,7 +81,7 @@ function Home(){
    <section className={styles.hero}><small>ADMINISTRAÇÃO PRIVADA</small><h2>Seu ecossistema em um só escritório.</h2><p>Social, Platform, pagamentos, relatórios e segurança, preservando os bancos e as autorizações independentes.</p></section>
    {section==='platform'?<PlatformPanel/>:<section aria-label={SECTIONS.find(([id])=>id===section)?.[1]}>
      <h2 className={styles.heading}>{SECTIONS.find(([id])=>id===section)?.[1]}</h2>
-     <div className={styles.grid}>{(LINKS[section]||[]).map(card=><Item data={card} key={card[0]}/>)}</div>
+     <div className={styles.grid}>{(LINKS[section]||[]).map(card=><Item data={card} key={card[0]} onSection={setSection}/>)}</div>
    </section>}
    <p className={styles.notice}>Esta interface não cria ordens reais nem ativa pagamentos. Todos os módulos executam seus próprios controles no servidor; a gestão avançada da Platform depende da autorização dedicada.</p>
    <BrandFooter tone="light" scope="Master"/>

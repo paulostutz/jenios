@@ -81,6 +81,8 @@ export default function DashboardLogado() {
           <Link href="/dashboard" className={styles.navButton}>⚡ Área de negociação</Link>
           <Link href="/mesa-operacoes" className={styles.navButton}>▥ Mesa e gráficos</Link>
           <Link href="/tendencias" className={styles.navButton}>↗ Hub de tendências</Link>
+          <Link href="/platform/assistente" className={styles.navButton}>✦ Gênio ou Gênia · Assistente</Link>
+          <Link href="/platform/aprender" className={styles.navButton}>▤ Universidade JENIOS</Link>
           <Link href="/social" className={styles.navButton}>◉ JENIOS Social (externo)</Link>
           {!socialSession && <PlatformAdminShortcut className={styles.navButton}/>}
         </nav>
@@ -132,6 +134,11 @@ export default function DashboardLogado() {
               <p>Pagamentos, planos e saldo não são preenchidos com valores fictícios nesta visão.</p>
               <button type="button" className={styles.button} onClick={()=>setTab('pagamentos')}>Ver pagamentos →</button></article>
           </div>
+          <section className={styles.panel}>
+            <h2>Aprendizado e atendimento JENIOS</h2>
+            <p>Escolha o Gênio ou a Gênia no assistente; a Universidade oferece aulas, exercícios e trilhas adaptadas ao seu ponto de partida. Aulas completas exigem assinatura vigente verificada no servidor.</p>
+            <div className={styles.heroActions}><Link className={styles.heroLink} href="/platform/assistente">Conhecer Gênio e Gênia →</Link><Link className={styles.heroLink} href="/platform/aprender">Universidade JENIOS →</Link></div>
+          </section>
           <section className={styles.panel}><h2>Próximos passos</h2>
             <ol className={styles.tips}>
               <li>Entre na Dashboard e escolha um ativo para estudar.</li>

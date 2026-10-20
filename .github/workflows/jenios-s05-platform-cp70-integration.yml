@@ -109,7 +109,20 @@ jobs:
           cat /tmp/jenios-b148-local.log
           exit 1
       - name: Integration Chrome smoke across Simulator, Mesa and Admin
-        run: node scripts/platform/cp69-browser-smoke.mjs
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module - <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import assert from 'node:assert/strict';
+          const source=readFileSync('scripts/platform/cp69-browser-smoke.mjs','utf8');
+          const anchor="  await waitFor(`!!document.querySelector('[aria-label=\"Atendimento gratuito da JENIOS\"] textarea')`,9000);";
+          assert.equal(source.split(anchor).length,2,'Expected one first-use desktop assistant entry');
+          const choice="  await waitFor(`[...document.querySelectorAll('button')].some(b=>b.textContent==='Conversar com Gênia')`,9000);\n  pass(await evalExpr(`(()=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent==='Conversar com Gênia');if(!b)return false;b.click();return true;})()`),'B148 visitor explicitly chooses Genia before the inherited free conversation checks');\n";
+          // Add the user-required first-use action; retain every inherited assertion.
+          writeFileSync('/tmp/jenios-cp69-with-b148-choice.mjs',source.replace(anchor,choice+anchor));
+          NODE
+          node /tmp/jenios-cp69-with-b148-choice.mjs
       - name: Pro guest, mobile and private API browser smoke
         run: node scripts/platform/b145-pro-ui-smoke.mjs
       - name: Independent University price, guest gates and mobile browser smoke

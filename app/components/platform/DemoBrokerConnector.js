@@ -3,8 +3,19 @@
 import {useCallback,useEffect,useState} from 'react';
 import Link from 'next/link';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
+import {customerBrokerActivation} from '../../../lib/platform/connections/b190-customer-activation.mjs';
 import s from './demo-broker-connector.module.css';
 const environments={binance:'testnet',alpaca:'paper'};
+const activationSteps={
+ CONNECT_OWN_TEST_ACCOUNT_FOR_READ_ONLY:'Vincular uma conta de teste em sua própria corretora.',
+ REFRESH_AUTHENTICATED_READ_IN_PRIVATE_QA:'Confirmar novamente uma consulta autenticada.',
+ VERIFY_EXTERNAL_ACCOUNT_IDENTITY:'Confirmar a identidade da conta diretamente no fornecedor.',
+ VERIFY_BROKER_PERMISSIONS_INDEPENDENTLY:'Auditar as permissões da chave com a corretora.',
+ CERTIFY_ISOLATED_PRIVATE_WORKER:'Homologar o serviço privado de integração.',
+ AUTHORIZE_AND_AUDIT_EXTERNAL_PAPER_PILOT:'Autorizar separadamente o piloto Paper externo.',
+ VERIFY_PROTECTIVE_LEGS_AND_RECONCILIATION:'Conferir stop, alvo, execução e reconciliação pelo fornecedor.',
+ OBTAIN_INDEPENDENT_PROSPECTIVE_EVIDENCE:'Avaliar resultados prospectivos e riscos, inclusive perdas.'
+};
 const errorLabels={PLATFORM_AUTH_REQUIRED:'Entre novamente na JENIOS Platform.',ORIGIN_DENIED:'Origem da solicitação não autorizada.',
  DEMO_CONNECTORS_DISABLED:'Integração demonstrativa desativada neste ambiente.',INVALID_CREDENTIAL_FORMAT:'Verifique o formato das credenciais.',
  EXISTING_DEMO_CONNECTION:'Esta corretora já possui um vínculo demonstrativo. Desconecte antes de substituir a chave.',
@@ -62,6 +73,7 @@ export default function DemoBrokerConnector({provider}){
   finally{setBusy('');}
  }
  const current=connections.find(c=>c.provider===provider&&c.environment===environments[provider]&&c.status==='active');
+ const activation=supported?customerBrokerActivation({provider,connection:current}):null;
  return <section className={s.panel} aria-labelledby="demo-broker-heading" data-demo-broker="private-preview-only">
   <div className={s.intro}><span className={s.tag}>PILOTO PRIVADO • TESTNET / PAPER</span><h2 id="demo-broker-heading">Conectar sua própria conta de teste</h2>
    <p>A chave fica cifrada no servidor e é usada apenas para consultar saldos, posições e ordens abertas da conta demonstrativa. Você mantém os recursos na corretora. Não há operações, saques, custódia ou execução real.</p></div>
@@ -73,6 +85,11 @@ export default function DemoBrokerConnector({provider}){
       <div><dt>{provider==='binance'?'Saldos Spot':'Posições'}</dt><dd>{current.positionCount}</dd></div><div><dt>Ordens abertas</dt><dd>{current.openOrderCount}</dd></div>
       <div><dt>Permissões de negociação</dt><dd>Não verificadas / não habilitadas na JENIOS</dd></div></dl>
      <p className={s.notice}>A API da JENIOS neste piloto faz apenas consultas GET. Mesmo que a chave no fornecedor tenha outras permissões, a JENIOS não enviará ordens.</p>
+     <details className={s.note} data-b190-activation-status><summary>Ver etapas para habilitação futura da sua corretora</summary>
+      <p><strong>Situação:</strong> {activation?.authenticatedAccount?'Conta de teste consultada — leitura apenas':'Aguardando nova verificação da conta de teste'}. Nenhuma ordem está habilitada.</p>
+      <ol>{activation?.actions.map(step=><li key={step}>{activationSteps[step]||step}</li>)}</ol>
+      <p>Essas etapas exigem aprovações independentes. A conexão demonstrativa não ativa dinheiro real.</p>
+     </details>
      <div className={s.actions}><button type="button" disabled={!!busy} onClick={()=>act(current,'sync')}>{busy?'Processando…':'Atualizar leitura'}</button>
       <button type="button" className={s.secondary} disabled={!!busy} onClick={()=>act(current,'revoke')}>Desconectar API de teste</button></div>
     </div>:<form onSubmit={connect} autoComplete="off" className={s.form}>

@@ -43,8 +43,8 @@ test('B128 never confuses Social login with a Platform entitlement or activates 
  const dock=read('app/components/assistant/AssistantEntry.js');
  assert.match(dock,/access\.source==='platform'/);
  assert.match(dock,/Conecte sua conta da JENIOS Social/);
- assert.match(read('app/api/platform/assistant/route.js'),/OPENAI_API_KEY:''/);
- assert.match(read('app/api/platform/learning/route.js'),/OPENAI_API_KEY:''/);
+ assert.match(read('app/api/platform/assistant/route.js'),/configuredGenerativeEnv\(process\.env\)/);
+ assert.match(read('app/api/platform/learning/route.js'),/configuredGenerativeEnv\(process\.env\)/);
 });
 
 test('B128 restored support and teaching do not label the shipped experience beta or advertise disabled AI',()=>{

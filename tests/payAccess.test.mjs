@@ -41,12 +41,14 @@ test('receipt storage is session/account scoped and never grants authority', () 
   assert.equal(readReceipt(storage, 'other', id), null);
   assert.equal(saveReceipt({ getItem() { throw Error(); } }, 'owner', id, {}), false);
 });
-for (const [index, selected] of [
-  [1, { network: 'ethereum', type: 'wallet', identifier: '0x1234567890123456789012345678901234567890' }],
-  [2, { postId: id, dailyBudget: '10', days: 3, objective: 'profile', country: 'Brasil', region: '', city: '' }],
-  [6, { specialistId: id, offerId: '22222222-2222-4222-8222-222222222222' }],
-]) test('canonical purchase binding for ' + DEFAULT_PRODUCTS[index].code, async () => {
-  const item = { ...DEFAULT_PRODUCTS[index], id: 'product', price_cents: index === 6 ? 15000 : DEFAULT_PRODUCTS[index].price_cents };
+for (const [code, selected] of [
+  ['social-crypto-validator', { network: 'ethereum', type: 'wallet', identifier: '0x1234567890123456789012345678901234567890' }],
+  ['social-boost', { postId: id, dailyBudget: '10', days: 3, objective: 'profile', country: 'Brasil', region: '', city: '' }],
+  ['social-specialist-offer', { specialistId: id, offerId: '22222222-2222-4222-8222-222222222222' }],
+]) test('canonical purchase binding for ' + code, async () => {
+  const base=DEFAULT_PRODUCTS.find(item=>item.code===code);
+  assert.ok(base,'The original paid product must remain in the catalog');
+  const item = { ...base, id: 'product', price_cents: code === 'social-specialist-offer' ? 15000 : base.price_cents };
   const quoted = purchaseQuote({ target: selected }, item, 'social');
   const args = fixture({ amount_cents: quoted.amount_cents, external_reference: JSON.stringify({ fingerprint: purchaseFingerprint(quoted), productCode: item.code, scope: 'social' }) }, item);
   assert.equal((await requirePaidPurchase({ ...args, productCode: item.code, target: selected })).authorized, true);

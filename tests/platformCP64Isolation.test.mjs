@@ -73,10 +73,12 @@ test('CP64: permissão financeira não permite atribuir permissões',async()=>{
  const u={id:'u1',app_metadata:{role:'finance_admin'}};
  await assert.rejects(()=>requireAdminPermission(tokenReq(),mockDb(u),'permissions.manage'),{status:403});
 });
-test('CP64: administrador legítimo pode consultar permissão restrita',async()=>{
- const u={id:'u1',app_metadata:{role:'admin'}};
+test('CP64-B127: somente Master legítimo pode consultar o escritório, sem privilégio delegado',async()=>{
+ const u={id:'u1',app_metadata:{role:'master'}};
  const authenticated=await requireAdminPermission(tokenReq(),mockDb(u),'permissions.manage');
  assert.equal(authenticated.id,'u1');
+ const delegated={id:'u1',app_metadata:{role:'admin'}};
+ await assert.rejects(()=>requireAdminPermission(tokenReq(),mockDb(delegated),'permissions.manage'),{status:403});
 });
 test('CP64: cadastro administrativo separado só aceita permissões previstas',()=>{
  const p=read('app/admin/plataforma/permissoes/page.js');

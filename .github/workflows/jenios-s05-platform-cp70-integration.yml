@@ -4,6 +4,7 @@ on:
     branches:
       - release/jenios-s05-platform-cp70-integracao-20261019
       - fix/jenios-b122-b125-master-hub-media-assistant-20261019
+      - fix/jenios-b127-master-only-no-search-certified-20261019
   workflow_dispatch:
 permissions:
   contents: read

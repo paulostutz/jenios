@@ -1,0 +1,78 @@
+name: JENIOS B169 protected demo broker API
+on:
+  push:
+    branches: [fix/jenios-b165-b169-demo-broker-api-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-broker-demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI: 'false'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Compare protected baseline and bounded read-only API scope
+        run: node scripts/platform/connections/b169-integrity.mjs
+      - name: Run focused demo gateway and security tests
+        run: node --test tests/platformDemo*.test.mjs scripts/platform/connections/origin.test.mjs
+      - name: Install existing locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, Social regression and Next.js build
+        run: |
+          mkdir -p .jenios-b169-qa/ci
+          set +e
+          npm run build > .jenios-b169-qa/ci/build-and-tests.log 2>&1
+          code=$?
+          tail -n 80 .jenios-b169-qa/ci/build-and-tests.log
+          if [ "$code" -ne 0 ]; then grep -n -B 4 -A 40 'not ok\|Error:\|Failed to compile' .jenios-b169-qa/ci/build-and-tests.log; fi
+          exit "$code"
+      - name: Start isolated local server
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b169-server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/jenios-b169-server.log
+          exit 1
+      - name: Preserve B160 guides, free agents and mobile
+        run: set -o pipefail; node scripts/platform/connections/browser-smoke.mjs 2>&1 | tee .jenios-b169-qa/ci/browser-guides.log
+      - name: Preserve B148 Direct, boost and selected character
+        run: set -o pipefail; node scripts/platform/b148-browser-smoke.mjs 2>&1 | tee .jenios-b169-qa/ci/browser-b148.log
+      - name: Preserve Pro and University
+        run: |
+          set -euo pipefail
+          node scripts/platform/b145-pro-ui-smoke.mjs | tee .jenios-b169-qa/ci/browser-pro.log
+          node scripts/platform/b147-university-ui-smoke.mjs | tee .jenios-b169-qa/ci/browser-university.log
+      - name: Archive public code and validation checksums
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b169-qa/ci/JENIOS_B169_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-b169-qa/ci/COMMIT.txt
+          sha256sum .jenios-b169-qa/ci/JENIOS_B169_PUBLIC_SOURCE.zip > .jenios-b169-qa/ci/SHA256SUMS.txt
+          git diff --stat 659846c457241e03f86650667664fdf65aab540e HEAD > .jenios-b169-qa/ci/CHANGES.txt
+      - name: Preserve redacted logs and source
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B169_PRIVATE_DEMO_API_CI
+          path: .jenios-b169-qa/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

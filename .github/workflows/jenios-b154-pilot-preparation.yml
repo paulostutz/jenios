@@ -1,0 +1,124 @@
+name: JENIOS B154 non-custodial pilot preparation
+on:
+  push:
+    branches: [fix/jenios-b149-b154-pilot-preparation-20261020]
+    paths:
+      - lib/platform/pilot-prep/**
+      - scripts/platform/pilot-prep/**
+      - tests/platformPilotPrep.test.mjs
+      - docs/platform/B149-B154-*.md
+      - .github/workflows/jenios-b154-pilot-preparation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integrated-preparation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Prove additive-only changes and byte-for-byte B148 preservation
+        run: node scripts/platform/pilot-prep/check-preservation.mjs
+      - name: Install unchanged locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full inherited plus new pilot unit and multiprocess regression
+        shell: bash
+        run: |
+          mkdir -p .jenios-pilot-qa/ci
+          set +e
+          npm test > .jenios-pilot-qa/ci/full-tests.tap 2>&1
+          status=$?
+          tail -n 12 .jenios-pilot-qa/ci/full-tests.tap
+          if [ "$status" -ne 0 ]; then grep -n -B 5 -A 50 'not ok' .jenios-pilot-qa/ci/full-tests.tap; fi
+          exit "$status"
+      - name: Inherited Social and protected financial release regression
+        shell: bash
+        run: |
+          set +e
+          npm run test:release-s05 > .jenios-pilot-qa/ci/social-release.tap 2>&1
+          status=$?
+          tail -n 12 .jenios-pilot-qa/ci/social-release.tap
+          if [ "$status" -ne 0 ]; then grep -n -B 5 -A 50 'not ok' .jenios-pilot-qa/ci/social-release.tap; fi
+          exit "$status"
+      - name: Build unchanged application with additive offline modules
+        shell: bash
+        run: |
+          set +e
+          npm run build > .jenios-pilot-qa/ci/build.log 2>&1
+          status=$?
+          tail -n 60 .jenios-pilot-qa/ci/build.log
+          exit "$status"
+      - name: Preserve approved exact source and checksums
+        if: success()
+        shell: bash
+        run: |
+          git archive --format=zip --output=.jenios-pilot-qa/ci/JENIOS_B154_PUBLIC_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-pilot-qa/ci/COMMIT.txt
+          git diff --stat 4559d2ace3ac0cd4c95db55c67b7a7b671dece31 HEAD > .jenios-pilot-qa/ci/CHANGES.txt
+          sha256sum .jenios-pilot-qa/ci/JENIOS_B154_PUBLIC_SOURCE.zip > .jenios-pilot-qa/ci/SHA256SUMS.txt
+          cp docs/platform/B149-B154-*.md .jenios-pilot-qa/ci/
+      - name: Archive CI proof without secrets or original private source
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B154_PREPARATION_CI
+          path: .jenios-pilot-qa/ci/
+          retention-days: 30
+          if-no-files-found: error
+          include-hidden-files: true
+  inherited-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: disposable_ci_password
+          POSTGRES_DB: jenios_pro_b143_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d jenios_pro_b143_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGDATABASE: jenios_pro_b143_test
+      PGUSER: postgres
+      PGPASSWORD: disposable_ci_password
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify inherited University and disabled Pro ledgers on disposable PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b143-wallet-fixture.sql
+          psql -X -v ON_ERROR_STOP=1 -f db/schema/pro-wallet-b143.sql
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b146-catalog-sql-test.sql
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b146-pay-read-sql-test.sql
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b147-wallet-privileges-sql-test.sql
+          psql -X -1 -v ON_ERROR_STOP=1 -f db/schema/university-monthly-b147.sql
+          psql -X -1 -v ON_ERROR_STOP=1 -f db/schema/university-monthly-b147.sql
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b147-university-sql-test.sql
+          psql -X -v ON_ERROR_STOP=1 -f scripts/platform/b143-wallet-sql-test.sql
+          node scripts/platform/b143-wallet-concurrency.mjs
+          node scripts/platform/b147-university-concurrency.mjs

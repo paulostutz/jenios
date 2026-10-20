@@ -44,10 +44,11 @@ const fixture=`(()=>{
   if(url.pathname==='/api/jenios-pay/checkout'){window.__b148Checkout.push(JSON.parse(init.body));return response({error:'Cobrança fictícia interceptada; nenhum pedido real foi criado.'},503);}
   if(url.pathname==='/api/assistant/free'){const body=JSON.parse(init.body);window.__b148Free.push(body);return response({ok:true,persona:body.persona,name:body.persona==='genia'?'Gênia':'Gênio',paidAi:false,explanation:'Resposta gratuita fictícia de navegação.',articles:[]});}
   if(url.pathname.startsWith('/api/social/'))return response({ok:true,conversations:[],messages:[],items:[],posts:[],notifications:[]});
+  if(url.pathname.startsWith('/api/tendencias')||url.pathname.startsWith('/api/bankscore/'))return response({error:'External public data not used by this isolated fixture.'},503);
   if(url.origin!==location.origin)return response({},503);
   return original(input,init);
  };
- window.__b148Set=(label,value)=>{const l=[...document.querySelectorAll('label')].find(x=>x.textContent.trim().startsWith(label));if(!l)throw Error('Missing label '+label);const el=l.querySelector('input,select,textarea');const proto=el.tagName==='SELECT'?HTMLSelectElement.prototype:el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(proto,'value').set.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};
+ window.__b148Set=(label,value)=>{const l=[...document.querySelectorAll('label')].find(x=>x.textContent.trim().startsWith(label));if(!l)throw Error('Missing label '+label);const el=l.control||l.querySelector('input,select,textarea');if(!el)throw Error('Missing associated control '+label);const proto=el.tagName==='SELECT'?HTMLSelectElement.prototype:el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(proto,'value').set.call(el,value);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};
 })();`;
 try{
  let target;for(let n=0;n<60;n++){if(spawnError)throw spawnError;try{const tabs=await(await fetch('http://127.0.0.1:'+port+'/json')).json();target=tabs.find(t=>t.type==='page')?.webSocketDebuggerUrl;if(target)break;}catch{}await sleep(150);}assert.ok(target);
@@ -106,6 +107,8 @@ try{
  await evaluate(`window.__b148Set('Sua pergunta','Como funciona a JENIOS?')`);
  await evaluate(`document.querySelector('#jenios-free-question').closest('form').requestSubmit()`);await waitFor(`window.__b148Free.length===1`);
  pass(await evaluate(`window.__b148Free[0].persona==='genia'&&window.__b148Checkout.length===0`),'visitor can use chosen free assistant without paid generation or checkout');
+ await waitFor(`document.body.innerText.includes('Resposta gratuita fictícia de navegação.')`);
+ pass(await evaluate(`document.querySelector('label[for="jenios-free-question"]').control===document.querySelector('#jenios-free-question')`),'explicit accessible label resolves to the question field and the free reply is rendered');
  console.log('B148_BROWSER_SMOKE_PASS='+checks+'; synthetic localhost fixtures only');
 }catch(error){
  console.error('B148_LOCAL_FIXTURE_DIAGNOSTIC',JSON.stringify(await evaluate(`({path:location.pathname,body:document.body?.innerText.slice(0,5000),storageKeys:Object.keys(localStorage),requests:window.__b148Requests?.slice(-30)})`).catch(()=>({}))),JSON.stringify(browserErrors));

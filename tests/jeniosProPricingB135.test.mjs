@@ -46,7 +46,9 @@ test('B135 free functions remain separate from Pro and no client can request ord
 test('B135 market opportunities require verifiable fresh candles (client claims are not an authorization)',()=>{
  const now=Date.parse('2026-10-20T12:00:00Z');
  assert.throws(()=>validateProTask({task:'opportunities',prompt:'Mostre cenários'}, {now}),{status:422});
- assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura',marketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-18T12:00:00Z'}},{now}),{status:422});
+ assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura',marketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-20T12:00:00Z'}},{now}),{status:400});
+ assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura'},{now,verifiedMarketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-18T12:00:00Z'}}),{status:422});
+ assert.equal(validateProTask({task:'market_moment',prompt:'Quero uma leitura'},{now,verifiedMarketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-20T11:59:00Z'}}).requiresCurrentData,true);
 });
 test('B135 photos are bounded to one private owner-held JPG, PNG or WebP, not an arbitrary URL',()=>{
  const image={mime:'image/png',byteLength:400000,width:1080,height:720,storageId:'11111111-1111-4111-8111-111111111111'};

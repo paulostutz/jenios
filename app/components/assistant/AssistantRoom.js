@@ -21,13 +21,13 @@ function ResultCard({r,onChooseBank}){
   <div className={s.actions}>{(r.links||r.articles||[]).map((l,i)=><a className={s.link} key={i} href={l.href}>{l.label||l.title}</a>)}</div>
  </article>;
 }
-export default function AssistantRoom(){
+export default function AssistantRoom({embedded=false,onPersonaChange=null}){
  const [account,setAccount]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(true),[refresh,setRefresh]=useState(0);
  const [message,setMessage]=useState(''),[chat,setChat]=useState([]),[tab,setTab]=useState('help');
  const [bank,setBank]=useState({codigo:'',periodo:''}),[bankName,setBankName]=useState(''),[query,setQuery]=useState('');
  const [cryptoTarget,setCryptoTarget]=useState({network:'ethereum',type:'token',identifier:''});
  const epoch=useRef(0),owner=useRef(null),inflight=useRef(false),controller=useRef(null),accountRef=useRef(null);
- function acceptAccount(a){accountRef.current=a;setAccount(a);}
+ function acceptAccount(a){accountRef.current=a;setAccount(a);if(a?.persona&&onPersonaChange)onPersonaChange(a.persona);}
  useEffect(()=>{
   let live=true;const ticket=++epoch.current;controller.current?.abort();controller.current=new AbortController();
   acceptAccount(null);setError('');setBusy(true);setChat([]);setMessage('');owner.current=null;inflight.current=false;
@@ -72,15 +72,16 @@ export default function AssistantRoom(){
  }
  const persona=PERSONAS.find(x=>x.id===account?.persona)||PERSONAS[0];
  const run=(tool,input={},format='json')=>send({action:'tool',tool,input,format,confirmed:true});
- return <main className={s.shell}><div className={s.wrap}>
-  <header className={s.header}><div><div className={s.brand}>JENIOS · ATENDIMENTO INTELIGENTE</div><h1>Clareza para o seu próximo passo.</h1><p>Tire dúvidas, consulte as informações disponíveis e entenda os recursos da Platform.</p></div><a className={s.back} href="/dashboard-logado">← Voltar à gestão</a></header>
+ const Shell=embedded?'div':'main';
+ return <Shell className={s.shell+(embedded?' '+s.embedded:'')}><div className={s.wrap}>
+  {!embedded&&<header className={s.header}><div><div className={s.brand}>JENIOS · ATENDIMENTO INTELIGENTE</div><h1>Clareza para o seu próximo passo.</h1><p>Tire dúvidas, consulte as informações disponíveis e entenda os recursos da Platform.</p></div><a className={s.back} href="/dashboard-logado">← Voltar à gestão</a></header>}
   {!account?<section className={s.card}><h2>Gênio e Gênia</h2><p role="status">{busy?'Verificando sua conta…':error||'Atualize para continuar.'}</p><div className={s.actions}><a href="/login" className={s.primary}>Entrar</a><button className={s.secondary} disabled={busy} onClick={()=>setRefresh(x=>x+1)}>Tentar novamente</button></div></section>:<>
-   <div className={s.banner}>Atendimento informativo · Execução real e alertas WhatsApp não estão ativos neste módulo.</div>
+   {!embedded&&<div className={s.banner}>Atendimento informativo. Consulte módulos e aulas diretamente. Este atendimento não envia ordens reais nem avisos por WhatsApp.</div>}
    <div className={s.layout}>
     <aside className={s.sidebar}><h2>Quem vai te atender?</h2><div className={s.personas}>{PERSONAS.map(p=><button disabled={busy} type="button" key={p.id} className={s.persona} aria-pressed={account.persona===p.id} onClick={()=>send({action:'preferences',persona:p.id,aiConsent:account.aiConsent})}><img src={p.image} alt={p.name} width="76" height="76"/><span>{p.name}</span></button>)}</div><p className={s.small}>Mesmas informações e critérios. A escolha muda o personagem, não a qualidade do atendimento.</p>
      <label className={s.consent}><input type="checkbox" disabled={busy} checked={account.aiConsent} onChange={e=>send({action:'preferences',persona:account.persona,aiConsent:e.target.checked})}/>Autorizar envio das minhas perguntas de suporte à OpenAI, quando configurada.</label><p className={s.small}>{account.aiConfigured?'Provedor configurado; disponível somente com consentimento.':'IA externa ainda não configurada. O modo guiado permanece disponível.'} Os formulários de consulta não enviam seus resultados ao modelo. Não escreva dados sensíveis nas perguntas.</p>
      <nav aria-label="Consultas do atendimento">{[['help','Dúvidas da plataforma'],['trends','Hub de Tendências'],['bankscore','BankScore'],['crypto','Validador Cripto']].map(([id,label])=><button disabled={busy} type="button" className={s.nav} aria-current={tab===id?'page':undefined} key={id} onClick={()=>setTab(id)}>{label}</button>)}</nav>
-     <a className={s.school} href="/platform/alertas">Solicitações de alertas · em preparação →</a><a className={s.school} href="/platform/aprender">Universidade JENIOS · Estudo diário →</a><a className={s.school} href="/dashboard">Laboratório de leitura · beta →</a>
+     <a className={s.school} href="/platform/alertas">Solicitações de alertas · em preparação →</a><a className={s.school} href="/platform/aprender">Universidade JENIOS · Estudo diário →</a><a className={s.school} href="/dashboard">Abrir laboratório de leitura →</a>
     </aside>
     <section className={s.column}>
      <div className={s.card}>
@@ -97,5 +98,5 @@ export default function AssistantRoom(){
     </section>
    </div>
   </>}
- </div></main>;
+ </div></Shell>;
 }

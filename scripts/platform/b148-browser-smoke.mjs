@@ -11,7 +11,7 @@ const base=new URL(process.env.JENIOS_B148_UI_BASE_URL||'http://127.0.0.1:3127')
 assert.ok(['localhost','127.0.0.1','[::1]'].includes(base.hostname)&&base.protocol==='http:','Local fixture only');
 const profile=await mkdtemp(join(tmpdir(),'jenios-b148-')),port=9353;
 const browser=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-first-run','--disable-background-networking','--remote-allow-origins=*','--remote-debugging-port='+port,'--user-data-dir='+profile,'about:blank'],{stdio:'ignore'});
-let socket,seq=0,checks=0,spawnError;const pending=new Map();browser.on('error',e=>spawnError=e);
+let socket,seq=0,checks=0,spawnError;const pending=new Map(),browserErrors=[];browser.on('error',e=>spawnError=e);
 function call(method,params={}){return new Promise((resolve,reject)=>{const id=++seq,timer=setTimeout(()=>{pending.delete(id);reject(Error('CDP timeout '+method));},12000);pending.set(id,{resolve,reject,timer});socket.send(JSON.stringify({id,method,params}));});}
 async function evaluate(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});assert.ok(!r.exceptionDetails,JSON.stringify(r.exceptionDetails));return r.result?.value;}
 async function waitFor(expression){for(let n=0;n<70;n++){if(await evaluate(expression))return;await sleep(150);}throw Error('UI state not reached: '+expression);}
@@ -21,13 +21,14 @@ const fixture=`(()=>{
  const userId=localStorage.getItem('b148-fixture-owner')||'b1480000-0000-4000-8000-000000000001';
  const guest=userId==='visitor';
  const metadata=JSON.parse(localStorage.getItem('b148-fixture-metadata:'+userId)||'{}');
- const user={id:userId,aud:'authenticated',role:'authenticated',email:'b148-fixture@example.invalid',user_metadata:metadata,app_metadata:{provider:'email'},created_at:'2026-10-20T00:00:00Z'};
- const session={access_token:'eyJhbGciOiJIUzI1NiJ9.'+btoa(JSON.stringify({sub:userId,exp:Math.floor(Date.now()/1000)+3600,aud:'authenticated',role:'authenticated'}))+'.'+'x'.repeat(43),refresh_token:'b148-fixture-only',expires_in:3600,expires_at:Math.floor(Date.now()/1000)+3600,token_type:'bearer',user};
+ const user={id:userId,aud:'authenticated',role:'authenticated',email:'b148-fixture@example.invalid',is_anonymous:false,user_metadata:metadata,app_metadata:{provider:'email'},created_at:'2026-10-20T00:00:00Z'};
+ const session={access_token:'eyJhbGciOiJIUzI1NiJ9.'+btoa(JSON.stringify({sub:userId,exp:Math.floor(Date.now()/1000)+3600,iat:Math.floor(Date.now()/1000),aud:'authenticated',role:'authenticated'}))+'.'+'x'.repeat(43),refresh_token:'b148-fixture-only',expires_in:3600,expires_at:Math.floor(Date.now()/1000)+3600,token_type:'bearer',user};
  if(guest)localStorage.removeItem('sb-social-qa-auth-token');else localStorage.setItem('sb-social-qa-auth-token',JSON.stringify(session));
- const original=window.fetch.bind(window);window.__b148Checkout=[];window.__b148Preference=[];window.__b148Free=[];
+ const original=window.fetch.bind(window);window.__b148Checkout=[];window.__b148Preference=[];window.__b148Free=[];window.__b148Requests=[];
  const response=(body,status=200)=>Promise.resolve(new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json'}}));
  window.fetch=(input,init={})=>{
-  const url=new URL(typeof input==='string'?input:input.url,location.origin),method=init.method||input.method||'GET';
+  const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url,location.origin),method=init.method||input.method||'GET';
+  window.__b148Requests.push({host:url.hostname,path:url.pathname,method});
   if(url.hostname==='social-qa.invalid'){
    if(url.pathname==='/auth/v1/user'){
     if(method==='PUT'){const payload=JSON.parse(init.body);Object.assign(user.user_metadata,payload.data);localStorage.setItem('b148-fixture-metadata:'+userId,JSON.stringify(user.user_metadata));window.__b148Preference.push(payload.data);}
@@ -51,7 +52,7 @@ const fixture=`(()=>{
 try{
  let target;for(let n=0;n<60;n++){if(spawnError)throw spawnError;try{const tabs=await(await fetch('http://127.0.0.1:'+port+'/json')).json();target=tabs.find(t=>t.type==='page')?.webSocketDebuggerUrl;if(target)break;}catch{}await sleep(150);}assert.ok(target);
  socket=new WebSocket(target);await new Promise((resolve,reject)=>{socket.onopen=resolve;socket.onerror=reject;});
- socket.onmessage=event=>{const r=JSON.parse(event.data),p=pending.get(r.id);if(!p)return;clearTimeout(p.timer);pending.delete(r.id);r.error?p.reject(Error(r.error.message)):p.resolve(r.result||{});};
+ socket.onmessage=event=>{const r=JSON.parse(event.data);if(r.method==='Runtime.exceptionThrown')browserErrors.push(r.params.exceptionDetails?.exception?.description||r.params.exceptionDetails?.text);const p=pending.get(r.id);if(!p)return;clearTimeout(p.timer);pending.delete(r.id);r.error?p.reject(Error(r.error.message)):p.resolve(r.result||{});};
  await call('Page.enable');await call('Runtime.enable');await call('Network.enable');
  await call('Emulation.setDeviceMetricsOverride',{width:1360,height:1000,deviceScaleFactor:1,mobile:false});
  await call('Page.navigate',{url:new URL('/api/social/promotions/readiness',base).href});
@@ -105,6 +106,11 @@ try{
  await evaluate(`window.__b148Set('Sua pergunta','Como funciona a JENIOS?')`);
  await evaluate(`document.querySelector('#jenios-free-question').closest('form').requestSubmit()`);await waitFor(`window.__b148Free.length===1`);
  pass(await evaluate(`window.__b148Free[0].persona==='genia'&&window.__b148Checkout.length===0`),'visitor can use chosen free assistant without paid generation or checkout');
- await mkdir('.jenios-platform-qa/screenshots',{recursive:true});const shot=await call('Page.captureScreenshot',{format:'png'});await writeFile('.jenios-platform-qa/screenshots/b148-assistant-mobile.png',Buffer.from(shot.data,'base64'));
  console.log('B148_BROWSER_SMOKE_PASS='+checks+'; synthetic localhost fixtures only');
-}finally{for(const p of pending.values())clearTimeout(p.timer);try{socket?.close();}catch{}try{browser.kill('SIGTERM');}catch{}await rm(profile,{recursive:true,force:true}).catch(()=>{});}
+}catch(error){
+ console.error('B148_LOCAL_FIXTURE_DIAGNOSTIC',JSON.stringify(await evaluate(`({path:location.pathname,body:document.body?.innerText.slice(0,5000),storageKeys:Object.keys(localStorage),requests:window.__b148Requests?.slice(-30)})`).catch(()=>({}))),JSON.stringify(browserErrors));
+ throw error;
+}finally{
+ if(socket?.readyState===1){try{await mkdir('.jenios-platform-qa/screenshots',{recursive:true});const shot=await call('Page.captureScreenshot',{format:'png'});await writeFile('.jenios-platform-qa/screenshots/b148-browser-final.png',Buffer.from(shot.data,'base64'));}catch{}}
+ for(const p of pending.values())clearTimeout(p.timer);try{socket?.close();}catch{}try{browser.kill('SIGTERM');}catch{}await rm(profile,{recursive:true,force:true}).catch(()=>{});
+}

@@ -1,0 +1,81 @@
+name: JENIOS B150 public read-only evidence
+on:
+  push:
+    branches: [fix/jenios-b149-b154-pilot-preparation-20261020]
+    paths: [.github/workflows/jenios-b150-public-readonly.yml]
+permissions:
+  contents: read
+jobs:
+  public-market-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: GET-only bounded capture; respect denials and never use credentials
+        shell: bash
+        run: |
+          mkdir -p .jenios-pilot-qa/market
+          node --input-type=module - <<'NODE'
+          import {writeFile} from 'node:fs/promises';
+          import {createHash} from 'node:crypto';
+          import {setTimeout as sleep} from 'node:timers/promises';
+          const out='.jenios-pilot-qa/market', report={schema:'JENIOS_PUBLIC_READONLY_B150',startedAt:new Date().toISOString(),requests:[],datasets:[],credentialsUsed:false,ordersSent:0,licensedRedistribution:false};
+          const disabled=new Set();let calls=0;
+          async function get(url,name){
+            const u=new URL(url);if(u.protocol!=='https:'||u.username||u.password||!['api.exchange.coinbase.com','futures.kraken.com'].includes(u.hostname))throw Error('URL_DENIED');
+            if(disabled.has(u.hostname))return null;if(++calls>26)throw Error('REQUEST_CAP');
+            const item={url:u.href,requestedAt:new Date().toISOString()};report.requests.push(item);
+            try{
+              const r=await fetch(u,{method:'GET',redirect:'error',signal:AbortSignal.timeout(12000),headers:{accept:'application/json','user-agent':'JENIOS-public-readonly-research'}});
+              item.status=r.status;item.responseDate=r.headers.get('date');
+              if(!r.ok){if([401,403,451,429].includes(r.status))disabled.add(u.hostname);await r.body?.cancel();throw Error('HTTP_'+r.status);}
+              const reader=r.body.getReader();let parts=[],size=0;
+              while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>4000000){await reader.cancel();throw Error('RESPONSE_TOO_LARGE');}parts.push(value);}
+              const raw=Buffer.concat(parts);item.bytes=raw.length;item.sha256=createHash('sha256').update(raw).digest('hex');item.receivedAt=new Date().toISOString();
+              await writeFile(out+'/'+name+'.json',raw);return JSON.parse(raw.toString('utf8'));
+            }catch(e){item.error=e.code||e.message;return null;}
+          }
+          try{
+            const clock=await get('https://api.exchange.coinbase.com/time','provider-time');
+            if(clock&&typeof clock.epoch==='number'&&Math.abs(clock.epoch*1000-Date.now())<120000){
+              const end=Math.floor(clock.epoch/300)*300;
+              for(const product of ['BTC-USD','ETH-USD']){
+                const rows=new Map();let valid=true;
+                for(let page=0;page<10;page++){
+                  if(disabled.has('api.exchange.coinbase.com')){valid=false;break;}
+                  const stop=end-page*90000,start=stop-90000;
+                  const u=new URL('https://api.exchange.coinbase.com/products/'+product+'/candles');u.search=new URLSearchParams({granularity:'300',start:new Date(start*1000).toISOString(),end:new Date(stop*1000).toISOString()}).toString();
+                  const data=await get(u.href,product+'-5m-'+page);if(!Array.isArray(data)){valid=false;break;}
+                  for(const r of data){
+                    if(!Array.isArray(r)||r.length!==6||r.some(v=>typeof v!=='number'||!Number.isFinite(v))){valid=false;continue;}
+                    if(r[0]<start||r[0]>=stop)continue;
+                    const bar={time:r[0]*1000,low:r[1],high:r[2],open:r[3],close:r[4],volume:r[5]};
+                    const old=rows.get(r[0]);if(old&&JSON.stringify(old)!==JSON.stringify(bar))valid=false;rows.set(r[0],bar);
+                  }
+                  await sleep(220);
+                }
+                const bars=[...rows.values()].sort((a,b)=>a.time-b.time),d={provider:'coinbase-exchange',instrument:product,marketType:'spot',intervalMs:300000,capturedAtMs:Date.now(),requestedEndMs:end*1000,bars,completeResponseSet:valid};
+                const raw=JSON.stringify(d,null,2),file=product+'-normalized.json';await writeFile(out+'/'+file,raw);report.datasets.push({file,bars:bars.length,completeResponseSet:valid,sha256:createHash('sha256').update(raw).digest('hex')});
+              }
+            }else report.clockBlocked='Provider clock absent or incompatible; no candles requested.';
+            await get('https://futures.kraken.com/derivatives/api/v3/instruments','kraken-public-instruments');
+          }finally{
+            report.finishedAt=new Date().toISOString();report.successfulRequests=report.requests.filter(x=>x.status===200&&!x.error).length;
+            await writeFile(out+'/capture-report.json',JSON.stringify(report,null,2));
+            console.log(JSON.stringify({requests:report.requests.length,successful:report.successfulRequests,datasets:report.datasets,ordersSent:0}));
+          }
+          NODE
+      - name: Preserve bounded capture and failure evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B150_READONLY_MARKET
+          path: .jenios-pilot-qa/market/
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true

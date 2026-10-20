@@ -47,7 +47,7 @@ function Users(){
    <section style={card}><div style={{display:'flex',justifyContent:'space-between',gap:12,flexWrap:'wrap',alignItems:'center'}}>
     <h2 style={{fontSize:17}}>Contas cadastradas</h2><button disabled={busy} onClick={()=>load(page)}>Atualizar lista</button></div>
     <div style={{overflowX:'auto'}}><table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-     <thead><tr><th align="left">Conta</th><th align="left">Tipo</th><th align="left">E-mail</th><th align="left">Ação</th></tr></thead>
+     <thead><tr><th align="left">Conta</th><th align="left">Tipo</th><th align="left">Verificação</th><th align="left">Ação</th></tr></thead>
      <tbody>{users.map(u=><tr key={u.id} style={{borderTop:'1px solid #e2e8f0'}}>
       <td style={{padding:'12px 8px',overflowWrap:'anywhere'}}>{u.email}</td>
       <td>{u.isMaster?'Master':'Usuário'}</td><td>{u.confirmed?'Confirmado':'Pendente'}</td>

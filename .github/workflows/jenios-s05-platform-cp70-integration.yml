@@ -80,12 +80,19 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Preserve approved B147 modules and exact scoped PAY extension
+      - name: Assert original Social financial routes and files remain unchanged
         run: node scripts/platform/b148-integrity.mjs
       - name: Install exact Social S05 locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full inherited and Platform unit regression
-        run: npm test
+        shell: bash
+        run: |
+          set +e
+          npm test > /tmp/jenios-b148-tests.log 2>&1
+          status=$?
+          tail -n 12 /tmp/jenios-b148-tests.log
+          if [ "$status" -ne 0 ]; then grep -n -B 6 -A 65 'not ok' /tmp/jenios-b148-tests.log; fi
+          exit "$status"
       - name: Social S05 release and API integrity regression
         run: npm run test:release-s05
       - name: Combined Next.js 15 release build (local scoped, no keys)
@@ -109,7 +116,7 @@ jobs:
         run: node scripts/platform/b147-university-ui-smoke.mjs
       - name: Boost preview, WhatsApp, audience and persistent assistant browser smoke
         run: node scripts/platform/b148-browser-smoke.mjs
-      - name: Preserve full B148 source and source manifest
+      - name: Save integrity manifest of integrated source changes
         shell: bash
         run: |
           set -euo pipefail
@@ -119,6 +126,7 @@ jobs:
           git diff --stat 5094cf21005549973664b619307472139ea98a57 HEAD > .jenios-integration-qa/CHANGES.txt
           sha256sum .jenios-integration-qa/JENIOS_B148_SOURCE.zip > .jenios-integration-qa/SHA256SUMS.txt
           cp docs/platform/B148-BOOST-ASSISTANT-VALIDATION.md .jenios-integration-qa/
+          cp /tmp/jenios-b148-tests.log .jenios-integration-qa/
       - name: Preserve source package
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

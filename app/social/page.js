@@ -485,7 +485,7 @@ const handleUploadCarrossel = async (e) => {
       setPublicationNotice('Publicado no feed e no seu perfil.');setPostEmFoco(created.id);
       for(const item of imagensPreview)if(item.src?.startsWith('blob:'))URL.revokeObjectURL(item.src);
       setNovoTexto('');setYoutubeLink('');setImagensPreview([]);
-    }catch(error){alert(error.message||'Não foi possível publicar. Seu texto foi preservado.');}
+    }catch(error){setPublicationNotice(error.message||'Não foi possível publicar. Seu texto e as mídias foram preservados para tentar novamente.');}
     finally{setEnviandoPublicacao(false);}
   };
   const compartilharStory = async post => {
@@ -1619,7 +1619,7 @@ const handleUploadCarrossel = async (e) => {
               >
                 <form onSubmit={publicarPost}>
                   {publicationNotice&&<p role="status" style={{color:'#047857'}}>{publicationNotice}</p>}
-                  {enviandoPublicacao&&<p role="status">{uploadStage==='processing'?'Preparando o vídeo para uma reprodução mais rápida…':uploadPercent===null?'Preparando publicação…':uploadPercent<100?`Enviando mídia: ${uploadPercent}%`:'Salvando publicação…'}</p>}
+                  {enviandoPublicacao&&<p role="status" aria-live="polite">{uploadStage==='processing'?'Preparando o vídeo para reprodução…':uploadStage==='validating'?'Conferindo o arquivo enviado…':uploadStage==='saving'?'Salvando a publicação…':uploadPercent===null?'Preparando publicação…':`Enviando mídia: ${uploadPercent}%`}</p>}
                   {!meuPerfil.autenticado && <p style={{fontSize:14,color:"#475569",margin:"0 0 16px"}}>Entre na sua conta para publicar fotos, vídeos e Stories.</p>}
                   <textarea
                     value={novoTexto}

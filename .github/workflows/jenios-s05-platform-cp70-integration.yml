@@ -2,14 +2,9 @@ name: JENIOS S05 + Platform CP70 integration regression
 on:
   push:
     branches:
+      - fix/jenios-b148-boost-assistant-20261020
       - fix/jenios-b147-university-monthly-20261020
-      - fix/jenios-b141-b146-university-pro-completion-20261020
-      - fix/jenios-b135-b140-free-social-pro-20261020
       - release/jenios-s05-platform-cp70-integracao-20261019
-      - fix/jenios-b133-b134-university-genios-retention-20261020
-      - fix/jenios-b129-b132-master-users-learning-ai-20261020
-      - fix/jenios-b128-genio-genia-floating-university-20261020
-      - fix/jenios-b122-b125-master-hub-media-assistant-20261019
   workflow_dispatch:
 permissions:
   contents: read
@@ -74,6 +69,8 @@ jobs:
       NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
       NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
       NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -83,63 +80,8 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Assert original Social financial routes and files remain unchanged
-        shell: bash
-        run: |
-          set -euo pipefail
-          node --input-type=module - <<'NODE'
-          import {execFileSync} from 'node:child_process';
-          import {readFileSync} from 'node:fs';
-          import assert from 'node:assert/strict';
-          const base='f4232312a6704aa27ba4d2fc0d0e6181bba0a426';
-          const paths=execFileSync('git',['diff','--name-only',base,'HEAD'],{encoding:'utf8'}).split('\n').filter(Boolean);
-          const reviewed=new Set(['app/components/SocialAccessForm.js','app/components/social-auth-return.mjs','lib/pay/auth.mjs','lib/pay/catalog.mjs','lib/admin-access.mjs','lib/admin-users.mjs','lib/trend-alerts.mjs','lib/trends-service.mjs','lib/social/media.mjs','app/components/TrendsHub.js','app/components/TrendAlertButton.js',
-           'db/schema/pro-wallet-b143.sql','db/schema/pro-wallet-privileges-b147.sql','db/schema/university-monthly-b147.sql','db/schema/university-pro-catalog-b146.sql','db/schema/university-pro-pay-read-b146.sql','tests/payAccess.test.mjs','tests/jeniosUniversityCompletionB141.test.mjs','tests/jeniosProPrecisionB142.test.mjs','tests/jeniosProLifecycleB144.test.mjs','tests/jeniosProInterfaceB145.test.mjs','tests/jeniosProTopupsB146.test.mjs','tests/jeniosProCreditsInterfaceB146.test.mjs','tests/jeniosUniversityMonthlyB147.test.mjs','tests/jeniosUniversityInterfaceB147.test.mjs',
-           'app/api/admin/access/route.js','app/api/admin/ecosystem/route.js','app/api/admin/users/route.js','app/api/platform/assistant/route.js','app/api/platform/learning/route.js',
-           'db/schema/assistant-r27.sql','db/schema/learning-r26.sql','tests/jeniosHubB123.test.mjs','tests/socialMediaB124.test.mjs',
-           'tests/assistantR27.test.mjs','tests/jeniosUniversityPassB140.test.mjs','tests/jeniosSocialFreeGeniosB136.test.mjs','tests/jeniosFreeNeverBillsB140.test.mjs','tests/jeniosProPricingB135.test.mjs','tests/jeniosProEntitlementsB137.test.mjs','tests/jeniosProAccessB139.test.mjs','tests/jeniosMasterFinanceB132.test.mjs','tests/jeniosGenerativeBudgetB131.test.mjs','tests/jeniosGenioKnowledgeB131.test.mjs','tests/jeniosMasterUsersB129.test.mjs','tests/jeniosUniversityDailyB130.test.mjs','tests/jeniosAssistantFloatingB128.test.mjs','tests/learningR26.test.mjs','tests/jeniosMasterB122.test.mjs','tests/jeniosRestoreB125.test.mjs']);
-          const allowed=paths.every(p=>reviewed.has(p)||p.startsWith('app/components/assistant/')||p.startsWith('app/components/learning/')||p.startsWith('app/api/assistant/')||p.startsWith('app/genios-pro/')||p.startsWith('app/universidade/')||p==='app/social/layout.js'||
-           p.startsWith('lib/assistant/')||p.startsWith('lib/learning/')||p.startsWith('public/assistentes/')||
-           p.startsWith('app/platform/aprender/')||p.startsWith('app/platform/assistente/')||
-           p.startsWith('app/components/brand/')||p.startsWith('public/brand/')||new Set(['app/icon.png','app/icon.svg','app/favicon.ico','app/apple-icon.png','app/apple-icon.js','app/page.js','app/lp/page.js','tests/jeniosBrandB110.test.mjs','tests/socialR24.test.mjs']).has(p)||p.startsWith('app/platform/')||p.startsWith('app/components/platform/')||p.startsWith('app/api/platform/admin/')||p.startsWith('app/api/platform/diagnostico/')||p.startsWith('app/api/platform/risk-summary/')||p==='app/api/platform/market-observation/route.js'||p.startsWith('lib/platform/')||p.startsWith('scripts/platform/')||p.startsWith('docs/platform/')||(p.startsWith('supabase/migrations/20261019')||p==='supabase/migrations/20261020010000_ai_budget_b131_REVIEW_ONLY.sql'||p==='supabase/migrations/20261020025500_jenios_pro_credits_b138_REVIEW_ONLY.sql'||p==='supabase/migrations/20261020031500_university_addon_b140_REVIEW_ONLY.sql')||p.startsWith('tests/platform')||p==='tests/adminPaymentStatement.test.mjs'||p.startsWith('app/dashboard')||p.startsWith('app/mesa-operacoes/')||p.startsWith('app/mesa-operacao/')||p.startsWith('app/diagnostico/')||p.startsWith('app/admin/')||p==='app/components/AdminAccess.js'||p==='lib/release/environment-scope.mjs'||p==='tests/release-s05/environment-b40.test.mjs'||p==='.github/workflows/jenios-s05-platform-cp70-integration.yml'||new Set(['app/social/page.js','app/social/jenios-theme.css','app/components/SocialMobileRail.js','app/components/useSocialFeed.js','lib/social/feed-optimistic.mjs','tests/socialFeedOptimistic.test.mjs','tests/socialMobileB75.test.mjs','tests/release-s05/mobile-nav-b41.test.mjs','docs/platform/B75-MOBILE-HUB.md','app/components/SocialDirect.js','app/social/perfil/[id]/page.js','tests/socialProfileB76.test.mjs','tests/release-s05/reels-b51.test.mjs','tests/release-s05/highlights-b52.test.mjs','docs/platform/B76-PERFIL-DIRECT.md']).has(p));
-          assert.ok(allowed,'Blocked modification outside Platform integration allowlist: '+paths.filter(p=>!allowed).join(','));
-          const b140='a1e9a4a9c440997b71cfb559b681bbdf852300f7';
-          const changedSinceB140=execFileSync('git',['diff','--name-only',b140,'HEAD'],{encoding:'utf8'}).split('\n').filter(Boolean);
-          const preservedPrefixes=['app/social/','app/bankscore/','app/api/bankscore/','lib/bankscore/','app/api/jenios-pay/','lib/jenios-pay/','lib/platform/','app/components/platform/','app/mesa-operacoes/','app/mesa-operacao/'];
-          const preservedFiles=['lib/jenios-pay-admin.js','app/api/assistant/free/route.js','app/components/assistant/FreeAssistantRoom.js','app/components/assistant/AssistantEntry.js','lib/assistant/free-service.mjs'];
-          assert.deepEqual(changedSinceB140.filter(p=>preservedFiles.includes(p)||preservedPrefixes.some(prefix=>p.startsWith(prefix))||p.startsWith('lib/pay/')&&p!=='lib/pay/catalog.mjs'),[],'B141+ must preserve free Social, BankScore, original PAY, TradingView and robot sources');
-          const originalAuth=execFileSync('git',['show','8271a61061df1a5c16de92b42885b84cf0410766:app/components/SocialAccessForm.js'],{encoding:'utf8'});
-          const restoredAuth=readFileSync('app/components/SocialAccessForm.js','utf8')
-           .replace('import {socialAuthReturnPath} from "./social-auth-return.mjs";\n','')
-           .replace("{ initialRegistration = false, returnTo = '/social' }","{ initialRegistration = false }")
-           .replace('  const destination = socialAuthReturnPath(returnTo);\n','')
-           .replaceAll('router.push(destination);','router.push("/social");');
-          assert.equal(restoredAuth,originalAuth,'University must reuse the original Social authentication; only its approved return destination may differ');
-          for(const p of ['app/login/page.js','package.json','package-lock.json','next.config.js']){
-            const before=execFileSync('git',['show',base+':'+p],{encoding:'utf8'});
-            const now=readFileSync(p,'utf8');
-            assert.equal(now,before,'Protected Social S05 source drift: '+p);
-          }
-          const brand=readFileSync('app/components/brand/BrandSignature.js','utf8');
-          assert.match(brand,/jenios-logo-horizontal.webp/);
-          assert.match(brand,/jenios-j.webp/);
-          for(const p of ['app/lp/page.js','app/social/page.js','app/dashboard/page.js','app/mesa-operacoes/page.js','app/admin/page.js','app/platform/admin/page.js']){
-            assert.match(readFileSync(p,'utf8'),/BrandLockup/,'Missing approved JENIOS brand: '+p);
-          }
-          const social=readFileSync('app/social/page.js','utf8');
-          for(const marker of ['SocialPostCard','SocialSidebarPremium','useSocialFeed','onLoadComments={feed.comments}','onCreateComment={feed.comment}','onCurtir={curtirPost}','SocialMobileRail'])assert.ok(social.includes(marker),'Preserve functional Social entry: '+marker);
-          for(const path of ['app/admin/login/page.js','app/admin/page.js']){
-            const secure=readFileSync(path,'utf8');
-            assert.doesNotMatch(secure,/admin123|senha === 'admin'/i,'Demo administrative bypass must be absent: '+path);
-          }
-          assert.match(readFileSync('app/admin/page.js','utf8'),/AdminAccess permission/);
-          assert.match(readFileSync('lib/admin-access.mjs','utf8'),/if\(!isMasterAdmin\(user\)\)/,'Master backend gate required');
-          assert.match(readFileSync('app/components/TrendsHub.js','utf8'),/item\.id !== 'tokens'/,'Social Hub must omit search trends');
-          assert.match(readFileSync('app/dashboard-logado/layout.js','utf8'),/<PlatformAuthGuard>\{children\}<\/PlatformAuthGuard>/,'Preserve independent Platform guard');
-          assert.match(readFileSync('app/dashboard-logado/page.js','utf8'),/href="\/platform\/assistente"/,'Restore Genio/Genia via on-demand links');
-          assert.match(readFileSync('app/api/platform/learning/route.js','utf8'),/OPENAI_API_KEY:''/,'University free tutoring must never call a paid model');
-          console.log('CP70_INTEGRATION_S05_PRESERVED='+paths.length);
-          NODE
+      - name: Preserve approved B147 modules and exact scoped PAY extension
+        run: node scripts/platform/b148-integrity.mjs
       - name: Install exact Social S05 locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full inherited and Platform unit regression
@@ -148,50 +90,51 @@ jobs:
         run: npm run test:release-s05
       - name: Combined Next.js 15 release build (local scoped, no keys)
         run: npm run build
-      - name: Start local Next.js 15 server for desktop, tablet and mobile smoke
+      - name: Start local Next.js 15 server
         shell: bash
         run: |
           set -euo pipefail
-          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-cp70-integrated-local.log 2>&1 &
+          nohup node_modules/.bin/next start -p 3127 > /tmp/jenios-b148-local.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fsS -o /dev/null http://127.0.0.1:3127/dashboard; then exit 0; fi
             sleep 1
           done
-          cat /tmp/jenios-cp70-integrated-local.log
+          cat /tmp/jenios-b148-local.log
           exit 1
       - name: Integration Chrome smoke across Simulator, Mesa and Admin
         run: node scripts/platform/cp69-browser-smoke.mjs
-      - name: Pro guest, mobile, financial gates and private API browser smoke
+      - name: Pro guest, mobile and private API browser smoke
         run: node scripts/platform/b145-pro-ui-smoke.mjs
       - name: Independent University price, guest gates and mobile browser smoke
         run: node scripts/platform/b147-university-ui-smoke.mjs
-      - name: Save integrity manifest of integrated source changes
+      - name: Boost preview, WhatsApp, audience and persistent assistant browser smoke
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Preserve full B148 source and source manifest
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .jenios-integration-qa
-          # Record deletions separately: old R24 purple icons are intentionally replaced.
-          git diff --diff-filter=ACMRT --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD | grep -v '^.github/workflows/' > .jenios-integration-qa/integrated-files.txt
-          git diff --diff-filter=D --name-only f4232312a6704aa27ba4d2fc0d0e6181bba0a426 HEAD > .jenios-integration-qa/deleted-files.txt
-          while IFS= read -r file; do
-            if [ -n "$file" ]; then sha256sum "$file"; fi
-          done < .jenios-integration-qa/integrated-files.txt > .jenios-integration-qa/SHA256SUMS.txt
-          tar -czf .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz -T .jenios-integration-qa/integrated-files.txt .jenios-integration-qa/SHA256SUMS.txt .jenios-integration-qa/deleted-files.txt
-      - name: Preserve integrated source package
+          git archive --format=zip --output=.jenios-integration-qa/JENIOS_B148_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-integration-qa/COMMIT.txt
+          git diff --stat 5094cf21005549973664b619307472139ea98a57 HEAD > .jenios-integration-qa/CHANGES.txt
+          sha256sum .jenios-integration-qa/JENIOS_B148_SOURCE.zip > .jenios-integration-qa/SHA256SUMS.txt
+          cp docs/platform/B148-BOOST-ASSISTANT-VALIDATION.md .jenios-integration-qa/
+      - name: Preserve source package
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: jenios-s05-platform-cp70-integration-source
-          path: .jenios-integration-qa/JENIOS-S05-PLATFORM-CP70.tar.gz
+          name: JENIOS_B148_BACKUP_20261020
+          path: .jenios-integration-qa/
           retention-days: 30
           if-no-files-found: error
+          include-hidden-files: true
       - name: Preserve browser screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: jenios-s05-platform-cp70-browser-qa
+          name: jenios-b148-browser-qa
           path: .jenios-platform-qa/screenshots/*.png
           retention-days: 14
           if-no-files-found: warn
       - name: Report isolated integration readiness
-        run: echo 'CP70_INTEGRATION_BUILD_PASS - no production deployment or paid operation was initiated'
+        run: echo 'B148_INTEGRATION_PASS - no real payments, provider credentials or paid AI calls'

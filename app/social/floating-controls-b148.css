@@ -1,0 +1,4 @@
+/* B148: move only Direct positioning; messaging, permissions and notifications are unchanged. */
+.jenios-social-direct-fab{left:18px!important;right:auto!important}
+.jenios-social-direct-drawer{left:18px!important;right:auto!important}
+@media(max-width:600px){.jenios-social-direct-fab{left:12px!important;right:auto!important}.jenios-social-direct-drawer{left:8px!important;right:auto!important}}

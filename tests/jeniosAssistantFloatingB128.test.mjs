@@ -46,3 +46,15 @@ test('B128 never confuses Social login with a Platform entitlement or activates 
  assert.match(read('app/api/platform/assistant/route.js'),/OPENAI_API_KEY:''/);
  assert.match(read('app/api/platform/learning/route.js'),/OPENAI_API_KEY:''/);
 });
+
+test('B128 restored support and teaching do not label the shipped experience beta or advertise disabled AI',()=>{
+ const support=read('lib/assistant/knowledge.mjs');
+ const university=read('app/components/learning/LearningRoom.js');
+ assert.doesNotMatch(support,/beta fechado/);
+ assert.doesNotMatch(university,/ESCOLA COM IA/);
+ assert.match(university,/UNIVERSIDADE JENIOS/);
+ const css=read('app/components/assistant/AssistantRoom.module.css');
+ assert.match(css,/\.embedded \.sidebar > \.consent\{display:none\}/);
+ const widget=read('app/components/assistant/AssistantRoom.js');
+ assert.match(widget,/href="\/notifications"/);
+});

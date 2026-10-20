@@ -32,3 +32,7 @@
 .embedded .status,.embedded .error{color:#334155;font-size:12px}
 .embedded .clear{color:#334155;border-color:#cbd5e1}
 @media(max-width:600px){.embedded{padding:8px}.embedded .sidebar{width:100%;max-width:100%}.embedded .layout{grid-template-columns:minmax(0,1fr)}}
+
+/* Floating window keeps character choice and all four service tabs visible without a tall setup wizard. */
+.embedded .sidebar > .small,.embedded .sidebar > .consent{display:none}
+.embedded .sidebar nav{margin-top:8px}

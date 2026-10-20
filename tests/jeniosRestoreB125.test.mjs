@@ -22,7 +22,7 @@ test('B125 University keeps subscription security and its original five learning
 });
 test('B125 master preview is server authorized and never grants paid subscription',()=>{
  const s=read('lib/learning/access.mjs');
- assert.match(s,/user.app_metadata\?\.role==='admin'/);
+ assert.match(s,/isMasterAdmin\(user,env\)/);
  assert.doesNotMatch(s,/user_metadata\?\.role/);
 });
 test('B125 external AI is explicitly disabled in restored API handlers even if a key exists',()=>{

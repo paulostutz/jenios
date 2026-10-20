@@ -52,7 +52,13 @@ for(const variant of [{status:'canceled'},{end:NOW},{start:NOW+1},{code:'social-
 test('anonymous users, invalid tokens and user-editable admin claims are rejected',async()=>{
  await assert.rejects(requireLearner(req(),authDb({anonymous:true}),NOW),{status:401});await assert.rejects(requireLearner(new Request('https://qa.invalid'),authDb(),NOW),{status:401});await assert.rejects(requireLearner(req(),authDb({userMetadata:{role:'admin'},hasSubscription:false}),NOW),{status:402});
 });
-test('server-verified administrator access is explicitly labeled preview',async()=>{const r=await requireLearner(req(),authDb({role:'admin',hasSubscription:false}),NOW);assert.equal(r.access.kind,'admin-preview');});
+test('B127 only approved Master gets course preview without an active subscription',async()=>{
+ const db=authDb({role:'master',hasSubscription:false});
+ const direct=await requireLearner(req(),db,NOW);assert.equal(direct.access.kind,'admin-preview');
+ const approved=await requireLearner(req(),authDb({hasSubscription:false}),NOW,{JENIOS_ADMIN_MASTER_USER_IDS:A});
+ assert.equal(approved.access.kind,'admin-preview');
+ await assert.rejects(requireLearner(req(),authDb({role:'admin',hasSubscription:false}),NOW,{}),{status:402});
+});
 test('subscription database failure is not treated as free access',async()=>{await assert.rejects(requireLearner(req(),authDb({error:true}),NOW),{status:503});});
 test('service checks entitlement before reading progress or lessons',async()=>{let reads=0;const response=await handleLearning(req(),{db:{},authorize:async()=>{throw Object.assign(Error('deny'),{status:402});},repository:()=>{reads++;return{};}});assert.equal(response.status,402);assert.equal(reads,0);});
 test('service persists across requests and isolates two learners',async()=>{const m=memoryRepo();let r=await handleLearning(req(),{repository:m.repository,authorize:allowed,now:NOW});assert.equal(r.status,200);r=await handleLearning(req({revision:0,...onboarding}),{repository:m.repository,authorize:allowed,now:NOW});assert.equal(r.status,200);r=await handleLearning(req(),{repository:m.repository,authorize:async()=>({user:{id:B},access:{kind:'subscription'}}),now:NOW});assert.equal((await r.json()).learning.onboarding,null);assert.equal(m.rows.get(A).state.persona,'genia');});

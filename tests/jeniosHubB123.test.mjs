@@ -24,3 +24,14 @@ test('B123 every remaining opt-in has accessible ? explanation and real notifica
  assert.match(code,/Central de Notificações/);
  assert.match(code,/form method="dialog"/);
 });
+
+test('B127 Hub service does not request or return CoinGecko search-popularity data',async()=>{
+ const {loadTrends}=await import('../lib/trends-service.mjs');
+ let mega=0,whales=0;
+ const result=await loadTrends(null,{mega:async()=>{mega++;return {rows:[],status:{disponivel:false}};},
+  whales:async()=>{whales++;return {rows:[],status:{disponivel:false}};},
+  now:()=> '2026-10-19T23:59:00Z'});
+ assert.equal(mega,1);assert.equal(whales,1);
+ assert.deepEqual(result.tokens,[]);assert.equal(result.modulos.tokens.disponivel,false);
+ assert.doesNotMatch(src('lib/trends-service.mjs'),/getCachedJeniosTrends|getJeniosTrends/);
+});

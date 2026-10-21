@@ -37,7 +37,7 @@ for(const file of [
  'app/api/platform/learning/route.js','app/api/platform/checkout/route.js',
  'app/api/assistant/university/checkout/route.js','app/api/jenios-pay/checkout/route.js',
  'app/api/platform/broker-connections/route.js','app/social/page.js',
- '.github/workflows/jenios-b260-private-acceptance.yml']){
+ '.github/workflows/jenios-b260-private-launch-acceptance.yml']){
  assert.ok(readFileSync(file).equals(execFileSync('git',['show',BASE+':'+file])), 'B260_PROTECTED_SOURCE_DRIFT '+file);
 }
 for(const file of [

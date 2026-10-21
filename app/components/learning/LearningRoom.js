@@ -2,96 +2,132 @@
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {supabase} from '../../../lib/supabase';
+import {STUDY_GUIDES} from '../../../lib/learning/trade-study-guides.mjs';
+import {USER_VIDEO_RESOURCES} from '../../../lib/learning/trade-video-resources.mjs';
 import ChartLab from './ChartLab';
 import styles from './LearningRoom.module.css';
+
+const NAMES={fundamentos:'Primeiros passos',graficos:'Leitura de gráficos',execucao:'Execução e risco',estrategias:'Estratégias',laboratorio:'Laboratório de robôs'};
+const SHORT={fundamentos:'Entenda o mercado e proteja seu capital.',graficos:'Leia candles, tendências e indicadores.',execucao:'Ordens, stops, custos e disciplina.',estrategias:'Estude sinais e padrões sem promessas.',laboratorio:'Teste hipóteses e entenda os resultados.'};
+
 export default function LearningRoom(){
- const [data,setData]=useState(null),[busy,setBusy]=useState(true),[saving,setSaving]=useState(false),[error,setError]=useState(''),[errorCode,setErrorCode]=useState('');
- const [form,setForm]=useState({experience:'new',goal:'fundamentals',minutes:20,persona:'genio',aiConsent:false}),[answers,setAnswers]=useState({}),[lesson,setLesson]=useState(null),[selected,setSelected]=useState('');
- const [question,setQuestion]=useState(''),[style,setStyle]=useState('explain'),[reply,setReply]=useState(null),[result,setResult]=useState(null),[tick,setTick]=useState(Date.now());
+ const [data,setData]=useState(null),[busy,setBusy]=useState(true),[saving,setSaving]=useState(false);
+ const [error,setError]=useState(''),[errorCode,setErrorCode]=useState('');
+ const [activeTrack,setActiveTrack]=useState('fundamentos'),[selected,setSelected]=useState(''),[lesson,setLesson]=useState(null);
+ const [question,setQuestion]=useState(''),[style,setStyle]=useState('explain'),[reply,setReply]=useState(null);
  const owner=useRef(null),epoch=useRef(0),alive=useRef(false),lock=useRef(false),lessonEpoch=useRef(0),activeAbort=useRef(null);
- const s=data?.learning,quiz=s?.quiz;
- function clear(){setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setAnswers({});setResult(null);}
+ const learning=data?.learning,tracks=learning?.route||[],currentTrack=tracks.find(t=>t.id===activeTrack)||tracks[0];
+ const guide=STUDY_GUIDES.find(x=>x.trackId===currentTrack?.id);
+ const references=USER_VIDEO_RESOURCES.filter(x=>x.trackId===currentTrack?.id);
+ const allResources=USER_VIDEO_RESOURCES;
+ function clear(){setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setActiveTrack('fundamentos');}
  async function api(payload,query=''){
   const version=epoch.current,currentOwner=owner.current;
   const auth=await supabase?.auth.getSession(),session=auth?.data?.session;
-  if(auth?.error||!session?.access_token||session.user.is_anonymous||session.user.id!==currentOwner)throw Object.assign(Error('Entre na sua conta para estudar.'),{code:'AUTH_REQUIRED'});
-  const r=await fetch('/api/platform/learning'+query,{method:payload?'POST':'GET',cache:'no-store',headers:{authorization:'Bearer '+session.access_token,...(payload?{'content-type':'application/json'}:{})},...(payload?{body:JSON.stringify(payload)}:{}),signal:activeAbort.current?.signal});
-  const body=await r.json();
-  if(!alive.current||version!==epoch.current||currentOwner!==owner.current)throw Object.assign(Error('A sessão mudou.'),{code:'STALE_SESSION'});
-  if(!r.ok){if(Number.isSafeInteger(body.revision))setData(d=>d?{...d,learning:{...d.learning,revision:body.revision}}:d);if(r.status===401||r.status===402)clear();throw Object.assign(Error(body.error||'Não foi possível concluir.'),{code:body.code||'SERVER_ERROR',status:r.status});}
+  if(auth?.error||!session?.access_token||session.user?.is_anonymous||session.user?.id!==currentOwner)
+   throw Object.assign(Error('Entre na sua conta para estudar.'),{code:'AUTH_REQUIRED'});
+  const response=await fetch('/api/platform/learning'+query,{method:payload?'POST':'GET',cache:'no-store',
+   headers:{authorization:'Bearer '+session.access_token,...(payload?{'content-type':'application/json'}:{})},
+   ...(payload?{body:JSON.stringify(payload)}:{}),signal:activeAbort.current?.signal});
+  const body=await response.json();
+  if(!alive.current||version!==epoch.current||currentOwner!==owner.current)
+   throw Object.assign(Error('A sessão mudou.'),{code:'STALE_SESSION'});
+  if(!response.ok){
+   if(Number.isSafeInteger(body.revision))setData(d=>d?{...d,learning:{...d.learning,revision:body.revision}}:d);
+   if(response.status===401||response.status===402)clear();
+   throw Object.assign(Error(body.error||'Não foi possível concluir.'),{code:body.code||'SERVER_ERROR',status:response.status});
+  }
   return body;
  }
  function showError(e){if(e.code==='STALE_SESSION'||e.name==='AbortError')return;setError(e.message);setErrorCode(e.code||'ERROR');}
- async function load(){setBusy(true);setError('');setErrorCode('');try{const body=await api();setData(body);setForm(f=>({...f,persona:body.learning.persona,aiConsent:body.learning.aiConsent}));setResult(body.learning.quiz?null:body.learning.lastSubmission||null);return body;}catch(e){showError(e);return null;}finally{if(alive.current)setBusy(false);}}
+ async function load(){setBusy(true);setError('');setErrorCode('');try{const body=await api();setData(body);return body;}
+  catch(e){showError(e);return null;}finally{if(alive.current)setBusy(false);}}
  useEffect(()=>{
   alive.current=true;
-  async function sync(){const v=++epoch.current;activeAbort.current?.abort();activeAbort.current=new AbortController();owner.current=null;lock.current=false;setSaving(false);clear();setBusy(true);setError('');setErrorCode('');
-   try{const r=await supabase?.auth.getUser();if(!alive.current||v!==epoch.current)return;const user=r?.data?.user;if(r?.error||!user?.id||user.is_anonymous)throw Object.assign(Error('Entre na sua conta para estudar.'),{code:'AUTH_REQUIRED'});owner.current=user.id;await load();}
+  async function sync(){const v=++epoch.current;activeAbort.current?.abort();activeAbort.current=new AbortController();owner.current=null;lock.current=false;
+   clear();setSaving(false);setBusy(true);setError('');setErrorCode('');
+   try{const r=await supabase?.auth.getUser();if(!alive.current||v!==epoch.current)return;
+    const user=r?.data?.user;if(r?.error||!user?.id||user.is_anonymous)throw Object.assign(Error('Entre na sua conta para estudar.'),{code:'AUTH_REQUIRED'});
+    owner.current=user.id;await load();}
    catch(e){if(alive.current&&v===epoch.current){showError(e);setBusy(false);}}
   }
-  void sync();const sub=supabase?.auth.onAuthStateChange((event,session)=>{if(event==='INITIAL_SESSION')return;if(session?.user?.id===owner.current&&['TOKEN_REFRESHED','SIGNED_IN','USER_UPDATED'].includes(event))return;epoch.current++;activeAbort.current?.abort();owner.current=null;clear();setTimeout(()=>{if(alive.current)void sync();},0);});
+  void sync();
+  const sub=supabase?.auth.onAuthStateChange((event,session)=>{
+   if(event==='INITIAL_SESSION')return;
+   if(session?.user?.id===owner.current&&['TOKEN_REFRESHED','SIGNED_IN','USER_UPDATED'].includes(event))return;
+   epoch.current++;activeAbort.current?.abort();owner.current=null;clear();setTimeout(()=>{if(alive.current)void sync();},0);
+  });
   return()=>{alive.current=false;epoch.current++;activeAbort.current?.abort();sub?.data?.subscription?.unsubscribe();};
  },[]);
- useEffect(()=>{setAnswers({});if(quiz){setLesson(null);setSelected('');setReply(null);}if(!quiz)return;const timer=setInterval(()=>setTick(Date.now()),1000);return()=>clearInterval(timer);},[quiz?.id]);
- async function action(input){if(lock.current||!s)return;lock.current=true;setSaving(true);setError('');setErrorCode('');const v=epoch.current;
-  try{const body=await api({...input,revision:s.revision});setData(body);if(input.action==='submit_quiz'){setResult(body.result);setAnswers({});}if(input.action==='start_quiz'){setResult(null);setReply(null);}if(input.action==='tutor')setReply(body.result);return body;}
-  catch(e){if(e.code==='REVISION_CONFLICT'){const refreshed=await load();if(refreshed&&alive.current&&v===epoch.current){setError('Seu progresso foi atualizado com o que já estava salvo. Confira a etapa atual e repita a ação que deseja concluir.');setErrorCode('REVISION_CONFLICT');}}else showError(e);}
+ async function action(input){if(lock.current||!learning)return;lock.current=true;setSaving(true);setError('');setErrorCode('');const v=epoch.current;
+  try{const body=await api({...input,revision:learning.revision});setData(body);if(input.action==='tutor')setReply(body.result);return body;}
+  catch(e){if(e.code==='REVISION_CONFLICT'){const refreshed=await load();if(refreshed&&alive.current&&v===epoch.current){setError('Seu progresso foi atualizado. Confira a aula e tente novamente.');setErrorCode('REVISION_CONFLICT');}}else showError(e);}
   finally{if(alive.current&&v===epoch.current){setSaving(false);lock.current=false;}}
  }
+ function chooseTrack(id){setActiveTrack(id);setSelected('');setLesson(null);setReply(null);setError('');}
  async function openLesson(id){const v=++lessonEpoch.current;setSelected(id);setLesson(null);setReply(null);setQuestion('');setError('');
-  try{const body=await api(null,'?lesson='+encodeURIComponent(id));if(v===lessonEpoch.current)setLesson(body.lesson);}catch(e){showError(e);}
- }
- const studied=s?.route.reduce((n,t)=>n+t.lessons.filter(l=>l.completed).length,0)||0;
+  try{const body=await api(null,'?lesson='+encodeURIComponent(id));if(v===lessonEpoch.current)setLesson(body.lesson);}catch(e){showError(e);}}
+ const studied=tracks.reduce((n,t)=>n+t.lessons.filter(l=>l.completed).length,0);
+ const completed=Boolean(currentTrack?.lessons?.find(x=>x.id===lesson?.id)?.completed);
+ const completedToday=Boolean(learning?.dailyStudy?.reviewedToday?.includes(lesson?.id));
+ const continuing=tracks.flatMap(t=>t.lessons.map(l=>({...l,trackId:t.id}))).find(x=>!x.completed);
  return <main className={styles.shell}><div className={styles.wrap}>
- <header className={styles.header}><div><span className={styles.brand}>JENIOS PLATFORM · UNIVERSIDADE JENIOS</span><h1>Universidade JENIOS <span style={{color:'#a78bfa'}}>Aprender para decidir melhor.</span></h1><p>Do primeiro conceito ao laboratório avançado. Uma trilha no seu ritmo, com prática, revisão e perguntas que ajudam a pensar.</p></div><Link className={styles.link} href="/dashboard-logado">← Gestão da Platform</Link></header>
- {error&&<div role="alert" className={styles.error}>{error} {owner.current&&!saving&&<button className={styles.secondary} onClick={load}>Atualizar</button>}</div>}
- {busy?<div className={styles.banner} role="status">Verificando sua conta e seu progresso…</div>:!s?<section className={styles.card}><h2>Seu próximo passo começa aqui</h2><p>Seu aprendizado está incluído nos planos de R$ 149,90 e R$ 199,90. Com o plano de R$ 99,90 ou sem assinatura da Platform, você pode contratar somente a Universidade por R$ 49,90 mensais. Seu progresso é individual e permanece salvo.</p><div className={styles.actions}>{!owner.current&&<Link className={styles.primary} href="/login">Entrar na minha conta</Link>}<Link className={styles.secondary} href="/universidade">Universidade · R$ 49,90 por mês</Link><Link className={styles.secondary} href="/social">Conversar com Gênio e Gênia gratuitos</Link></div><p className={styles.small}>{errorCode==='SUBSCRIPTION_REQUIRED'?'Não identificamos uma assinatura com Universidade ou uma contratação educacional vigente. Consulte a contratação independente e as condições de renovação.':'Aulas só são carregadas depois da verificação de acesso.'}</p></section>:<>
- {data.access.kind==='admin-preview'?<p className={styles.banner}>Acesso administrativo à Universidade.</p>:data.access.validUntil&&<p className={styles.banner}>{['purchased-pass','university-monthly'].includes(data.access.kind)?'Universidade contratada separadamente':'Universidade incluída na assinatura'} · vigente até {new Date(data.access.validUntil).toLocaleDateString('pt-BR')}. Seu progresso permanece salvo ao renovar. {['purchased-pass','university-monthly'].includes(data.access.kind)&&<Link href="/universidade" style={{color:'#ddd6fe'}}>Ver minha contratação →</Link>}</p>}
- {!s.onboarding?<div className={styles.hero}><section className={styles.card}><div className={styles.tag}>Seu ponto de partida</div><h2>Vamos montar sua jornada?</h2><p>Conte um pouco sobre seu estudo. Depois, 12 perguntas ajudam a identificar conceitos para revisar — sem avaliar sua inteligência ou prometer desempenho no mercado.</p>
- <form onSubmit={e=>{e.preventDefault();action({action:'onboard',...form});}}>
- <label>Como é sua experiência?<select value={form.experience} onChange={e=>setForm({...form,experience:e.target.value})}><option value="new">Estou começando do zero</option><option value="some">Já estudei ou pratiquei um pouco</option><option value="regular">Já opero e quero aprofundar</option></select></label>
- <label>O que deseja compreender primeiro?<select value={form.goal} onChange={e=>setForm({...form,goal:e.target.value})}><option value="fundamentals">Fundamentos e segurança</option><option value="day">Day trade e processo intradiário</option><option value="swing">Swing trade e horizontes maiores</option><option value="research">Estratégias, estatística e robôs</option></select></label>
- <label>Tempo sugerido por sessão de estudo<select value={form.minutes} onChange={e=>setForm({...form,minutes:Number(e.target.value)})}><option value={10}>10 minutos</option><option value={20}>20 minutos</option><option value={40}>40 minutos</option></select></label>
- <p>Seu tutor educacional é o T.Jenio. As aulas, avaliações, revisões e explicações guiadas desta área não consomem créditos Pro.</p>
- <p className={styles.small}>Para uma conversa avançada com IA, acesse Gênio Pro ou Gênia Pro. O uso é confirmado separadamente, dentro da franquia ou do saldo disponível.</p>
- <button className={styles.primary} disabled={saving}>{saving?'Salvando…':'Criar meu perfil de estudo'}</button></form></section>
- <aside className={styles.card}><div className={styles.tag}>Cinco etapas. Um processo.</div><h2>Entender. Praticar. Explicar.</h2><p>Fundamentos → gráficos → execução → estratégias → laboratório Hard.</p><p>Ao fim de cada trilha, uma avaliação verifica o entendimento. Quando houver dificuldade, você recebe explicações e pode revisar antes de tentar de novo.</p><div className={styles.example}>Aprender não exige provar que você já sabe. O próximo conceito começa exatamente onde você está.</div><p className={styles.small}>Conteúdo educativo original com referências. Nenhuma aula ou avaliação envia ordens, recomenda uma operação personalizada ou libera conta real.</p></aside></div>:<>
- {!s.placement&&!quiz&&<section className={styles.card}><h2>Agora vamos identificar seu ponto de partida</h2><p>Responda sem consultar. Acertos e dúvidas orientarão a profundidade das explicações; conceitos de risco continuam obrigatórios.</p><button className={styles.primary} disabled={saving} onClick={()=>action({action:'start_quiz',kind:'placement'})}>Começar avaliação inicial</button></section>}
- {quiz?<section className={styles.card}><div className={styles.tag}>{quiz.kind==='placement'?'Avaliação inicial':'Avaliação da trilha'}</div><h2>Mostre o que você entendeu</h2><p className={styles.small}>O professor fica em pausa durante a avaliação. Prazo da tentativa: {new Date(quiz.expiresAt).toLocaleTimeString('pt-BR')}. O envio e a nota são conferidos no servidor.</p>
- {Date.parse(quiz.expiresAt)<=tick?<button className={styles.primary} disabled={saving} onClick={()=>action({action:'start_quiz',kind:quiz.kind})}>Tentativa expirada — iniciar outra</button>:<form className={styles.quiz} onSubmit={e=>{e.preventDefault();action({action:'submit_quiz',attemptId:quiz.id,answers});}}>{quiz.questions.map((q,i)=><fieldset key={q.id}><legend>{i+1}. {q.prompt}</legend>{q.options.map((option,j)=><label key={j}><input type="radio" name={q.id} checked={answers[q.id]===j} onChange={()=>setAnswers({...answers,[q.id]:j})} required/>{option}</label>)}</fieldset>)}<button className={styles.primary} disabled={saving||Object.keys(answers).length!==quiz.questions.length}>{saving?'Conferindo e salvando…':'Enviar minhas respostas'}</button></form>}</section>:s.placement&&<div className={styles.layout}>
- <aside className={styles.sidebar}><h2>Minha trilha</h2><small>Nível inicial: {s.placement.level} · sessões de {s.onboarding.minutes} min</small><div className={styles.progress} aria-label={`${studied} de 15 aulas revisadas`}><span style={{width:(studied/15*100)+'%'}}/></div><small>{studied}/15 aulas revisadas</small>
- {s.route.map(t=><section key={t.id} className={styles.track}><strong>{t.passed?'✓ ':!t.unlocked?'🔒 ':''}{t.title}</strong><small>{t.level} · {t.pace} · cerca de {t.sessionsSuggested} sessão(ões)</small>{t.lessons.map(l=><button className={styles.lessonButton} key={l.id} disabled={!t.unlocked||saving} aria-current={selected===l.id} onClick={()=>openLesson(l.id)}>{l.completed?'✓ ':''}{l.title}</button>)}{t.unlocked&&<button className={styles.secondary} disabled={saving||!t.lessons.every(l=>l.completed)} onClick={()=>action({action:'start_quiz',kind:t.id})}>{t.reviewDue?'Revisão recomendada':t.passed?'Refazer avaliação':'Avaliar esta trilha'}</button>}</section>)}</aside>
- <div className={styles.column}>
- {s.dailyStudy&&<section className={styles.card} aria-label="Agenda de estudo diário">
-  <div className={styles.tag}>SUA ROTINA DE ESTUDOS · {s.dailyStudy.minutes} MINUTOS</div>
-  <h2>Aprenda um pouco todos os dias</h2>
-  <p>Revisões hoje: <strong>{s.dailyStudy.studiedToday}</strong> · Sequência de estudos: <strong>{s.dailyStudy.streakDays} dia(s)</strong> {s.dailyStudy.studiedDay?'· atividade registrada hoje':''} · Revisões registradas: <strong>{s.dailyStudy.totalReviewSessions}</strong>.</p>
-  {s.dailyStudy.due.length>0?<p role="status">Revisões recomendadas: {s.dailyStudy.due.map(t=>t.title).join(' · ')}.</p>:<p>Pratique no seu ritmo. As revisões são recomendadas conforme sua evolução.</p>}
-  {!!s.dailyStudy.reinforcement?.length&&<p role="status">Para reforçar: {s.dailyStudy.reinforcement.map(t=>t.title).join(' · ')}. Retome os temas com calma.</p>}
-  {s.dailyStudy.suggestedLesson&&<button className={styles.primary} disabled={saving} onClick={()=>openLesson(s.dailyStudy.suggestedLesson.id)}>
-   {s.dailyStudy.suggestedLesson.completed?'Rever aula de hoje':'Estudar aula recomendada'}: {s.dailyStudy.suggestedLesson.title}
-  <span className={styles.small}> · {s.dailyStudy.suggestedLesson.reason}</span>
-  </button>}
-  {!s.dailyStudy.suggestedLesson&&studied===15&&<p role="status">Você registrou as revisões disponíveis de hoje. Pode reler as aulas e retomar a rotina amanhã.</p>}
-  <p className={styles.small}>Mesmo após concluir todas as trilhas, continue revisitando aulas e reavaliando seus conhecimentos. Revisão registrada não altera notas.</p>
- </section>}
- {result&&<section className={styles.card} role="status"><div className={styles.tag}>Resultado registrado</div><h2>{result.kind==='placement'?'Seu ponto de partida: '+result.placement.level:result.passed?'Trilha concluída nesta avaliação':'Vamos revisar antes de avançar'}</h2><p>{result.correct} de {result.total} respostas corretas. {result.kind!=='placement'&&!result.criticalPassed?'Revise os conceitos críticos de segurança.':''}</p>{result.details.filter(x=>!x.correct).map(x=><p key={x.id} className={styles.feedback}>{x.explanation}</p>)}<p className={styles.small}>Critério pedagógico desta versão: ao menos 80% e acerto dos itens críticos. Não é uma certificação profissional.</p><button className={styles.secondary} onClick={()=>setResult(null)}>Continuar estudando</button></section>}
- {!lesson?<section className={styles.card}><div className={styles.tag}>A próxima descoberta é sua</div><h2>{selected?'Carregando aula…':'Escolha uma aula para começar'}</h2><p>{s.placement.safetyReviewRequired?'Vamos reforçar os conceitos de risco antes de avançar.':'As trilhas indicam o que aprofundar e o que pode ser revisto de forma mais rápida.'}</p>{s.currentLessonId&&<button className={styles.primary} onClick={()=>openLesson(s.currentLessonId)}>Continuar de onde parei</button>}</section>:<>
- <article className={styles.card}><div className={styles.tag}>{lesson.minutes} min de aula e prática</div><h2>{lesson.title}</h2><p><strong>Objetivo:</strong> {lesson.objective}</p>{lesson.paragraphs.map((p,i)=><p key={i}>{p}</p>)}<div className={styles.example}>{lesson.example}</div>{lesson.chart&&<ChartLab/>}<div className={styles.practice}><h3>Agora é sua vez</h3><p>{lesson.exercise}</p><button className={styles.secondary} onClick={()=>{setStyle('teachback');setQuestion('');document.getElementById('learning-question')?.focus();}}>Explicar para o professor</button></div>{s.route.flatMap(t=>t.lessons).find(l=>l.id===lesson.id)?.completed?
-  <button className={styles.secondary} disabled={saving||s.dailyStudy?.reviewedToday.includes(lesson.id)} onClick={()=>action({action:'review_lesson',lessonId:lesson.id})}>
-   {s.dailyStudy?.reviewedToday.includes(lesson.id)?'Revisão registrada hoje ✓':'Registrar revisão de hoje'}
-  </button>:
-  <button className={styles.primary} disabled={saving} onClick={()=>action({action:'complete_lesson',lessonId:lesson.id})}>Concluir primeira leitura da aula</button>}<div className={styles.sources}><p className={styles.small}>Referências para conferir — não são endossos à JENIOS.</p>{lesson.sources.map(x=><a href={x.url} key={x.id} target="_blank" rel="noopener noreferrer">{x.title} ↗</a>)}</div></article>
- <section className={styles.card}><div className={styles.tutorHeading}><div><div className={styles.tag}>Seu tutor educacional virtual</div><h2 style={{margin:0}}>T.Jenio</h2></div></div><p>Peça uma explicação do conceito, um exemplo ou um exercício. O tutor guiado usa o material da aula e não consome créditos de IA.</p>
- <p className={styles.small}>As explicações desta área são guiadas pelo material revisado. Para conversar sobre dúvidas avançadas, use Gênio Pro ou Gênia Pro. Não há acesso a cotações ou contas de corretora aqui. {s.tutorBudget.used}/{s.tutorBudget.limit} interações utilizadas hoje.</p>
- <Link className={styles.secondary} href="/genios-pro?task=university_tutor">Abrir tutor avançado no Pro</Link>
- <form onSubmit={e=>{e.preventDefault();action({action:'tutor',lessonId:lesson.id,message:question,style});}}><label>Como você quer aprender?<select value={style} onChange={e=>setStyle(e.target.value)}><option value="explain">Explicação do conceito</option><option value="simple">Explique de forma mais simples</option><option value="example">Mostre um exemplo fictício</option><option value="practice">Proponha um exercício</option><option value="teachback">Comente o que eu entendi</option></select></label><label htmlFor="learning-question">Sua pergunta ou explicação<textarea id="learning-question" maxLength={1800} value={question} onChange={e=>setQuestion(e.target.value)} required placeholder="Ex.: explique a diferença entre stop e ordem limitada."/></label><button className={styles.primary} disabled={saving||!question.trim()}>{saving?'Preparando resposta…':'Conversar com T.Jenio'}</button></form>
- {reply&&<div className={styles.reply} aria-live="polite"><div className={styles.tag}>{reply.mode==='ai'?'Resposta gerada por IA':'Explicação do material revisado'}</div>{reply.explanation}<p><strong>Para pensar:</strong> {reply.exercise}</p><p className={styles.small}>{reply.notice}</p>{reply.sources?.map(x=><a className={styles.small} key={x.id} href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗<br/></a>)}</div>}</section>
- </>}
- {!!s.assessmentHistory?.length&&<section className={styles.card} aria-label="Histórico de avaliações"><h2>Meu histórico de aprendizagem</h2><p className={styles.small}>Últimas avaliações salvas na sua conta. A renovação do acesso mantém este histórico.</p><ul>{s.assessmentHistory.slice(-6).reverse().map(entry=><li key={entry.id}>{entry.kind==='placement'?'Nivelamento inicial':s.route.find(track=>track.id===entry.kind)?.title||'Avaliação'} · {entry.correct}/{entry.total} acertos · {new Date(entry.at).toLocaleDateString('pt-BR')}{entry.kind!=='placement'?(entry.passed?' · critério de aprendizagem atingido':' · revisão recomendada'):''}</li>)}</ul></section>}
- <p className={styles.small} style={{color:'#cbd5e1'}}>{s.notice} O conteúdo é versionado e pode ser ampliado após revisão.</p>
- </div></div>}
- </>}
- </>}
+  <header className={styles.header}><div><span className={styles.brand}>Universidade JENIOS</span><h1>Aprenda no seu ritmo</h1><p>Escolha qualquer trilha e comece pela aula que quiser. Sem testes de nivelamento, sem provas obrigatórias e sem bloqueios entre assuntos.</p></div><Link className={styles.link} href="/universidade">Meu acesso à Universidade →</Link></header>
+  {error&&<div role="alert" className={styles.error}>{error} {owner.current&&!saving&&<button className={styles.secondary} onClick={load}>Atualizar</button>}</div>}
+  {busy?<div className={styles.banner} role="status">Carregando seus estudos…</div>:!learning?
+   <section className={styles.card}><h2>Entrar para estudar</h2><p>Os materiais ficam disponíveis conforme seu acesso à Universidade. Os planos Cripto e Global elegíveis incluem os estudos; também existe a contratação independente.</p><div className={styles.actions}><Link className={styles.primary} href="/universidade/entrar">Entrar na minha conta</Link><Link className={styles.secondary} href="/universidade">Ver meu acesso</Link></div><p className={styles.small}>{errorCode==='SUBSCRIPTION_REQUIRED'?'Seu acesso atual ainda não inclui a Universidade. Confira as opções de contratação.':'Aulas particulares e progresso exigem autenticação.'}</p></section>
+  :<>
+   {data?.access?.kind==='admin-preview'&&<p className={styles.banner}>Acesso de revisão administrativa à Universidade.</p>}
+   <section className={styles.card} aria-labelledby="choose-track-title">
+    <div className={styles.tag}>ESCOLHA O QUE ESTUDAR</div><h2 id="choose-track-title">Por onde você quer começar?</h2>
+    <p>Você pode mudar de trilha a qualquer momento. A ordem é uma sugestão, não um requisito.</p>
+    <div className={styles.routeGrid} role="group" aria-label="Escolher trilha de estudos">
+     {tracks.map((t,i)=><button type="button" key={t.id} className={styles.routeButton} aria-pressed={currentTrack?.id===t.id} onClick={()=>chooseTrack(t.id)}>
+      <span className={styles.routeNumber}>{String(i+1).padStart(2,'0')}</span><strong>{NAMES[t.id]||t.title}</strong><span>{SHORT[t.id]||t.description}</span>
+      <small>{t.lessons.length} aulas · {t.lessons.filter(x=>x.completed).length} lidas</small>
+     </button>)}
+    </div>
+    <div className={styles.actions}>
+     {continuing&&<button className={styles.secondary} type="button" onClick={()=>{chooseTrack(continuing.trackId);void openLesson(continuing.id);}}>Começar próxima aula sugerida →</button>}
+     <span className={styles.small}>Seu histórico de leitura está salvo ({studied} de 15 aulas).</span>
+    </div>
+   </section>
+   <div className={styles.layout}>
+    <aside className={styles.sidebar} aria-labelledby="lessons-title">
+     <div className={styles.tag}>TRILHA ESCOLHIDA</div><h2 id="lessons-title">{NAMES[currentTrack?.id]||currentTrack?.title}</h2>
+     <p className={styles.sidebarDescription}>{SHORT[currentTrack?.id]||currentTrack?.description}</p>
+     <nav aria-label="Aulas disponíveis">
+      {currentTrack?.lessons.map((l,i)=><button type="button" className={styles.lessonButton} aria-current={selected===l.id?'page':undefined} key={l.id} disabled={saving} onClick={()=>openLesson(l.id)}>
+       {l.completed?'✓':i+1}. {l.title}
+      </button>)}
+     </nav>
+     <p className={styles.sidebarFoot}>Aulas sempre abertas. Você não precisa fazer testes para continuar.</p>
+    </aside>
+    <div className={styles.column}>
+     {!lesson?<section className={styles.card}><div className={styles.tag}>APRENDA LIVREMENTE</div><h2>{selected?'Carregando a aula…':'Escolha uma aula ao lado'}</h2><p>Comece por qualquer tema. Os exercícios são para sua prática e não exigem nota ou aprovação.</p></section>:<>
+      <article className={styles.card}><div className={styles.tag}>AULA · {lesson.minutes} MINUTOS</div><h2>{lesson.title}</h2><p><strong>O que você vai aprender:</strong> {lesson.objective}</p>{lesson.paragraphs.map((p,i)=><p key={i}>{p}</p>)}
+       <div className={styles.example}>{lesson.example}</div>{lesson.chart&&<ChartLab/>}
+       <div className={styles.practice}><h3>Pratique, se quiser</h3><p>{lesson.exercise}</p></div>
+       {completed?<button className={styles.secondary} disabled={saving||completedToday} onClick={()=>action({action:'review_lesson',lessonId:lesson.id})}>{completedToday?'Revisão de hoje registrada ✓':'Marcar revisão opcional'}</button>:
+        <button className={styles.primary} disabled={saving} onClick={()=>action({action:'complete_lesson',lessonId:lesson.id})}>{saving?'Salvando…':'Marcar aula como lida'}</button>}
+       <div className={styles.sources}><p className={styles.small}>Referências externas complementares (não representam endosso à JENIOS):</p>{lesson.sources.map(x=><a href={x.url} key={x.id} target="_blank" rel="noopener noreferrer">{x.title} ↗</a>)}</div>
+      </article>
+      <section className={styles.card}><div className={styles.tag}>AJUDA GRATUITA</div><h2>Pergunte ao T.Jenio</h2><p>Explicações, exemplos e dúvidas da aula. Não é necessário responder nenhuma avaliação. O tutor não acessa cotações ou contas de corretoras.</p>
+       <p className={styles.small}>{learning.tutorBudget.used}/{learning.tutorBudget.limit} interações utilizadas hoje. Para perguntas avançadas com IA, <Link href="/genios-pro?task=university_tutor">conheça Gênio/Gênia Pro</Link>.</p>
+       <form onSubmit={e=>{e.preventDefault();void action({action:'tutor',lessonId:lesson.id,message:question,style});}}>
+        <label>Como prefere a explicação?<select value={style} onChange={e=>setStyle(e.target.value)}><option value="explain">Explicar</option><option value="simple">Mais simples</option><option value="example">Dar um exemplo fictício</option><option value="practice">Sugerir uma prática</option><option value="teachback">Comentar minha explicação</option></select></label>
+        <label htmlFor="learning-question">Sua dúvida<textarea id="learning-question" maxLength={1800} value={question} onChange={e=>setQuestion(e.target.value)} required placeholder="Ex.: como interpretar uma falsa reversão?"/></label>
+        <button className={styles.primary} disabled={saving||!question.trim()}>{saving?'Preparando resposta…':'Enviar pergunta'}</button>
+       </form>
+       {reply&&<div className={styles.reply} aria-live="polite"><div className={styles.tag}>{reply.mode==='ai'?'Resposta gerada por IA':'Explicação guiada pela aula'}</div>{reply.explanation}<p><strong>Para praticar:</strong> {reply.exercise}</p><p className={styles.small}>{reply.notice}</p></div>}
+      </section>
+     </>}
+     {guide&&<section className={styles.card} aria-label="Aprofundamento original JENIOS"><div className={styles.tag}>ESTUDO COMPLEMENTAR</div><h2>{guide.title}</h2><p>{guide.concept}</p><div className={styles.example}><strong>Prática sugerida:</strong> {guide.activity}</div><p className={styles.small}>Síntese educativa original da JENIOS; não é transcrição de vídeo nem sinal de operação.</p></section>}
+     {references.length>0&&<section className={styles.card}><h2>Vídeos relacionados para conferir</h2><p className={styles.small}>Identificação pelo contexto público; os vídeos não foram transcritos nem auditados na íntegra.</p>{references.map(x=><p key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span className={styles.small}> — {x.note}</span></p>)}</section>}
+     <section className={styles.card}><details><summary className={styles.moreSummary}>Biblioteca de vídeos e playlists enviados (20 links)</summary><p className={styles.small}>Links preservados para estudo posterior. Onde não houve confirmação confiável do conteúdo, não atribuímos tema ou título ao autor.</p><ul className={styles.resourceList}>{allResources.map(x=><li key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span>{x.verification==='context_verified'?'Contexto público identificado':'Conteúdo a verificar'}</span></li>)}</ul></details></section>
+     <p className={styles.small}>{learning.notice}</p>
+    </div>
+   </div>
+  </>}
  </div></main>;
 }

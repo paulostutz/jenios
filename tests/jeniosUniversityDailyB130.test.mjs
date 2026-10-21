@@ -32,12 +32,13 @@ test('B130 legacy saved states are forward-compatible with optional review diary
  assert.equal(transition(s,{action:'review_lesson',lessonId:'mercado'},NOW).state.reviewDiary.length,1);
 });
 
-test('B130 University UI has daily agenda and actually saves review actions through the existing state machine',()=>{
+test('B130 University UI offers direct free-track navigation and keeps optional review actions',()=>{
  const code=readFileSync('app/components/learning/LearningRoom.js','utf8');
- assert.match(code,/aria-label="Agenda de estudo diário"/);
+ assert.match(code,/aria-label="Escolher trilha de estudos"/);
  assert.match(code,/action\(\{action:'review_lesson',lessonId:lesson\.id\}\)/);
- assert.match(code,/s\.dailyStudy\?\.reviewedToday\.includes/);
- assert.match(code,/openLesson\(s\.dailyStudy\.suggestedLesson\.id\)/);
+ assert.match(code,/dailyStudy\?\.reviewedToday\?\.includes/);
+ assert.match(code,/Começar próxima aula sugerida/);
+ assert.doesNotMatch(code,/start_quiz|submit_quiz|Avaliação inicial/);
 });
 
 test('B133 completing the first lesson counts as study without inventing a review or grade',()=>{

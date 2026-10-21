@@ -2,7 +2,7 @@ import {assistantSameOrigin} from '../../../../lib/platform/connections/request-
 import {connectionSecret} from '../../../../lib/platform/connections/support.mjs';
 import {HELP_ARTICLES} from '../../../../lib/assistant/knowledge.mjs';
 import {replySales} from '../../../../lib/assistant/sales-provider.mjs';
-import {getJeniosPayAdmin} from '../../../../lib/jenios-pay-admin';
+import {salesModelReady} from '../../../../lib/assistant/sales-provider.mjs';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'};
 const error=(message,status=400)=>Response.json({ok:false,error:message},{status,headers});
@@ -25,9 +25,10 @@ export async function POST(request){
  const {message,persona}=body;
  if(!['genio','genia'].includes(persona)||typeof message!=='string'||!message.trim()||message.length>1000)return error('Escolha um personagem e faça uma pergunta de até mil caracteres.');
  if(connectionSecret(message))return error('Não envie credenciais ao atendimento. Revogue no fornecedor qualquer chave real exposta. Nenhuma conta foi conectada.');
- const result=await replySales(message.trim(),persona,{
-   request,db:process.env.JENIOS_SALES_GENERATIVE_ENABLED==='true'?getJeniosPayAdmin():null,
-   env:process.env
-  });
+ let db=null;
+  if(salesModelReady(process.env)){
+   try{const {getJeniosPayAdmin}=await import('../../../../lib/jenios-pay-admin.js');db=getJeniosPayAdmin();}catch{}
+  }
+  const result=await replySales(message.trim(),persona,{request,db,env:process.env});
   return Response.json(result,{headers});
 }

@@ -18,7 +18,8 @@ test('B139 Pro plan endpoint requires identity and never claims unpaid wallet cr
 test('B139 customer sees honest payment status and existing University access',()=>{
  const page=src('app/genios-pro/page.js');
  const credits=src('app/genios-pro/ProCredits.js');
- assert.match(page,/<ProCredits /);
+ assert.doesNotMatch(page,/<ProCredits /);
+ assert.match(page,/Sem venda de créditos individuais/);
  assert.match(credits,/Contratação ainda não habilitada/);
  assert.match(credits,/duas vezes o custo/);
  assert.match(page,/href="\/platform\/aprender"/);

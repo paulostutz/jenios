@@ -154,6 +154,6 @@ test('B290 production normal path remains unchanged unless QA flag explicitly en
 });
 test('B290 QA proof module has no external provider calls, payment writes or JWT claims',()=>{
  const src=readFileSync(new URL('../lib/assistant/verified-subscription-b290.mjs',import.meta.url),'utf8');
- assert.doesNotMatch(src,/\bfetch\s*\(|\bXMLHttpRequest\b|\\.insert\\(|\\.update\\(|\\.delete\\(|\\brpc\\(|api\\.openai|api\\.binance|api\\.alpaca|user_metadata/);
+ for(const forbidden of ['fetch(', 'XMLHttpRequest', '.insert(', '.update(', '.delete(', '.rpc(', 'api.openai', 'api.binance', 'api.alpaca', 'user_metadata']) assert.equal(src.includes(forbidden),false,forbidden);
  assert.match(src,/bank_end_to_end_id/);assert.match(src,/status==='confirmed'/);
 });

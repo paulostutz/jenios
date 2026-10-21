@@ -3,7 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {supabase} from '../../lib/supabase';
 import {PERSONAS} from '../../lib/assistant/contracts.mjs';
-import ProCredits from './ProCredits';
+
 import {PRO_UI_TASKS,PRO_PLAN_LABELS,PRO_TIMEFRAME_LABELS,formatNanoUsd,formatProDate,
  verifiedWallet,verifiedAllowance,taskAvailability,validQuote,requestStateLabel,fileProblem,canPrepareQuote,unresolvedRequest,initialProTask} from './pro-client.mjs';
 import styles from './pro.module.css';
@@ -32,14 +32,14 @@ export default function GeniosPro(){
  const [account,setAccount]=useState({kind:'checking'}),[refresh,setRefresh]=useState(0),[error,setError]=useState('');
  const [history,setHistory]=useState({kind:'loading',items:[],error:''}),[busy,setBusy]=useState('');
  const [persona,setPersona]=useState('genio'),[taskId,setTaskId]=useState('advanced_question'),[prompt,setPrompt]=useState('');
- const [source,setSource]=useState('prepaid'),[symbol,setSymbol]=useState(''),[timeframe,setTimeframe]=useState('');
+ const [source,setSource]=useState('included'),[symbol,setSymbol]=useState(''),[timeframe,setTimeframe]=useState('');
  const [attachment,setAttachment]=useState(null),[imageReading,setImageReading]=useState(false);
  const [quote,setQuote]=useState(null),[consent,setConsent]=useState(false),[clock,setClock]=useState(Date.now());
  const [pendingKey,setPendingKey]=useState(null),[notice,setNotice]=useState(''),[answers,setAnswers]=useState([]);
  const epoch=useRef(0),owner=useRef(null),controller=useRef(null),busyRef=useRef(false),imageEpoch=useRef(0),fileInput=useRef(null),previewRef=useRef(null);
  const data=account.data||{},wallet=verifiedWallet(data.wallet),allowance=verifiedAllowance(data.allowance),task=taskAvailability(data,taskId);
  const hasPending=Boolean(pendingKey||data.pendingRequests>0||history.items.some(item=>unresolvedRequest(item.state)));
- const locked=Boolean(busy||imageReading||hasPending||account.kind==='ready'&&(history.kind==='loading'||history.error));
+ const locked=Boolean(busy||imageReading||hasPending||account.kind==='ready'&&(history.kind==='loading'||history.error||(!data.proIncluded&&!data.masterPreview)));
  const symbols=Array.isArray(data.marketSymbols)?data.marketSymbols.filter(s=>typeof s==='string'):[];
  const timeframes=Array.isArray(data.marketTimeframes)?data.marketTimeframes.filter(t=>Object.hasOwn(PRO_TIMEFRAME_LABELS,t)):[];
  const selectedPersona=PERSONAS.find(p=>p.id===persona)||PERSONAS[0];
@@ -52,7 +52,7 @@ export default function GeniosPro(){
  function invalidateQuote(){setQuote(null);setConsent(false);setError('');setNotice('');}
  function clearPrivateState(){
   clearImage();setPrompt('');setQuote(null);setConsent(false);setPendingKey(null);setAnswers([]);setNotice('');setError('');
-  setHistory({kind:'loading',items:[],error:''});setPersona('genio');setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('prepaid');
+  setHistory({kind:'loading',items:[],error:''});setPersona('genio');setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('included');
  }
  async function sessionFor(expectedOwner){
   const result=await supabase?.auth.getSession(),session=result?.data?.session;
@@ -91,7 +91,7 @@ export default function GeniosPro(){
    const value=await api('access',session.access_token,{signal:controller.current.signal});
    if(!live||ticket!==epoch.current)return;
    acceptAccess(value);
-   if(verifiedAllowance(value.allowance)?.available>0)setSource('included');
+   setSource('included');
    try{
     const ledger=await api('history',session.access_token,{signal:controller.current.signal});
     if(live&&ticket===epoch.current)setHistory({kind:'ready',items:historyItems(ledger),error:''});
@@ -187,15 +187,12 @@ export default function GeniosPro(){
 
  return <main className={styles.page} data-jenios-pro="b145"><div className={styles.wrap}>
   <header className={styles.header}><div className={styles.topLinks}><Link href="/social">← JENIOS Social</Link><Link href="/social">Atendimento gratuito →</Link></div>
-   <div className={styles.tag}>JENIOS · INTELIGÊNCIA AVANÇADA</div><h1>Gênio Pro e Gênia Pro</h1><p>Aprofunde suas dúvidas, estude gráficos e acompanhe o mercado. Você escolhe a consulta e confirma o limite de consumo antes de cada resposta.</p>
+   <div className={styles.tag}>JENIOS · INTELIGÊNCIA AVANÇADA</div><h1>Gênio Pro e Gênia Pro</h1><p>Estude gráficos e contextos de mercado com apoio avançado, incluído nos planos de R$ 149,90 e R$ 199,90. Sem venda de créditos individuais.</p>
   </header>
   <section className={styles.panel} aria-label="Sua conta Pro">
    {account.kind==='checking'?<p role="status">Verificando sua conta…</p>:account.kind==='guest'?<div className={styles.sectionHeading}><div><h2>Entre para acessar o Pro</h2><p>Gênio e Gênia gratuitos continuam disponíveis na Social, sem cadastro. Sua conta permite verificar a Universidade, a franquia e os créditos Pro.</p></div><Link className={styles.primary} href="/login">Entrar na JENIOS</Link></div>:account.kind==='unavailable'?<><p role="alert" className={styles.error}>{error}</p><button type="button" className={styles.secondary} onClick={()=>setRefresh(n=>n+1)}>Verificar minha conta novamente</button></>:<>
-    <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>SUA CONTA</span><h2>{data.masterPreview?'Administrador JENIOS':PRO_PLAN_LABELS[data.planCode]||'Acesso sem assinatura'}</h2><p>{['purchased-pass','university-monthly'].includes(data.universityAccessKind)?'Universidade contratada separadamente e ativa.':data.universityIncluded?'Universidade incluída no seu plano.':'Universidade disponível separadamente por R$ 49,90 mensais.'} {data.proIncluded?'O Pro inclui uma franquia limitada.':'O Pro utiliza créditos comprados.'}</p></div><Link className={styles.secondary} href="/platform/aprender">Abrir Universidade →</Link></div>
-    <div className={styles.balanceGrid}>
-     <section className={styles.balanceCard} aria-label="Créditos comprados"><h3>Créditos comprados</h3>{wallet?<><div className={styles.balanceMain}>{formatNanoUsd(wallet.available)}<small>disponíveis</small></div><BalanceRows rows={[["Saldo total",wallet.total],["Reservado",wallet.reserved]]}/></>:<p>Saldo ainda indisponível para consulta.</p>}</section>
-     <section className={styles.balanceCard} aria-label="Franquia do plano"><h3>Franquia do plano</h3>{allowance?<><div className={styles.balanceMain}>{formatNanoUsd(allowance.available)}<small>disponíveis neste ciclo</small></div><BalanceRows rows={[["Franquia total",allowance.total],["Utilizado",allowance.spent],["Reservado",allowance.reserved]]}/>{data.allowance?.periodEnd&&<p className={styles.small}>Ciclo até {formatProDate(data.allowance.periodEnd)}.</p>}</>:<p>{!data.proIncluded?'Seu acesso não inclui franquia mensal de IA.':data.allowance?.status==='unconfigured'?'O valor da franquia ainda aguarda definição.':'Franquia temporariamente indisponível para consulta. Atualize seu histórico para conferir.'}</p>}</section>
-    </div>
+    <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>SUA CONTA</span><h2>{data.masterPreview?'Administrador JENIOS':PRO_PLAN_LABELS[data.planCode]||'Acesso sem assinatura'}</h2><p>{['purchased-pass','university-monthly'].includes(data.universityAccessKind)?'Universidade contratada separadamente e ativa.':data.universityIncluded?'Universidade incluída no seu plano.':'Universidade disponível separadamente por R$ 49,90 mensais.'} {data.proIncluded?'O suporte avançado integra o plano ativo, conforme disponibilidade.':'O suporte avançado é exclusivo dos planos Global Crypto e Internacional Pro.'}</p></div><Link className={styles.secondary} href="/platform/aprender">Abrir Universidade →</Link></div>
+    <p className={styles.small}>As consultas avançadas estão incluídas nos planos de R$ 149,90 e R$ 199,90, com limites internos de segurança. Não é necessário comprar pacotes avulsos de IA.</p>
    </>}
    <nav className={styles.links}><Link href="/platform/aprender">Universidade JENIOS →</Link><Link href="/universidade">Contratação independente da Universidade →</Link><Link href="/social">Gênio e Gênia gratuitos →</Link></nav>
   </section>
@@ -203,22 +200,23 @@ export default function GeniosPro(){
    <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>SUA PRÓXIMA CONSULTA</span><h2 id="pro-consult-title">Como podemos ajudar?</h2></div><span className={data.paidGenerationEnabled?styles.status:styles.pending}>{data.paidGenerationEnabled?'Pro disponível':'Pro em preparação'}</span></div>
    <div className={styles.personas} aria-label="Escolha seu assistente Pro">{PERSONAS.map(p=><button key={p.id} type="button" className={styles.character} aria-pressed={persona===p.id} disabled={locked} onClick={()=>{setPersona(p.id);invalidateQuote();}}><img src={p.image} alt="" width="68" height="68"/><span><strong>{p.name} Pro</strong><small>{persona===p.id?'Seu assistente selecionado':'Selecionar assistente'}</small></span></button>)}</div>
    {!data.paidGenerationEnabled&&<p className={styles.availability} role="status">{data.readinessMessage||'A IA Pro aguarda ativação. Você já pode continuar com o atendimento gratuito e os estudos disponíveis na Universidade.'}</p>}
+   {account.kind==='ready'&&!data.proIncluded&&!data.masterPreview&&<p role="status" className={styles.availability}>O atendimento comercial é gratuito. O suporte de gráficos e operações exige plano ativo a partir de R$ 149,90. <Link href="/checkout">Conhecer planos →</Link></p>}
    {hasPending&&<p role="status" className={styles.pendingNotice}>Há uma consulta com consumo em conferência. Atualize o histórico para acompanhar a confirmação; a mesma pergunta não será reenviada automaticamente.</p>}
    <form onSubmit={prepare} className={styles.form}>
-    <div className={styles.fields}><label htmlFor="pro-task">Tipo de consulta<select id="pro-task" value={taskId} disabled={locked} onChange={e=>{setTaskId(e.target.value);if(!PRO_UI_TASKS.find(t=>t.id===e.target.value)?.acceptsImage)clearImage();invalidateQuote();}}>{PRO_UI_TASKS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label><label htmlFor="pro-source">De onde usar o saldo<select id="pro-source" value={source} disabled={locked||account.kind!=='ready'} onChange={e=>{setSource(e.target.value);invalidateQuote();}}><option value="prepaid">Créditos comprados</option><option value="included" disabled={!allowance}>Franquia do plano</option></select></label></div>
+    <div className={styles.fields}><label htmlFor="pro-task">Tipo de consulta<select id="pro-task" value={taskId} disabled={locked} onChange={e=>{setTaskId(e.target.value);if(!PRO_UI_TASKS.find(t=>t.id===e.target.value)?.acceptsImage)clearImage();invalidateQuote();}}>{PRO_UI_TASKS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label></div>
     <p className={styles.taskHelp}>{task?.description}</p>
     {task?.requiresCurrentData&&<div className={styles.fields}><label htmlFor="pro-symbol">Ativo<select id="pro-symbol" value={symbol} disabled={locked||!symbols.length} onChange={e=>{setSymbol(e.target.value);invalidateQuote();}}>{!symbols.length&&<option value="">Aguardando ativos disponíveis</option>}{symbols.map(s=><option key={s} value={s}>{s}</option>)}</select></label><label htmlFor="pro-timeframe">Intervalo do gráfico<select id="pro-timeframe" value={timeframe} disabled={locked||!timeframes.length} onChange={e=>{setTimeframe(e.target.value);invalidateQuote();}}>{!timeframes.length&&<option value="">Aguardando intervalos disponíveis</option>}{timeframes.map(t=><option key={t} value={t}>{PRO_TIMEFRAME_LABELS[t]}</option>)}</select></label></div>}
     <label htmlFor="pro-prompt">Sua pergunta<textarea id="pro-prompt" value={prompt} rows={4} maxLength={2500} disabled={locked||account.kind!=='ready'} onChange={e=>{setPrompt(e.target.value);invalidateQuote();}} placeholder={taskId==='chart_screenshot'?'Ex.: quais padrões estão visíveis neste gráfico e o que a imagem não permite concluir?':'Descreva o que deseja entender e o contexto da sua dúvida.'}/><span className={styles.counter}>{prompt.length}/2.500</span></label>
     {task?.acceptsImage&&<div className={styles.upload}><label htmlFor="pro-image">{taskId==='chart_screenshot'?'Captura do gráfico':'Captura do gráfico (opcional)'}<input ref={fileInput} id="pro-image" type="file" accept="image/png,image/jpeg,image/webp" disabled={locked||account.kind!=='ready'} onChange={chooseImage}/></label><p className={styles.small}>PNG, JPEG ou WebP de até 3 MB. A imagem será enviada ao provedor somente após sua confirmação.</p>{imageReading&&<p role="status">Preparando a imagem…</p>}{attachment&&<div className={styles.preview}><img src={attachment.preview} alt="Prévia da captura que será analisada"/><div><strong>{attachment.name}</strong><small>{attachment.width} × {attachment.height} pixels</small><button type="button" className={styles.secondary} disabled={Boolean(busy)||hasPending} onClick={()=>{clearImage();invalidateQuote();}}>Remover imagem</button></div></div>}</div>}
     {task?.reason&&data.paidGenerationEnabled&&!task.available&&<p className={styles.availability}>{task.reason}</p>}
     {account.kind==='ready'&&error&&<p role="alert" className={styles.error}>{error}</p>}{notice&&<p role="status" className={styles.notice}>{notice}</p>}
-    <div className={styles.actions}><button type="submit" className={styles.primary} disabled={!canPrepare}>{busy==='quote'?'Conferindo limite…':'Ver limite de consumo'}</button><p className={styles.small}>Consultar o limite não debita seu saldo.</p></div>
+    <div className={styles.actions}><button type="submit" className={styles.primary} disabled={!canPrepare}>{busy==='quote'?'Conferindo limite…':'Preparar consulta avançada'}</button><p className={styles.small}>O sistema controla o orçamento de IA internamente.</p></div>
    </form>
-   {quote&&<section className={styles.confirmation} aria-labelledby="pro-confirm-title"><h3 id="pro-confirm-title">Confira antes de enviar</h3><p><strong>Limite máximo desta consulta: {formatNanoUsd(quote.maxRetailNanoUsd)}</strong></p><p>Usaremos {source==='included'?'a franquia do seu plano':'seus créditos comprados'}. O consumo final será de duas vezes o custo efetivo da API. A parte reservada e não utilizada será liberada.</p><p className={styles.small}>{quoteCurrent?'Estimativa válida até '+formatProDate(quote.expiresAt)+'.':'Esta estimativa venceu. Solicite um novo limite para continuar.'}</p><label className={styles.consent}><input type="checkbox" checked={consent} disabled={locked||!quoteCurrent} onChange={e=>setConsent(e.target.checked)}/><span>Autorizo enviar minha pergunta{attachment?' e esta imagem':''} à OpenAI e consumir até o limite acima nesta consulta.</span></label><button type="button" className={styles.primary} disabled={!canSend} onClick={send}>{busy==='chat'?'Preparando sua resposta…':'Confirmar e perguntar a '+selectedPersona.name+' Pro'}</button></section>}
+   {quote&&<section className={styles.confirmation} aria-labelledby="pro-confirm-title"><h3 id="pro-confirm-title">Confira antes de enviar</h3><p>Consulta incluída no seu plano ativo, sujeita à franquia interna do serviço. Nenhuma compra adicional é necessária.</p><p className={styles.small}>{quoteCurrent?'Estimativa válida até '+formatProDate(quote.expiresAt)+'.':'Esta estimativa venceu. Solicite um novo limite para continuar.'}</p><label className={styles.consent}><input type="checkbox" checked={consent} disabled={locked||!quoteCurrent} onChange={e=>setConsent(e.target.checked)}/><span>Autorizo enviar minha pergunta{attachment?' e esta imagem':''} à OpenAI para esta consulta do meu plano.</span></label><button type="button" className={styles.primary} disabled={!canSend} onClick={send}>{busy==='chat'?'Preparando sua resposta…':'Confirmar e perguntar a '+selectedPersona.name+' Pro'}</button></section>}
    <p className={styles.small}>As análises são informativas. Leituras do momento exigem dados recentes verificados; as decisões e as operações permanecem com você.</p>
   </section>
   {!!answers.length&&<section className={styles.panel} aria-label="Respostas desta sessão"><h2>Respostas desta sessão</h2><div className={styles.answers}>{answers.map(result=><article key={result.id}><div className={styles.answerHeading}><strong>{PERSONAS.find(p=>p.id===result.persona)?.name||'Gênio'} Pro</strong><small>Consumo: {formatNanoUsd(result.chargedNanoUsd)}</small></div><p className={styles.question}>{result.question}</p><div className={styles.answer}>{result.answer}</div><VerifiedSource source={result.sourceInfo}/></article>)}</div><p className={styles.small}>As consultas concluídas também podem ser consultadas no histórico desta conta.</p></section>}
-  {account.kind==='ready'&&<History state={history.kind} error={history.error} items={history.items} onRefresh={refreshLedger} busy={Boolean(busy)||imageReading}/>}
-  <ProCredits key={account.kind==='ready'?owner.current:'visitor'} userId={account.kind==='ready'?owner.current:null} offer={account.kind==='ready'?data.creditsOffer:null} request={requestCredits} onCredited={refreshLedger}/>
+  
+  
  </div></main>;
 }

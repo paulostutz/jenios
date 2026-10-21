@@ -1,0 +1,64 @@
+name: JENIOS B284 sales Genios Inter setup and safe checkout
+on:
+  push:
+    branches: [fix/jenios-b282-b284-sales-assistants-inter-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PROVIDER: 'disabled'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify B281 protection, payments and sales candidate boundaries
+        run: node scripts/platform/b284-integrity.mjs
+      - name: Test sales AI, senior plan access, ZIP and Vault setup without secrets or bank calls
+        run: |
+          node --test tests/jeniosB282B284SalesInter.test.mjs tests/jeniosSocialFreeGeniosB136.test.mjs tests/payCheckoutService.test.mjs tests/jeniosProAccessB139.test.mjs
+      - name: Install exact dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run all original regression tests and Next.js build
+        run: npm run build
+      - name: Launch local protected QA for Social B148 browser regression
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b284.log 2>&1 &
+          for i in $(seq 1 75); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/lp; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b284.log
+          exit 1
+      - name: B148 existing Social, persona and mobile browser smoke
+        run: node scripts/platform/b148-browser-smoke.mjs
+      - name: Save scoped code evidence without bank secrets
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B284_SALES_INTER_CODE_QA
+          path: |
+            docs/platform/B282-B284-SALES-INTER-DELIVERY.md
+            scripts/platform/b284-integrity.mjs
+          retention-days: 30

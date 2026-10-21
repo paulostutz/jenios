@@ -9,6 +9,7 @@ import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import s from './AssistantEntry.module.css';
 
 const AssistantRoom=dynamic(()=>import('./AssistantRoom'),{ssr:false,loading:()=> <p role="status" className={s.loading}>Abrindo atendimento…</p>});
+const FreeAssistantRoom=dynamic(()=>import('./FreeAssistantRoom'),{ssr:false});
 const PAGES=new Set(['/dashboard-logado','/dashboard','/mesa-operacoes']);
 const signed=session=>Boolean(session?.access_token&&session.user?.id&&!session.user.is_anonymous);
 
@@ -63,9 +64,10 @@ export default function AssistantEntry(){
    </nav>
    <div className={s.body}>
     {access.source==='platform'?<section className={s.connect}>
-      <strong>Conecte sua conta da JENIOS Social</strong>
-      <p>Seu login exclusivo da Platform não substitui a autorização dos módulos conectados à Social. Entre na conta da Social para conversar e salvar as preferências do atendimento.</p>
-      <a href="/login?next=/dashboard-logado">Entrar na JENIOS Social →</a>
+      <strong>Gênio e Gênia — suporte e planos</strong>
+      <p>Conecte sua conta da JENIOS Social apenas para ferramentas próprias da Social; suporte, planos e dúvidas da Platform ficam disponíveis neste atendimento.</p>
+      <FreeAssistantRoom key={access.id} initialPersona={persona} onPersonaChange={setPersona}/>
+      <a href="/checkout">Conhecer e contratar planos →</a>
      </section>:everOpened&&<AssistantRoom key={access.id} embedded onPersonaChange={setPersona}/>}
    </div>
   </section>

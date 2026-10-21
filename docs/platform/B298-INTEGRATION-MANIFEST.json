@@ -1,0 +1,144 @@
+{
+  "schema": "JENIOS_B298_SOURCE_PROVENANCE_V1",
+  "baseCommercialCommit": "b44d43a4fa6ff6249d61bf8b257b1a64105be33d",
+  "sourceResearchCommit": "9e9dd107e7e7a67c6d7ded6b7b1fd72cb44fdb7d",
+  "sourceResearchTree": "bdae6b9f91b44b13b7732914a6d5d3abff6fa408",
+  "importMode": "additive-blobs-exact-no-merge",
+  "proprietaryEngineInGit": false,
+  "externalBrokerExecutionAuthorized": false,
+  "productionReleaseAuthorized": false,
+  "files": [
+    {
+      "path": "docs/platform/B286-THREE-MODE-RESEARCH-AUDIT.md",
+      "gitBlobSha": "4c9a6a7e3cb29b5c53bb96c39d82a215d0039684"
+    },
+    {
+      "path": "docs/platform/B287-SIGNAL-WITNESS.md",
+      "gitBlobSha": "1edc53183644a9d8124eccf499b8a782a3a54015"
+    },
+    {
+      "path": "docs/platform/B288-PAIRED-THREE-MODE-VALIDATION.md",
+      "gitBlobSha": "772b479bea9c2785066e5765913cf198c6b45f60"
+    },
+    {
+      "path": "docs/platform/B289-OPERATOR-REVERSAL.md",
+      "gitBlobSha": "3ac8c77078a9182297c7b63fb49519a11d58b396"
+    },
+    {
+      "path": "docs/platform/B290-FUNCTIONAL-CONTRACT.md",
+      "gitBlobSha": "d5427dd9b4e7b176603da2cea6f9a40979cf17fb"
+    },
+    {
+      "path": "docs/platform/B291-THREE-MODE-COPILOT.md",
+      "gitBlobSha": "277b9932697bcd1957856a3dc62c965d0b0df835"
+    },
+    {
+      "path": "docs/platform/B292-THREE-MODE-EVIDENCE.md",
+      "gitBlobSha": "e86307b7d25a7c103a9cf0587be507bbc076e18b"
+    },
+    {
+      "path": "docs/platform/B293-PRIVATE-EVIDENCE-READINESS.md",
+      "gitBlobSha": "f9b19b36f95a2a56c5268be66fb1f89c31e2adbb"
+    },
+    {
+      "path": "docs/platform/B294-PRIVATE-SOURCE-AUTH.md",
+      "gitBlobSha": "bffc0c24ef63677787fb4cba2d5c4edf50a0b8b8"
+    },
+    {
+      "path": "docs/platform/B295-PRIVATE-RUNNER-ATTESTATION.md",
+      "gitBlobSha": "a97e29ed0621485630eeb58409a57ceb6ca1e9f5"
+    },
+    {
+      "path": "docs/platform/B297-PRIVATE-READONLY-AUDIT.md",
+      "gitBlobSha": "6d5898cd2ad841a7ae13964e9a795cbf3b2c8226"
+    },
+    {
+      "path": "lib/platform/research/b287-signal-witness.mjs",
+      "gitBlobSha": "14744f7c51376aab582bbe9c697bfef8725d1197"
+    },
+    {
+      "path": "lib/platform/research/b288-paired-filter-audit.mjs",
+      "gitBlobSha": "3ea3da52c4cd93f8b649218aeed81491a78293a3"
+    },
+    {
+      "path": "lib/platform/research/b289-operator-reversal-lab.mjs",
+      "gitBlobSha": "5b5393b19f7986795bc19670c5d1dfca610e2bbd"
+    },
+    {
+      "path": "lib/platform/research/b290-inversion-signal-contract.mjs",
+      "gitBlobSha": "a1e1fd80983480fe3ac3a8c4c74fd3d69c065b12"
+    },
+    {
+      "path": "lib/platform/research/b291-three-mode-copilot.mjs",
+      "gitBlobSha": "a945746cee3f17f2d273e5885ea5fd9cc5b1ed8f"
+    },
+    {
+      "path": "lib/platform/research/b292-evidence-integration.mjs",
+      "gitBlobSha": "f13360b8ed050f1da13c73cf4d4d56b995e88245"
+    },
+    {
+      "path": "lib/platform/research/b293-private-evidence-readiness.mjs",
+      "gitBlobSha": "ceffe1d19ec9a0692b7002a0422e32d036fbceda"
+    },
+    {
+      "path": "lib/platform/research/b294-private-source-authenticity.mjs",
+      "gitBlobSha": "c1822a88150398a67f8370f93ccee01aff4f4815"
+    },
+    {
+      "path": "lib/platform/research/b295-private-runner-attestation.mjs",
+      "gitBlobSha": "7723dc07fca541af389c7449e645d15c02a1a5ad"
+    },
+    {
+      "path": "lib/platform/research/b297-private-readonly-audit.mjs",
+      "gitBlobSha": "d18b31dc79bb107430d9c8349c8bfd2b061c9df1"
+    },
+    {
+      "path": "scripts/platform/research/b288-integrity.mjs",
+      "gitBlobSha": "bc8ce9aafdd74b665c84ddd3b94b13a79c2ef773"
+    },
+    {
+      "path": "scripts/platform/research/b297-capture-private-readonly.mjs",
+      "gitBlobSha": "d24f3217c5d69d7cd94797a5e600990ad5ae0e7a"
+    },
+    {
+      "path": "tests/platformB287SignalWitness.test.mjs",
+      "gitBlobSha": "dcf7ae1fc7647f77b2bc618aeff1a7850ac759aa"
+    },
+    {
+      "path": "tests/platformB288PairedFilterAudit.test.mjs",
+      "gitBlobSha": "e7c0f628bb0f8de3adfd6d4e8c3140cf3a799bce"
+    },
+    {
+      "path": "tests/platformB289OperatorReversal.test.mjs",
+      "gitBlobSha": "c8d0a92311fd2c6d9a3c084a99f08c29cbe6c8c2"
+    },
+    {
+      "path": "tests/platformB290InversionSignalContract.test.mjs",
+      "gitBlobSha": "44855a46c0def4ce1e25f09e6bf508893c65ce0e"
+    },
+    {
+      "path": "tests/platformB291ThreeModeCopilot.test.mjs",
+      "gitBlobSha": "beb19d1a147def62de8060af8bcae6a4c20b5ab4"
+    },
+    {
+      "path": "tests/platformB292EvidenceIntegration.test.mjs",
+      "gitBlobSha": "cb6d9bf76ced702be0eb7090928c9f3a9d6bf77b"
+    },
+    {
+      "path": "tests/platformB293PrivateEvidenceReadiness.test.mjs",
+      "gitBlobSha": "4181f43b25168e993a0b90264c65557c761a7268"
+    },
+    {
+      "path": "tests/platformB294PrivateSourceAuthenticity.test.mjs",
+      "gitBlobSha": "741779f759b28f27a3b970fef289215ad0f28498"
+    },
+    {
+      "path": "tests/platformB295PrivateRunnerAttestation.test.mjs",
+      "gitBlobSha": "48d55072602bdacb066b093860857ac56c9bd141"
+    },
+    {
+      "path": "tests/platformB297PrivateReadOnlyAudit.test.mjs",
+      "gitBlobSha": "bab4e28dcfbc5fb8252ba0002d12982f98cf80f6"
+    }
+  ]
+}

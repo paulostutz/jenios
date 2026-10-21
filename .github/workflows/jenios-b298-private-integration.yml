@@ -1,0 +1,76 @@
+name: JENIOS B298 isolated integration CI - no deploy
+on:
+  push:
+    branches: [fix/jenios-b298-integrated-release-reconciliation-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_local_fixture'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_local_fixture'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'false'
+      JENIOS_PAY_PROVIDER: disabled
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Validate exact original SHA provenance and diff scope
+        run: node scripts/platform/research/b298-verify-convergence.mjs
+      - name: Install dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Strict B290-B292 financial-proof gates
+        env:
+          JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'true'
+        run: node --test tests/jeniosB290QaFinancialProof.test.mjs tests/jeniosB291QaIntegratedPreview.test.mjs tests/jeniosB292QaStrictAccessPropagation.test.mjs
+      - name: Integrated research and three-mode contract tests
+        run: |
+          node --test tests/jeniosB298Convergence.test.mjs tests/platformB287SignalWitness.test.mjs tests/platformB288PairedFilterAudit.test.mjs tests/platformB289OperatorReversal.test.mjs tests/platformB290InversionSignalContract.test.mjs tests/platformB291ThreeModeCopilot.test.mjs tests/platformB292EvidenceIntegration.test.mjs tests/platformB293PrivateEvidenceReadiness.test.mjs tests/platformB294PrivateSourceAuthenticity.test.mjs tests/platformB295PrivateRunnerAttestation.test.mjs tests/platformB297PrivateReadOnlyAudit.test.mjs
+      - name: Full regression and Next build
+        run: npm run build
+      - name: Start localhost only
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 >/tmp/jenios-b298.log 2>&1 &
+          for i in $(seq 1 75); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/lp; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b298.log
+          exit 1
+      - name: Public auth/API/checkout localhost smoke
+        run: node scripts/platform/b293-qa-guest-smoke.mjs
+      - name: Sales/Platform browser
+        run: node scripts/platform/b284-sales-browser-smoke.mjs
+      - name: University guest browser
+        run: node scripts/platform/learning/b276-browser-smoke.mjs
+      - name: Preserve non-proprietary certification
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B298_ISOLATED_CONVERGENCE
+          path: |
+            docs/platform/B298-INTEGRATION-MANIFEST.json
+            docs/platform/B298-PRIVATE-INTEGRATION-CHECKPOINT.md
+            tests/jeniosB298Convergence.test.mjs
+            scripts/platform/research/b298-verify-convergence.mjs
+          retention-days: 30

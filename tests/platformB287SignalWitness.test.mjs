@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {inspectFrozenSignalBatch,scoreWitnessedSignals} from '../lib/platform/research/b287-signal-witness.mjs';
+const t=Date.parse('2026-10-21T16:00:00Z'),close=t+3600000,observed=close+300000;
+const signals=['manual','hybrid','reverse'].map((mode,i)=>({id:'s'+i,mode,asset:'BTC-USD',signalAtMs:t-60000,targetCloseMs:close,direction:i===1?'ABSTAIN':i===2?'DOWN':'UP',isOrder:false,executed:false,realizedPnl:null}));
+const core={schema:'JENIOS_B287_SIGNAL_BATCH_V1',frozenAtMs:t,signals};
+const batch={...core,sha256:createHash('sha256').update(JSON.stringify(core)).digest('hex')};
+const outcomes=signals.map(s=>({id:s.id,asset:s.asset,targetCloseMs:close,observedAtMs:observed,open:100,close:101,signedByIndependentSource:false,orderExecuted:false}));
+test('B287 freezes 3 modes without asserting proprietary identity or orders',()=>{const r=inspectFrozenSignalBatch(batch,{nowMs:t});assert.equal(r.total,3);assert.equal(r.ordersSent,0);assert.equal(r.profitPct,null);assert.equal(r.privateCoreIdentityAttested,false);});
+test('B287 descriptive accuracy, abstention, no PnL claim',()=>{const r=scoreWitnessedSignals(batch,outcomes,{observedAtMs:observed});assert.equal(r.summary.manual.accuracyPct,100);assert.equal(r.summary.reverse.accuracyPct,0);assert.equal(r.summary.hybrid.abstained,1);assert.equal(r.netReturnPct,null);});
+test('B287 rejects edited signals and missing modes',()=>{assert.throws(()=>inspectFrozenSignalBatch({...batch,signals:[...signals.slice(0,2),{...signals[2],direction:'UP'}]},{nowMs:t}),/B287_SIGNAL_BATCH_TAMPERED/);assert.throws(()=>inspectFrozenSignalBatch({...batch,signals:signals.slice(0,2)},{nowMs:t}),/B287_INVALID_BATCH/);});
+test('B287 refuses future observation and duplicate outcomes',()=>{assert.throws(()=>scoreWitnessedSignals(batch,outcomes,{observedAtMs:close}),/B287_UNTRUSTED_OR_EARLY_OUTCOME/);assert.throws(()=>scoreWitnessedSignals(batch,[outcomes[0],outcomes[0],outcomes[2]],{observedAtMs:observed}),/B287_DUPLICATE_OUTCOME/);});

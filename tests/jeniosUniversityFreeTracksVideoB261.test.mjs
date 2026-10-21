@@ -56,15 +56,17 @@ test('student page has simple track cards, no placement, no blocked lesson, and 
  assert.match(ui,/STUDY_GUIDES/);assert.match(ui,/USER_VIDEO_RESOURCES/);
  assert.doesNotMatch(ui,/localStorage|QUESTION_BANK|\.answer\b/);
 });
-test('all 20 supplied YouTube resources are distinct, safe links and honestly labeled',()=>{
- assert.equal(USER_VIDEO_RESOURCES.length,20);
- const ids=new Set(USER_VIDEO_RESOURCES.map(x=>x.id));assert.equal(ids.size,20);
+test('all 56 supplied YouTube resources are distinct, safe links and honestly labeled',()=>{
+ assert.equal(USER_VIDEO_RESOURCES.length,56);
+ const ids=new Set(USER_VIDEO_RESOURCES.map(x=>x.id));assert.equal(ids.size,56);
  assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.kind==='playlist').length,3);
  assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='transcript_reviewed').length,13);
  assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='metadata_verified_no_captions').length,3);
  assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='metadata_verified_music_only').length,1);
+ assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='needs_video_review').length,36);
+ assert.ok(USER_VIDEO_RESOURCES.filter(x=>x.verification==='needs_video_review').every(x=>x.channel===null&&x.trackId==='biblioteca'&&x.title.startsWith('Vídeo enviado para estudo')));
  assert.ok(USER_VIDEO_RESOURCES.every(x=>/^https:\/\/www\.youtube\.com\/(?:watch\?v=|shorts\/|playlist\?list=)/.test(x.url)));
- assert.ok(USER_VIDEO_RESOURCES.every(x=>['transcript_reviewed','metadata_verified_no_captions','metadata_verified_music_only','needs_playlist_review'].includes(x.verification)));
+ assert.ok(USER_VIDEO_RESOURCES.every(x=>['transcript_reviewed','metadata_verified_no_captions','metadata_verified_music_only','needs_playlist_review','needs_video_review'].includes(x.verification)));
  assert.ok(USER_VIDEO_RESOURCES.every(x=>x.note&&!x.note.includes('assistido por completo')));
 });
 test('educational notes are original, one per track, with no quiz gate or calls to trading APIs',()=>{

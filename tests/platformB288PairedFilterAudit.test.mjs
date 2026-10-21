@@ -160,3 +160,18 @@ test('B288 tiny sample and zero orders never become statistical certification',(
  assert.equal(x.executionFillVerified,false);
  assert.equal(x.counterfactual30_30.filteredSignals>=0,true);
 });
+
+test('B288 source candle digest covers canonical market fields only, never observation IDs',()=>{
+ const sample=fixtures(6),r=run(sample);
+ for(const source of r.sourceCandleHashes){
+  const o=sample.observations.find(x=>x.asset===source.asset&&
+   x.targetCloseMs===source.targetCloseMs);
+  const canonical={asset:o.asset,targetCloseMs:o.targetCloseMs,open:o.open,
+   high:o.high,low:o.low,close:o.close,volume:o.volume};
+  assert.equal(source.ohlcvSha256,sha(canonical));
+ }
+ const changed=fixtures(6);
+ changed.observations=changed.observations.map(o=>({...o,observedAtMs:o.observedAtMs+1000}));
+ changed.observedAtMs+=1000;
+ assert.deepEqual(run(sample).sourceCandleHashes,run(changed).sourceCandleHashes);
+});

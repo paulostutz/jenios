@@ -68,7 +68,8 @@ for(const [file,markers] of safety){const s=readFileSync(file,'utf8');
 const unit=readFileSync('deploy/private/jenios-paper-observer.service.example','utf8');
 for(const mark of ['Type=oneshot','Restart=no','ExecStartPre=','--check','--once'])
  assert.ok(unit.includes(mark),'B215_UNSAFE_UNIT '+mark);
-assert.doesNotMatch(unit,/\[Install\]|WantedBy=|ExecStart=.*(--prod|--trade)/);
+const activeUnit=unit.split(/\r?\n/).filter(line=>!/^\s*[#;]/.test(line)).join('\n');
+assert.doesNotMatch(activeUnit,/^\s*\[Install\]\s*$|^\s*WantedBy\s*=|^\s*ExecStart\s*=.*(?:--prod|--trade)/m);
 for(const forbidden of ['app/api/platform/broker-execution/route.js',
  'app/api/platform/paper-execution/route.js',
  'app/api/platform/live-trading/route.js',

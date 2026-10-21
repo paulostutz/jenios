@@ -7,7 +7,7 @@ import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
 const m=JSON.parse(readFileSync(new URL('../docs/platform/B298-INTEGRATION-MANIFEST.json',import.meta.url)));
 test('B298 41 original research blobs retained bit-for-bit',()=>{
  assert.equal(m.files.length,41);
- assert.equal(new Set(m.files.map(x=>x.path)).size,33);
+ assert.equal(new Set(m.files.map(x=>x.path)).size,41);
  for(const {path,gitBlobSha} of m.files){
   const bytes=readFileSync(new URL('../'+path,import.meta.url));
   const result=createHash('sha1').update('blob '+bytes.length+String.fromCharCode(0)).update(bytes).digest('hex');

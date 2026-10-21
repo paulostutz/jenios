@@ -1,0 +1,46 @@
+name: JENIOS B297 private readonly decision audit
+on:
+  push:
+    branches: [fix/jenios-b297-private-original-readonly-audit-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install only build dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: B297 and prior fail-closed contracts (no private sources in CI)
+        run: node --test tests/platformB297PrivateReadOnlyAudit.test.mjs tests/platformB295PrivateRunnerAttestation.test.mjs tests/platformB290InversionSignalContract.test.mjs
+      - name: Full regression and build
+        run: npm run build
+      - name: Archive non-proprietary evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B297_READONLY_AUDIT_CI
+          path: |
+            lib/platform/research/b297-private-readonly-audit.mjs
+            scripts/platform/research/b297-capture-private-readonly.mjs
+            tests/platformB297PrivateReadOnlyAudit.test.mjs
+            docs/platform/B297-PRIVATE-READONLY-AUDIT.md
+          retention-days: 30

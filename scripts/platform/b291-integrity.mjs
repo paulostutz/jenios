@@ -20,7 +20,11 @@ const additions=[
  'tests/jeniosB290QaFinancialProof.test.mjs',
  'tests/jeniosB291QaPreviewRelease.test.mjs'
 ];
-const changes=['lib/assistant/pro-access.mjs','lib/release/environment-scope.mjs'];
+const changes=[
+ 'lib/assistant/pro-access.mjs','lib/release/environment-scope.mjs',
+ 'lib/learning/access.mjs','lib/assistant/university-subscription.mjs',
+ 'lib/assistant/pro-service.mjs','tests/learningR26.test.mjs'
+];
 const allow=new Map([...additions.map(x=>[x,'A']),...changes.map(x=>[x,'M'])]);
 const diff=execFileSync('git',['diff','--name-status','--no-renames',BASE,'HEAD'],{encoding:'utf8'})
  .trim().split('\n').filter(Boolean).map(x=>x.split('\t'));
@@ -40,10 +44,10 @@ const preserved=[
  'app/api/assistant/pro/quote/route.js',
  'app/api/platform/learning/route.js','app/api/platform/admin/access/route.js',
  'app/api/jenios-pay/checkout/route.js',
- 'lib/assistant/pro-service.mjs','lib/assistant/sales-provider.mjs',
- 'lib/assistant/knowledge.mjs','lib/assistant/university-subscription.mjs',
+ 'lib/assistant/sales-provider.mjs',
+ 'lib/assistant/knowledge.mjs',
  'lib/learning/catalog.mjs','lib/learning/engine.mjs',
- 'lib/learning/access.mjs','lib/learning/repository.mjs',
+ 'lib/learning/repository.mjs',
  'lib/pay/checkout.mjs','lib/pay/gateway.mjs','lib/pay/inter-pix.mjs',
  'lib/pay/pix-status.mjs','lib/pay/auth.mjs','lib/pay/catalog.mjs',
  'lib/pay/inter-vault.mjs',
@@ -80,5 +84,5 @@ const evidence=readFileSync('lib/assistant/verified-subscription-b290.mjs','utf8
 assert.match(evidence,/bank_end_to_end_id/);
 assert.doesNotMatch(evidence,/\bfetch\s*\(|\bXMLHttpRequest\b/);
 assert.equal(additions.length,15);
-assert.equal(changes.length,2);
-console.log('B291_RELEASE_SCOPE_PASS 15 additive + 2 QA-only changed; no PAY, proprietary engines, Social or University drift');
+assert.equal(changes.length,6);
+console.log('B291_RELEASE_SCOPE_PASS 15 additive + 6 QA-only changed; no PAY, proprietary engines, Social or University drift');

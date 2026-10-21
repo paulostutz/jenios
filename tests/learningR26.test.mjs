@@ -4,11 +4,15 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {initialState,transition,newQuiz,projectQuiz,gradeQuiz,trackUnlocked,projectState,projectLesson,buildLearningRoute,reserveTutor,LEARNING_POLICY} from '../lib/learning/engine.mjs';
 import {CURRICULUM_VERSION,TRACKS,LESSONS,SOURCES} from '../lib/learning/catalog.mjs';
 import {QUESTION_BANK} from '../lib/learning/question-bank.mjs';
-import {requireLearner,LEARNING_PRODUCTS} from '../lib/learning/access.mjs';
+import {requireLearner as requireLearnerServer,LEARNING_PRODUCTS} from '../lib/learning/access.mjs';
 import {learnerRepository} from '../lib/learning/repository.mjs';
 import {handleLearning,boundedJson} from '../lib/learning/service.mjs';
 import {tutorInput,replyAsTutor,sensitiveInput} from '../lib/learning/tutor.mjs';
-const NOW=Date.parse('2026-10-16T14:00:00Z');
+// Original learning fixtures use synthetic subscriptions without provider receipts.
+ // Explicitly opt out of strict QA bank proof here; Preview requests remain strict.
+ const requireLearner=(request,db,now=Date.now(),env={})=>
+  requireLearnerServer(request,db,now,{...env,JENIOS_QA_STRICT_SUBSCRIPTION_PROOF:'false'});
+ const NOW=Date.parse('2026-10-16T14:00:00Z');
 const A='11111111-1111-4111-8111-111111111111',B='22222222-2222-4222-8222-222222222222';
 const onboarding={action:'onboard',experience:'new',goal:'swing',minutes:20,persona:'genia',aiConsent:false};
 const correctAnswers=quiz=>Object.fromEntries(quiz.questions.map(q=>[q.id,q.order.indexOf(QUESTION_BANK.find(x=>x.id===q.id).answer)]));

@@ -80,3 +80,14 @@ test('B291 only expected files may differ and all high-risk systems remain prote
  const pdf=readFileSync(new URL('../docs/platform/B291-QA-INTEGRATED-LAUNCH-CANDIDATE.md',import.meta.url),'utf8');
  assert.match(pdf,/não autoriza o lançamento comercial/i);
 });
+
+test('B291 all production service entrypoints propagate explicit strict QA receipt flag',()=>{
+ const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+ for(const path of ['lib/learning/access.mjs','lib/assistant/university-subscription.mjs','lib/assistant/pro-service.mjs']){
+  const source=read(path);
+  assert.ok(source.includes("strict:env?.JENIOS_QA_STRICT_SUBSCRIPTION_PROOF==='true'"),path);
+ }
+ const legacy=read('tests/learningR26.test.mjs');
+ assert.ok(legacy.includes("JENIOS_QA_STRICT_SUBSCRIPTION_PROOF:'false'"));
+ assert.ok(read('lib/assistant/pro-access.mjs').includes("verifiedPlatformEvidenceB290"));
+});

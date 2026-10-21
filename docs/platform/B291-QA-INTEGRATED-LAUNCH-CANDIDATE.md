@@ -26,3 +26,6 @@
 Sem alteração no domínio `jenios.com.br` nem no deployment B177-R3. Para rollback futuro, usar apenas o deployment production-ready `dpl_7omqt69GFwJRMEUp4QCyx5hXrciF` após verificar projeto, domínio e autorização; **não executar rollback agora**.
 Crie checkpoint e backup da branch após CI, e salve evidências em `/JENIOS/Checkpoints/B289-B291`. Não mesclar código de pesquisa paralelo dos robôs sem revisão.
 **Esta versão candidata não autoriza o lançamento comercial nem execução de ordens.**
+
+## Compatibilidade dos testes de aprendizagem em Preview QA
+O modo de verificação financeira estrita é passado explicitamente pelos serviços de aprendizagem, mensalidade da Universidade e Gênios Pro por meio do `env` recebido do servidor. Testes antigos com assinaturas sintéticas agora passam explicitamente `JENIOS_QA_STRICT_SUBSCRIPTION_PROOF=false` **apenas dentro do fixture de teste**, sem suprimir o gate do runtime Preview, que continua exigindo `true`. Nunca alterar a configuração Preview para contornar testes de pagamentos fictícios.

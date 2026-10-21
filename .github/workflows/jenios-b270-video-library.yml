@@ -1,0 +1,88 @@
+name: JENIOS B266-B270 additional trading videos and University source integrity
+on:
+  push:
+    branches: [fix/jenios-b266-b270-extra-trade-videos-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Create redacted evidence directory
+        run: |
+          mkdir -p .jenios-b270-ci
+          git rev-parse HEAD > .jenios-b270-ci/COMMIT.txt
+      - name: Preserve B265-R7 source, reject trading/payment changes and validate 36 user videos
+        run: node scripts/platform/learning/b270-integrity.mjs
+      - name: Validate 56 source labels, University free access and research evidence fences
+        run: |
+          node --test tests/jeniosUniversityFreeTracksVideoB261.test.mjs tests/jeniosTradeVideosSupplementB266.test.mjs tests/platformTradingVideoStudy.test.mjs tests/jeniosUniversityDailyB130.test.mjs tests/jeniosUniversityCompletionB141.test.mjs tests/learningR26.test.mjs
+      - name: Install frozen dependencies without install scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full test regression Social S05 and Next.js production-type build
+        run: |
+          npm run build > .jenios-b270-ci/build.log 2>&1 || { tail -n 130 .jenios-b270-ci/build.log; exit 1; }
+          tail -n 32 .jenios-b270-ci/build.log
+      - name: Launch localhost with trading and payments disabled
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b270.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/universidade; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b270.log
+          exit 1
+      - name: Public learner access is simple; brokerage POST remains absent
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          const root='http://127.0.0.1:3127';
+          const r=await fetch(root+'/universidade');assert.equal(r.status,200);
+          const s=await r.text();assert.match(s,/Escolha livremente onde começar/);
+          assert.doesNotMatch(s,/JENIOS_PAPER_OBSERVER_KEY_B64|JENIOS_DEMO_VAULT_KEY_B64/);
+          for(const route of ['/api/platform/broker-execution','/api/platform/paper-execution','/api/platform/live-trading'])
+            assert.equal((await fetch(root+route,{method:'POST'})).status,404,route);
+          console.log('B270_EDUCATIONAL_REFERENCES_NO_REAL_TRADING');
+          JS
+      - name: Browser regressions for existing Social Gênios and University
+        run: |
+          node scripts/platform/connections/browser-smoke.mjs
+          node scripts/platform/b148-browser-smoke.mjs
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive certified public source without secrets
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b270-ci/JENIOS_B270_PUBLIC_SOURCE.zip HEAD
+          sha256sum .jenios-b270-ci/JENIOS_B270_PUBLIC_SOURCE.zip > .jenios-b270-ci/SHA256SUMS.txt
+      - name: Preserve CI evidence regardless of outcome
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B270_TRADE_VIDEO_LIBRARY_CI
+          path: .jenios-b270-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

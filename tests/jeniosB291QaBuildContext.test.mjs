@@ -14,7 +14,7 @@ test('B291 only synthetic legacy fixtures disable strict evidence; never QA runt
  assert.match(runner,/process\.env\.VERCEL_ENV==='preview'/);
  assert.match(runner,/process\.env\.VERCEL_GIT_COMMIT_REF===BRANCH/);
  assert.match(runner,/if\(qa&&strict!=='true'\)/);
- assert.match(runner,/JENIOS_QA_CANNOT_BUILD_WITHOUT_FINANCIAL_PROOF/);
+ assert.match(runner,/B291_QA_CANNOT_BUILD_WITHOUT_FINANCIAL_PROOF/);
  assert.match(runner,/JENIOS_QA_STRICT_SUBSCRIPTION_PROOF:'false'/);
  assert.match(runner,/else[\s\S]*?\bconst env=qa\?/);
  assert.doesNotMatch(runner,/\bprocess\.env\.JENIOS_QA_STRICT_SUBSCRIPTION_PROOF\s*=/);

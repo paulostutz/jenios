@@ -16,7 +16,7 @@ jobs:
       NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_local_fixture'
       NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_local_fixture'
-      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'true'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'false'
       JENIOS_PAY_PROVIDER: disabled
       JENIOS_SALES_GENERATIVE_ENABLED: 'false'
       JENIOS_INTER_CHARGES_ENABLED: 'false'
@@ -34,9 +34,10 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: QA gates, financial receipt and University schema
-        run: |
-          node --test tests/jeniosB291QaIntegratedPreview.test.mjs tests/jeniosB290QaFinancialProof.test.mjs tests/jeniosB289QaSchema.test.mjs tests/jeniosB285R2IntegratedSandbox.test.mjs
+      - name: QA strict financial proof and preview isolation tests
+        run: JENIOS_QA_STRICT_SUBSCRIPTION_PROOF=true node --test tests/jeniosB291QaIntegratedPreview.test.mjs tests/jeniosB290QaFinancialProof.test.mjs
+      - name: Legacy synthetic regression without external bank receipts
+        run: node --test tests/jeniosB289QaSchema.test.mjs tests/jeniosB285R2IntegratedSandbox.test.mjs
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full regression suite and production-type Next build

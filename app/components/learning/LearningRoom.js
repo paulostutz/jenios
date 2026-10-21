@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {supabase} from '../../../lib/supabase';
 import {STUDY_GUIDES} from '../../../lib/learning/trade-study-guides.mjs';
+import {PRACTICAL_STUDY_WORKSHOPS} from '../../../lib/learning/trade-study-workshops-b271.mjs';
 import {USER_VIDEO_RESOURCES} from '../../../lib/learning/trade-video-resources.mjs';
 import ChartLab from './ChartLab';
 import styles from './LearningRoom.module.css';
@@ -18,6 +19,7 @@ export default function LearningRoom(){
  const owner=useRef(null),epoch=useRef(0),alive=useRef(false),lock=useRef(false),lessonEpoch=useRef(0),activeAbort=useRef(null);
  const learning=data?.learning,tracks=learning?.route||[],currentTrack=tracks.find(t=>t.id===activeTrack)||tracks[0];
  const guide=STUDY_GUIDES.find(x=>x.trackId===currentTrack?.id);
+ const workshops=PRACTICAL_STUDY_WORKSHOPS.filter(x=>x.trackId===currentTrack?.id);
  const references=USER_VIDEO_RESOURCES.filter(x=>x.trackId===currentTrack?.id);
  const allResources=USER_VIDEO_RESOURCES;
  function clear(){setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setActiveTrack('fundamentos');}
@@ -123,6 +125,7 @@ export default function LearningRoom(){
       </section>
      </>}
      {guide&&<section className={styles.card} aria-label="Aprofundamento original JENIOS"><div className={styles.tag}>ESTUDO COMPLEMENTAR</div><h2>{guide.title}</h2><p>{guide.concept}</p><div className={styles.example}><strong>Prática sugerida:</strong> {guide.activity}</div><details><summary className={styles.moreSummary}>Explorar os conceitos desta trilha</summary>{guide.topics?.map(topic=><div key={topic.title}><h3>{topic.title}</h3><p>{topic.explanation}</p></div>)}</details><p className={styles.small}>Síntese educativa original da JENIOS; não é transcrição de vídeo nem sinal de operação.</p></section>}
+     {workshops.length>0&&<section className={styles.card} aria-label="Oficinas de estudo"><div className={styles.tag}>APROFUNDAMENTO LIVRE</div><h2>Oficinas práticas opcionais</h2><p>Dez atividades originais para ampliar as cinco trilhas. Não vale nota e não desbloqueia operações.</p>{workshops.map(w=><details key={w.id}><summary className={styles.moreSummary}>{w.title}</summary><p>{w.explanation}</p><ol>{w.steps.map((step,i)=><li key={i}>{step}</li>)}</ol><div className={styles.example}><strong>Exemplo didático:</strong> {w.example}</div><p><strong>Experimente:</strong> {w.practice}</p><p><strong>Como conferir:</strong> {w.selfCheck}</p><p className={styles.small}>{w.caution} Material educativo original, sem sinal nem transcrição copiada.</p></details>)}</section>}
      {references.length>0&&<section className={styles.card}><h2>Vídeos relacionados para conferir</h2><p className={styles.small}>Títulos confirmados na fonte; quando existem legendas, os conceitos foram estudados. Não foram auditadas taxas de acerto nem todas as imagens.</p>{references.map(x=><p key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span className={styles.small}> — {x.note}</span></p>)}</section>}
      <section className={styles.card}><details><summary className={styles.moreSummary}>Biblioteca de vídeos e playlists enviados ({allResources.length} links)</summary><p className={styles.small}>Explore os links enviados, sem testes obrigatórios. Materiais novos ficam marcados como pendentes de revisão até conferirmos título e conteúdo. Isso não representa sinal de operação.</p><ul className={styles.resourceList}>{allResources.map(x=><li key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span>{x.verification==='transcript_reviewed'?'Legenda analisada':x.verification==='needs_video_review'?'Novo material — conteúdo a conferir':x.verification.startsWith('metadata_verified')?'Título confirmado; sem regras completas':'Playlist a conferir'}</span></li>)}</ul></details></section>
      <p className={styles.small}>{learning.notice}</p>

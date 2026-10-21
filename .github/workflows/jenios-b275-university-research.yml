@@ -1,0 +1,49 @@
+name: JENIOS B271-B275 University optional workshops and offline research
+on:
+  push:
+    branches: [fix/jenios-b271-b275-university-research-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Validate B270 frozen boundary and B275 study contract
+        run: |
+          node scripts/platform/learning/b275-integrity.mjs
+          node --test tests/jeniosB271B275LearningResearch.test.mjs tests/jeniosTradeVideosSupplementB266.test.mjs tests/jeniosUniversityFreeTracksVideoB261.test.mjs tests/platformTradingVideoStudy.test.mjs
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Build and full release regressions
+        run: npm run build
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B275_RESEARCH_AND_UNIVERSITY_CI
+          path: |
+            docs/learning/B271-B275-UNIVERSIDADE-LAB.md
+            scripts/platform/learning/b275-integrity.mjs
+          retention-days: 30

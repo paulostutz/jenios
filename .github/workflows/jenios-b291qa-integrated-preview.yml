@@ -40,6 +40,12 @@ jobs:
         run: node --test tests/jeniosB289QaSchema.test.mjs tests/jeniosB285R2IntegratedSandbox.test.mjs
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Validate B291 production-like preview test isolation
+        env:
+          VERCEL_ENV: preview
+          VERCEL_GIT_COMMIT_REF: fix/jenios-b291qa-integrated-preview-20261021
+          JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'true'
+        run: node scripts/platform/b291-qa-test-context.mjs
       - name: Full regression suite and production-type Next build
         run: npm run build
       - name: Start localhost with no external actions

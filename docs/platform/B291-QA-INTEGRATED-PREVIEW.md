@@ -18,3 +18,6 @@ Os projetos QA possuem zero usuários Auth e nenhuma credencial real de Inter ou
 
 ## Critérios de release
 Não publicar produção sem aceite explícito, comprovação de pedido e recibo bancário real, E2E autenticado, segurança e rollback. O estado B291 é candidato QA e não produto publicável. Planejar B292 como checklist final de consolidação e rollback.
+
+## Build QA com testes legados separados
+Em Preview B291, a verificação inicial de escopo exige a prova financeira estrita. O comando npm test executa primeiro os testes específicos B290/B291 com a prova estrita verdadeira; depois executa apenas os testes históricos sintéticos com uma cópia de variáveis em que somente JENIOS_QA_STRICT_SUBSCRIPTION_PROOF está falsa. Nenhuma variável global é modificada. A etapa seguinte de testes S05 e a compilação Next.js mantêm o ambiente QA original. Fora da branch B291 o runner executa a suíte geral sem qualquer alteração de ambiente. Esse procedimento evita transformar um teste legado com assinatura sintética em suposta evidência de pagamento bancário.

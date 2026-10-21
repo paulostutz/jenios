@@ -42,7 +42,7 @@ test('B285-R2 free, Nacional, Crypto and Internacional tiers',()=>{
 });
 test('B285-R2 renewals, duplicate events and out-of-order protection',()=>{
  const renewal=e(3,'renewed','platform-global-crypto',{
-  periodStart:at(NOW+29*DAY),periodEnd:at(NOW+59*DAY)
+  periodStart:at(NOW-DAY),periodEnd:at(NOW+59*DAY)
  });
  const stream=[request(),confirm(),renewal,renewal];
  const result=simulateB285R2Subscription(stream,{nowMs:NOW+10000});
@@ -112,7 +112,7 @@ test('B285-R2 University, Social, landing and Platform existing access surfaces 
 });
 test('B285-R2 production billing remains blocked until external verification',()=>{
  const checkout=read('lib/pay/checkout.mjs');
- assert.match(checkout,/paymentConfig\\.provider==='inter_pix'&&scope!=='social'/);
+ assert.ok(checkout.includes("paymentConfig.provider==='inter_pix'&&scope!=='social'"));
  assert.match(read('lib/platform/checkout-readiness.mjs'),/subscriptionLifecycleReady===true/);
  assert.match(read('lib/assistant/pro-service.mjs'),/ADVANCED_PLAN_REQUIRED/);
 });

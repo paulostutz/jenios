@@ -183,3 +183,41 @@ test('B276 UI cancels in-flight lessons when switching tracks, clearing auth or 
  assert.match(css,/@media\(max-width:380px\)/);
  assert.doesNotMatch(ui,/start_quiz|submit_quiz|QUESTION_BANK|\\.answer\\b/);
 });
+
+import {LESSON_VISUAL_SCENES,WORKSHOP_TO_LESSON_SCENE,visualForLesson,visualForWorkshop} from '../lib/learning/lesson-visual-scenes-b276.mjs';
+test('B276-R2 all 15 lessons have one original labeled, accessible and non-operational SVG scene',()=>{
+ const ids=LESSONS.map(x=>x.id);
+ assert.deepEqual(Object.keys(LESSON_VISUAL_SCENES).sort(),[...ids].sort());
+ const accepted=new Set(['flow','timeline','risk','candles','trend','costs','indicators','expectancy']);
+ for(const id of ids){
+  const v=visualForLesson(id);
+  assert.ok(v&&accepted.has(v.kind)&&v.title.length>=12&&v.alt.length>=55&&v.caption.length>=50);
+  assert.doesNotMatch(v.caption,/lucro garantido|recomendação de compra|sinal em tempo real/i);
+ }
+ assert.equal(visualForLesson('unknown'),null);
+});
+test('B276-R2 all 10 optional workshops reuse relevant source-free didactic scenes',()=>{
+ assert.deepEqual(Object.keys(WORKSHOP_TO_LESSON_SCENE).sort(),PRACTICAL_STUDY_WORKSHOPS.map(x=>x.id).sort());
+ for(const workshop of PRACTICAL_STUDY_WORKSHOPS){
+  const v=visualForWorkshop(workshop.id);
+  assert.ok(v?.alt&&v?.caption,workshop.id);
+  assert.ok(LESSONS.some(x=>x.id===WORKSHOP_TO_LESSON_SCENE[workshop.id]));
+ }
+ assert.equal(visualForWorkshop('unknown'),null);
+});
+test('B276-R2 visual components are embedded in the selected lesson and workshop panels, responsive and self-contained',()=>{
+ const room=readFileSync(new URL('../app/components/learning/LearningRoom.js',import.meta.url),'utf8');
+ const visual=readFileSync(new URL('../app/components/learning/LessonVisual.js',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../app/components/learning/LearningRoom.module.css',import.meta.url),'utf8');
+ assert.match(room,/import LessonVisual from '\.\/LessonVisual'/);
+ assert.match(room,/<LessonVisual lessonId=\{lesson\.id\}\/>/);
+ assert.match(room,/<LessonVisual workshopId=\{w\.id\}\/>/);
+ assert.match(visual,/data-study-illustration/);
+ assert.match(visual,/role="img"/);
+ assert.match(visual,/aria-label=\{scene\.alt\}/);
+ assert.match(visual,/<desc>\{scene\.alt\}<\/desc>/);
+ assert.match(visual,/Não representa cotação/);
+ assert.doesNotMatch(visual,/\bfetch\s*\(|https?:\/\/|process\.env|orderIntent|\.push\(\s*['"]checkout/i);
+ assert.match(css,/\.studyIllustrationSvg\{width:100%;height:auto;max-width:100%/);
+ assert.match(css,/@media\(max-width:600px\)/);
+});

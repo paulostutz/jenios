@@ -84,3 +84,11 @@
 .lessonButton{min-height:44px;box-sizing:border-box;}
 .moreSummary{min-height:44px;box-sizing:border-box;padding:10px 0;}
 @media(max-width:380px){.routeGrid{grid-template-columns:1fr;}.routeButton{min-height:110px;}}
+
+/* B276-R2: lesson and workshop diagrams — accessible text captions and inline SVG. */
+.studyIllustration{display:grid;gap:10px;margin:20px 0;padding:16px;background:#f8fafc;border:1px solid #dbe4ed;border-radius:16px;min-width:0;box-sizing:border-box;}
+.studyIllustrationTitle{font-size:16px;line-height:1.45;font-weight:750;color:#172033;}
+.studyIllustrationSvg{width:100%;height:auto;max-width:100%;min-width:0;display:block;}
+.studyIllustrationCaption{margin:0!important;font-size:14px!important;line-height:1.65!important;color:#334155;}
+.studyIllustrationNotice{margin:0!important;font-size:12px!important;line-height:1.6!important;color:#64748b;}
+@media(max-width:600px){.studyIllustration{padding:12px;margin:14px 0;}.studyIllustrationTitle{font-size:15px;}}

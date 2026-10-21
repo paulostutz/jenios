@@ -141,6 +141,7 @@ try{
   pass(await evaluate('document.querySelectorAll('+JSON.stringify(lessonSelector)+').length===3&&Array.from(document.querySelectorAll("section")).find(x=>x.getAttribute("aria-label")==="Oficinas de estudo")?.querySelectorAll("details").length===2'),'track '+(i+1)+' has 3 lessons and 2 optional workshops');
   await evaluate('Array.from(document.querySelectorAll("section")).find(x=>x.getAttribute("aria-label")==="Oficinas de estudo")?.querySelector("summary")?.click()');
   pass(await evaluate('document.body.innerText.includes("Exemplo didático:")'),'workshop opens without any graded test on track '+(i+1));
+  pass(await evaluate('document.querySelectorAll("section[aria-label] figure[data-study-illustration] svg[role=img]").length>=1'),'opened workshop has an original accessible SVG diagram');
  }
  const laboratory=TRACKS.findIndex(t=>t.id==='laboratorio');
  const advanced=LESSONS.find(l=>l.trackId==='laboratorio').id;
@@ -148,6 +149,7 @@ try{
  await evaluate('document.querySelectorAll('+JSON.stringify(lessonSelector)+')[0].click()');
  await waitFor('document.querySelector("article h2")!==null');
  pass(await evaluate('document.querySelector("article h2")?.textContent==='+JSON.stringify(LESSONS.find(l=>l.id===advanced).title)),'advanced lesson opens first without placement');
+ pass(await evaluate('document.querySelector("article figure[data-study-illustration] svg[role=img]")!==null'),'advanced lesson displays an original educational illustration');
  await evaluate('[...document.querySelectorAll("button")].find(b=>b.textContent==="Marcar aula como lida")?.click()');
  await waitFor('document.body.innerText.includes("1 de 15 aulas")');
  pass(await evaluate('document.body.innerText.includes("1 de 15 aulas")'),'advanced completion persisted by fixture storage');

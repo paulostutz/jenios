@@ -9,6 +9,8 @@ const BASE='d90c9309b3ea9f72c27e4355cf92b01a2eca6cc9';
 const allowed=new Map([
  ['app/components/learning/LearningRoom.js','M'],
  ['app/components/learning/LearningRoom.module.css','M'],
+ ['app/components/learning/LessonVisual.js','A'],
+ ['lib/learning/lesson-visual-scenes-b276.mjs','A'],
  ['tests/jeniosUniversityHomologationB276R2.test.mjs','A'],
  ['scripts/platform/learning/b276r2-browser-acceptance.mjs','A'],
  ['scripts/platform/learning/b276r2-integrity.mjs','A'],
@@ -46,6 +48,9 @@ for(const route of [
 ])assert.equal(existsSync(route),false,'B276R2_ORDER_ROUTE_FORBIDDEN '+route);
 assert.equal(TRACKS.length,5);assert.equal(LESSONS.length,15);assert.equal(PRACTICAL_STUDY_WORKSHOPS.length,10);
 assert.equal(USER_VIDEO_RESOURCES.length,56);
+const {LESSON_VISUAL_SCENES,WORKSHOP_TO_LESSON_SCENE}=await import('../../../lib/learning/lesson-visual-scenes-b276.mjs');
+assert.equal(Object.keys(LESSON_VISUAL_SCENES).length,15);
+assert.equal(Object.keys(WORKSHOP_TO_LESSON_SCENE).length,10);
 assert.equal(USER_VIDEO_RESOURCES.filter(v=>v.verification==='needs_video_review').length,36);
 const ui=readFileSync('app/components/learning/LearningRoom.js','utf8'),
  css=readFileSync('app/components/learning/LearningRoom.module.css','utf8');
@@ -53,9 +58,14 @@ assert.match(ui,/function clear\(\)\{lessonEpoch\.current\+\+;/);
 assert.match(ui,/function chooseTrack\(id\)\{lessonEpoch\.current\+\+;/);
 assert.match(ui,/if\(v===lessonEpoch\.current\)showError\(e\)/);
 assert.match(ui,/Oficinas práticas opcionais/);
+assert.match(ui,/<LessonVisual lessonId=\{lesson\.id\}\/\>/);
+assert.match(ui,/<LessonVisual workshopId=\{w\.id\}\/\>/);
 assert.doesNotMatch(ui,/start_quiz|submit_quiz|QUESTION_BANK|localStorage/);
 assert.match(css,/\.lessonButton\{min-height:44px/);
 assert.match(css,/@media\(max-width:380px\)/);
+const illustration=readFileSync('app/components/learning/LessonVisual.js','utf8');
+const sources=readFileSync('lib/learning/lesson-visual-scenes-b276.mjs','utf8');
+for(const content of [illustration,sources]) assert.doesNotMatch(content,/\bfetch\s*\(|api\.alpaca|api\.binance|\bprocess\.env\b/i);
 const browser=readFileSync('scripts/platform/learning/b276r2-browser-acceptance.mjs','utf8');
 assert.match(browser,/B276_LOCAL_BROWSER_ONLY/);
 assert.doesNotMatch(browser,/api\.alpaca\.markets|api\.binance\.com|api\.openai\.com/);

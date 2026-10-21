@@ -22,3 +22,6 @@ A primeira homologação B276 comprovou a estrutura pedagógica em testes de ser
 **Limites:** testes com sessão, histórico e resposta de API simulados não demonstram funcionamento comercial Supabase ponta-a-ponta. Nenhuma cobrança real, ordem Paper, operação real, mudança de preço ou conexão com corretora. Os 36 vídeos novos continuam pendentes de análise documental. Evidência de CI não autoriza deploy por si só.
 
 **Critério:** homologar o B276-R2 somente após verificar o commit e a CI verde no GitHub. Em caso de falha, preservar B276 e corrigir em homologação.
+
+## Complemento visual aprovado para desenvolvimento B276-R2
+Cada uma das **15 aulas** possui uma cena SVG didática original com descrição acessível, título, legenda textual e ressalva de dados fictícios. As **10 oficinas opcionais** apresentam, dentro da própria atividade, um diagrama correspondente ao conceito, sem alterar notas, avaliação, progressão ou permissões. São oito tipos de desenho reutilizáveis: fluxo, linha temporal, candle, risco/gap, tendência e rompimento, custos, indicadores e expectativa em R. Os desenhos são vetoriais e responsivos, sem download de imagens externas ou uso de preços reais. O teste de navegador deverá verificar a presença do SVG e ausência de rolagem horizontal em desktop e mobile.

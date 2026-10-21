@@ -2,8 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "fix/jenios-b298-integrated-release-reconciliation-20261021": false
+      "fix/jenios-b298-integrated-release-reconciliation-20261021": false,
+      "fix/jenios-b299qa-stage2-auth-pay-readiness-20261021": false
     }
   },
-  "ignoreCommand": "if [ \"$VERCEL_GIT_COMMIT_REF\" = \"fix/jenios-b298-integrated-release-reconciliation-20261021\" ]; then exit 0; else exit 1; fi"
+  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b298-integrated-release-reconciliation-20261021|fix/jenios-b299qa-stage2-auth-pay-readiness-20261021) exit 0;; *) exit 1;; esac"
 }

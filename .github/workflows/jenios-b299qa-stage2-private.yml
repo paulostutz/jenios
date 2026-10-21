@@ -1,0 +1,71 @@
+name: JENIOS B299-QA Stage 2 readiness (offline, no deploy)
+on:
+  push:
+    branches: [fix/jenios-b299qa-stage2-auth-pay-readiness-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_local_fixture'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_local_fixture'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'false'
+      JENIOS_PAY_PROVIDER: disabled
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Offline Stage 2 fixture and adversarial QA gates
+        run: |
+          node scripts/platform/b299-qa-stage2-preflight.mjs --fixture
+          node --test tests/jeniosB299QaStage2Readiness.test.mjs tests/platformCP69AccountAccess.test.mjs tests/jeniosB293QaAuthBoundaries.test.mjs tests/platformCP74SocialPortalSso.test.mjs tests/platformConnectionGuides.test.mjs
+      - name: Install exact locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full commercial and research regression plus Next build
+        run: npm run build
+      - name: Start localhost only
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 >/tmp/jenios-b299qa.log 2>&1 &
+          for i in $(seq 1 75); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/lp; then exit 0; fi
+            sleep 1
+          done
+          tail -n 90 /tmp/jenios-b299qa.log
+          exit 1
+      - name: Verify public-only navigation and private 401 boundaries
+        run: node scripts/platform/b293-qa-guest-smoke.mjs
+      - name: Browser LP/Platform and University smoke
+        run: |
+          node scripts/platform/b284-sales-browser-smoke.mjs
+          node scripts/platform/learning/b276-browser-smoke.mjs
+      - name: Preserve redacted offline evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B299QA_STAGE2_OFFLINE_READINESS
+          path: |
+            docs/platform/B299-QA-STAGE2-READINESS.md
+            lib/platform/qa/b299-stage2-readiness.mjs
+            tests/jeniosB299QaStage2Readiness.test.mjs
+            scripts/platform/b299-qa-stage2-preflight.mjs
+          retention-days: 30

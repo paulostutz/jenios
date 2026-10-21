@@ -34,3 +34,6 @@ Branch `fix/jenios-b282-b284-sales-assistants-inter-20261021`; backup certificad
 
 ## Homologação adicional B284-R2
 Chromium localhost em 1280, 390, 360 e 320 px: entrada na LP, escolha Gênio, pergunta do plano R$149,90 com fallback sem custo, CTA para checkout, suporte dentro da Platform e redirecionamento da página antiga de Pix. Nenhuma credencial, pedido ou cobrança reais. Os módulos de pesquisa continuam isolados.
+
+## Execução complementar de navegador
+A verificação adicional em Chromium cobre LP, resposta comercial com dados de teste, Platform e redirecionamento de /planos para /checkout em localhost; por segurança o modelo generativo e o banco real permanecem desabilitados. **Esse complemento só estará certificado com workflow executado sobre o commit exato e resultado SUCCESS.**

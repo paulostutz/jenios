@@ -57,6 +57,8 @@ jobs:
           done
           tail -n 100 /tmp/jenios-b291.log
           exit 1
+      - name: B293 QA session boundary and fail-closed catalog HTTP smoke
+        run: node scripts/platform/b293-qa-guest-smoke.mjs
       - name: Browser tests for LP and Platform
         run: node scripts/platform/b284-sales-browser-smoke.mjs
       - name: University visitor browser smoke
@@ -68,5 +70,8 @@ jobs:
           name: JENIOS_B291_QA_INTEGRATED_CANDIDATE
           path: |
             docs/platform/B291-QA-INTEGRATED-PREVIEW.md
+            docs/platform/B293-QA-AUTH-CATALOG-RELEASE-GATE.md
+            tests/jeniosB293QaAuthBoundaries.test.mjs
+            scripts/platform/b293-qa-guest-smoke.mjs
             supabase/qa/jenios_b291qa_university_inactive.sql
           retention-days: 30

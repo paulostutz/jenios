@@ -54,7 +54,7 @@ const eng=readFileSync('lib/learning/engine.mjs','utf8');
 assert.match(eng,/placementRequired:false,assessmentsRequired:false,allTracksAvailable:true/);
 assert.match(eng,/trackUnlocked\(_state,id\)/);
 const resources=readFileSync('lib/learning/trade-video-resources.mjs','utf8');
-assert.match(resources,/needs_video_review/);
+for(const status of ['transcript_reviewed','metadata_verified_no_captions','metadata_verified_music_only','needs_playlist_review']) assert.ok(resources.includes(status),'CURATION_PROVENANCE_STATUS_MISSING '+status);
 const research=readFileSync('lib/platform/research/trading-video-hypotheses.mjs','utf8');
 assert.doesNotMatch(research,/\bfetch\s*\(|\bwithdraw\s*\(|https:\/\/api\.alpaca\.markets|https:\/\/api\.binance\.com/i);
 for(const tag of ['ordersSent:0','coreChanged:false','profitabilityDemonstrated:false'])assert.ok(research.includes(tag));

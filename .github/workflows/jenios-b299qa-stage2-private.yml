@@ -35,12 +35,12 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Install exact locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Offline Stage 2 fixture and adversarial QA gates
         run: |
           node scripts/platform/b299-qa-stage2-preflight.mjs --fixture
           node --test tests/jeniosB299QaStage2Readiness.test.mjs tests/platformCP69AccountAccess.test.mjs tests/jeniosB293QaAuthBoundaries.test.mjs tests/platformCP74SocialPortalSso.test.mjs tests/platformConnectionGuides.test.mjs
-      - name: Install exact locked dependencies
-        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full commercial and research regression plus Next build
         run: npm run build
       - name: Start localhost only

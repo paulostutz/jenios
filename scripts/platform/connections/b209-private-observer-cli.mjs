@@ -4,11 +4,10 @@
  * and operator-reviewed adapter module with owner-only file permissions.
  * DO NOT launch --once from Vercel, a browser, or an automated production route.
  */
-import {statSync,lstatSync,realpathSync} from 'node:fs';
-import {resolve,isAbsolute,relative} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {assertIsolatedReadWorker} from '../../../lib/platform/connections/b206-private-read-boundary.mjs';
 import {observePrivatePaperOnce} from '../../../lib/platform/connections/b208-private-paper-observer.mjs';
+import {attestPrivateObserverAdapter} from '../../../lib/platform/connections/b211-private-adapter-attestation.mjs';
 const mode=process.argv[2];
 const finish=x=>process.stdout.write(JSON.stringify(x)+'\n');
 const fail=()=>{finish({schema:'JENIOS_B209_WORKER_ENTRYPOINT',
@@ -25,17 +24,8 @@ else if(mode==='--status'){
  let scope=null;
  try{
   assertIsolatedReadWorker(process.env);
-  const raw=process.env.JENIOS_PRIVATE_OBSERVER_ADAPTER_PATH;
-  if(typeof raw!=='string'||!isAbsolute(raw))throw Error('UNCONFIGURED');
-  const root=realpathSync(resolve(process.cwd()));
-  const location=realpathSync(raw);
-  const rel=relative(root,location);
-  if(!rel.startsWith('..')||rel==='..')throw Error('ADAPTER_MUST_BE_OUTSIDE_REPOSITORY');
-  if(lstatSync(raw).isSymbolicLink()||!location.endsWith('.mjs'))throw Error('ADAPTER_INVALID');
-  const stat=statSync(location);
-  if(!stat.isFile()||(stat.mode&0o077)!==0||
-   (typeof process.getuid==='function'&&stat.uid!==process.getuid()))throw Error('UNPROTECTED_ADAPTER');
-  const adapter=await import(pathToFileURL(location).href);
+  const {adapterPath}=attestPrivateObserverAdapter(process.env.JENIOS_PRIVATE_OBSERVER_ADAPTER_PATH);
+  const adapter=await import(pathToFileURL(adapterPath).href);
   if(typeof adapter.createTrustedObserverScope!=='function')throw Error('BAD_ADAPTER');
   scope=await adapter.createTrustedObserverScope();
   if(!scope?.input||!scope?.deps)throw Error('BAD_SCOPE');

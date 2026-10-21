@@ -1,0 +1,103 @@
+name: JENIOS B211-B215 private worker operations readiness
+on:
+  push:
+    branches: [fix/jenios-b211-b215-operator-host-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PRIVATE_PAPER_ACCOUNT_PREFLIGHT: 'false'
+      JENIOS_PRIVATE_PAPER_READ_OBSERVER: 'false'
+      JENIOS_PRIVATE_PAPER_OBSERVER_WORKER: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Initialize no-secret evidence
+        run: |
+          mkdir -p .jenios-b215-ci
+          git rev-parse HEAD > .jenios-b215-ci/COMMIT.txt
+      - name: Freeze certified B210-R2 and private-only source boundary
+        run: node scripts/platform/connections/b215-integrity.mjs
+      - name: Secure adapter, local health, three SQLite databases and CLI
+        run: |
+          node --test tests/platformB211AdapterAttestation.test.mjs tests/platformB212WorkerAuditHealth.test.mjs tests/platformB213HostReadiness.test.mjs tests/platformB214HostHealthCLI.test.mjs
+          node --test tests/platformB209PrivateObserverCLI.test.mjs
+      - name: Keep B206-B210 and prior broker risk QA regressions
+        run: |
+          node --test tests/platformB206PrivateReadBoundary.test.mjs tests/platformB207DurableAuditJournal.test.mjs tests/platformB208PrivateObserverWorker.test.mjs
+          node --test tests/platformB201PrivatePaperReader.test.mjs tests/platformB202B203PrivateRecoveryAudit.test.mjs tests/platformB204RedactedPaperReview.test.mjs tests/platformB205PrivateObserverChain.test.mjs
+          node --test tests/platformB196PrivateAccountPreflight.test.mjs tests/platformB197PairedPaperReads.test.mjs tests/platformB198ProtectionWatchdog.test.mjs tests/platformB199ReleaseMatrix.test.mjs
+          node --test tests/platformB190CustomerActivation.test.mjs tests/platformB191B193Recovery.test.mjs tests/platformB194PerformanceGate.test.mjs
+          node --test --test-concurrency=1 tests/platformAlpacaPaper*.test.mjs tests/platformPilotPrep.test.mjs tests/platformDemo*.test.mjs
+      - name: Install pinned dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Complete tests, S05 release regression and Next build
+        run: |
+          npm run build > .jenios-b215-ci/build.log 2>&1 || { tail -n 120 .jenios-b215-ci/build.log; exit 1; }
+          tail -n 25 .jenios-b215-ci/build.log
+      - name: Start production-like localhost with all broker switches off
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b215-next.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 120 /tmp/jenios-b215-next.log
+          exit 1
+      - name: Public host still has no order sender, credentials or custody routes
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          const root='http://127.0.0.1:3127';
+          for(const path of ['/integracoes','/api/platform/broker-providers','/api/platform/broker-readiness']){
+            const response=await fetch(root+path);assert.equal(response.status,200,path);
+            assert.doesNotMatch(await response.text(),/JENIOS_PAPER_OBSERVER_KEY_B64|JENIOS_DEMO_VAULT_KEY_B64|JENIOS_PRIVATE_OBSERVER_ADAPTER_PATH/);
+          }
+          for(const path of ['/api/platform/broker-execution','/api/platform/paper-execution',
+            '/api/platform/live-trading','/api/platform/private-observer','/api/platform/worker-health']){
+            assert.equal((await fetch(root+path,{method:'POST'})).status,404,path);
+          }
+          assert.equal((await fetch(root+'/api/platform/broker-connections')).status,404);
+          console.log('B215_PUBLIC_BROKER_EXECUTION_UNAVAILABLE');
+          JS
+      - name: Preserve integration guides, Social, Gênios and Universidade
+        run: |
+          node scripts/platform/connections/browser-smoke.mjs
+          node scripts/platform/b148-browser-smoke.mjs
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Archive exact reviewed no-secret public source
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b215-ci/JENIOS_B215_PUBLIC_SOURCE.zip HEAD
+          sha256sum .jenios-b215-ci/JENIOS_B215_PUBLIC_SOURCE.zip > .jenios-b215-ci/SHA256SUMS.txt
+      - name: Preserve no-secret CI evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B215_PRIVATE_HOST_READINESS_CI
+          path: .jenios-b215-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

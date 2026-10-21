@@ -11,13 +11,11 @@ Data: 21/10/2026. Base preservada: B260, commit `8e64d16bd050962cb7b2a13088dc3f1
 - O banco continua guardando progresso, notas históricas, revisões antigas e registros de nivelamento **sem apagá-los nem usá-los para liberar conteúdo**. As APIs antigas de avaliação permanecem por compatibilidade, mas não são expostas ao aluno nem funcionam como pré-requisito.
 - Não há mudanças em preço/checkout, condições de assinatura, banco de dados, pagamento, autenticação, permissões de corretora ou motor proprietário dos robôs.
 
-## Biblioteca de vídeos encaminhados
+## Biblioteca de vídeos encaminhados e fonte das notas
 
-Foram preservados os **17 URLs individuais e 3 playlists** exatamente por seus identificadores oficiais de YouTube (normalizados sem parâmetros de compartilhamento). Apenas **3 vídeos** puderam ser relacionados com segurança a temas por descrições públicas de terceiros: uma estratégia de quatro regras, um vídeo introdutório sobre indicadores técnicos e oito padrões de reversão.
+Foram preservados **17 URLs de vídeos/Shorts e 3 playlists** pelo identificador oficial de YouTube. Em consulta de metadados, os títulos e a autoria dos 17 foram identificados. **Treze vídeos tiveram transcrições disponíveis para estudo de conceitos.** Três Shorts não tinham legendas e um retornou apenas legenda musical; para esses, não são atribuídas regras técnicas precisas. As três playlists estão catalogadas sem inventariar os vídeos internos.
 
-**Transcrições integrais e inspeção minuto a minuto: não disponíveis nesta execução.** Assim, títulos desconhecidos aparecem explicitamente como *vídeo/playlist a conferir*, sem técnicas fictícias atribuídas ao autor. Percentuais de acerto anunciados em divulgação não são estatística auditada e **não serão utilizados para otimizar ou promover robôs**.
-
-Toda a bibliografia é opcional, com links externos e estudos complementares originais escritos pela JENIOS, não transcrições/cópias de aulas de terceiros. Nenhum vídeo foi hospedado ou duplicado.
+Os textos são sínteses autorais da JENIOS, não transcrições nem cópias de vídeos. Retornos, percentuais e previsões citados pelos criadores não foram auditados e não foram aplicados diretamente aos robôs.
 
 ## Materiais complementares novos
 

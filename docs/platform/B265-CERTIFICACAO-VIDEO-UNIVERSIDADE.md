@@ -5,8 +5,8 @@ Base imutável B260 commit `8e64d16bd050962cb7b2a13088dc3f17193f4bfa`.
 | Checkpoint | Mudança |
 | --- | --- |
 | B261 | Remove pré-requisitos pedagógicos para abrir as cinco trilhas, reescreve a navegação da sala e preserva progresso/autenticação, sem tocar em cobrança. |
-| B262 | Integra 17 links individuais e três playlists encaminhados; identifica explicitamente verificação pendente em conteúdo sem transcrição. Cinco textos complementares originais. |
-| B263 | Cria laboratório quantitativo independente de execução para EMA, RSI, estocástico, ATR, Bollinger e volume sob política anti-lookahead e protocolo OOS. |
+| B262 | Integra 17 links individuais e três playlists encaminhados. Títulos oficiais verificados para os 17 vídeos; transcrições substantivas para 12, quatro Shorts sem legendas e um apenas música; cinco textos complementares originais. |
+| B263 | Cria laboratório quantitativo independente de execução para EMA, RSI, estocástico, ATR, Bollinger e volume; pesquisa adicional da hipótese SMA200/RSI2/SMA5 com veto explícito ao método sem stop, tudo sob política anti-lookahead e protocolo OOS. |
 | B264 | Documenta metodologias, proveniência, limites de percentuais de acerto não auditados, riscos de stops e critérios de aceitação dos alunos. |
 | B265 | Proteção de escopo da versão B260, testes gerais, Social e Next build, exames de navegador e arquivos SHA-256 de CI. |
 
@@ -24,6 +24,6 @@ A aprovação da CI certifica apenas o código no branch de homologação. Não 
 
 ## Pendências honestamente mantidas
 
-- Transcrições/inspeção integral de 20 itens de YouTube não foi obtida. `context_verified` significa apenas menção temática independente, não inspeção do vídeo.
+- Foram consultados os metadados oficiais de 17 vídeos, transcrições substantivas de 12, além de 1 transcrição sem informação verbal operacional. Quatro Shorts não possuíam legenda; 3 playlists carecem de revisão de todos os episódios. A imagem quadro a quadro não foi analisada; transcrição verificada não equivale a performance verificada.
 - Aprimoramentos de estratégia não aprovados por métricas prospectivas independentes. O estudo original B182 foi inconclusivo para vantagem econômica.
 - Nenhuma conta de corretora acessada, nenhuma ordem Paper/Live, nenhuma mudança JENIOS PAY, Letter, Chefe ou serviços externos.

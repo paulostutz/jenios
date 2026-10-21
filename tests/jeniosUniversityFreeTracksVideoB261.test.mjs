@@ -60,9 +60,11 @@ test('all 20 supplied YouTube resources are distinct, safe links and honestly la
  assert.equal(USER_VIDEO_RESOURCES.length,20);
  const ids=new Set(USER_VIDEO_RESOURCES.map(x=>x.id));assert.equal(ids.size,20);
  assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.kind==='playlist').length,3);
- assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='context_verified').length,3);
+ assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='transcript_reviewed').length,13);
+ assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='metadata_verified_no_captions').length,3);
+ assert.equal(USER_VIDEO_RESOURCES.filter(x=>x.verification==='metadata_verified_music_only').length,1);
  assert.ok(USER_VIDEO_RESOURCES.every(x=>/^https:\/\/www\.youtube\.com\/(?:watch\?v=|shorts\/|playlist\?list=)/.test(x.url)));
- assert.ok(USER_VIDEO_RESOURCES.every(x=>['needs_video_review','context_verified'].includes(x.verification)));
+ assert.ok(USER_VIDEO_RESOURCES.every(x=>['transcript_reviewed','metadata_verified_no_captions','metadata_verified_music_only','needs_playlist_review'].includes(x.verification)));
  assert.ok(USER_VIDEO_RESOURCES.every(x=>x.note&&!x.note.includes('assistido por completo')));
 });
 test('educational notes are original, one per track, with no quiz gate or calls to trading APIs',()=>{

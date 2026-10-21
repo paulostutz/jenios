@@ -1,0 +1,71 @@
+name: JENIOS B300 QA public hosted Preview GET-only audit
+on:
+  push:
+    branches: [fix/jenios-b300qa-hosted-preview-readonly-evidence-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify-offline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_local_fixture'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_local_fixture'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'false'
+      JENIOS_PAY_PROVIDER: disabled
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: B300 hosted read-only proof unit tests and prior B299 gates
+        run: |
+          node --test tests/jeniosB300HostedReadonlyProbe.test.mjs tests/jeniosB299QaStage2Readiness.test.mjs
+          node scripts/platform/b299-qa-stage2-preflight.mjs --fixture
+      - name: Full previous integration regression and Next build
+        run: npm run build
+      - name: Preserve no-secret proof files
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B300QA_HOSTED_READONLY_OFFLINE
+          path: |
+            docs/platform/B300-QA-HOSTED-READONLY.md
+            lib/platform/qa/b300-hosted-readonly-probe.mjs
+            scripts/platform/b300-qa-hosted-readonly.mjs
+            tests/jeniosB300HostedReadonlyProbe.test.mjs
+          retention-days: 30
+  verify-hosted:
+    needs: certify-offline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: GET-only previously READY B293 Preview, no token or bypass
+        run: node scripts/platform/b300-qa-hosted-readonly.mjs

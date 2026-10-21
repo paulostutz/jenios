@@ -79,7 +79,8 @@ test('B278 public GET collector validates 960 contiguous candles and reproducibl
  assert.equal(result.manifest.ordersSent,0);
  assert.match(result.manifest.candlesSha256,/^[a-f0-9]{64}$/);
  assert.equal(result.manifest.pages.length,5);
- assert.ok(result.manifest.pages.every(x=>x.count===200&&x.sha256.length===64));
+ assert.deepEqual(result.manifest.pages.map(x=>x.count),[200,200,200,200,160]);
+ assert.ok(result.manifest.pages.every(x=>x.sha256.length===64));
  const r2=await run();
  assert.equal(r2.manifest.candlesSha256,result.manifest.candlesSha256);
  assert.deepEqual(result.candles,r2.candles);

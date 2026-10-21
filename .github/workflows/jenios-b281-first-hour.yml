@@ -1,0 +1,63 @@
+name: JENIOS B281 first sealed future-hour evidence and offline safety
+on:
+  push:
+    branches: [fix/jenios-b281-forward-outcome-gate-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Confirm B280 original forecast and immutable production modules
+        run: node scripts/platform/research/b281-integrity.mjs
+      - name: Validate no-future-lookahead and fail-closed source and score contracts
+        run: |
+          node --test tests/platformB281FirstHourObservation.test.mjs tests/platformB280ForwardProtocol.test.mjs tests/platformB279RetrospectiveReplay.test.mjs
+      - name: Observe first hour ONLY if target plus five minutes elapsed
+        id: first_outcome
+        continue-on-error: true
+        run: node scripts/platform/research/b281-observe-original-hour.mjs
+      - name: Report observation status separately from code CI
+        if: always()
+        run: |
+          echo "B281_PUBLIC_SOURCE_STEP_OUTCOME=${{ steps.first_outcome.outcome }}"
+          echo "B281 code passing does not prove a signed price, future edge or broker performance."
+      - name: Install exact dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run full regression suites and Next.js build
+        run: npm run build
+      - name: Archive original B280 sealed forecast and B281 observation state
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B281_FIRST_HOUR_EVIDENCE
+          path: |
+            .jenios-b281-ci/
+            docs/platform/evidence/B280_FORWARD_HOUR_SEALED_SNAPSHOT.json
+            docs/platform/B281-FIRST-FORWARD-HOUR-ACCEPTANCE.md
+            scripts/platform/research/b281-integrity.mjs
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

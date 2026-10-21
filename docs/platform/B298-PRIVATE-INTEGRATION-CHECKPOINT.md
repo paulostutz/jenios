@@ -15,3 +15,12 @@ Exigir CI B298 SUCCESS: verificação do diff aditivo, hashes dos 33 arquivos, p
 
 ## Não certificado
 Ainda faltam contas reais de QA, sessões autenticadas end-to-end, catálogo efetivamente lido no Preview hospedado, Inter mTLS e ciclo Pix, IA generativa com custo autorizado, atestação independente do motor proprietário, sinais entregues por terceiro, feed de operações da corretora, reconciliação de fills e avaliação prospectiva. Não alegar rentabilidade nem lossômetro realizado. A etapa 1 é integração técnica offline; não é liberação comercial.
+
+## B298 R2 — Complemento certificado da auditoria de pesquisa B298 e B299
+
+- Fonte B298 assinada: commit `e74272a83e102c79118e3df9d8566e2c07526a95`, CI 39681610853 SUCCESS.
+- Fonte B299 consentimento e anti-replay: commit `53f127eb6118dd3a183ecdf3b52a5fd4e23e6419`, CI 39684586218 SUCCESS.
+- Adicionadas somente 8 novas fontes de módulos, documentação, testes e scripts CLI offline, com hashes exatos no manifesto atualizado (total 41 blobs). Não foram incluídos workflows históricos, vercel.json de outras branches ou códigos proprietários.
+- B298 verifica envelopes assinados Ed25519. B299 verifica consentimento assinado e prevenção local durável de duplicidade por SQLite privado; assinaturas não provam a origem da corretora nem identidade civil do titular.
+- Os scripts CLI importados são manuais e permanecem fora dos caminhos de execução da CI e das rotas Next.
+- Necessária nova certificação CI B298 R2 antes de considerar a Etapa 1 técnica completa.

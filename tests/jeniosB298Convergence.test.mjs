@@ -5,8 +5,8 @@ import {createHash} from 'node:crypto';
 import {assessB295PrivateRunnerProof,B295_REQUIRED} from '../lib/platform/research/b295-private-runner-attestation.mjs';
 import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
 const m=JSON.parse(readFileSync(new URL('../docs/platform/B298-INTEGRATION-MANIFEST.json',import.meta.url)));
-test('B298 33 original research blobs retained bit-for-bit',()=>{
- assert.equal(m.files.length,33);
+test('B298 41 original research blobs retained bit-for-bit',()=>{
+ assert.equal(m.files.length,41);
  assert.equal(new Set(m.files.map(x=>x.path)).size,33);
  for(const {path,gitBlobSha} of m.files){
   const bytes=readFileSync(new URL('../'+path,import.meta.url));
@@ -33,4 +33,14 @@ test('B298 financial, session, learning and preview guards preserved',()=>{
   assert.ok(readFileSync(new URL('../'+path,import.meta.url)).length>100,path);
  }
  assert.equal(m.externalBrokerExecutionAuthorized,false);
+});
+
+test('B298 consolidated signed evidence and consent journal remain local-only',()=>{
+ const names=m.files.map(x=>x.path);
+ for(const path of ['lib/platform/research/b298-signed-evidence-audit.mjs','lib/platform/research/b299-private-consent-replay-journal.mjs','tests/platformB298SignedEvidenceAudit.test.mjs','tests/platformB299PrivateConsentReplayJournal.test.mjs'])assert.ok(names.includes(path));
+ for(const module of ['lib/platform/research/b298-signed-evidence-audit.mjs','lib/platform/research/b299-private-consent-replay-journal.mjs']){
+  const s=readFileSync(new URL('../'+module,import.meta.url),'utf8');
+  assert.doesNotMatch(s,/\bsubmitOrder\s*\(/);
+ }
+ assert.equal(m.productionReleaseAuthorized,false);
 });

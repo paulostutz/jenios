@@ -53,6 +53,14 @@
       "gitBlobSha": "6d5898cd2ad841a7ae13964e9a795cbf3b2c8226"
     },
     {
+      "path": "docs/platform/B298-SIGNED-READONLY-EVIDENCE.md",
+      "gitBlobSha": "3494d610f2e6a502a24bb3db60d879a55b9390cd"
+    },
+    {
+      "path": "docs/platform/B299-PRIVATE-CONSENT-REPLAY-JOURNAL.md",
+      "gitBlobSha": "e7b4fc30614837d656bf769593169b41fb839067"
+    },
+    {
       "path": "lib/platform/research/b287-signal-witness.mjs",
       "gitBlobSha": "14744f7c51376aab582bbe9c697bfef8725d1197"
     },
@@ -93,12 +101,28 @@
       "gitBlobSha": "d18b31dc79bb107430d9c8349c8bfd2b061c9df1"
     },
     {
+      "path": "lib/platform/research/b298-signed-evidence-audit.mjs",
+      "gitBlobSha": "685336a8869bf32d0338ddf429fa2f8f7b071448"
+    },
+    {
+      "path": "lib/platform/research/b299-private-consent-replay-journal.mjs",
+      "gitBlobSha": "0e35d6a5a89db67e3957d86a7343e724d86422c2"
+    },
+    {
       "path": "scripts/platform/research/b288-integrity.mjs",
       "gitBlobSha": "bc8ce9aafdd74b665c84ddd3b94b13a79c2ef773"
     },
     {
       "path": "scripts/platform/research/b297-capture-private-readonly.mjs",
       "gitBlobSha": "d24f3217c5d69d7cd94797a5e600990ad5ae0e7a"
+    },
+    {
+      "path": "scripts/platform/research/b298-audit-signed-readonly.mjs",
+      "gitBlobSha": "57a7da4da1a09fd448aa422c27d2a924134b6420"
+    },
+    {
+      "path": "scripts/platform/research/b299-private-consent-replay-intake.mjs",
+      "gitBlobSha": "69e66eba8fc895fdcf594ae3c9ad1f50b581c9e3"
     },
     {
       "path": "tests/platformB287SignalWitness.test.mjs",
@@ -139,6 +163,21 @@
     {
       "path": "tests/platformB297PrivateReadOnlyAudit.test.mjs",
       "gitBlobSha": "bab4e28dcfbc5fb8252ba0002d12982f98cf80f6"
+    },
+    {
+      "path": "tests/platformB298SignedEvidenceAudit.test.mjs",
+      "gitBlobSha": "a634289c36d21cc2b6ef6d9f9b8c769a5f9ba584"
+    },
+    {
+      "path": "tests/platformB299PrivateConsentReplayJournal.test.mjs",
+      "gitBlobSha": "023fd90ddcd33ddb5edab271c0d185b4cd84f532"
     }
+  ],
+  "sourceSignedResearchCommit": "e74272a83e102c79118e3df9d8566e2c07526a95",
+  "sourceConsentJournalCommit": "53f127eb6118dd3a183ecdf3b52a5fd4e23e6419",
+  "certifiedResearchLayers": [
+    "B297 offline adapter",
+    "B298 signed readonly envelope",
+    "B299 offline consent and durable anti-replay journal"
   ]
 }

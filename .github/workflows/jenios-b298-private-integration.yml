@@ -45,7 +45,7 @@ jobs:
         run: node --test tests/jeniosB290QaFinancialProof.test.mjs tests/jeniosB291QaIntegratedPreview.test.mjs tests/jeniosB292QaStrictAccessPropagation.test.mjs
       - name: Integrated research and three-mode contract tests
         run: |
-          node --test tests/jeniosB298Convergence.test.mjs tests/platformB287SignalWitness.test.mjs tests/platformB288PairedFilterAudit.test.mjs tests/platformB289OperatorReversal.test.mjs tests/platformB290InversionSignalContract.test.mjs tests/platformB291ThreeModeCopilot.test.mjs tests/platformB292EvidenceIntegration.test.mjs tests/platformB293PrivateEvidenceReadiness.test.mjs tests/platformB294PrivateSourceAuthenticity.test.mjs tests/platformB295PrivateRunnerAttestation.test.mjs tests/platformB297PrivateReadOnlyAudit.test.mjs
+          node --test tests/jeniosB298Convergence.test.mjs tests/platformB287SignalWitness.test.mjs tests/platformB288PairedFilterAudit.test.mjs tests/platformB289OperatorReversal.test.mjs tests/platformB290InversionSignalContract.test.mjs tests/platformB291ThreeModeCopilot.test.mjs tests/platformB292EvidenceIntegration.test.mjs tests/platformB293PrivateEvidenceReadiness.test.mjs tests/platformB294PrivateSourceAuthenticity.test.mjs tests/platformB295PrivateRunnerAttestation.test.mjs tests/platformB297PrivateReadOnlyAudit.test.mjs tests/platformB298SignedEvidenceAudit.test.mjs tests/platformB299PrivateConsentReplayJournal.test.mjs
       - name: Full regression and Next build
         run: npm run build
       - name: Start localhost only

@@ -5,7 +5,7 @@ import {execFileSync} from 'node:child_process';
 const m=JSON.parse(readFileSync(new URL('../../../docs/platform/B298-INTEGRATION-MANIFEST.json',import.meta.url)));
 assert.equal(m.importMode,'additive-blobs-exact-no-merge');
 const wanted=new Map(m.files.map(x=>[x.path,x.gitBlobSha]));
-assert.equal(wanted.size,33);
+assert.equal(wanted.size,41);
 const sha=b=>createHash('sha1').update('blob '+b.length+String.fromCharCode(0)).update(b).digest('hex');
 for(const [path,hash] of wanted){
  assert.ok(existsSync(path),'Research file missing '+path);
@@ -21,5 +21,5 @@ for(const [status,path] of paths){
  assert.equal(status,'A','Protected earlier file modified: '+path);
  assert.ok(wanted.has(path)||extra.has(path),'Unexpected changed file: '+path);
 }
-assert.equal(paths.length,39);
-console.log('B298_CONVERGENCE_PASS 33 exact research blobs + 6 new private integration files; 0 changed legacy paths');
+assert.equal(paths.length,47);
+console.log('B298_CONVERGENCE_PASS 41 original research blobs + 6 private integration files; 0 changed legacy paths');

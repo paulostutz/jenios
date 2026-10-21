@@ -22,7 +22,7 @@ export default function LearningRoom(){
  const workshops=PRACTICAL_STUDY_WORKSHOPS.filter(x=>x.trackId===currentTrack?.id);
  const references=USER_VIDEO_RESOURCES.filter(x=>x.trackId===currentTrack?.id);
  const allResources=USER_VIDEO_RESOURCES;
- function clear(){setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setActiveTrack('fundamentos');}
+ function clear(){lessonEpoch.current++;setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setActiveTrack('fundamentos');}
  async function api(payload,query=''){
   const version=epoch.current,currentOwner=owner.current;
   const auth=await supabase?.auth.getSession(),session=auth?.data?.session;
@@ -66,9 +66,9 @@ export default function LearningRoom(){
   catch(e){if(e.code==='REVISION_CONFLICT'){const refreshed=await load();if(refreshed&&alive.current&&v===epoch.current){setError('Seu progresso foi atualizado. Confira a aula e tente novamente.');setErrorCode('REVISION_CONFLICT');}}else showError(e);}
   finally{if(alive.current&&v===epoch.current){setSaving(false);lock.current=false;}}
  }
- function chooseTrack(id){setActiveTrack(id);setSelected('');setLesson(null);setReply(null);setError('');}
+ function chooseTrack(id){lessonEpoch.current++;setActiveTrack(id);setSelected('');setLesson(null);setReply(null);setError('');}
  async function openLesson(id){const v=++lessonEpoch.current;setSelected(id);setLesson(null);setReply(null);setQuestion('');setError('');
-  try{const body=await api(null,'?lesson='+encodeURIComponent(id));if(v===lessonEpoch.current)setLesson(body.lesson);}catch(e){showError(e);}}
+  try{const body=await api(null,'?lesson='+encodeURIComponent(id));if(v===lessonEpoch.current)setLesson(body.lesson);}catch(e){if(v===lessonEpoch.current)showError(e);}}
  const studied=tracks.reduce((n,t)=>n+t.lessons.filter(l=>l.completed).length,0);
  const completed=Boolean(currentTrack?.lessons?.find(x=>x.id===lesson?.id)?.completed);
  const completedToday=Boolean(learning?.dailyStudy?.reviewedToday?.includes(lesson?.id));

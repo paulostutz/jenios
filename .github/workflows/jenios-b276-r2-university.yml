@@ -1,0 +1,67 @@
+name: JENIOS B276-R2 University authenticated browser and mobile
+on:
+  push:
+    branches: [fix/jenios-b276-r2-authenticated-browser-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Preserve B276 baseline and test authenticated learner service
+        run: |
+          node scripts/platform/learning/b276r2-integrity.mjs
+          node --test tests/jeniosUniversityHomologationB276R2.test.mjs tests/jeniosB276UniversityAcceptance.test.mjs tests/jeniosUniversityFreeTracksVideoB261.test.mjs tests/jeniosUniversityCompletionB141.test.mjs tests/jeniosB271B275LearningResearch.test.mjs tests/learningR26.test.mjs
+      - name: Install locked dependencies, no lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Build and run full release regressions
+        run: npm run build
+      - name: Launch localhost with broker and payment flows disabled
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b276r2.log 2>&1 &
+          for i in $(seq 1 75); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/universidade; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b276r2.log
+          exit 1
+      - name: Chromium authenticated student across five tracks and mobile sizes
+        run: node scripts/platform/learning/b276r2-browser-acceptance.mjs
+      - name: Regression for guest University, Gênios, Social and broker connections
+        run: |
+          node scripts/platform/b147-university-ui-smoke.mjs
+          node scripts/platform/learning/b276-browser-smoke.mjs
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b148-browser-smoke.mjs
+          node scripts/platform/connections/browser-smoke.mjs
+      - name: Archive redacted evidence and exact B276-R2 scope
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B276_R2_UNIVERSITY_QA
+          path: |
+            docs/learning/B276-R2-AUTHENTICATED-QA.md
+            scripts/platform/learning/b276r2-integrity.mjs
+          retention-days: 30

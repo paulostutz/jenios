@@ -79,3 +79,8 @@
 .resourceList span{font-size:11px;color:#64748b;text-align:right;}
 .resourceList a{font-size:14px;color:#5b21b6;overflow-wrap:anywhere;}
 @media(max-width:600px){.routeGrid{grid-template-columns:repeat(2,minmax(0,1fr));}.routeButton{min-height:156px;padding:12px;}.resourceList li{flex-direction:column;gap:3px;}.sidebar{position:static;}.layout{gap:14px;}}
+
+/* B276: 44px touch targets and readable 320px layout without moving existing modules. */
+.lessonButton{min-height:44px;box-sizing:border-box;}
+.moreSummary{min-height:44px;box-sizing:border-box;padding:10px 0;}
+@media(max-width:380px){.routeGrid{grid-template-columns:1fr;}.routeButton{min-height:110px;}}

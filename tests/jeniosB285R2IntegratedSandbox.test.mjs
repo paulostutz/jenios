@@ -106,7 +106,7 @@ test('B285-R2 University, Social, landing and Platform existing access surfaces 
  assert.match(read('app/lp/layout.js'),/SocialFreeLauncher/);
  assert.match(read('app/social/layout.js'),/SocialFreeLauncher/);
  assert.match(read('app/platform/assistente/page.js'),/FreeAssistantRoom/);
- assert.match(read('app/planos/page.js'),/redirect\\('\\/checkout'\\)/);
+ assert.ok(read('app/planos/page.js').includes("redirect('/checkout')"));
  assert.match(read('app/api/platform/learning/route.js'),/handleLearning/);
  assert.match(read('app/api/assistant/pro/chat/route.js'),/planOnly:true/);
 });

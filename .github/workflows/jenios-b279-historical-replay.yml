@@ -1,0 +1,61 @@
+name: JENIOS B279 historical retrospective hash-matched offline replay
+on:
+  push:
+    branches: [fix/jenios-b279-retrospective-replay-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Confirm frozen B278 sources, additive scope, and offline scenarios
+        run: |
+          node scripts/platform/research/b279-integrity.mjs
+          node --test tests/platformB279RetrospectiveReplay.test.mjs tests/platformB278HistoricalIngest.test.mjs tests/platformTradingVideoStudy.test.mjs
+      - name: Attempt exact B278 historical SHA reproduction on real read-only data
+        id: market_replay
+        continue-on-error: true
+        run: node scripts/platform/research/b279-run-real-replay.mjs
+      - name: Distinguish historical replay success from code CI
+        if: always()
+        run: |
+          echo "B279_REAL_REPLAY_STEP_OUTCOME=${{ steps.market_replay.outcome }}"
+          echo "Code CI SUCCESS is NOT evidence of actual historical hash match or statistical advantage."
+      - name: Install exact lockfile without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full original tests, Social S05 regression and Next.js build
+        run: npm run build
+      - name: Archive replay result and independent CI evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B279_RETROSPECTIVE_REPLAY_CI
+          path: |
+            .jenios-b279-ci/
+            docs/platform/B279-RETROSPECTIVE-OFFLINE-REPLAY.md
+            scripts/platform/research/b279-integrity.mjs
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

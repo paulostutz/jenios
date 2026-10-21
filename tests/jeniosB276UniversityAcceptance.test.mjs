@@ -29,11 +29,11 @@ test('B276 advanced-first reading across all 15 lessons preserves legacy grade/p
  let s=initialState();s.placement={level:'Iniciante',safetyReviewRequired:true};
  s.mastery={fundamentos:{passed:false,score:20,reviewAt:new Date(now).toISOString()}};
  s.assessments=[{id:'historic',kind:'fundamentos',passed:false,score:20}];
- s.pending={kind:'placement',expiresAt:new Date(now+86400000).toISOString()};
+ s.pending=null; // legacy pending quizzes are exercised separately in B261 regression
  for(const l of [...LESSONS].reverse()){assert.equal(projectLesson(s,l.id,now).id,l.id);s=transition(s,{action:'complete_lesson',lessonId:l.id},now).state;}
  const projection=projectState(s,15,now);assert.equal(projection.route.flatMap(t=>t.lessons).filter(l=>l.completed).length,15);
  assert.deepEqual(s.placement,{level:'Iniciante',safetyReviewRequired:true});
- assert.equal(s.assessments[0].id,'historic');assert.equal(s.pending.kind,'placement');assert.equal(s.mastery.fundamentos.score,20);
+ assert.equal(s.assessments[0].id,'historic');assert.equal(s.pending,null);assert.equal(s.mastery.fundamentos.score,20);
  assert.equal(projection.executionEnabled,false);assert.ok(projection.route.every(t=>t.unlocked));
 });
 test('B276 per-account progress persistence, optimistic revision, and access denial',async()=>{

@@ -1,0 +1,100 @@
+name: JENIOS B201-B205 private Paper observer and restart reconciliation
+on:
+  push:
+    branches: [fix/jenios-b201-b205-private-observer-20261020]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI: 'false'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PRIVATE_PAPER_ACCOUNT_PREFLIGHT: 'false'
+      JENIOS_PRIVATE_PAPER_READ_OBSERVER: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Initialize no-secret evidence directory
+        run: |
+          mkdir -p .jenios-b205-ci
+          git rev-parse HEAD > .jenios-b205-ci/COMMIT.txt
+      - name: Preserve certified B200 without production changes
+        run: node scripts/platform/connections/b205-integrity.mjs
+      - name: Test new private observer, durable recovery and redacted review end-to-end
+        run: |
+          node --test tests/platformB201PrivatePaperReader.test.mjs tests/platformB202B203PrivateRecoveryAudit.test.mjs tests/platformB204RedactedPaperReview.test.mjs tests/platformB205PrivateObserverChain.test.mjs
+      - name: Regress B196-B200, B190-B195 and B185-B189
+        run: |
+          node --test tests/platformB196PrivateAccountPreflight.test.mjs tests/platformB197PairedPaperReads.test.mjs tests/platformB198ProtectionWatchdog.test.mjs tests/platformB199ReleaseMatrix.test.mjs
+          node --test tests/platformB190CustomerActivation.test.mjs tests/platformB191B193Recovery.test.mjs tests/platformB194PerformanceGate.test.mjs
+          node --test tests/platformB185PaperSimulator.test.mjs tests/platformB186LedgerReplay.test.mjs tests/platformB187PaperLedgerE2E.test.mjs
+      - name: Existing official paper safety, vault, tenant isolation and risk tests
+        run: node --test tests/platformAlpacaPaper*.test.mjs tests/platformPilotPrep.test.mjs tests/platformDemo*.test.mjs
+      - name: Install pinned dependencies, no installation scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Entire regression, Social S05 and Next production compilation
+        run: |
+          npm run build > .jenios-b205-ci/build.log 2>&1 || { tail -n 140 .jenios-b205-ci/build.log; exit 1; }
+          tail -n 30 .jenios-b205-ci/build.log
+      - name: Launch localhost only with private actions switched off
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b205-server.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 120 /tmp/jenios-b205-server.log
+          exit 1
+      - name: Public HTTP remains unable to submit Paper, Live or receive broker secrets
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          const root='http://127.0.0.1:3127';
+          for(const path of ['/integracoes','/api/platform/broker-providers','/api/platform/broker-readiness']){
+            const res=await fetch(root+path);assert.equal(res.status,200,path);
+            assert.doesNotMatch(await res.text(),/JENIOS_DEMO_VAULT_KEY_B64|JENIOS_PAPER_WORKER_SIGNING_KEY_B64/);
+          }
+          for(const path of ['/api/platform/broker-execution','/api/platform/paper-execution','/api/platform/live-trading']){
+            const res=await fetch(root+path,{method:'POST'});
+            assert.equal(res.status,404,path);
+          }
+          assert.equal((await fetch(root+'/api/platform/broker-connections')).status,404);
+          console.log('B205_NO_PUBLIC_BROKER_EXECUTION_PASS');
+          JS
+      - name: Existing guides, Social, Gênios and Universidade browser regressions
+        run: |
+          node scripts/platform/connections/browser-smoke.mjs
+          node scripts/platform/b148-browser-smoke.mjs
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Hash and archive public source only on full success
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b205-ci/JENIOS_B205_PUBLIC_SOURCE.zip HEAD
+          sha256sum .jenios-b205-ci/JENIOS_B205_PUBLIC_SOURCE.zip > .jenios-b205-ci/SHA256SUMS.txt
+      - name: Preserve no-secret evidence on both success and failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B205_PRIVATE_OBSERVER_CI
+          path: .jenios-b205-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

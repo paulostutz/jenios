@@ -1,0 +1,65 @@
+name: JENIOS B291 isolated integrated QA and University access
+on:
+  push:
+    branches: [fix/jenios-b291qa-integrated-preview-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_local_fixture'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_local_fixture'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'true'
+      JENIOS_PAY_PROVIDER: disabled
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: QA gates, financial receipt and University schema
+        run: |
+          node --test tests/jeniosB291QaIntegratedPreview.test.mjs tests/jeniosB290QaFinancialProof.test.mjs tests/jeniosB289QaSchema.test.mjs tests/jeniosB285R2IntegratedSandbox.test.mjs
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression suite and production-type Next build
+        run: npm run build
+      - name: Start localhost with no external actions
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 >/tmp/jenios-b291.log 2>&1 &
+          for i in $(seq 1 75); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/lp; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/jenios-b291.log
+          exit 1
+      - name: Browser tests for LP and Platform
+        run: node scripts/platform/b284-sales-browser-smoke.mjs
+      - name: University visitor browser smoke
+        run: node scripts/platform/learning/b276-browser-smoke.mjs
+      - name: Preserve isolated QA evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B291_QA_INTEGRATED_CANDIDATE
+          path: |
+            docs/platform/B291-QA-INTEGRATED-PREVIEW.md
+            supabase/qa/jenios_b291qa_university_inactive.sql
+          retention-days: 30

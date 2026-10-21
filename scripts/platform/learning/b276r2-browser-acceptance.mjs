@@ -138,8 +138,8 @@ try{
  pass(await evaluate('document.querySelectorAll("details ul li").length===56'),'56 original video resources remain available');
  for(let i=0;i<5;i++){
   await choose(i);
-  pass(await evaluate('document.querySelectorAll('+JSON.stringify(lessonSelector)+').length===3&&document.querySelectorAll("section[aria-label=\"Oficinas de estudo\"] details").length===2'),'track '+(i+1)+' has 3 lessons and 2 optional workshops');
-  await evaluate('document.querySelector("section[aria-label=\"Oficinas de estudo\"] summary")?.click()');
+  pass(await evaluate('document.querySelectorAll('+JSON.stringify(lessonSelector)+').length===3&&Array.from(document.querySelectorAll("section")).find(x=>x.getAttribute("aria-label")==="Oficinas de estudo")?.querySelectorAll("details").length===2'),'track '+(i+1)+' has 3 lessons and 2 optional workshops');
+  await evaluate('Array.from(document.querySelectorAll("section")).find(x=>x.getAttribute("aria-label")==="Oficinas de estudo")?.querySelector("summary")?.click()');
   pass(await evaluate('document.body.innerText.includes("Exemplo didático:")'),'workshop opens without any graded test on track '+(i+1));
  }
  const laboratory=TRACKS.findIndex(t=>t.id==='laboratorio');

@@ -1,0 +1,61 @@
+name: JENIOS B278 historical public spot data quality and fail-closed collection
+on:
+  push:
+    branches: [fix/jenios-b278-historical-data-quality-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify B277 boundary, source-only changes and historical synthetic tests
+        run: |
+          node scripts/platform/research/b278-integrity.mjs
+          node --test tests/platformB278HistoricalIngest.test.mjs tests/platformB88PublicMarketCandles.test.mjs tests/platformTradingVideoStudy.test.mjs
+      - name: Attempt real read-only public market data with independent failure status
+        id: market_capture
+        continue-on-error: true
+        run: node scripts/platform/research/b278-public-capture.mjs
+      - name: Label market collection separately from CI code certification
+        if: always()
+        run: |
+          echo "B278_MARKET_CAPTURE_STEP_OUTCOME=${{ steps.market_capture.outcome }}"
+          echo "A successful code CI does not certify live market retrieval or a real backtest."
+      - name: Install lockfile dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full tests, Social S05 regression and production-type build
+        run: npm run build
+      - name: Archive provenance report and read-only market manifest only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B278_MARKET_DATA_QUALITY_CI
+          path: |
+            .jenios-b278-ci/
+            docs/platform/B278-HISTORICAL-DATA-QUALITY.md
+            scripts/platform/research/b278-integrity.mjs
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

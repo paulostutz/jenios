@@ -53,6 +53,8 @@ jobs:
           exit 1
       - name: B148 existing Social, persona and mobile browser smoke
         run: node scripts/platform/b148-browser-smoke.mjs
+      - name: B284 direct sales and Platform customer journey in local Chromium
+        run: node scripts/platform/b284-sales-browser-smoke.mjs
       - name: Save scoped code evidence without bank secrets
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

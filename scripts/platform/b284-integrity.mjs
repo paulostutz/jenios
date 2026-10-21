@@ -13,6 +13,7 @@ const additions=[
  'lib/assistant/sales-policy.mjs','lib/assistant/sales-provider.mjs',
  'lib/pay/inter-material.mjs','lib/pay/inter-vault.mjs',
  'scripts/platform/b284-integrity.mjs',
+ 'scripts/platform/b284-sales-browser-smoke.mjs',
  'supabase/migrations/20261021170000_jenios_b282_b283_sales_inter_vault.sql',
  'tests/jeniosB282B284SalesInter.test.mjs'
 ];
@@ -86,5 +87,5 @@ assert.match(sql,/from PUBLIC,anon,authenticated/);
 assert.match(readFileSync('app/planos/page.js','utf8'),/redirect\('\/checkout'\)/);
 assert.doesNotMatch(readFileSync('app/planos/page.js','utf8'),/000201010211|LETTER LETTER/);
 assert.match(readFileSync('lib/assistant/pro-service.mjs','utf8'),/ADVANCED_PLAN_REQUIRED/);
-assert.equal(additions.length,12);assert.equal(modifications.length,18);
-console.log('B284_SCOPE_PASS 12 new + 18 modified files, Social, University, B281 and robots preserved; AI and Inter fail closed');
+assert.equal(additions.length,13);assert.equal(modifications.length,18);
+console.log('B284_SCOPE_PASS 13 new + 18 modified files, Social, University, B281 and robots preserved; AI and Inter fail closed');

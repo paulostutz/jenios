@@ -18,11 +18,19 @@ const ADD=[
  'scripts/platform/connections/b210-integrity.mjs',
  '.github/workflows/jenios-b210-private-observer.yml'
 ];
+const REPAIRED_TEST='tests/platformPilotPrep.test.mjs';
 const changed=execFileSync('git',['diff','--no-renames','--name-status',BASE,'HEAD'],{encoding:'utf8'})
  .trim().split('\n').filter(Boolean).map(row=>row.split('\t'));
-assert.equal(changed.length,ADD.length,'B210_UNEXPECTED_PUBLIC_CHANGE_COUNT');
-assert.deepEqual(changed.map(x=>x[1]).sort(),[...ADD].sort(),'B210_UNEXPECTED_PUBLIC_PATH');
-for(const [status,path] of changed)assert.equal(status,'A','B210_NON_ADDITIVE_CHANGE '+path);
+assert.equal(changed.length,ADD.length+1,'B210_UNEXPECTED_PUBLIC_CHANGE_COUNT');
+assert.deepEqual(changed.map(x=>x[1]).sort(),[...ADD,REPAIRED_TEST].sort(),'B210_UNEXPECTED_PUBLIC_PATH');
+for(const [status,path] of changed)assert.equal(status,path===REPAIRED_TEST?'M':'A',
+ 'B210_NON_ADDITIVE_CHANGE '+path);
+const oldTest=execFileSync('git',['show',BASE+':'+REPAIRED_TEST],{encoding:'utf8'});
+const oldRacy="child.once('exit',code=>code===0?resolve(JSON.parse(out))";
+assert.ok(oldTest.includes(oldRacy),'B152_EXPECTED_TEST_SOURCE_NOT_FOUND');
+assert.equal(readFileSync(REPAIRED_TEST,'utf8'),oldTest.replace(oldRacy,
+ "child.once('close',code=>code===0?resolve(JSON.parse(out))"),
+ 'B152_TEST_MODIFIED_BEYOND_STDIO_DRAIN_FIX');
 for(const file of ['package.json','package-lock.json',
  'lib/platform/pilot-prep/paper-ledger.mjs','lib/platform/pilot-prep/risk.mjs',
  'lib/platform/connections/alpaca-paper-private-executor.mjs',
@@ -60,4 +68,4 @@ const submissionPaths=['app/api/platform/broker-execution/route.js',
  'app/api/platform/paper-execution/route.js','app/api/platform/live-trading/route.js',
  'nucleo-privado/engine.mjs'];
 for(const p of submissionPaths)assert.equal(existsSync(p),false,'B210_PROHIBITED_PUBLIC_ROUTE '+p);
-console.log('B210_B205_IMMUTABLE_PASS='+BASE+'; 11 additions; isolated read-only worker, no order route, no live execution');
+console.log('B210_B205_IMMUTABLE_PASS='+BASE+'; 11 additions and one B152 test stdout-drain race fix; no production runtime modifications');

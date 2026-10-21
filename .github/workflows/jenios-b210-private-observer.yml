@@ -47,7 +47,7 @@ jobs:
           node --test tests/platformB196PrivateAccountPreflight.test.mjs tests/platformB197PairedPaperReads.test.mjs tests/platformB198ProtectionWatchdog.test.mjs tests/platformB199ReleaseMatrix.test.mjs
           node --test tests/platformB190CustomerActivation.test.mjs tests/platformB191B193Recovery.test.mjs tests/platformB194PerformanceGate.test.mjs
           node --test tests/platformB185PaperSimulator.test.mjs tests/platformB186LedgerReplay.test.mjs tests/platformB187PaperLedgerE2E.test.mjs
-          node --test tests/platformAlpacaPaper*.test.mjs tests/platformPilotPrep.test.mjs tests/platformDemo*.test.mjs
+          node --test --test-concurrency=1 tests/platformAlpacaPaper*.test.mjs tests/platformPilotPrep.test.mjs tests/platformDemo*.test.mjs
       - name: Install pinned dependencies without install scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Full regression and Next production build

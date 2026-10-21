@@ -1,0 +1,45 @@
+name: JENIOS B290 strict QA subscription proof integration
+on:
+  push:
+    branches: [fix/jenios-b290qa-financial-proof-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      JENIOS_QA_STRICT_SUBSCRIPTION_PROOF: 'false'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_publishable_placeholder'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Financial proof adversarial checks
+        run: node --test tests/jeniosB290QaFinancialProof.test.mjs tests/jeniosProEntitlementsB137.test.mjs tests/jeniosB285R2IntegratedSandbox.test.mjs
+      - name: Locked dependency install
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: All regressions and Next.js build
+        run: npm run build
+      - name: Evidence manifest
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B290_QA_FINANCIAL_PROOF
+          path: docs/platform/B290-QA-FINANCIAL-PROOF.md
+          retention-days: 30

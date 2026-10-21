@@ -1,0 +1,118 @@
+name: JENIOS B231-B250 safe release acceptance candidate
+on:
+  push:
+    branches:
+      - fix/jenios-b231-b250-consolidated-20261021
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI: 'false'
+      JENIOS_QA_CANDIDATE_ENABLED: 'false'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PRIVATE_PAPER_ACCOUNT_PREFLIGHT: 'false'
+      JENIOS_PRIVATE_PAPER_READ_OBSERVER: 'false'
+      JENIOS_PRIVATE_PAPER_OBSERVER_WORKER: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Prepare no-secret evidence
+        run: |
+          mkdir -p .jenios-b250-ci
+          git rev-parse HEAD > .jenios-b250-ci/COMMIT.txt
+      - name: Freeze B230 and reject unauthorized source/route changes
+        run: node scripts/platform/release250/b250-integrity.mjs
+      - name: B231-B250 owned account, commerce, three modes, risks and independent release tracks
+        run: |
+          node --test tests/platformB231B234PublicCandidate.test.mjs tests/platformB235B238Commerce.test.mjs \
+            tests/platformB239B240Host.test.mjs tests/platformB241B242OfficialBroker.test.mjs tests/platformB243Revocation.test.mjs \
+            tests/platformB244B245RiskIntegrity.test.mjs tests/platformB246B247OriginalResearch.test.mjs \
+            tests/platformB245B248B249FinalGates.test.mjs
+      - name: Legacy B185-B230 and isolated worker risk regression
+        run: |
+          node --test --test-concurrency=1 tests/platformB2*.test.mjs tests/platformB18*.test.mjs \
+            tests/platformB19*.test.mjs tests/platformAlpacaPaper*.test.mjs \
+            tests/platformDemo*.test.mjs tests/platformPilotPrep.test.mjs
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full regression, Social S05, production-type Next build
+        run: |
+          npm run build > .jenios-b250-ci/build.log 2>&1 || { tail -n 130 .jenios-b250-ci/build.log; exit 1; }
+          tail -n 24 .jenios-b250-ci/build.log
+      - name: Start localhost with all commercial/broker switches disabled
+        run: |
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3127 > /tmp/jenios-b250-next.log 2>&1 &
+          for i in $(seq 1 65); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/integracoes; then exit 0; fi
+            sleep 1
+          done
+          tail -n 80 /tmp/jenios-b250-next.log
+          exit 1
+      - name: Verify locked Preview page, no public execution or authenticated credentials
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          const root='http://127.0.0.1:3127';
+          for(const path of ['/integracoes','/api/platform/broker-readiness','/api/platform/broker-providers']){
+            const r=await fetch(root+path);assert.equal(r.status,200,path);
+            assert.doesNotMatch(await r.text(),/JENIOS_DEMO_VAULT_KEY_B64|JENIOS_PAPER_OBSERVER_KEY_B64/);
+          }
+          assert.equal((await fetch(root+'/platform/homologacao')).status,404);
+          assert.equal((await fetch(root+'/api/platform/broker-connections')).status,404);
+          for(const p of ['/api/platform/broker-execution','/api/platform/paper-execution',
+            '/api/platform/live-trading','/api/platform/private-observer'])
+            assert.equal((await fetch(root+p,{method:'POST'})).status,404,p);
+          const checkout=await fetch(root+'/api/platform/checkout',{method:'POST',
+            headers:{'content-type':'application/json'},body:'{}'});
+          assert.notEqual(checkout.status,200,'Unauthenticated Platform cannot begin a purchase');
+          console.log('B250_PUBLIC_NO_CHARGE_NO_ORDER_ROUTES_PASS');
+          JS
+      - name: Preserve guides Social Gênios University browser regressions
+        run: |
+          node scripts/platform/connections/browser-smoke.mjs
+          node scripts/platform/b148-browser-smoke.mjs
+          node scripts/platform/b145-pro-ui-smoke.mjs
+          node scripts/platform/b147-university-ui-smoke.mjs
+      - name: Produce separate-tracks release review without pretending external approval
+        run: |
+          node scripts/platform/release250/b249-offline-release-report.mjs "$(git rev-parse HEAD)" "$(date +%s000)" > .jenios-b250-ci/RELEASE_REVIEW.json
+          node --input-type=module - <<'JS'
+          import {readFileSync} from 'node:fs';import assert from 'node:assert/strict';
+          const j=JSON.parse(readFileSync('.jenios-b250-ci/RELEASE_REVIEW.json','utf8'));
+          assert.equal(j.productionDeployed,false);assert.equal(j.tracks.liveAutomatedTrading.status,'NO_GO_LIVE_EXECUTION');
+          assert.equal(j.tracks.commercialSubscriptions.chargesCreated,0);
+          JS
+      - name: Archive reviewed public source and SHA256
+        if: success()
+        run: |
+          git archive --format=zip --output=.jenios-b250-ci/JENIOS_B250_PUBLIC_SOURCE.zip HEAD
+          sha256sum .jenios-b250-ci/JENIOS_B250_PUBLIC_SOURCE.zip > .jenios-b250-ci/SHA256SUMS.txt
+      - name: Preserve redacted evidence on success or failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B250_RELEASE_ACCEPTANCE_CI
+          path: .jenios-b250-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

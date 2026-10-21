@@ -4,6 +4,8 @@ import Link from 'next/link';
 import {supabase} from '../../../lib/supabase';
 import {STUDY_GUIDES} from '../../../lib/learning/trade-study-guides.mjs';
 import {PRACTICAL_STUDY_WORKSHOPS} from '../../../lib/learning/trade-study-workshops-b271.mjs';
+import {B277_GUIDED_STUDIES,b277ExternalLinksForCase} from '../../../lib/learning/b277-guided-trade-studies.mjs';
+import {B277_SOURCE_COUNTS} from '../../../lib/learning/b277-video-evidence.mjs';
 import {USER_VIDEO_RESOURCES} from '../../../lib/learning/trade-video-resources.mjs';
 import ChartLab from './ChartLab';
 import LessonVisual from './LessonVisual';
@@ -21,6 +23,7 @@ export default function LearningRoom(){
  const learning=data?.learning,tracks=learning?.route||[],currentTrack=tracks.find(t=>t.id===activeTrack)||tracks[0];
  const guide=STUDY_GUIDES.find(x=>x.trackId===currentTrack?.id);
  const workshops=PRACTICAL_STUDY_WORKSHOPS.filter(x=>x.trackId===currentTrack?.id);
+ const sourceStudies=B277_GUIDED_STUDIES.filter(x=>x.trackId===currentTrack?.id);
  const references=USER_VIDEO_RESOURCES.filter(x=>x.trackId===currentTrack?.id);
  const allResources=USER_VIDEO_RESOURCES;
  function clear(){lessonEpoch.current++;setData(null);setLesson(null);setReply(null);setQuestion('');setSelected('');setActiveTrack('fundamentos');}
@@ -126,6 +129,28 @@ export default function LearningRoom(){
       </section>
      </>}
      {guide&&<section className={styles.card} aria-label="Aprofundamento original JENIOS"><div className={styles.tag}>ESTUDO COMPLEMENTAR</div><h2>{guide.title}</h2><p>{guide.concept}</p><div className={styles.example}><strong>Prática sugerida:</strong> {guide.activity}</div><details><summary className={styles.moreSummary}>Explorar os conceitos desta trilha</summary>{guide.topics?.map(topic=><div key={topic.title}><h3>{topic.title}</h3><p>{topic.explanation}</p></div>)}</details><p className={styles.small}>Síntese educativa original da JENIOS; não é transcrição de vídeo nem sinal de operação.</p></section>}
+     {sourceStudies.length>0&&<section className={styles.card} aria-label="Estudos de fontes revisadas">
+      <div className={styles.tag}>APROFUNDAMENTO DE FONTES · B277</div>
+      <h2>Da referência ao método: estude com evidências</h2>
+      <p>Estudos originais organizados a partir de registros de legendas analisadas em um checkpoint anterior. O conteúdo visual dos vídeos não foi novamente auditado; relatos de rentabilidade não foram certificados.</p>
+      <p className={styles.small}>No acervo, {B277_SOURCE_COUNTS.priorCaptionNotes} referências anteriores têm anotações de legendas; os {B277_SOURCE_COUNTS.newPending} vídeos mais recentes ainda precisam de transcrição. Nenhuma técnica é liberada para os robôs.</p>
+      {sourceStudies.map(study=><details key={study.id} className={styles.sourceStudy}>
+       <summary className={styles.moreSummary}>{study.title}</summary>
+       <p><strong>O que foi registrado:</strong> {study.observation}</p>
+       <p><strong>Entenda o conceito:</strong> {study.explanation}</p>
+       <h3>Como estudar passo a passo</h3>
+       <ol className={styles.sourceStudySteps}>{study.steps.map((step,i)=><li key={i}>{step}</li>)}</ol>
+       <div className={styles.example}><strong>Exemplo didático:</strong> {study.example}</div>
+       <p><strong>Pergunta para refletir:</strong> {study.check}</p>
+       <p className={styles.small}><strong>Limite da evidência:</strong> {study.limitation}</p>
+       <p className={styles.small}><strong>Variáveis para estudos futuros:</strong> {study.researchFields.join(' · ')}</p>
+       <div className={styles.sourceStudyLinks}>
+        {allResources.find(item=>item.id===study.videoId)?.url&&<a href={allResources.find(item=>item.id===study.videoId).url} target="_blank" rel="noopener noreferrer">Abrir a referência original ↗</a>}
+        {b277ExternalLinksForCase(study).map(link=><a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer">{link.title} ↗</a>)}
+       </div>
+      </details>)}
+      <p className={styles.small}>Aprofundamento facultativo. Não há prova, nota mínima, recomendação personalizada ou alteração em operações automatizadas.</p>
+     </section>}
      {workshops.length>0&&<section className={styles.card} aria-label="Oficinas de estudo"><div className={styles.tag}>APROFUNDAMENTO LIVRE</div><h2>Oficinas práticas opcionais</h2><p>Dez atividades originais para ampliar as cinco trilhas. Não vale nota e não desbloqueia operações.</p>{workshops.map(w=><details key={w.id}><summary className={styles.moreSummary}>{w.title}</summary><p>{w.explanation}</p><ol>{w.steps.map((step,i)=><li key={i}>{step}</li>)}</ol><div className={styles.example}><strong>Exemplo didático:</strong> {w.example}</div><LessonVisual workshopId={w.id}/><p><strong>Experimente:</strong> {w.practice}</p><p><strong>Como conferir:</strong> {w.selfCheck}</p><p className={styles.small}>{w.caution} Material educativo original, sem sinal nem transcrição copiada.</p></details>)}</section>}
      {references.length>0&&<section className={styles.card}><h2>Vídeos relacionados para conferir</h2><p className={styles.small}>Títulos confirmados na fonte; quando existem legendas, os conceitos foram estudados. Não foram auditadas taxas de acerto nem todas as imagens.</p>{references.map(x=><p key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span className={styles.small}> — {x.note}</span></p>)}</section>}
      <section className={styles.card}><details><summary className={styles.moreSummary}>Biblioteca de vídeos e playlists enviados ({allResources.length} links)</summary><p className={styles.small}>Explore os links enviados, sem testes obrigatórios. Materiais novos ficam marcados como pendentes de revisão até conferirmos título e conteúdo. Isso não representa sinal de operação.</p><ul className={styles.resourceList}>{allResources.map(x=><li key={x.id}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title} ↗</a><span>{x.verification==='transcript_reviewed'?'Legenda analisada':x.verification==='needs_video_review'?'Novo material — conteúdo a conferir':x.verification.startsWith('metadata_verified')?'Título confirmado; sem regras completas':'Playlist a conferir'}</span></li>)}</ul></details></section>

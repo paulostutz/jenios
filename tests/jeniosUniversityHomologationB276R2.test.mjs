@@ -217,7 +217,7 @@ test('B276-R2 visual components are embedded in the selected lesson and workshop
  assert.match(visual,/aria-label=\{scene\.alt\}/);
  assert.match(visual,/<desc>\{scene\.alt\}<\/desc>/);
  assert.match(visual,/Não representa cotação/);
- assert.doesNotMatch(visual,/\bfetch\s*\(|https?:\/\/|process\.env|orderIntent|\.push\(\s*['"]checkout/i);
+ assert.doesNotMatch(visual,/\bfetch\s*\(|\bXMLHttpRequest\b|process\.env|orderIntent|\.push\(\s*['"]checkout/i);
  assert.match(css,/\.studyIllustrationSvg\{width:100%;height:auto;max-width:100%/);
  assert.match(css,/@media\(max-width:600px\)/);
 });

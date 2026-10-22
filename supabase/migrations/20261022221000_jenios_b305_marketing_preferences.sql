@@ -3,7 +3,7 @@
 BEGIN;
 CREATE TABLE IF NOT EXISTS public.jenios_email_preferences_b305 (
  user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
- marketing_opt_in boolean NOT NULL DEFAULT true,
+ marketing_opt_in boolean NOT NULL DEFAULT false,
  opted_out_at timestamptz,
  complaint_at timestamptz,
  hard_bounce_at timestamptz,

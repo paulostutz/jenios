@@ -24,6 +24,7 @@ jobs:
       JENIOS_INTER_CHARGES_ENABLED: 'false'
       JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
       JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED: 'false'
+      JENIOS_SUBSCRIPTION_DUNNING_ENABLED: 'false'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -35,7 +36,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -50,6 +51,13 @@ jobs:
             lib/email/finance-outbox-worker.mjs
             lib/email/finance-private-runner.mjs
             lib/email/finance-readiness-diagnostic.mjs
+            lib/email/subscription-dunning.mjs
+            lib/email/lifecycle-campaigns.mjs
+            lib/email/marketing-policy.mjs
+            app/api/internal/billing/dunning/route.js
+            supabase/migrations/20261022220500_jenios_b305_subscription_dunning.sql
+            supabase/migrations/20261022221000_jenios_b305_marketing_preferences.sql
+            docs/platform/B305-R13-EMAIL-LIFECYCLE.md
             supabase/templates/jenios-confirmation.html
             docs/platform/JENIOS-AUTH-EMAIL-TEMPLATE.md
             supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql

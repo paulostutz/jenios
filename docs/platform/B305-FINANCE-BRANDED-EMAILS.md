@@ -40,3 +40,14 @@ Em 22/10/2026, a branch `fix/jenios-b305-finance-email-20261022` foi preparada p
 - O guard exige o projeto QA correto e todas as flags financeiras, Inter, execução real e envio de e-mail exatamente em `false`.
 - Nenhuma credencial Resend, destinatário real ou segredo server-side foi ativado.
 - Produção não foi modificada.
+
+
+## B305-R13 — Régua de vencimento e inadimplência
+- D-3: lembrete de vencimento.
+- D0: aviso de vencimento no dia.
+- D+1: atraso + aviso de cancelamento automático em 7 dias corridos.
+- D+7: cancela somente a assinatura vencida e revoga o entitlement do mesmo produto; conta e outros produtos permanecem intactos.
+- Pagamento confirmado antes de D+7 impede o cancelamento.
+- Eventos idempotentes por assinatura + evento + vencimento.
+- Scheduler preparado para 12:00 UTC (09:00 Bahia/Brasília), protegido por CRON_SECRET.
+- Execução bloqueada enquanto JENIOS_SUBSCRIPTION_DUNNING_ENABLED != true.

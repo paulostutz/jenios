@@ -10,5 +10,11 @@
       "fix/jenios-b303-protected-readonly-preview-20261021": false
     }
   },
-  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b29[7-9]-*|fix/jenios-b30[01]-*) exit 0;; *) exit 1;; esac"
+  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b29[7-9]-*|fix/jenios-b30[01]-*) exit 0;; *) exit 1;; esac",
+  "crons": [
+    {
+      "path": "/api/internal/billing/dunning",
+      "schedule": "0 12 * * *"
+    }
+  ]
 }

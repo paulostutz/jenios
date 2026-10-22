@@ -261,7 +261,7 @@ test('B299 private CLI records owner-only offline fixture and fails closed on re
   signedConsent:c,signedEvidence:[e]})],[consentKey,keyPem(authority)],[collectorKey,keyPem(collector)]]){
   writeFileSync(filename,value,{mode:0o600});
  }
- const env={...process.env,JENIOS_B299_PRIVATE_READ_ONLY:'true',
+ const env={...process.env,VERCEL:'',VERCEL_ENV:'',JENIOS_B299_PRIVATE_READ_ONLY:'true',
   JENIOS_REAL_EXECUTION_ENABLED:'false',JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'false',
   JENIOS_PRIVATE_PAPER_EXECUTOR:'false',
   JENIOS_B299_OWNER_DIGEST:scope.ownerDigest,JENIOS_B299_ACCOUNT_DIGEST:scope.accountDigest,

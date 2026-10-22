@@ -32,7 +32,7 @@ test('B305: hostile user text is safely escaped and plain text retained',()=>{
  assert.match(a.html,/&lt;script&gt;/);
 });
 test('B305: dispatch is disabled by default and never active in production',()=>{
- const base={RESEND_API_KEY:'test-not-real-1234567890',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_PAYMENT_EMAILS_ENABLED:'true'};
+ const base={RESEND_API_KEY:'re_test_not_real_1234567890',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_PAYMENT_EMAILS_ENABLED:'true'};
  assert.equal(financeEmailDispatchReadiness({}).ready,false);
  assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'production'}).ready,false);
  assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'preview'}).ready,true);

@@ -35,3 +35,9 @@ test('R8 falsified plan and failed HTTP cannot become market evidence',async()=>
  const v=JSON.parse(readFileSync(new URL('../vercel.json',import.meta.url)));
  assert.equal(v.git.deploymentEnabled['fix/jenios-robot-r8-genuine-private-core-context-20261022'],false);
 });
+
+test('R8 collector import resolves to the public module without referring to private engine',()=>{
+ const script=readFileSync(new URL('../scripts/platform/research/robot-r8-public-market.mjs',import.meta.url),'utf8');
+ assert.match(script,/\.\.\/\.\.\/\.\.\/lib\/platform\/research\/robot-r8-public-market\.mjs/);
+ assert.doesNotMatch(script,/nucleo-privado|engine\.mjs|service\.mjs|OPENAI_API_KEY/);
+});

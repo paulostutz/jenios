@@ -1,5 +1,5 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {planR8Market,captureR8Market} from '../../lib/platform/research/robot-r8-public-market.mjs';
+import {planR8Market,captureR8Market} from '../../../lib/platform/research/robot-r8-public-market.mjs';
 const dir='.jenios-r8-ci';mkdirSync(dir,{recursive:true});
 const plan=planR8Market(Date.now());
 try{

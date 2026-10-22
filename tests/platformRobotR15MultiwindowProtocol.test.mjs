@@ -32,10 +32,10 @@ test('R15 rejects late, duplicate, forged engine and order-bearing precommits',(
  const dup=structuredClone(p);dup.modeResults[5]={...dup.modeResults[0]};
  assert.throws(()=>validateR15WindowPrecommit(dup,{reviewedAtMs:p.registeredAtMs}));
 });
-test('R15 signal representation requires an explicit side',()=>{
- const p=make();p.modeResults[0]={...p.modeResults[0],decisionClass:'SIGNAL',side:'buy'};
+test('R15 preview representation requires an explicit side',()=>{
+ const p=make();p.modeResults[0]={...p.modeResults[0],decisionClass:'PREVIEW',side:'buy'};
  const a=validateR15WindowPrecommit(p,{reviewedAtMs:p.registeredAtMs});
- assert.equal(a.signals,1);
+ assert.equal(a.previews,1);
  p.modeResults[0].side=null;
  assert.throws(()=>validateR15WindowPrecommit(p,{reviewedAtMs:p.registeredAtMs}));
 });
@@ -58,7 +58,7 @@ test('R15 aggregate links each outcome to the exact precommit hash',()=>{
   publicPriceConsistencyPassed:i%2===0}));
  const s=aggregateR15Cohort({precommits:audits,outcomes});
  assert.equal(s.preregisteredWindows,6);assert.equal(s.linkedOutcomes,6);
- assert.equal(s.signals,0);assert.equal(s.abstentions,36);assert.equal(s.actualBrokerPnl,null);
+ assert.equal(s.previews,0);assert.equal(s.abstentions,36);assert.equal(s.actualBrokerPnl,null);
  const bad=structuredClone(outcomes);bad[0].precommitSha256='0'.repeat(64);
  assert.throws(()=>aggregateR15Cohort({precommits:audits,outcomes:bad}));
 });

@@ -1,0 +1,40 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {JENIOS_EMAIL_ADDRESSES,jeniosEmailSignature} from '../lib/email/jenios-identity.mjs';
+import {paymentConfirmationEmail,financeEmailDispatchReadiness} from '../lib/email/finance-payment-confirmation.mjs';
+const valid=()=>({orderId:'11111111-2222-4333-8444-555555555555',status:'paid',bankVerified:true,receiptId:'E'+'1'.repeat(31),amountCents:14990,currency:'BRL',paidAt:'2026-10-22T10:00:00.000Z',customerName:'Cliente Exemplo',productName:'Plano Nacional',to:'cliente@example.com'});
+test('B305: approved domain and branded finance signature',()=>{
+ assert.equal(JENIOS_EMAIL_ADDRESSES.finance,'financeiro@jenios.com.br');
+ assert.match(jeniosEmailSignature({department:'Financeiro'}),/jenios-logo-horizontal\.webp/);
+ assert.match(jeniosEmailSignature({department:'<script>'}),/&lt;script&gt;/);
+});
+test('B305: confirmed payment email uses official sender, logo and stable idempotency',()=>{
+ const a=paymentConfirmationEmail(valid()),b=paymentConfirmationEmail(valid());
+ assert.equal(a.from,'Financeiro JENIOS <financeiro@jenios.com.br>');
+ assert.match(a.html,/Pagamento confirmado/);assert.match(a.html,/jenios-logo-horizontal\.webp/);
+ assert.match(a.text,/R\$\s*149,90/);
+ assert.equal(a.idempotencyKey,b.idempotencyKey);
+ assert.ok(!a.html.includes('service_role'));
+});
+test('B305: reject unverified, pending, malformed, insufficient receipts and email addresses',()=>{
+ const input=valid();
+ for(const change of [
+ {status:'pending'},{status:'awaiting_payment'},{bankVerified:false},
+ {receiptId:''},{amountCents:0},{currency:'USD'}, {to:'bad-email'},
+ {customerName:''},{orderId:'bad'}, {paidAt:'invalid'},
+ {productName:''}
+ ]) assert.throws(()=>paymentConfirmationEmail({...input,...change}),/PAYMENT_EMAIL_UNVERIFIED_OR_INCOMPLETE/);
+});
+test('B305: hostile user text is safely escaped and plain text retained',()=>{
+ const a=paymentConfirmationEmail({...valid(),customerName:'<img src=x onerror=alert(1)>',productName:'<script>alert(1)</script>'});
+ assert.ok(!a.html.includes('<script>'));
+ assert.ok(!a.html.includes('<img src=x onerror'));
+ assert.match(a.html,/&lt;script&gt;/);
+});
+test('B305: dispatch is disabled by default and never active in production',()=>{
+ const base={RESEND_API_KEY:'test-not-real-1234567890',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_PAYMENT_EMAILS_ENABLED:'true'};
+ assert.equal(financeEmailDispatchReadiness({}).ready,false);
+ assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'production'}).ready,false);
+ assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'preview'}).ready,true);
+ assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'preview',JENIOS_PAYMENT_EMAILS_ENABLED:'false'}).ready,false);
+});

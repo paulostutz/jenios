@@ -1,0 +1,57 @@
+name: JENIOS B303 protected readonly Preview candidate
+on:
+  push:
+    branches: [fix/jenios-b303-protected-readonly-preview-20261021]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI: 'false'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: B303, B301, B300, B299 and existing official GET contracts
+        run: |
+          node --test \
+            tests/platformB303ProtectedPreview.test.mjs \
+            tests/platformB301DurableCohortLink.test.mjs \
+            tests/platformB300EvidenceReconciliationGate.test.mjs \
+            tests/platformB299PrivateConsentReplayJournal.test.mjs \
+            tests/platformDemoService.test.mjs \
+            tests/platformDemoBrokerReader.test.mjs \
+            tests/platformB251B253ReleasePreview.test.mjs
+      - name: Full regression and Next.js build; no deployment
+        run: npm run build
+      - name: Archive sanitized technical evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B303_PROTECTED_READONLY_PREVIEW_CI
+          path: |
+            lib/platform/connections/b303-private-preview-readiness.mjs
+            app/api/platform/homologacao/b303-broker-preflight/route.js
+            tests/platformB303ProtectedPreview.test.mjs
+            docs/platform/B303-PROTECTED-READONLY-PREVIEW.md
+          retention-days: 30

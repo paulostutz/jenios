@@ -32,6 +32,18 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: R9 no-backdating preregistration and R8 original data boundary
         run: node --test tests/platformRobotR9PrivatePrecommit.test.mjs tests/platformRobotR8PublicMarket.test.mjs
+      - name: Fresh CLOSED public BTC-USD bars, no private core in runner
+        id: fresh_context
+        continue-on-error: true
+        run: node scripts/platform/research/robot-r8-public-market.mjs
+      - name: Store public context separately even if GET failed
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_R9_NEW_PUBLIC_CLOSED_INPUT_ONLY
+          path: .jenios-r8-ci/
+          include-hidden-files: true
+          retention-days: 7
       - name: Full regression S05 and Next.js build
         run: npm run build
       - name: Archive no-secrets R9 contracts only

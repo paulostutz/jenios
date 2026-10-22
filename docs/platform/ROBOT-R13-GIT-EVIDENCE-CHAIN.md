@@ -20,3 +20,5 @@ The immutable Git object identity strengthens proof that the declared public pre
 - real broker P&L, avoided losses, or trade accuracy.
 
 Therefore R13 remains fail-closed for performance claims. R9 contains six `wait_for_context` decisions and zero orders.
+
+CI trigger note: workflow already present on branch; no functional change.

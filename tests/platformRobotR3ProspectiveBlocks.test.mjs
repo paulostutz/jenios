@@ -104,7 +104,7 @@ test('R3 catches tampered seal, mismatched OHLC, lookahead and early observation
  assert.throws(()=>reviewR3ProspectiveBlocks({...x,batch:tampered}),
  /B287_SIGNAL_BATCH_TAMPERED/);
  const leak=x.batch.signals.map((s,i)=>i===0?{...s,signalAtMs:s.targetCloseMs-1000}:s);
- const core={schema:x.batch.schema,signals:leak,frozenAtMs:x.batch.signals[0].targetCloseMs-1000};
+ const core={schema:x.batch.schema,frozenAtMs:x.batch.signals[0].targetCloseMs-1000,signals:leak};
  assert.throws(()=>reviewR3ProspectiveBlocks({...x,batch:{...core,sha256:sha(core)}}),
  /B288_LOOKAHEAD_OR_UNCLOSED_SIGNAL/);
  const prices=x.observations.map((o,i)=>i===1?{...o,close:o.close+0.2}:o);

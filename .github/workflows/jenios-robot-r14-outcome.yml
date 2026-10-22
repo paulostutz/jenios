@@ -1,6 +1,10 @@
 name: JENIOS ROBOT R14 outcome observation (manual read-only)
 on:
   workflow_dispatch:
+  push:
+    branches: [research/jenios-robot-r14-evidence-20261022]
+    paths:
+      - docs/platform/evidence/ROBOT_R14_OUTCOME_TRIGGER.txt
 permissions:
   contents: read
 jobs:

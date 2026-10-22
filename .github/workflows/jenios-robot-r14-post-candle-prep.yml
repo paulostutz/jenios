@@ -8,9 +8,14 @@ permissions:
 jobs:
   prepare:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 65
     env:
       NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
       JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
       JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
       JENIOS_REAL_EXECUTION_ENABLED: 'false'
@@ -22,6 +27,9 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: R14 post-candle guards
+      - name: Install exact dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R14 post-candle guards and R12-R13 regressions
         run: node --test tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs
+      - name: Full regression and Next build
+        run: npm run build

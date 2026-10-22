@@ -28,10 +28,10 @@ Escopo **apenas os robôs Manual, Híbrido e Reverso**. Não altera CHEFE, LETTE
 - Confirmar SHA, CI, rollback/backup, zero deployment da branch e produção B177-R3 preservada.
 - A conclusão desse bloco é **QA de validação estática/adversarial**; não comprovação de lucratividade ou integração operacional.
 
-## ROBOT-R1-R2 — 4.412 combinações sintéticas adicionais
+## ROBOT-R1-R2 — 5.948 combinações sintéticas adicionais
 
 - 72 combinações de cronologia e atraso de sinais Manuais.
-- 1.536 cenários contextuais Híbridos (liquidez, volatilidade, spread, viés, pausa e dados obsoletos).
+- 3.072 cenários contextuais Híbridos (liquidez, volatilidade, spread, viés, pausa e dados obsoletos).
 - 2.304 cenários de bloqueio de reversão (spot/margem/perpétuo, empréstimo, funding, consentimento e posição aberta).
 - 500 resultados contrafactuais pareados e autocontidos, incluindo ganhos sacrificados e novas perdas. Não há evidência independente ou P&L real.
 - Nenhuma estratégia é recalibrada, nenhum teste envia ordem, dinheiro, API de corretora ou IA paga. Este número é contagem de *fixtures*, não operações reais nem evidência de lucro.

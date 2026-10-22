@@ -24,7 +24,7 @@ test('R1-R2 Manual — 72 declared delivery combinations, no real receipt claims
  }
  assert.equal(n,72);
 });
-test('R1-R2 Híbrido — 1,536 context combinations reject every danger',()=>{
+test('R1-R2 Híbrido — 3,072 context combinations reject every danger',()=>{
  let total=0,wait=0;
  for(const intervalMs of [60000,300000,900000,3600000])
  for(const atrPct of [0,3,6,6.1])
@@ -48,7 +48,7 @@ test('R1-R2 Híbrido — 1,536 context combinations reject every danger',()=>{
   assert.equal(x.ordersSent,0);
   total++;if(shouldWait)wait++;
  }
- assert.equal(total,1536);assert.ok(wait>1200);
+ assert.equal(total,3072);assert.ok(wait>2400);
 });
 test('R1-R2 Reverso — 2,304 combinations never authorize execution',()=>{
  let total=0,blocked=0;

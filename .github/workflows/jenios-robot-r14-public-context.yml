@@ -1,7 +1,5 @@
 name: JENIOS ROBOT R14 public context only
 on:
-  push:
-    branches: [research/jenios-robot-r14-evidence-20261022]
   workflow_dispatch:
 permissions:
   contents: read

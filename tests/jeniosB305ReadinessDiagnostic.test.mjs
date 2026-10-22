@@ -15,6 +15,8 @@ const locked={
   JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'false',
   JENIOS_PRIVATE_PAPER_EXECUTOR:'false',
   JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',
+  JENIOS_RESEND_EXPECTED_DOMAIN:'jenios.com.br',
+  JENIOS_RESEND_DOMAIN_VERIFIED:'false',
   JENIOS_PAYMENT_EMAILS_ENABLED:'false',
   JENIOS_B305_TEST_SEND_APPROVED:'false',
   JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED:'false'
@@ -29,6 +31,7 @@ test('diagnostic reports locked R9 environment without exposing secrets',()=>{
   assert.equal(r.delivery.resendCredentialConfigured,false);
   assert.equal(r.delivery.testRecipientConfigured,false);
   assert.equal(r.secretsExposed,false);
+  assert.ok(r.blockers.includes('RESEND_DOMAIN_NOT_VERIFIED'));
   assert.ok(r.blockers.includes('RESEND_KEY_MISSING'));
   assert.ok(r.blockers.includes('TEST_RECIPIENT_MISSING'));
   assert.ok(!JSON.stringify(r).includes('re_'));
@@ -43,7 +46,8 @@ test('diagnostic becomes ready only with all single-send gates',()=>{
     JENIOS_B305_PRIVATE_EMAIL_APPROVAL:B305_PRIVATE_EMAIL_APPROVAL,
     JENIOS_B305_PRIVATE_EMAIL_MAX:'1',
     JENIOS_EMAIL_TEST_RECIPIENT:'teste@example.com',
-    RESEND_API_KEY:'re_testnotreal123456789'
+    RESEND_API_KEY:'re_testnotreal123456789',
+    JENIOS_RESEND_DOMAIN_VERIFIED:'true'
   };
   const r=financeReadinessDiagnostic(armed);
   assert.equal(r.status,'READY_FOR_SINGLE_QA_SEND');

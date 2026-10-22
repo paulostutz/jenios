@@ -32,7 +32,7 @@ test('B305: hostile user text is safely escaped and plain text retained',()=>{
  assert.match(a.html,/&lt;script&gt;/);
 });
 test('B305: dispatch is disabled by default and never active in production',()=>{
- const base={RESEND_API_KEY:'re_test_not_real_1234567890',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_PAYMENT_EMAILS_ENABLED:'true'};
+ const base={RESEND_API_KEY:'re_test_not_real_1234567890',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_PAYMENT_EMAILS_ENABLED:'true',JENIOS_RESEND_EXPECTED_DOMAIN:'jenios.com.br',JENIOS_RESEND_DOMAIN_VERIFIED:'true'};
  assert.equal(financeEmailDispatchReadiness({}).ready,false);
  assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'production'}).ready,false);
  assert.equal(financeEmailDispatchReadiness({...base,VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:'fix/jenios-b305-finance-email-20261022',JENIOS_B305_QA_PROJECT_ID:'prj_9cRnjWFRsLkfTToF4U4xZQBa7Gq9',VERCEL_PROJECT_ID:'prj_9cRnjWFRsLkfTToF4U4xZQBa7Gq9',NEXT_PUBLIC_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',JENIOS_PAY_PAYMENTS_ENABLED:'false',JENIOS_INTER_CHARGES_ENABLED:'false',JENIOS_REAL_EXECUTION_ENABLED:'false',JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'false',JENIOS_PRIVATE_PAPER_EXECUTOR:'false',JENIOS_B305_TEST_SEND_APPROVED:'true'}).ready,true);

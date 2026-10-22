@@ -21,7 +21,7 @@ test('R15 cohort has six immutable consecutive hourly windows',()=>{
 });
 test('R15 accepts a complete abstention precommit only before lead gate',()=>{
  const p=make(),a=validateR15WindowPrecommit(p,{reviewedAtMs:p.registeredAtMs});
- assert.equal(a.abstentions,6);assert.equal(a.signals,0);assert.ok(a.leadMs>=600000);
+ assert.equal(a.abstentions,6);assert.equal(a.previews,0);assert.ok(a.leadMs>=600000);
 });
 test('R15 rejects late, duplicate, forged engine and order-bearing precommits',()=>{
  const p=make(),w=R15_COHORT.windows[0];

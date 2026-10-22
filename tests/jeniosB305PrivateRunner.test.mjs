@@ -17,7 +17,9 @@ const base={
   JENIOS_B305_TEST_SEND_APPROVED:'true',
   JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',
   JENIOS_EMAIL_TEST_RECIPIENT:'teste@example.com',
-  RESEND_API_KEY:'re_testnotreal123456789'
+  RESEND_API_KEY:'re_testnotreal123456789',
+  JENIOS_RESEND_EXPECTED_DOMAIN:'jenios.com.br',
+  JENIOS_RESEND_DOMAIN_VERIFIED:'true'
 };
 const armed={...base,
   JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED:'true',

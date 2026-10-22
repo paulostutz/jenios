@@ -1,0 +1,27 @@
+name: JENIOS ROBOT R14 post-candle preparation (offline no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r14-evidence-20261022]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R14 post-candle guards
+        run: node --test tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs

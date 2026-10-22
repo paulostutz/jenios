@@ -321,7 +321,7 @@ async function withOfflineBundle(fn){
   for(const [path,content] of [[paths.bundle,JSON.stringify(x)],
       [paths.consent,pub(authority)],[paths.collector,pub(collector)]])
    writeFileSync(path,content,{mode:0o600});
-  const environment={...process.env,JENIOS_B300_PRIVATE_READ_ONLY:'true',
+  const environment={...process.env,VERCEL:'',VERCEL_ENV:'',JENIOS_B300_PRIVATE_READ_ONLY:'true',
    JENIOS_B300_OWNER_DIGEST:owner.ownerDigest,
    JENIOS_B300_ACCOUNT_DIGEST:owner.accountDigest,
    JENIOS_B300_CONSENT_DIGEST:owner.consentDigest,

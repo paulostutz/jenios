@@ -16,3 +16,14 @@ test('B305 disabled by default and in production',async()=>{for(const settings o
 test('B305 verified QA Pix uses idempotent Resend request',async()=>{const x=db();let sent=0;const r=await runFinanceOutboxBatch({db:x,env,fetcher:async(url,opts)=>{sent++;assert.equal(url,'https://api.resend.com/emails');assert.match(opts.headers['Idempotency-Key'],/^[a-f0-9]{64}$/);return {ok:true,json:async()=>({id:'resend_mock_12345'})}}});assert.equal(r.sent,1);assert.equal(sent,1);assert.ok(x.calls.some(z=>z.name==='jenios_complete_pay_email_b305'))});
 test('B305 pending payments, unconfirmed identity and mismatched recipient never send',async()=>{for(const x of [db({o:{status:'pending'}}),db({u:{email_confirmed_at:null}}),db({u:{email:'other@example.com'}})]){let sent=0;const r=await runFinanceOutboxBatch({db:x,env,fetcher:async()=>{sent++}});assert.equal(r.sent,0);assert.equal(r.blocked,1);assert.equal(sent,0)}});
 test('B305 network uncertainty quarantines without retry',async()=>{const x=db();const r=await runFinanceOutboxBatch({db:x,env,fetcher:async()=>{throw Error('disconnect')}});assert.equal(r.sent,0);assert.equal(x.calls.find(z=>z.name==='jenios_release_pay_email_b305').args.p_retryable,false)});
+
+
+test('B305 Resend idempotency: concurrent request retries but changed payload quarantines',async()=>{
+ for(const [name,retry] of [['concurrent_idempotent_requests',true],['invalid_idempotent_request',false]]){
+  const x=db();const r=await runFinanceOutboxBatch({db:x,env,
+   fetcher:async()=>({ok:false,status:409,json:async()=>({name,message:'synthetic'})})});
+  assert.equal(r.sent,0);assert.equal(r.blocked,1);
+  const release=x.calls.find(c=>c.name==='jenios_release_pay_email_b305');
+  assert.equal(release.args.p_retryable,retry);
+ }
+});

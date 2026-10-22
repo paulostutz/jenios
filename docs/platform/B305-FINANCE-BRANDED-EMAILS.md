@@ -29,3 +29,14 @@ Não inserir senha SMTP/API key em código, chat, artefatos ou variáveis públi
 5. Somente habilitar envio com aprovação expressa, após testes reais e revisão jurídica/fiscal. Nada de falsos recibos fiscais.
 
 Produção Vercel `jenios-ecossistem` preservada; projeto QA B303 permanece separado.
+
+
+## Atualização B305-R9 — Preview Finance-Locked
+
+Em 22/10/2026, a branch `fix/jenios-b305-finance-email-20261022` foi preparada para Preview isolado no projeto `jenios-platform-homologacao`.
+
+- `vercel.json`: removida somente a B305 das regras que cancelavam o próprio Preview; branches históricas permanecem bloqueadas.
+- `lib/release/environment-scope.mjs`: B305 reconhecida apenas no modo `preview-b305-finance-locked`.
+- O guard exige o projeto QA correto e todas as flags financeiras, Inter, execução real e envio de e-mail exatamente em `false`.
+- Nenhuma credencial Resend, destinatário real ou segredo server-side foi ativado.
+- Produção não foi modificada.

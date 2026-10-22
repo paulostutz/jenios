@@ -1,8 +1,10 @@
 name: JENIOS ROBOT R15 fresh public context (read-only)
 on:
+  workflow_dispatch:
   push:
     branches: [research/jenios-robot-r15-multiwindow-prospective-20261022]
-  workflow_dispatch:
+    paths:
+      - docs/platform/evidence/ROBOT_R15_CONTEXT_TRIGGER.txt
 permissions:
   contents: read
 jobs:

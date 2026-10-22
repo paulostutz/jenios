@@ -97,5 +97,8 @@ test('B303 route uses dedicated Platform auth, never Social or JENIOS Pay',()=>{
 test('B303 preview is blocked on all linked projects except manual protected QA',()=>{
  const config=JSON.parse(readFileSync('vercel.json','utf8'));
  assert.equal(config.git.deploymentEnabled[B303_QA_BRANCH],false);
- assert.match(config.ignoreCommand,/b303-protected-readonly-preview-20261021/);
+ assert.ok(config.ignoreCommand.length<=256);
+ assert.equal(config.git.deploymentEnabled[B303_QA_BRANCH],false);
+ assert.match(config.ignoreCommand,/fix\/jenios-b29\[7-9\]/);
+ assert.match(config.ignoreCommand,/fix\/jenios-b30\[01\]/);
 });

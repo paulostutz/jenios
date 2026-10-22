@@ -50,6 +50,8 @@ jobs:
             lib/email/finance-outbox-worker.mjs
             lib/email/finance-private-runner.mjs
             lib/email/finance-readiness-diagnostic.mjs
+            supabase/templates/jenios-confirmation.html
+            docs/platform/JENIOS-AUTH-EMAIL-TEMPLATE.md
             supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql
             supabase/migrations/20261022183000_jenios_b305_finance_receipt_uniqueness_and_product.sql
             tests/jeniosB305FinanceEmail.test.mjs

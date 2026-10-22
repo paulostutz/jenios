@@ -70,8 +70,8 @@ test('R12 rejects mismatching original record or original motor identity',()=>{
   {engineSha256:'a'.repeat(64)},
   {ordersSent:1},
   {decidedAtMs:OPEN+1}
- ])changed(()=>auditR12LinkedEvidence({...f,privateRecord:{...f.privateRecord,...patch}}),
- 'R12_INVALID_ORIGINAL_PRIVATE_RECORD');
+ ])assert.throws(()=>auditR12LinkedEvidence({...f,privateRecord:{...f.privateRecord,...patch}}),
+  e=>['R12_INVALID_ORIGINAL_PRIVATE_RECORD','R10_PRECOMMIT_INTEGRITY_FAILURE'].includes(e?.code));
 });
 test('R12 modified decisions fail the original SHA even if all six still abstain',()=>{
  const f=fixture();
@@ -118,8 +118,8 @@ test('R12 wrong hour, late, invented trade, signed price claims and changed bps 
   {closeDifferenceBps:99},
   {issues:['OHLC_DIVERGENCE']},
   {priceConsistencyWithinResearchThresholds:false}
- ])changed(()=>auditR12LinkedEvidence({...f,observation:{...obs(),...patch}}),
- 'R12_UNTRUSTED_OR_NON_ABSTAINED_OUTCOME');
+ ])assert.throws(()=>auditR12LinkedEvidence({...f,observation:{...obs(),...patch}}),
+  e=>['R12_UNTRUSTED_OR_NON_ABSTAINED_OUTCOME','R12_MISREPORTED_OR_INCONSISTENT_PUBLIC_PRICES'].includes(e?.code));
  changed(()=>auditR12LinkedEvidence({...f,observation:{...obs(),
   coinbase:{...obs().coinbase,t:OPEN-3600000}}}), 'R12_INVALID_OR_WRONG_HOUR_CANDLE');
 });

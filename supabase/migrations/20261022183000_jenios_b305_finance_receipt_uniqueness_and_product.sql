@@ -41,7 +41,7 @@ BEGIN
     coalesce(product_label,'Compra JENIOS'),
     CASE WHEN NEW.user_id IS NOT NULL THEN 'pending' ELSE 'blocked' END
   )
-  ON CONFLICT (order_id,event_kind) DO NOTHING;
+  ON CONFLICT DO NOTHING;
   RETURN NEW;
 END $$;
 COMMIT;

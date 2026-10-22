@@ -1,5 +1,5 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
-import {planR7,inspectR7PublicHour} from '../../lib/platform/research/robot-r7-public-h1.mjs';
+import {planR7,inspectR7PublicHour} from '../../../lib/platform/research/robot-r7-public-h1.mjs';
 const dir='.jenios-r7-ci';mkdirSync(dir,{recursive:true});
 const plan=planR7({nowMs:Date.now()});
 try{

@@ -37,6 +37,7 @@ jobs:
         run: |
           node --test \
             tests/platformRobotR1AdversarialGates.test.mjs \
+            tests/platformRobotR1ScenarioSweeps.test.mjs \
             tests/platformB288PairedFilterAudit.test.mjs \
             tests/platformB289OperatorReversal.test.mjs \
             tests/platformB290InversionSignalContract.test.mjs \
@@ -54,4 +55,5 @@ jobs:
             docs/platform/ROBOT-R1-ADVERSARIAL-VALIDATION.md
             lib/platform/research/robot-r1-adversarial-gates.mjs
             tests/platformRobotR1AdversarialGates.test.mjs
+            tests/platformRobotR1ScenarioSweeps.test.mjs
           retention-days: 30

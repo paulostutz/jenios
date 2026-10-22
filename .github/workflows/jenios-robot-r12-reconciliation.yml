@@ -1,0 +1,47 @@
+name: JENIOS ROBOT R12 strict evidence linkage (offline no deploy)
+on:
+  push:
+    branches: [fix/jenios-robot-r12-evidence-reconciliation-20261022]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install exact dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R12 cross-file source linkage and R9-R11 regressions
+        run: |
+          node --test             tests/platformRobotR12EvidenceReconciliation.test.mjs             tests/platformRobotR11OfflineEvidenceHardening.test.mjs             tests/platformRobotR10PostCandle.test.mjs             tests/platformRobotR9PrivatePrecommit.test.mjs
+      - name: Full app regression S05 and Next build without market calls
+        run: npm run build
+      - name: Keep no-secret research contract and tests
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_ROBOT_R12_LINKED_EVIDENCE_NO_GO
+          path: |
+            lib/platform/research/robot-r12-evidence-reconciliation.mjs
+            tests/platformRobotR12EvidenceReconciliation.test.mjs
+            docs/platform/ROBOT-R12-STRICT-EVIDENCE-LINKAGE.md
+          retention-days: 30

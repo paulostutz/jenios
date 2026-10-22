@@ -30,7 +30,7 @@ jobs:
       - name: Install exact dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: R15 protocol plus R12-R14 regressions
-        run: node --test tests/platformRobotR15MultiwindowProtocol.test.mjs tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs
+        run: node --test tests/platformRobotR15MultiwindowProtocol.test.mjs tests/platformRobotR15WindowOutcome.test.mjs tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs
       - name: Full regression and Next build
         run: npm run build
       - name: Archive R15 protocol
@@ -41,5 +41,8 @@ jobs:
           path: |
             lib/platform/research/robot-r15-multiwindow-protocol.mjs
             tests/platformRobotR15MultiwindowProtocol.test.mjs
+            lib/platform/research/robot-r15-window-outcome.mjs
+            scripts/platform/research/robot-r15-window-outcome.mjs
+            tests/platformRobotR15WindowOutcome.test.mjs
             docs/platform/ROBOT-R15-MULTIWINDOW-PROSPECTIVE.md
           retention-days: 30

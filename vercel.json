@@ -10,5 +10,5 @@
       "fix/jenios-b303-protected-readonly-preview-20261021": false
     }
   },
-  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b297-private-original-readonly-audit-20261021|fix/jenios-b298-signed-private-readonly-evidence-20261021|fix/jenios-b299-private-consent-replay-gate-20261021|fix/jenios-b300-private-evidence-correlation-gate-20261021|fix/jenios-b301-private-durable-cohort-20261021|fix/jenios-b303-protected-readonly-preview-20261021) exit 0;; *) exit 1;; esac"
+  "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b29[7-9]-*|fix/jenios-b30[01]-*) exit 0;; *) exit 1;; esac"
 }

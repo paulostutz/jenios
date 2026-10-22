@@ -46,8 +46,9 @@ test('B305-R13: institutional shell uses official palette and logo in header and
  assert.match(html,/jenios-logo-horizontal\.webp/g);
  assert.ok((html.match(/jenios-logo-horizontal\.webp/g)||[]).length>=2);
  assert.match(html,/#7c3aed/);
- assert.match(html,/#10b981/);
+ assert.match(html,/#ecfdf5/);
  assert.equal(JENIOS_EMAIL_PALETTE.purple,'#7c3aed');
+ assert.equal(JENIOS_EMAIL_PALETTE.green,'#10b981');
 });
 test('B305-R13: finance email uses institutional light shell instead of legacy dark styling',()=>{
  const a=paymentConfirmationEmail(valid());

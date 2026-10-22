@@ -1,0 +1,40 @@
+{
+  "schema": "JENIOS_R17_SANITIZED_PRIVATE_RESULT_SUMMARY_V1",
+  "source_private_sha256": "69644e239856c8c61cd7e5e9ceb8b3ed0b4c81ca0b8354cf6e7622c5088e0b49",
+  "marketFixtures": 36,
+  "totalExperiments": 360,
+  "regimes": ["uptrend","downtrend","range","whipsaw","shock","regime_shift"],
+  "seeds": [3901,3907,3911,3925,3950,3991],
+  "intentRates": [0,0.15,0.35,0.6,1],
+  "confirmations": [true,false],
+  "modeTotals": [
+    {"mode":"manual","runs":360,"decisions":17900,"abstentions":0,"netR":1667.746008,"netUpliftR":0,"helped":0,"harmed":0,"unchanged":17900,"grossPreventedR":0,"missedWinnersR":0,"newNegativeR":0,"degradationR":0},
+    {"mode":"hybrid","runs":360,"decisions":17900,"abstentions":8950,"netR":7321.385136,"netUpliftR":5653.6391265,"helped":7822,"harmed":4854,"unchanged":5224,"grossPreventedR":9275.6378564,"missedWinnersR":7170.5749642,"newNegativeR":814.3564065,"degradationR":8111.2391155},
+    {"mode":"reverse_unvalidated","runs":360,"decisions":17900,"abstentions":9915,"netR":7711.4452415,"netUpliftR":6043.6992337,"helped":8269,"harmed":4990,"unchanged":4641,"grossPreventedR":9712.8691936,"missedWinnersR":7319.3437357,"newNegativeR":635.3670107,"degradationR":8048.6980785},
+    {"mode":"reverse_hypothetically_calibrated","runs":360,"decisions":17900,"abstentions":8950,"netR":7413.4887826,"netUpliftR":5745.7427736,"helped":8068,"harmed":5116,"unchanged":4716,"grossPreventedR":9548.882833,"missedWinnersR":7319.3437357,"newNegativeR":1014.7965545,"degradationR":8530.3411422}
+  ],
+  "intentSensitivityByMode": {
+    "hybrid": [
+      {"intentErrorRate":0,"experiments":72,"decisions":3580,"netUpliftR":-1464.2770272,"helped":553,"harmed":1237,"abstentions":1790,"missedWinnersR":2060.791744,"newNegativeR":0},
+      {"intentErrorRate":0.15,"experiments":72,"decisions":3580,"netUpliftR":-339.4566101,"helped":984,"harmed":1119,"abstentions":1790,"missedWinnersR":1793.1841814,"newNegativeR":65.1182898},
+      {"intentErrorRate":0.35,"experiments":72,"decisions":3580,"netUpliftR":896.2497542,"helped":1465,"harmed":992,"abstentions":1790,"missedWinnersR":1480.8705844,"newNegativeR":144.8332917},
+      {"intentErrorRate":0.6,"experiments":72,"decisions":3580,"netUpliftR":2096.7903521,"helped":1949,"harmed":871,"abstentions":1790,"missedWinnersR":1204.916112,"newNegativeR":225.5769914},
+      {"intentErrorRate":1,"experiments":72,"decisions":3580,"netUpliftR":4464.3326575,"helped":2871,"harmed":635,"abstentions":1790,"missedWinnersR":630.8123424,"newNegativeR":378.8278336}
+    ],
+    "reverse_unvalidated": [
+      {"intentErrorRate":0,"experiments":72,"decisions":3580,"netUpliftR":-1386.2650058,"helped":684,"harmed":1299,"abstentions":1983,"missedWinnersR":2112.487952,"newNegativeR":0},
+      {"intentErrorRate":0.15,"experiments":72,"decisions":3580,"netUpliftR":-261.4445889,"helped":1098,"harmed":1170,"abstentions":1983,"missedWinnersR":1840.8690992,"newNegativeR":48.0436657},
+      {"intentErrorRate":0.35,"experiments":72,"decisions":3580,"netUpliftR":974.2617756,"helped":1561,"harmed":1020,"abstentions":1983,"missedWinnersR":1511.2435712,"newNegativeR":114.9210589},
+      {"intentErrorRate":0.6,"experiments":72,"decisions":3580,"netUpliftR":2174.8023737,"helped":2024,"harmed":882,"abstentions":1983,"missedWinnersR":1223.9307709,"newNegativeR":177.3145244},
+      {"intentErrorRate":1,"experiments":72,"decisions":3580,"netUpliftR":4542.3446791,"helped":2902,"harmed":619,"abstentions":1983,"missedWinnersR":630.8123424,"newNegativeR":295.0877617}
+    ],
+    "reverse_hypothetically_calibrated": [
+      {"intentErrorRate":0,"experiments":72,"decisions":3580,"netUpliftR":-1428.5159458,"helped":637,"harmed":1331,"abstentions":1790,"missedWinnersR":2112.487952,"newNegativeR":71.3824176},
+      {"intentErrorRate":0.15,"experiments":72,"decisions":3580,"netUpliftR":-324.9221792,"helped":1055,"harmed":1198,"abstentions":1790,"missedWinnersR":1840.8690992,"newNegativeR":126.7412437},
+      {"intentErrorRate":0.35,"experiments":72,"decisions":3580,"netUpliftR":922.5058989,"helped":1520,"harmed":1046,"abstentions":1790,"missedWinnersR":1511.2435712,"newNegativeR":185.9260247},
+      {"intentErrorRate":0.6,"experiments":72,"decisions":3580,"netUpliftR":2112.3423422,"helped":1985,"harmed":906,"abstentions":1790,"missedWinnersR":1223.9307709,"newNegativeR":251.9190349},
+      {"intentErrorRate":1,"experiments":72,"decisions":3580,"netUpliftR":4464.3326575,"helped":2871,"harmed":635,"abstentions":1790,"missedWinnersR":630.8123424,"newNegativeR":378.8278336}
+    ]
+  },
+  "claims": {"realClientAvoidedLossBRL":null,"actualBrokerPnl":null,"tradeAccuracy":null,"adaptiveProfitabilityProven":false,"executionEnabled":false,"releaseGate":"NO_GO"}
+}

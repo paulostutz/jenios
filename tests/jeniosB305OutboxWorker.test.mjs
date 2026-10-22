@@ -4,7 +4,7 @@ import {runFinanceOutboxBatch} from '../lib/email/finance-outbox-worker.mjs';
 const id='11111111-2222-4333-8444-555555555555',receipt='E'+'1'.repeat(31);
 const row={id,order_id:id,payment_id:'22222222-2222-4333-8444-555555555555',recipient_user_id:'33333333-2222-4333-8444-555555555555',lease_token:id,recipient_email:null,recipient_name:'Cliente JENIOS',product_name:'Compra JENIOS',amount_cents:14990,currency:'BRL',paid_at:'2026-10-22T12:00:00Z',bank_receipt_id:receipt};
 const order={id,user_id:row.recipient_user_id,status:'paid',currency:'BRL',provider:'inter_pix',amount_cents:14990};
-const payment={id:row.payment_id,order_id:id,provider:'inter_pix',payment_method:'pix',status:'confirmed',amount_cents:14990,bank_end_to_end_id:receipt,confirmed_at:row.paid_at};
+const payment={id:row.payment_id,order_id:id,provider:'inter_pix',payment_method:'pix',provider_payment_id:id.replace(/-/g,''),status:'confirmed',amount_cents:14990,bank_end_to_end_id:receipt,confirmed_at:row.paid_at};
 const env={VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:'fix/jenios-b305-finance-email-20261022',JENIOS_B305_QA_PROJECT_ID:'prj_9cRnjWFRsLkfTToF4U4xZQBa7Gq9',NEXT_PUBLIC_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',JENIOS_PAY_PAYMENTS_ENABLED:'false',JENIOS_REAL_EXECUTION_ENABLED:'false',JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'false',JENIOS_PRIVATE_PAPER_EXECUTOR:'false',JENIOS_B305_TEST_SEND_APPROVED:'true',JENIOS_PAYMENT_EMAILS_ENABLED:'true',JENIOS_PAYMENT_EMAIL_FROM:'Financeiro JENIOS <financeiro@jenios.com.br>',JENIOS_EMAIL_TEST_RECIPIENT:'teste@example.com',RESEND_API_KEY:'re_testnotreal123456789'};
 function db({u={},o={},p={},items=[row]}={}){
  const calls=[];
@@ -27,3 +27,5 @@ test('B305 Resend idempotency: concurrent request retries but changed payload qu
   assert.equal(release.args.p_retryable,retry);
  }
 });
+
+test('B305 incorrect Pix txid is rejected before Resend',async()=>{const x=db({p:{provider_payment_id:'invalid-txid'}});let count=0;const result=await runFinanceOutboxBatch({db:x,env,fetcher:async()=>{count++;throw Error('not expected')}});assert.equal(result.sent,0);assert.equal(count,0);assert.equal(result.blocked,1)});

@@ -22,3 +22,28 @@ test('R10 refuses changed URL, forged digest and skipped grace',async()=>{
  assert.throws(()=>verifyR10Commit({modeResults:[]},{commitmentSha256:'bad'}));
  assert.equal(R10_PROTOCOL.dataSignedByExchange,false);
 });
+
+test('R10 flags mismatched open, high or low despite agreeing closes',async()=>{
+ const p=planR10Observation(Date.parse('2026-10-22T14:10:00Z')),t=p.openMs/1000;
+ const a=[[t,99,102,100,101,22]];
+ const b={error:[],result:{XXBTZUSD:[[t,'100','107','99','101','100.1','25',3]],last:t}};
+ const f=async url=>Response.json(url.includes('kraken')?b:a);
+ const r=await inspectR10FutureCandle({plan:p,observedAtMs:p.nowMs,fetcher:f});
+ assert.equal(r.priceConsistencyWithinResearchThresholds,false);
+ assert.ok(r.issues.includes('OHLC_DIVERGENCE'));
+ assert.equal(r.tradingProfit,null);
+});
+test('R10 rejects coincident unverified identical provider payloads',async()=>{
+ const p=planR10Observation(Date.parse('2026-10-22T14:10:00Z')),t=p.openMs/1000;
+ const a=[[t,99,102,100,101,22]];
+ const b={error:[],result:{XXBTZUSD:[[t,'100','102','99','101','100.1','22',3]],last:t}};
+ const f=async url=>Response.json(url.includes('kraken')?b:a);
+ const r=await inspectR10FutureCandle({plan:p,observedAtMs:p.nowMs,fetcher:f});
+ assert.ok(r.issues.includes('SUSPICIOUS_IDENTICAL_UNWITNESSED_DATA'));
+ assert.equal(r.priceConsistencyWithinResearchThresholds,false);
+});
+test('R10 cannot claim profitable trade or avoided loss from six abstentions',()=>{
+ const p=R10_PROTOCOL;
+ assert.equal(p.dataSignedByExchange,false);
+ assert.equal(p.earliestObserveMs,Date.parse('2026-10-22T14:10:00Z'));
+});

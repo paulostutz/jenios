@@ -32,6 +32,18 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: R10 future window and no trade tests
         run: node --test tests/platformRobotR10PostCandle.test.mjs
+      - name: Exact R9 hourly candle witness only after 14:10 UTC
+        id: market_observation
+        continue-on-error: true
+        run: node scripts/platform/research/robot-r10-observe-once.mjs
+      - name: Upload explicit WAITING or real public outcome evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_R10_OUTCOME_OR_WAIT_STATE
+          path: .jenios-r10-post-close/
+          include-hidden-files: true
+          retention-days: 30
       - name: Full regression and build
         run: npm run build
       - name: Preserve contract only, no market outcome before close

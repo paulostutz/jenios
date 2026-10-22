@@ -44,45 +44,35 @@ GRANT SELECT,INSERT,UPDATE ON public.jenios_pay_email_outbox_b305 TO service_rol
 CREATE OR REPLACE FUNCTION public.jenios_queue_paid_pix_email_b305()
 RETURNS trigger LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$
 DECLARE
- p public.jenios_pay_payments%ROWTYPE;
- u auth.users%ROWTYPE;
- product_label text;
- approved_email text;
- display_name text;
+  p public.jenios_pay_payments%ROWTYPE;
 BEGIN
- IF OLD.status IS NOT DISTINCT FROM NEW.status OR NEW.status<>'paid'
-    OR NEW.provider<>'inter_pix' OR NEW.currency<>'BRL' OR NEW.amount_cents<1
- THEN RETURN NEW; END IF;
+  IF OLD.status IS NOT DISTINCT FROM NEW.status OR NEW.status <> 'paid'
+     OR NEW.provider <> 'inter_pix' OR NEW.currency <> 'BRL'
+     OR NEW.amount_cents < 1 THEN RETURN NEW; END IF;
 
- -- Must match a VERIFIED bank receipt committed in the same Pix transaction.
- SELECT * INTO p FROM public.jenios_pay_payments
- WHERE order_id=NEW.id AND provider='inter_pix' AND payment_method='pix'
-  AND status='confirmed' AND amount_cents=NEW.amount_cents
-  AND bank_end_to_end_id ~ '^E[A-Za-z0-9]{31}$' AND confirmed_at IS NOT NULL
- ORDER BY confirmed_at DESC LIMIT 1;
- IF NOT FOUND THEN RETURN NEW; END IF;
+  -- Confirmed Pix receipt must be linked to this order, amount and txid.
+  -- No access to auth.users is needed in the bank transaction: service_role
+  -- cannot read it directly. Auth lookup is deferred to the private worker.
+  SELECT * INTO p FROM public.jenios_pay_payments
+  WHERE order_id = NEW.id AND provider = 'inter_pix'
+    AND payment_method = 'pix' AND status = 'confirmed'
+    AND amount_cents = NEW.amount_cents
+    AND provider_payment_id = replace(NEW.id::text,'-','')
+    AND bank_end_to_end_id ~ '^E[A-Za-z0-9]{31}$'
+    AND confirmed_at IS NOT NULL
+  ORDER BY confirmed_at DESC LIMIT 1;
+  IF NOT FOUND THEN RETURN NEW; END IF;
 
- IF NEW.user_id IS NOT NULL THEN
-   SELECT * INTO u FROM auth.users WHERE id=NEW.user_id;
- END IF;
- SELECT name INTO product_label FROM public.jenios_pay_products WHERE id=NEW.product_id;
- approved_email := CASE WHEN u.email_confirmed_at IS NOT NULL
-    AND length(u.email) BETWEEN 3 AND 254
-    AND u.email ~* '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$'
-    THEN lower(trim(u.email)) ELSE NULL END;
- display_name := COALESCE(NULLIF(left(trim(u.raw_user_meta_data->>'full_name'),100),''),
-   'Cliente JENIOS');
-
- INSERT INTO public.jenios_pay_email_outbox_b305 (
-  order_id,payment_id,recipient_user_id,bank_receipt_id,amount_cents,currency,
-  paid_at,recipient_email,recipient_name,product_name,status
- ) VALUES (
-  NEW.id,p.id,NEW.user_id,p.bank_end_to_end_id,NEW.amount_cents,NEW.currency,
-  p.confirmed_at,approved_email,display_name,
-  COALESCE(product_label,'Compra JENIOS'),
-  CASE WHEN approved_email IS NOT NULL THEN 'pending' ELSE 'blocked' END
- ) ON CONFLICT (order_id,event_kind) DO NOTHING;
- RETURN NEW;
+  INSERT INTO public.jenios_pay_email_outbox_b305 (
+    order_id,payment_id,recipient_user_id,bank_receipt_id,amount_cents,
+    currency,paid_at,recipient_email,recipient_name,product_name,status
+  ) VALUES (
+    NEW.id,p.id,NEW.user_id,p.bank_end_to_end_id,NEW.amount_cents,
+    NEW.currency,p.confirmed_at,NULL,'Cliente JENIOS','Compra JENIOS',
+    CASE WHEN NEW.user_id IS NOT NULL THEN 'pending' ELSE 'blocked' END
+  )
+  ON CONFLICT (order_id,event_kind) DO NOTHING;
+  RETURN NEW;
 END $$;
 
 DROP TRIGGER IF EXISTS jenios_b305_paid_pix_email ON public.jenios_pay_orders;
@@ -108,7 +98,7 @@ BEGIN
  RETURN QUERY
  WITH candidates AS (
   SELECT q.id FROM public.jenios_pay_email_outbox_b305 q
-  WHERE q.attempts<5 AND q.recipient_email IS NOT NULL
+  WHERE q.attempts<5 AND q.recipient_user_id IS NOT NULL
     AND q.next_attempt_at<=now()
     AND (q.status IN ('pending','retry')
       OR (q.status='processing' AND q.lease_until<now()))

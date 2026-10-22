@@ -1,0 +1,50 @@
+name: JENIOS B305 finance email isolated certification
+on:
+  push:
+    branches: [fix/jenios-b305-finance-email-20261022]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: B305 finance email template and guard
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs
+      - name: Full regression and Next build with real sending disabled
+        run: npm run build
+      - name: Archive scoped technical evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B305_FINANCE_EMAIL_ISOLATED
+          path: |
+            docs/platform/B305-FINANCE-BRANDED-EMAILS.md
+            lib/email/jenios-identity.mjs
+            lib/email/finance-payment-confirmation.mjs
+            supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql
+            tests/jeniosB305FinanceEmail.test.mjs
+          retention-days: 30

@@ -10,7 +10,7 @@ const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const H=3600000,D=86400000,GRACE=300000,START=Date.parse('2026-10-21T00:00:00Z');
 const sha=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function fixture({days=2,hoursPerDay=3,assets=['BTC-USD'],hybridFilter=true}={}){
- const signals=[],observations=[],frozenAtMs=START-H;
+ const signals=[],observations=[],frozenAtMs=START-H+1000;
  let idx=0;
  for(let day=0;day<days;day++)for(let hour=0;hour<hoursPerDay;hour++){
   const targetCloseMs=START+day*D+(hour+1)*H;
@@ -104,7 +104,7 @@ test('R3 catches tampered seal, mismatched OHLC, lookahead and early observation
  assert.throws(()=>reviewR3ProspectiveBlocks({...x,batch:tampered}),
  /B287_SIGNAL_BATCH_TAMPERED/);
  const leak=x.batch.signals.map((s,i)=>i===0?{...s,signalAtMs:s.targetCloseMs-1000}:s);
- const core={schema:x.batch.schema,signals:leak,frozenAtMs:x.batch.frozenAtMs};
+ const core={schema:x.batch.schema,signals:leak,frozenAtMs:x.batch.signals[0].targetCloseMs-1000};
  assert.throws(()=>reviewR3ProspectiveBlocks({...x,batch:{...core,sha256:sha(core)}}),
  /B288_LOOKAHEAD_OR_UNCLOSED_SIGNAL/);
  const prices=x.observations.map((o,i)=>i===1?{...o,close:o.close+0.2}:o);

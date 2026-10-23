@@ -1,0 +1,45 @@
+{
+  "schema": "JENIOS_ROBOT_R44_CERTIFIED_CHECKPOINT_V1",
+  "block": "R44",
+  "base": {
+    "block": "R43",
+    "branch": "backup/jenios-robot-r43-quorum-checkpoint-certified-20261023",
+    "commit": "4ef4006731866516592c7d87a0fa0e0895b6bac0"
+  },
+  "branch": "research/jenios-robot-r44-splitbrain-reconvergence-20261023",
+  "scope": {
+    "title": "Five-replica Partition / Split-brain / Reconvergence",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "replicas": 5,
+    "quorum": 3,
+    "minorityPartitionCannotPromote": true,
+    "majorityPartitionCanPromote": true,
+    "splitBrainDetected": true,
+    "majorityStateRecoverable": true,
+    "reconvergenceRewritesAllReplicas": true,
+    "highWaterMarkPreserved": true,
+    "noQuorumFailsClosed": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39939925826,
+    "directed": "196/196",
+    "general": "2002/2002",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

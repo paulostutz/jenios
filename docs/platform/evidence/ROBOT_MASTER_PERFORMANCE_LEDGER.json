@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T02:08:23Z",
-  "scope": "R12-R38",
+  "generatedAt": "2026-10-23T02:15:49Z",
+  "scope": "R12-R39",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -114,7 +114,8 @@
         "R35 estendeu o R34 para stress longo multi-sessão: 12 sessões, 6.000 eventos, múltiplos halts e recoveries parciais, exigindo novos sessionId/authorizationId e mantendo zero vazamento de autorização ou reentrada de sessão haltada.",
         "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões.",
         "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado.",
-        "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams."
+        "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams.",
+        "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -261,6 +262,16 @@
           "expiredReplayBlocked": true,
           "boundedActiveDedup": true,
           "boundedTombstones": true,
+          "zeroFalseAllows": true
+        },
+        "r39StateRestoreSessionRotation": {
+          "streams": 3,
+          "snapshotRestorePreservesEpochs": true,
+          "tombstonesSurviveRestart": true,
+          "haltedSessionsSurviveRestart": true,
+          "processedEventFingerprintsSurviveRestart": true,
+          "perStreamSessionRotation": true,
+          "oldSessionReplayBlockedAfterRestart": true,
           "zeroFalseAllows": true
         }
       },
@@ -436,11 +447,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39887816675
+    },
+    "R39": {
+      "directed": "165/165",
+      "general": "1971/1971",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39888493568
     }
   },
   "nextObjectives": [
-    "estender R38 para rotação de sessão dentro de cada stream mantendo ordenação e tombstones independentes",
-    "testar recuperação de estado após reinicialização do processo sem perder proteção contra replay antigo",
+    "validar corrupção parcial/versão incompatível de snapshot e fail-closed na restauração",
+    "testar checkpoint periódico durante buffers fora de ordem sem perder consistência após restart",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

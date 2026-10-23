@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T02:20:42Z",
-  "scope": "R12-R40",
+  "generatedAt": "2026-10-23T02:25:45Z",
+  "scope": "R12-R41",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -116,7 +116,8 @@
         "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado.",
         "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams.",
         "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos.",
-        "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante."
+        "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante.",
+        "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -282,6 +283,16 @@
           "bufferEpochMismatchRejected": true,
           "authorizationDisabledOnRestoreFailure": true,
           "bufferedCheckpointRestores": true,
+          "zeroFalseAllows": true
+        },
+        "r41IntegrityAtomicCheckpoint": {
+          "sha256IntegritySeal": true,
+          "deterministicCanonicalChecksum": true,
+          "silentMutationDetected": true,
+          "truncationDetected": true,
+          "stagedCheckpointNotRecoverable": true,
+          "committedCheckpointRecoverable": true,
+          "integrityVerifiedBeforeRestore": true,
           "zeroFalseAllows": true
         }
       },
@@ -473,11 +484,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39888970612
+    },
+    "R41": {
+      "directed": "178/178",
+      "general": "1984/1984",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39889407195
     }
   },
   "nextObjectives": [
-    "adicionar integridade criptográfica/checksum ao snapshot e detectar truncamento ou alteração silenciosa antes da restauração",
-    "testar dupla gravação/checkpoint atomicamente substituído sob interrupção no meio da persistência",
+    "adicionar geração monotônica e rollback protection para impedir restauração de checkpoint íntegro porém antigo",
+    "testar esquema de dupla cópia/último checkpoint válido quando o commit mais recente estiver corrompido",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T01:10:40Z",
-  "scope": "R12-R33",
+  "generatedAt": "2026-10-23T01:21:31Z",
+  "scope": "R12-R34",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -109,7 +109,8 @@
         "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime.",
         "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica.",
         "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas.",
-        "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar."
+        "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar.",
+        "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -193,6 +194,25 @@
           "transitionReductionVerified": true,
           "cumulativeSessionDrawdown": true,
           "haltedSessionDoesNotAutoResume": true
+        },
+        "r34IndependentHysteresisReauth": {
+          "totalEvents": 25200,
+          "eventsPerSwitchFrequency": 3600,
+          "switchPeriods": [
+            1,
+            2,
+            3,
+            5,
+            8,
+            13,
+            21
+          ],
+          "policyFrozenFromR33": true,
+          "generatorIndependentFromR33": true,
+          "allCasesNonIncreasingChatter": true,
+          "haltedSessionCannotAutoResume": true,
+          "newSessionIdRequired": true,
+          "newAuthorizationIdRequired": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -327,11 +347,19 @@
       "general": "1937/1937",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R34": {
+      "directed": "137/137",
+      "general": "1943/1943",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39883430459
     }
   },
   "nextObjectives": [
-    "validar histerese R33 em holdout independente com diferentes frequências de alternância",
-    "combinar drawdown de sessão com recovery R31 para exigir nova sessão após halt de risco",
+    "estender o interlock R34 para holdout longo multi-sessão com múltiplos halts, outages e ciclos de recovery/reauthorization",
+    "testar reconciliação parcial e recovery atrasado sem permitir reentrada prematura",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

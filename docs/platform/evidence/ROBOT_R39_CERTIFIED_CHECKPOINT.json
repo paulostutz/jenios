@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R39_CERTIFIED_CHECKPOINT_V1",
+  "block": "R39",
+  "base": {
+    "block": "R38",
+    "branch": "backup/jenios-robot-r38-multistream-expiry-certified-20261023",
+    "commit": "e63c22bfd07283cbd394efcde0c23b8c039dc357"
+  },
+  "branch": "research/jenios-robot-r39-state-restore-session-rotation-20261023",
+  "scope": {
+    "title": "Restart-safe State Persistence + Session Rotation",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "snapshotRestorePreservesEpochs": true,
+    "tombstonesSurviveRestart": true,
+    "haltedSessionsSurviveRestart": true,
+    "processedEventFingerprintsSurviveRestart": true,
+    "perStreamSessionRotation": true,
+    "incompleteResetBlocked": true,
+    "sessionAuthorizationReuseBlocked": true,
+    "oldSessionReplayBlockedAfterRestart": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39888493568,
+    "directed": "165/165",
+    "general": "1971/1971",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

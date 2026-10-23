@@ -815,5 +815,44 @@
     "alignmentGuardThreshold": 0.65,
     "r15ProspectiveBackfill": false,
     "note": "Certificação técnica e de pesquisa do ciclo atual; não constitui prova de rentabilidade real nem autorização de execução em produção."
+  },
+  "authenticatedHomologationHP04": {
+    "status": "AUTHENTICATED_API_AND_SESSION_CLEANUP_CERTIFIED",
+    "certificationScope": "AUTHENTICATED_API_AND_SESSION_CLEANUP_ONLY",
+    "commit": "a380510b3e5cf99c890848cb8c3042f16b25dfaa",
+    "base": "cdbedfccd65ade53ae0ffb46effd8a32ed7e4658",
+    "ci": 39986597171,
+    "ciUrl": "https://github.com/paulostutz/jenios/actions/runs/39986597171",
+    "ciPreflight": {
+      "general": 2173,
+      "social": 94,
+      "failed": 0,
+      "skipped": 0,
+      "build": "PASS",
+      "pages": 78
+    },
+    "authenticatedPassCount": 20,
+    "accountsCreatedByHP04": 2,
+    "accountsRemovedByHP04": 2,
+    "independentDatabaseCleanupVerified": true,
+    "browserJourneyVerified": false,
+    "originalRuntimeIntegrationVerified": false,
+    "fullPracticalHomologationComplete": false,
+    "evidenceType": "Actual dedicated QA authentication and persistence using fictitious users and diagnostic inputs; no trading evidence",
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "r15BackfillPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false,
+    "pending": [
+      "Observe current authenticated browser journey",
+      "Prove original runtime and frozen R59 guards in the integrated product journey",
+      "Linux B103 and human practical acceptance remain separate"
+    ]
   }
 }

@@ -14,4 +14,8 @@ Essa etapa produz evidência da autenticação e das APIs. Não deve ser confund
 
 Ordens reais e Paper externo permanecem zero. Produção, pagamentos e envios de e-mail ficam desabilitados. `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` continuam `null`; R15 permanece prospectivo sem backfill e o guard R59 continua congelado em `0.65`.
 
-Estado inicial: preparado para CI; autenticação atual ainda não certificada. O resultado deve ser conferido pelo SHA, pelos dois jobs e pelo artefato `AUTHENTICATED_RESULT.json`, nunca pelo resultado histórico CP69.
+Resultado em 23/10/2026: **20/20 verificações autenticadas PASS**, limpeza de duas contas fictícias confirmada e consulta independente ao banco sem resíduos HP04. Permanecem uma conta preexistente e zero diagnósticos, eventos de risco e permissões administrativas.
+
+A [CI 39986597171](https://github.com/paulostutz/jenios/actions/runs/39986597171) concluiu os dois jobs com SUCCESS no commit `a380510b3e5cf99c890848cb8c3042f16b25dfaa`. Regressão geral: **2.173/2.173**; Social: **94/94**; build: **78/78 páginas**. Foram preservados 353 hashes herdados e 33 de R59. Artefato autenticado: `12519680567`, SHA-256 `82dc0f3dc7c53af4a2daa633dc537cf8b59ce3fd7653b704faebfc7a25f81c27`.
+
+Este checkpoint certifica a API autenticada e a limpeza de sessões no ambiente QA. A jornada visual autenticada e o núcleo original dentro da interface permanecem sem comprovação integrada. O commit posterior de consolidação do backup contém somente documentação e evidências; a CI acima atesta o commit de aplicação explicitamente indicado.

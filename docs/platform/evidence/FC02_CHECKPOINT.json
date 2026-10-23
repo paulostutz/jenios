@@ -1,6 +1,6 @@
 {
   "schema": "JENIOS_FC02_CHECKPOINT_V1",
-  "status": "CANDIDATE_PENDING_LINUX_CI",
+  "status": "CERTIFIED_OFFLINE_SOURCE_COMPOSITION",
   "branch": "research/jenios-fc02-consolidation-20261023",
   "sourceManifest": "docs/platform/evidence/FC02_SOURCE_MANIFEST.json",
   "preservedSourceFiles": 353,
@@ -20,5 +20,80 @@
   "chargesCreated": 0,
   "actualBrokerPnl": null,
   "actualLossesAvoided": null,
-  "realTradeAccuracy": null
+  "realTradeAccuracy": null,
+  "certifiedAt": "2026-10-23",
+  "backupBranch": "backup/jenios-fc02-consolidation-certified-20261023",
+  "sourceCommits": {
+    "productB305R35": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+    "robotR49": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+    "robotR46TemporalVariant": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db"
+  },
+  "linuxValidation": {
+    "testedCommit": "e201d5efca48bde8a0d5fa63eaa94940ca293a14",
+    "workflowRunId": 39955052660,
+    "workflowJobId": 120418699685,
+    "url": "https://github.com/paulostutz/jenios/actions/runs/39955052660",
+    "conclusion": "success",
+    "research": {
+      "passed": 241,
+      "total": 241
+    },
+    "commercial": {
+      "passed": 85,
+      "total": 85
+    },
+    "general": {
+      "passed": 2141,
+      "total": 2141
+    },
+    "social": {
+      "passed": 94,
+      "total": 94
+    },
+    "build": "PASS",
+    "staticPages": {
+      "generated": 78,
+      "total": 78
+    },
+    "countsOverlap": "Research and commercial tests are subsets of the general suite; do not add the counts."
+  },
+  "sourcePreservation": {
+    "productFiles": 1233,
+    "productFilesChangedExceptReviewedVercel": [],
+    "sourceHashesVerifiedAgainstGit": 353,
+    "financialMetricFieldsVerifiedNull": 3,
+    "ledger": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+    "ledgerSha256": "20834fa4891d8d0469a77b7ad0036e15bbdf1d809cbc0442d717dbafbe75cccc",
+    "productFilesUnchanged": 1232,
+    "reviewedConfigurationFiles": [
+      "vercel.json"
+    ],
+    "historicalTestPreservedAt": "docs/platform/evidence/variants/platformRobotR5DualSourceIntegrity.original.mjs",
+    "candidateTestAdaptation": "R5 deployment assertion executes the compact ignore command; no R5 research assertion changed."
+  },
+  "masterPerformanceLedger": "Preserved byte-for-byte from certified R49; FC02 does not create new performance measurements.",
+  "completionPlan": {
+    "completed": [
+      "FC01",
+      "FC02"
+    ],
+    "remaining": [
+      "FC03",
+      "FC04",
+      "FC05",
+      "FC06"
+    ],
+    "correctionReserve": 2,
+    "isEstimate": true
+  },
+  "nextBlock": {
+    "id": "FC03",
+    "title": "Robot functional path with original private engine",
+    "dependencies": [
+      "Retrieve and verify original private executable from authorized private collection",
+      "Identify implemented customer-account adapter selected for the product",
+      "Observe end-to-end test events within the offline/no-external-orders scope"
+    ],
+    "beforeStarting": "Consult latest backups and work in other conversations again."
+  }
 }

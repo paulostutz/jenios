@@ -44,3 +44,9 @@ O modelo é software/robô licenciado com conta do cliente. Não se introduz uma
 5. A falta de componente privado ou configuração externa deve ser registrada por dependência; não substituir por implementação fictícia.
 
 A candidata não modifica os planos de produção. Ordens reais, Paper externo, pagamentos e mensagens reais não são executados. `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` permanecem null.
+
+## Validação FC02
+
+CI Linux `39955052660`, commit `e201d5efca48bde8a0d5fa63eaa94940ca293a14`: robôs 241/241, comercial 85/85, suíte geral 2.141/2.141, Social 94/94, build PASS e 78/78 páginas estáticas geradas. Robôs e comercial são subconjuntos da suíte geral e não devem ser somados a ela. Geração estática não equivale a homologação funcional de todas as jornadas; essa verificação pertence ao FC05.
+
+Os 353 hashes foram conferidos também contra os três commits de origem. Dos 1.233 arquivos da base comercial, os 1.232 fora de `vercel.json` permanecem idênticos. O placar-mestre R49 foi preservado integralmente; o FC02 não adiciona métricas de desempenho financeiro. O checkpoint referencia esta execução aprovada; o manifesto do backup registra separadamente o commit final e sua CI final.

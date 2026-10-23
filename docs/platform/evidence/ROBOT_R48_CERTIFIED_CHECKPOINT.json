@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R48_CERTIFIED_CHECKPOINT_V1",
+  "block": "R48",
+  "base": {
+    "block": "R47",
+    "branch": "backup/jenios-robot-r47-marketdata-freshness-fence-certified-20261023",
+    "commit": "1df6ef8bf61cfbb0f821685be7bf9053526ef38c"
+  },
+  "branch": "research/jenios-robot-r48-reconnect-backpressure-20261023",
+  "scope": {
+    "title": "Reconnect Storms + Rate Limits + Adaptive Backpressure",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "reconnectBackoffIncreases": true,
+    "staleReconnectEpochBlocked": true,
+    "queueOverflowBlocked": true,
+    "requestBudgetStopsRetryStorm": true,
+    "staleTasksDropped": true,
+    "staleDecisionBlocked": true,
+    "highBackpressureBlocksDecision": true,
+    "reconnectInvalidatesOldWork": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39949920828,
+    "directed": "222/222",
+    "general": "2028/2028",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

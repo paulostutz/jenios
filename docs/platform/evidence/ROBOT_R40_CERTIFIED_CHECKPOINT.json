@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R40_CERTIFIED_CHECKPOINT_V1",
+  "block": "R40",
+  "base": {
+    "block": "R39",
+    "branch": "backup/jenios-robot-r39-state-restore-session-rotation-certified-20261023",
+    "commit": "8c47e468e3a9b6dbcebad93db68081f25bc2c4e3"
+  },
+  "branch": "research/jenios-robot-r40-failclosed-snapshot-20261023",
+  "scope": {
+    "title": "Fail-closed Snapshot Validation + Buffered Checkpoint Recovery",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "incompatibleVersionFailsClosed": true,
+    "corruptHeaderFailsClosed": true,
+    "corruptStreamStateFailsClosed": true,
+    "staleBufferedEpochRejected": true,
+    "bufferEpochMismatchRejected": true,
+    "operationalAuthorizationDisabledOnRestoreFailure": true,
+    "bufferedCheckpointRestores": true,
+    "bufferedEventDrainsOnlyAfterMissingEpoch": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39888970612,
+    "directed": "171/171",
+    "general": "1977/1977",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

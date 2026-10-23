@@ -21,7 +21,17 @@ async function nav(path,expression){await cd('Page.navigate',{url:new URL(path,o
 async function screenshot(name){const r=await cd('Page.captureScreenshot',{format:'png'});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
 const element=selector=>'document.querySelector('+JSON.stringify(selector)+')';
 const bodyIncludes=text=>'document.body.innerText.includes('+JSON.stringify(text)+')';
-async function question(text){await evaluate(`(()=>{const el=document.querySelector('#jenios-free-question');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(el,${JSON.stringify(text)});el.dispatchEvent(new Event('input',{bubbles:true}));})()`);await wait('!document.querySelector("#jenios-free-question").closest("form").querySelector("button").disabled');await evaluate('document.querySelector("#jenios-free-question").closest("form").requestSubmit()');}
+async function click(selector){
+ const position=await evaluate(`(()=>{const el=document.querySelector(${JSON.stringify(selector)});el.scrollIntoView({block:'center'});const r=el.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};})()`);
+ await cd('Input.dispatchMouseEvent',{type:'mousePressed',...position,button:'left',clickCount:1});
+ await cd('Input.dispatchMouseEvent',{type:'mouseReleased',...position,button:'left',clickCount:1});
+}
+async function question(text){
+ await click('#jenios-free-question');await evaluate('document.querySelector("#jenios-free-question").select()');
+ await cd('Input.insertText',{text});
+ await wait('!document.querySelector("#jenios-free-question").closest("form").querySelector("button").disabled');
+ await click('#jenios-free-question + button');
+}
 async function intercept(p){
  const u=new URL(p.request.url);
  if(u.origin!==origin.origin){blocked.push({origin:u.origin,path:u.pathname});await cd('Fetch.failRequest',{requestId:p.requestId,errorReason:'BlockedByClient'});return;}
@@ -39,6 +49,11 @@ try{
  await cd('Page.enable');await cd('Runtime.enable');await cd('Network.enable');await cd('Fetch.enable',{patterns:[{urlPattern:'*',requestStage:'Request'}]});
  await cd('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
  await nav('/platform/assistente','document.querySelector("#jenios-free-question")!==null');
+ await click('button[aria-pressed="false"]');
+ await wait(element('button[aria-pressed="true"]')+'.textContent.trim()==="Gênia"');
+ await click('button[aria-pressed="false"]');
+ await wait(element('button[aria-pressed="true"]')+'.textContent.trim()==="Gênio"');
+ pass(true,'visitor selects both personas through actual browser clicks before asking');
  await question('O que está incluído no plano de R$ 149,90?');await wait(bodyIncludes('O plano Global Crypto'));
  pass(await evaluate(element('a[href="/checkout"]')+'!==null'),'visitor → free assistant → actual local API → approved plan and checkout link');
  for(const [name,response] of [

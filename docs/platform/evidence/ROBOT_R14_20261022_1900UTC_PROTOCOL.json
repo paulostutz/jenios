@@ -1,0 +1,40 @@
+{
+  "schema": "JENIOS_R14_PROSPECTIVE_PROTOCOL_V1",
+  "studyId": "R14-20261022-1900UTC-BTCUSD-ORIGINAL-CORE",
+  "asset": "BTC-USD",
+  "contextSource": "coinbase_exchange_public_unsigned",
+  "contextLowerIntervalMs": 300000,
+  "contextHigherIntervalMs": 3600000,
+  "contextLowerClosedBars": 200,
+  "contextHigherClosedBars": 120,
+  "targetOpenMs": 1792695600000,
+  "targetCloseMs": 1792699200000,
+  "minimumPublicOutcomeObserveMs": 1792699800000,
+  "privateEngineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+  "privateServiceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+  "modes": [
+    "manual",
+    "hybrid",
+    "reverse"
+  ],
+  "intents": [
+    "buy",
+    "sell"
+  ],
+  "decisionCount": 6,
+  "publicCommitmentBeforeTargetRequired": true,
+  "minimumLeadMs": 600000,
+  "liveExecutionDisabled": true,
+  "paperExternalDisabled": true,
+  "brokerOrdersAllowed": false,
+  "paidServicesAllowed": false,
+  "outputPolicy": "HASH_ONLY_PUBLIC_PRIVATE_RECORD_STAYS_PRIVATE",
+  "laterOutcomeSources": [
+    "coinbase",
+    "kraken"
+  ],
+  "laterOutcomeMustBeReadOnly": true,
+  "pnlClassification": "HYPOTHETICAL_ONLY_UNLESS_BROKER_FILLS_EXIST",
+  "lossAvoidedClassification": "UNAVAILABLE_WITHOUT_REAL_OPERATOR_COUNTERFACTUAL",
+  "noBackdating": true
+}

@@ -1,0 +1,47 @@
+name: JENIOS ROBOT R23 public multiwindow snapshots (read-only)
+on:
+  push:
+    branches: [research/jenios-robot-r23-multiwindow-ultrafast-20261022]
+    paths: [docs/platform/evidence/ROBOT_R23_PUBLIC_MULTIWINDOW_TRIGGER.txt]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22'}
+      - name: Capture three public Kraken windows
+        run: |
+          mkdir -p artifacts/r23
+          node - <<'NODE'
+          import {writeFileSync} from 'node:fs';
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          const pairs=['XBTUSD','ETHUSD','SOLUSD'];
+          const snapshots=[];
+          for(let w=0;w<3;w++){
+            const snap={capturedAt:new Date().toISOString(),pairs:{}};
+            for(const pair of pairs){
+              const [ticker,book,trades]=await Promise.all([
+                fetch('https://api.kraken.com/0/public/Ticker?pair='+pair).then(r=>r.json()),
+                fetch('https://api.kraken.com/0/public/Depth?pair='+pair+'&count=25').then(r=>r.json()),
+                fetch('https://api.kraken.com/0/public/Trades?pair='+pair+'&count=1000').then(r=>r.json())
+              ]);
+              snap.pairs[pair]={ticker,book,trades};
+            }
+            snapshots.push(snap);
+            if(w<2)await sleep(5000);
+          }
+          writeFileSync('artifacts/r23/kraken-multiwindow.json',JSON.stringify({
+            schema:'JENIOS_R23_PUBLIC_MULTIWINDOW_SNAPSHOT_V1',
+            provider:'kraken',snapshots
+          },null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_ROBOT_R23_PUBLIC_MULTIWINDOW
+          path: artifacts/r23/kraken-multiwindow.json
+          retention-days: 7

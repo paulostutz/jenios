@@ -1,0 +1,38 @@
+name: JENIOS ROBOT R22 public crypto snapshot (read-only)
+on:
+  push:
+    branches: [research/jenios-robot-r22-public-ranking-holdout-20261022]
+    paths: [docs/platform/evidence/ROBOT_R22_PUBLIC_SNAPSHOT_TRIGGER.txt]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22'}
+      - name: Capture public Kraken snapshots
+        run: |
+          mkdir -p artifacts/r22
+          node - <<'NODE'
+          import {writeFileSync} from 'node:fs';
+          const pairs=['XBTUSD','ETHUSD','SOLUSD'];
+          const out={schema:'JENIOS_R22_PUBLIC_CRYPTO_SNAPSHOT_V1',capturedAt:new Date().toISOString(),provider:'kraken',pairs:{}};
+          for(const pair of pairs){
+            const [ticker,book,trades]=await Promise.all([
+              fetch('https://api.kraken.com/0/public/Ticker?pair='+pair).then(r=>r.json()),
+              fetch('https://api.kraken.com/0/public/Depth?pair='+pair+'&count=25').then(r=>r.json()),
+              fetch('https://api.kraken.com/0/public/Trades?pair='+pair+'&count=1000').then(r=>r.json())
+            ]);
+            out.pairs[pair]={ticker,book,trades};
+          }
+          writeFileSync('artifacts/r22/kraken-public-snapshot.json',JSON.stringify(out,null,2));
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_ROBOT_R22_PUBLIC_CRYPTO_SNAPSHOT
+          path: artifacts/r22/kraken-public-snapshot.json
+          retention-days: 7

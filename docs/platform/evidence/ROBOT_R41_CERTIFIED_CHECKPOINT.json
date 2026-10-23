@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R41_CERTIFIED_CHECKPOINT_V1",
+  "block": "R41",
+  "base": {
+    "block": "R40",
+    "branch": "backup/jenios-robot-r40-failclosed-snapshot-certified-20261023",
+    "commit": "b94b164be9c637eb8c20e76b6ff3060112a0724b"
+  },
+  "branch": "research/jenios-robot-r41-integrity-atomic-checkpoint-20261023",
+  "scope": {
+    "title": "Snapshot Integrity + Atomic Checkpoint Protocol",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "sha256IntegritySeal": true,
+    "deterministicCanonicalChecksum": true,
+    "silentMutationDetected": true,
+    "truncationDetected": true,
+    "stagedCheckpointNotRecoverable": true,
+    "committedCheckpointRecoverable": true,
+    "integrityVerifiedBeforeRestore": true,
+    "operationalAuthorizationDisabledOnIntegrityFailure": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39889407195,
+    "directed": "178/178",
+    "general": "1984/1984",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

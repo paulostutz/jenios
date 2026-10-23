@@ -1,0 +1,47 @@
+{
+  "schema": "JENIOS_ROBOT_R37_CERTIFIED_CHECKPOINT_V1",
+  "block": "R37",
+  "base": {
+    "block": "R36",
+    "branch": "backup/jenios-robot-r36-idempotency-concurrency-certified-20261023",
+    "commit": "887611876b6097c15a7c3a724c01a670eded82b6"
+  },
+  "branch": "research/jenios-robot-r37-ordered-ingestion-20261023",
+  "scope": {
+    "title": "Ordered Ingestion + Late Epoch Defense",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "nearFutureReorderingBuffered": true,
+    "bufferedEventsDrainedOnlyAfterMissingEpoch": true,
+    "freshIdLateEpochRejected": true,
+    "excessiveForwardGapRejected": true,
+    "boundedDedupWindow": true,
+    "priorR31ToR36InterlocksPreserved": true,
+    "zeroFalseAllows": true
+  },
+  "stress": {
+    "nominalEpochs": 5000,
+    "dedupWindow": 256,
+    "maxReorderGap": 4
+  },
+  "evidence": {
+    "validationRun": 39885859865,
+    "directed": "154/154",
+    "general": "1960/1960",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

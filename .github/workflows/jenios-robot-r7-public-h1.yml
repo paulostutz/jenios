@@ -1,0 +1,50 @@
+name: JENIOS ROBOT R7 public historical H1 witness
+on:
+  push:
+    branches: [fix/jenios-robot-r7-official-public-readonly-h1-20261022]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa_social_publishable_placeholder'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install exact dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R7 parser plus previous R5 R6 regression
+        run: node --test tests/platformRobotR7PublicH1.test.mjs tests/platformRobotR6SignedWitnessChain.test.mjs tests/platformRobotR5DualSourceIntegrity.test.mjs
+      - name: One real unsigned public historical price GET pair
+        id: public_market
+        continue-on-error: true
+        run: node scripts/platform/research/robot-r7-public-h1.mjs
+      - name: Full app build and regressions
+        run: npm run build
+      - name: Archive public observation separately
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_ROBOT_R7_PUBLIC_H1_HTTP_STATUS
+          path: |
+            .jenios-r7-ci/
+            docs/platform/ROBOT-R7-PUBLIC-H1.md
+          include-hidden-files: true
+          retention-days: 30

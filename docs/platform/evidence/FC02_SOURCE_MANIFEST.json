@@ -1,0 +1,2131 @@
+{
+  "schema": "JENIOS_FC02_SOURCE_MANIFEST_V1",
+  "productCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+  "researchCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+  "variantCommit": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db",
+  "commonAncestor": "b1956cab6aa4e9bcac26a9f57688e279e3b9c691",
+  "sources": [
+    {
+      "path": ".github/workflows/jenios-b303-protected-preview.yml",
+      "sourcePath": ".github/workflows/jenios-b303-protected-preview.yml",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3e70d1071c04f3499506c223718c89b0080abd81477f0e39700b84b8e4a15702"
+    },
+    {
+      "path": ".github/workflows/jenios-b305-finance-email.yml",
+      "sourcePath": ".github/workflows/jenios-b305-finance-email.yml",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "28d5a2537a51021fb105a83308411a9f0e7a40369831a7289f8adaf330ad4970"
+    },
+    {
+      "path": "app/admin/emails/page.js",
+      "sourcePath": "app/admin/emails/page.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "659b5805a4199d4a111d8e7e46eb36ea3587c37f530b5977c236d182d46262c2"
+    },
+    {
+      "path": "app/admin/page.js",
+      "sourcePath": "app/admin/page.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "fbafb312089d7723acfd438756eacbf2d414431bb72d0eb9ba5e6432e1b7d81c"
+    },
+    {
+      "path": "app/api/admin/email-health/route.js",
+      "sourcePath": "app/api/admin/email-health/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c05dbc3db5786653926e88c4e392af7841320343ad375c07414ce9f5ab76808f"
+    },
+    {
+      "path": "app/api/internal/billing/dunning/route.js",
+      "sourcePath": "app/api/internal/billing/dunning/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "8ffac055573bedfbd03213af79a39aae364af8fb0f046c8937bdc4153aa2d1d1"
+    },
+    {
+      "path": "app/api/internal/email/marketing-plan/route.js",
+      "sourcePath": "app/api/internal/email/marketing-plan/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "66eb39d216eef1afd7f0550287dbab11f058e650927eac1567ec09a74b9c39d4"
+    },
+    {
+      "path": "app/api/internal/email/marketing/route.js",
+      "sourcePath": "app/api/internal/email/marketing/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "cc22d48b9619286930532d4a02e4939c1e52fbf273e7d6e9e7bde391ede280f2"
+    },
+    {
+      "path": "app/api/internal/email/transactional/route.js",
+      "sourcePath": "app/api/internal/email/transactional/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3c9ff2e8d5655d031f8a9fcd516d4e4e2ceb168f77956a632212ddd8f64dcaac"
+    },
+    {
+      "path": "app/api/platform/homologacao/b303-broker-preflight/route.js",
+      "sourcePath": "app/api/platform/homologacao/b303-broker-preflight/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "88dd13860da0a2a8e4a7e8725f67a787940cfad00fb9db28492373bab82c68b6"
+    },
+    {
+      "path": "app/api/social/email-preferences/route.js",
+      "sourcePath": "app/api/social/email-preferences/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "51efbe247c3705d57a8f8361e5110ce1498ce9851fa0d92dc061f896f809351d"
+    },
+    {
+      "path": "app/api/webhooks/resend/route.js",
+      "sourcePath": "app/api/webhooks/resend/route.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "b45839f2cefc4a7d2ec717eee2fe48cb7cc99d98ada0ee2758bfcad25f50eadf"
+    },
+    {
+      "path": "app/onboarding/page.js",
+      "sourcePath": "app/onboarding/page.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3c180c6db6e871b3efe4de7a5e60734399856a60257ae81bc27e7ac50db5107c"
+    },
+    {
+      "path": "app/preferencias/page.js",
+      "sourcePath": "app/preferencias/page.js",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "743c96357fed458ecaaa4dc43bdabe666b9d0fdbbed5248470049b7ee1a7b67f"
+    },
+    {
+      "path": "docs/platform/B303-PROTECTED-READONLY-PREVIEW.md",
+      "sourcePath": "docs/platform/B303-PROTECTED-READONLY-PREVIEW.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "33cf62fff29b0836f270cd19ab184a4d485dea60254d563392128c110616ffb9"
+    },
+    {
+      "path": "docs/platform/B305-FINANCE-BRANDED-EMAILS.md",
+      "sourcePath": "docs/platform/B305-FINANCE-BRANDED-EMAILS.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "e2e258a9e6a8fb34cf878eb780c3b2ea31dc8d38a9c722e2a85b626e1b3c7448"
+    },
+    {
+      "path": "docs/platform/B305-R13-EMAIL-LIFECYCLE.md",
+      "sourcePath": "docs/platform/B305-R13-EMAIL-LIFECYCLE.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "132b769a7272348d9518ae065960839c6b886767adae5fb2845bbd4430f2fc8f"
+    },
+    {
+      "path": "docs/platform/B305-R16-TRANSACTIONAL-DELIVERY.md",
+      "sourcePath": "docs/platform/B305-R16-TRANSACTIONAL-DELIVERY.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "288c1514381794b527303f9ffe7f88a8d42332469793ef3f14e434342da50d6a"
+    },
+    {
+      "path": "docs/platform/B305-R17-AUTH-SECURITY-EMAILS.md",
+      "sourcePath": "docs/platform/B305-R17-AUTH-SECURITY-EMAILS.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "a648f1d2194a58b7b3d8644f9728e6bcda0c984b59b0fe9f06f134ebce8abb98"
+    },
+    {
+      "path": "docs/platform/B305-R18-ONBOARDING-BRIDGE.md",
+      "sourcePath": "docs/platform/B305-R18-ONBOARDING-BRIDGE.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c7f28bf51bce46c2424bef233f5c0211c49f6f1bfa79599a332ab7fa90fb5123"
+    },
+    {
+      "path": "docs/platform/B305-R19-SUBSCRIPTION-LIFECYCLE-EMAILS.md",
+      "sourcePath": "docs/platform/B305-R19-SUBSCRIPTION-LIFECYCLE-EMAILS.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "273cb28264af1788977a7fbb5c1e9b20c125190a8da00fab6dfc94df87d1480c"
+    },
+    {
+      "path": "docs/platform/B305-R20-MARKETING-PLANNER.md",
+      "sourcePath": "docs/platform/B305-R20-MARKETING-PLANNER.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3cba28d97f6b4676ae6b6d2469ba35417443e586619ee7b91c87ffd4cf2e7043"
+    },
+    {
+      "path": "docs/platform/B305-R21-MARKETING-DELIVERY-SAFETY-CHECKPOINT.md",
+      "sourcePath": "docs/platform/B305-R21-MARKETING-DELIVERY-SAFETY-CHECKPOINT.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3328088095876ad60e567c67e1de3260fadf96ba725cb257b3e82ee0909dbc48"
+    },
+    {
+      "path": "docs/platform/B305-R22-NONFINANCIAL-LIFECYCLE.md",
+      "sourcePath": "docs/platform/B305-R22-NONFINANCIAL-LIFECYCLE.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "34c7b5601cf61d129f50c6b29f7fce033245a87e200297759683b60c8a3b0762"
+    },
+    {
+      "path": "docs/platform/B305-R23-UNIVERSITY-MILESTONES.md",
+      "sourcePath": "docs/platform/B305-R23-UNIVERSITY-MILESTONES.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "da81414cb4015c00e7b7053428aaaebc0e870b92ac6dc0aebcafee45a642ff94"
+    },
+    {
+      "path": "docs/platform/B305-R24-EMAIL-ADMIN-HEALTH.md",
+      "sourcePath": "docs/platform/B305-R24-EMAIL-ADMIN-HEALTH.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "32149b05f93cb96a430012e07185d94fd10adf7771177a0bdbabb484e0ed9c31"
+    },
+    {
+      "path": "docs/platform/B305-R25-RESEND-SUPPRESSION-SAFETY.md",
+      "sourcePath": "docs/platform/B305-R25-RESEND-SUPPRESSION-SAFETY.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "0433a811f35dba7acb332697d6c38b618deed875376592b1a3e6936586909ac2"
+    },
+    {
+      "path": "docs/platform/B305-R26-EMAIL-OBSERVABILITY.md",
+      "sourcePath": "docs/platform/B305-R26-EMAIL-OBSERVABILITY.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "ee6156b38cc2bd7524ccab3460c1ea3c69e0ebcc3a1f0c5e3e542ab45505ae12"
+    },
+    {
+      "path": "docs/platform/B305-R27-EMAIL-RELEASE-READINESS.md",
+      "sourcePath": "docs/platform/B305-R27-EMAIL-RELEASE-READINESS.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "0246b2446ac71ef05bc1f0b4941d9b6483cb65a1261cf9ef7c56bfc21f34f2a6"
+    },
+    {
+      "path": "docs/platform/B305-R28-UNIVERSITY-DELIVERY-EVIDENCE.md",
+      "sourcePath": "docs/platform/B305-R28-UNIVERSITY-DELIVERY-EVIDENCE.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "6bc9aefe389c8d8814537c4faf963d907c665dc44b24ef71e9fe674479f46581"
+    },
+    {
+      "path": "docs/platform/B305-R29-UNIVERSITY-MESSAGE-ADAPTER.md",
+      "sourcePath": "docs/platform/B305-R29-UNIVERSITY-MESSAGE-ADAPTER.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "635a57cc1f43b8f773b36ab827edeb496511e0a39e11e2e6edb29fb6003dfb4f"
+    },
+    {
+      "path": "docs/platform/B305-R30-MARKETING-MESSAGE-ADAPTER.md",
+      "sourcePath": "docs/platform/B305-R30-MARKETING-MESSAGE-ADAPTER.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "34cf21dcab43f787c3da63dbec0c6bbfe3998198dcc0b7e1faf0228054381067"
+    },
+    {
+      "path": "docs/platform/B305-R31-EMAIL-HARDENING.md",
+      "sourcePath": "docs/platform/B305-R31-EMAIL-HARDENING.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "4e304852857538cccc6e05bd8101858fac0c318182b7a965c9aac70f96fda30a"
+    },
+    {
+      "path": "docs/platform/B305-R32-EMAIL-PREFLIGHT.md",
+      "sourcePath": "docs/platform/B305-R32-EMAIL-PREFLIGHT.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "5651ce467e7e897fd2788c0c699110b03065acceebac9d705d566cb3ba7a0aba"
+    },
+    {
+      "path": "docs/platform/B305-R33-RESEND-WEBHOOK-ENDPOINT.md",
+      "sourcePath": "docs/platform/B305-R33-RESEND-WEBHOOK-ENDPOINT.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "b7130ac9a47919ec046db4e6d77148ebc5c65cd189943910136660222fb9a87d"
+    },
+    {
+      "path": "docs/platform/B305-R34-MARKETING-DELIVERY-WORKER.md",
+      "sourcePath": "docs/platform/B305-R34-MARKETING-DELIVERY-WORKER.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "e01f92b69a191b9c141820cc0cca37933db5b5d6684cadf409c0e7009ae41aa1"
+    },
+    {
+      "path": "docs/platform/B305-R35-UNIVERSITY-TRANSACTIONAL-WORKER.md",
+      "sourcePath": "docs/platform/B305-R35-UNIVERSITY-TRANSACTIONAL-WORKER.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "25bf5c02b835e750a2c3ec85801601295fc0637b0e59f4fb8b59d306e47fbb4c"
+    },
+    {
+      "path": "docs/platform/JENIOS-AUTH-EMAIL-TEMPLATE.md",
+      "sourcePath": "docs/platform/JENIOS-AUTH-EMAIL-TEMPLATE.md",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3a71a6a8016eb5af9749b02e9e8bda9754dfc07cb7da921c983eb0e78a8ac9df"
+    },
+    {
+      "path": "lib/email/admin-health.mjs",
+      "sourcePath": "lib/email/admin-health.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "e5e6f0aa833ee891f58f111b9f5f381beba2710646254821d64fa3dc414ccf32"
+    },
+    {
+      "path": "lib/email/finance-outbox-worker.mjs",
+      "sourcePath": "lib/email/finance-outbox-worker.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "5e39c2bcaea9ce716dab42e3c3a3aa8c8d6a4812f922b533c1c7c9ab099617d2"
+    },
+    {
+      "path": "lib/email/finance-payment-confirmation.mjs",
+      "sourcePath": "lib/email/finance-payment-confirmation.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "ad7ba6993cbba0247c58ea96d43ef5e8b07251797da85e366bd0a54d6f4f965a"
+    },
+    {
+      "path": "lib/email/finance-private-runner.mjs",
+      "sourcePath": "lib/email/finance-private-runner.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "17837a5a2ebcfb249714baf0aa205a13df4f2478954f12c855961638d8341254"
+    },
+    {
+      "path": "lib/email/finance-readiness-diagnostic.mjs",
+      "sourcePath": "lib/email/finance-readiness-diagnostic.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "cbbb56794200a6f795fe32990215990076838874f36e25b0ea5915357c0bb78e"
+    },
+    {
+      "path": "lib/email/jenios-identity.mjs",
+      "sourcePath": "lib/email/jenios-identity.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "715fb3ede0368910c5688b807ec1c13e8cd73e178d5151931663076ca8e879c2"
+    },
+    {
+      "path": "lib/email/lifecycle-campaigns.mjs",
+      "sourcePath": "lib/email/lifecycle-campaigns.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2b6ed7de250400b71524eafb0494e9d5b181169e9b53922dfa574654539cfb64"
+    },
+    {
+      "path": "lib/email/marketing-delivery-worker.mjs",
+      "sourcePath": "lib/email/marketing-delivery-worker.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "defb0edc4e88a20503656db5e4242be154974f6d0c0d4756a308062abdccd734"
+    },
+    {
+      "path": "lib/email/marketing-message-adapter.mjs",
+      "sourcePath": "lib/email/marketing-message-adapter.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "fe9e9cd9d6b45cd41451769e27520bfea49af7a1521c9f8cfc8568ac9aa1ff1c"
+    },
+    {
+      "path": "lib/email/marketing-policy.mjs",
+      "sourcePath": "lib/email/marketing-policy.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "8467561bf644df23b5cf60a5959cbebd40b18c7620a4aef6642bc7dafb72f95f"
+    },
+    {
+      "path": "lib/email/resend-webhook-verifier.mjs",
+      "sourcePath": "lib/email/resend-webhook-verifier.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "59163df908f9e56790eccfc894ce2961fecc016df9a6a5184a5cbfcf3ea290b1"
+    },
+    {
+      "path": "lib/email/subscription-dunning.mjs",
+      "sourcePath": "lib/email/subscription-dunning.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "6ab14666e298e8d7223d74a87dfef8e16268669f43f704d91e6d366c05065261"
+    },
+    {
+      "path": "lib/email/transactional-delivery-worker.mjs",
+      "sourcePath": "lib/email/transactional-delivery-worker.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "6943e3f70c22a4953a6648ab5d49c5c7b3bc826c9041bed7718b90045599a469"
+    },
+    {
+      "path": "lib/email/university-milestone-evidence.mjs",
+      "sourcePath": "lib/email/university-milestone-evidence.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "af9a3b77c4336fd0dc5f6bd0662b03d3667d8ee96458becb77e35a3d0f4a4aec"
+    },
+    {
+      "path": "lib/email/university-milestone-message.mjs",
+      "sourcePath": "lib/email/university-milestone-message.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "7b65ae91ff10b01111b4af139ad2633a4167e3b446bc8da4ad6254c610086bd4"
+    },
+    {
+      "path": "lib/platform/connections/b303-private-preview-readiness.mjs",
+      "sourcePath": "lib/platform/connections/b303-private-preview-readiness.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "a45b5e228d9073ebb98837f9fc03288f4589982fbbe5a8b79078512a9dd7ac6b"
+    },
+    {
+      "path": "lib/release/environment-scope.mjs",
+      "sourcePath": "lib/release/environment-scope.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "ffe168934fa957eee64acfcc83f1609cb2ea659aa2e87a13abf27cf9cfa810b3"
+    },
+    {
+      "path": "supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql",
+      "sourcePath": "supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "192ac59f96f5f80d313ecbe76b8f5b17bcfeeba4b3eb80df301fd48e868224e7"
+    },
+    {
+      "path": "supabase/migrations/20261022183000_jenios_b305_finance_receipt_uniqueness_and_product.sql",
+      "sourcePath": "supabase/migrations/20261022183000_jenios_b305_finance_receipt_uniqueness_and_product.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "5e3e8a21b77076e48b91b459443ae011fcc20be025a5904c7c3906a8a44ff19c"
+    },
+    {
+      "path": "supabase/migrations/20261022220500_jenios_b305_subscription_dunning.sql",
+      "sourcePath": "supabase/migrations/20261022220500_jenios_b305_subscription_dunning.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "db426ca0c147a7df65127e9e2a6b5cc831debc5c291653e8cfd0f0c9b23f99b5"
+    },
+    {
+      "path": "supabase/migrations/20261022220815_jenios_b305_dunning_fk_indexes.sql",
+      "sourcePath": "supabase/migrations/20261022220815_jenios_b305_dunning_fk_indexes.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2a63d0c0e1f22b4fec74262a21e37ecaf9ae4c663d0bf9029214a01609ff4ace"
+    },
+    {
+      "path": "supabase/migrations/20261022221000_jenios_b305_marketing_preferences.sql",
+      "sourcePath": "supabase/migrations/20261022221000_jenios_b305_marketing_preferences.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "5e66e98e09b0d545e9ef25924c97d899e18f77b9ef171d0726afb090ff5a89a2"
+    },
+    {
+      "path": "supabase/migrations/20261023002614_jenios_b305_transactional_delivery.sql",
+      "sourcePath": "supabase/migrations/20261023002614_jenios_b305_transactional_delivery.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "25dd55e04fed8aa7beed29c50a58f7c549095b835292abb28bb938065194c263"
+    },
+    {
+      "path": "supabase/migrations/20261023002638_jenios_b305_transactional_delivery_fk_indexes.sql",
+      "sourcePath": "supabase/migrations/20261023002638_jenios_b305_transactional_delivery_fk_indexes.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "9e1ffbb02136dad2b8cbab85465f48c19023d8a1bb8f9b4a5bc201963ff631be"
+    },
+    {
+      "path": "supabase/migrations/20261023004751_jenios_b305_subscription_lifecycle_emails.sql",
+      "sourcePath": "supabase/migrations/20261023004751_jenios_b305_subscription_lifecycle_emails.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "4130d93529f2abb13b588f98fab91d9ad94700b83c61af7efe3f5d0b62306077"
+    },
+    {
+      "path": "supabase/migrations/20261023005515_jenios_b305_marketing_planner.sql",
+      "sourcePath": "supabase/migrations/20261023005515_jenios_b305_marketing_planner.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "7f42d1db7840a96eb1d0283df5a12705631ef0eda573927d0fbfd345fc2b28e3"
+    },
+    {
+      "path": "supabase/migrations/20261023010607_jenios_b305_marketing_delivery.sql",
+      "sourcePath": "supabase/migrations/20261023010607_jenios_b305_marketing_delivery.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "aeb13ea5b927942da4966ad70f60f2aadf04b815ef3ea11c3e223755cb1ea67c"
+    },
+    {
+      "path": "supabase/migrations/20261023010634_jenios_b305_marketing_suppression_ack.sql",
+      "sourcePath": "supabase/migrations/20261023010634_jenios_b305_marketing_suppression_ack.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "a16a381a477d0d6a86b4f7a76e239dd20d1cce8f750bc80f44c9412d1aa45fd2"
+    },
+    {
+      "path": "supabase/migrations/20261023012300_jenios_b305_university_milestones.sql",
+      "sourcePath": "supabase/migrations/20261023012300_jenios_b305_university_milestones.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "04bb84468a1c6a724f54b019738d42b0a52727a9ee3f597978ae99678ce434d0"
+    },
+    {
+      "path": "supabase/migrations/20261023015029_jenios_b305_resend_suppression_webhook.sql",
+      "sourcePath": "supabase/migrations/20261023015029_jenios_b305_resend_suppression_webhook.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "dc209406d403f8a012012e17d48cbce3c329ba378b37225a1f755672c155ec25"
+    },
+    {
+      "path": "supabase/migrations/20261023022906_jenios_b305_finance_outbox_recipient_index.sql",
+      "sourcePath": "supabase/migrations/20261023022906_jenios_b305_finance_outbox_recipient_index.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "169cd5b7ce10a02d53273a54beef9cc88e1735940cae8185d27ef7bc75431237"
+    },
+    {
+      "path": "supabase/migrations/20261023023300_jenios_b305_email_preflight.sql",
+      "sourcePath": "supabase/migrations/20261023023300_jenios_b305_email_preflight.sql",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "99b40c67eaccb3b1da41a3acfd685c293141ac81860ae5a44c9e5559c6eebe52"
+    },
+    {
+      "path": "supabase/templates/jenios-confirmation.html",
+      "sourcePath": "supabase/templates/jenios-confirmation.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "1ede2308cddfefde63134df3baffc8706786e58d762402ad8865e651cc04a8ad"
+    },
+    {
+      "path": "supabase/templates/jenios-email-change.html",
+      "sourcePath": "supabase/templates/jenios-email-change.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "00a6e0ffd7b68720521377109c2e78d6212036af05d9a1804d7dadb2ab6a7a57"
+    },
+    {
+      "path": "supabase/templates/jenios-email-changed-notification.html",
+      "sourcePath": "supabase/templates/jenios-email-changed-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "785d303382522fa477eb743f4e84dc72294c427d670352287e646fb0204690f8"
+    },
+    {
+      "path": "supabase/templates/jenios-identity-linked-notification.html",
+      "sourcePath": "supabase/templates/jenios-identity-linked-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "509c6a4dcff8165bd4e4829fe7fe0fa451b105965c4cb7c1fd7904e7cb90ed0b"
+    },
+    {
+      "path": "supabase/templates/jenios-identity-unlinked-notification.html",
+      "sourcePath": "supabase/templates/jenios-identity-unlinked-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "b817c5d209b077ba824d6c34dd80b68787a205131153142ec821c4c195753049"
+    },
+    {
+      "path": "supabase/templates/jenios-mfa-enrolled-notification.html",
+      "sourcePath": "supabase/templates/jenios-mfa-enrolled-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2cef20cc83b5276d99fa602a4bdb8bc9316663fdb4ca155fb0a4edd91fc3338e"
+    },
+    {
+      "path": "supabase/templates/jenios-mfa-unenrolled-notification.html",
+      "sourcePath": "supabase/templates/jenios-mfa-unenrolled-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "39bcaa0116d94f6eefc5237d82732ee712d33d832cbc4ab3c3a3014ca4eaf6d7"
+    },
+    {
+      "path": "supabase/templates/jenios-password-changed-notification.html",
+      "sourcePath": "supabase/templates/jenios-password-changed-notification.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "34a7acdc238daf70b9796b793d9cd49ad6b7c068f37a33657768ad5d3c3aab90"
+    },
+    {
+      "path": "supabase/templates/jenios-reauthentication.html",
+      "sourcePath": "supabase/templates/jenios-reauthentication.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2abd98060d8a7793bc202ac26de9e307a9712bb12a8cc846ea9668031b8ba5f3"
+    },
+    {
+      "path": "supabase/templates/jenios-recovery.html",
+      "sourcePath": "supabase/templates/jenios-recovery.html",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "ad7057bc243952b391a778f8102de3221d4bad117159192769d62eab6c04c81d"
+    },
+    {
+      "path": "tests/emailPublicCopyB305.test.mjs",
+      "sourcePath": "tests/emailPublicCopyB305.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "8e269707147530a1b13c88a79800c9b67c6b8ff69725ad638c39bf5c04b7f9c5"
+    },
+    {
+      "path": "tests/jeniosB305AuthLifecycleEmails.test.mjs",
+      "sourcePath": "tests/jeniosB305AuthLifecycleEmails.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "e37f88fc48a9c9ff77f063e8ac496612828e5cc40b75b872a9c843656bbcf9d7"
+    },
+    {
+      "path": "tests/jeniosB305Dunning.test.mjs",
+      "sourcePath": "tests/jeniosB305Dunning.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "54c0246f72324dec78c0f2710f75205d9ca509c26381729277ec575ea30bde24"
+    },
+    {
+      "path": "tests/jeniosB305DunningRoute.test.mjs",
+      "sourcePath": "tests/jeniosB305DunningRoute.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "859b69d38df125e0f1f6c85eb761dcae8fe496b22dcc4ca1bcc347e45b15167d"
+    },
+    {
+      "path": "tests/jeniosB305EmailAdminHealth.test.mjs",
+      "sourcePath": "tests/jeniosB305EmailAdminHealth.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "8e8ee116ef26a08aa0e55143195f40743cb0ac6edbd0ccc015ba3e1700432d22"
+    },
+    {
+      "path": "tests/jeniosB305EmailObservability.test.mjs",
+      "sourcePath": "tests/jeniosB305EmailObservability.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2078f4163ad80f98fd44fc511f6fc44a0a3910f22c6141c869c261afd400c261"
+    },
+    {
+      "path": "tests/jeniosB305EmailPreflightSql.test.mjs",
+      "sourcePath": "tests/jeniosB305EmailPreflightSql.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "559e3c8a830335d5c537339c6aae568807276d75cbf0b8971e12fd86a440f9b8"
+    },
+    {
+      "path": "tests/jeniosB305EmailReleaseReadiness.test.mjs",
+      "sourcePath": "tests/jeniosB305EmailReleaseReadiness.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "ee46d8526505bc385ff20267b461116b8c2fa3d3782ad242a84730a9433210b7"
+    },
+    {
+      "path": "tests/jeniosB305FinanceEmail.test.mjs",
+      "sourcePath": "tests/jeniosB305FinanceEmail.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c01651700a093009cf3c3134d918eaa4c0dfbe41c06c8b0179bad71330135ab1"
+    },
+    {
+      "path": "tests/jeniosB305FinanceOutboxIndex.test.mjs",
+      "sourcePath": "tests/jeniosB305FinanceOutboxIndex.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "43732c288bc86c8600e060ea48bf28cf4974c56645997846c67c413466007474"
+    },
+    {
+      "path": "tests/jeniosB305LifecycleCampaigns.test.mjs",
+      "sourcePath": "tests/jeniosB305LifecycleCampaigns.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "5cd06a0c014b37152a131f38304e77e51941904bd973f296409cd2d5f90e593e"
+    },
+    {
+      "path": "tests/jeniosB305MarketingDeliveryWorker.test.mjs",
+      "sourcePath": "tests/jeniosB305MarketingDeliveryWorker.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "636d8de97ae1e2c8e4231282c658672ef999196efe37f34ceb32dc147b7febe0"
+    },
+    {
+      "path": "tests/jeniosB305MarketingMessageAdapter.test.mjs",
+      "sourcePath": "tests/jeniosB305MarketingMessageAdapter.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "39344c91543955f1d092a00e232001bcbe66b99dd47f5312a50ae0f9b1d3723a"
+    },
+    {
+      "path": "tests/jeniosB305MarketingPlanner.test.mjs",
+      "sourcePath": "tests/jeniosB305MarketingPlanner.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "d6e5324ca671b6a6e1ae3358675ce505f2850e6b604c33fdc8892195093bd986"
+    },
+    {
+      "path": "tests/jeniosB305NonFinancialLifecycle.test.mjs",
+      "sourcePath": "tests/jeniosB305NonFinancialLifecycle.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "cf763f67cd250ea380b0ba86ae7ef0001fb84e147d347e303e5412a6bafadb80"
+    },
+    {
+      "path": "tests/jeniosB305OnboardingBridge.test.mjs",
+      "sourcePath": "tests/jeniosB305OnboardingBridge.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c86cb369ca705bd07b31eced594b47f082c173e11c64e91d048e8537f90a9126"
+    },
+    {
+      "path": "tests/jeniosB305OutboxWorker.test.mjs",
+      "sourcePath": "tests/jeniosB305OutboxWorker.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "17b755223b50ae806373c40c16dd503567686739bda94b21b8e062b28421070e"
+    },
+    {
+      "path": "tests/jeniosB305PrivateRunner.test.mjs",
+      "sourcePath": "tests/jeniosB305PrivateRunner.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "aad58e9ff64ad9edc9439d1d077307203fa523c4244143d2ae23e5b606f37ed3"
+    },
+    {
+      "path": "tests/jeniosB305ReadinessDiagnostic.test.mjs",
+      "sourcePath": "tests/jeniosB305ReadinessDiagnostic.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "451ff7ef2428a35d8d58ab8cc7c3d1c2bd079b41ac9fa690f2070b10c1c63fb0"
+    },
+    {
+      "path": "tests/jeniosB305ResendSuppressionLedger.test.mjs",
+      "sourcePath": "tests/jeniosB305ResendSuppressionLedger.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c936a4520faf625c4460d56fa0ea3210139e1590b0e5854c4723b0783303888a"
+    },
+    {
+      "path": "tests/jeniosB305ResendWebhookEndpoint.test.mjs",
+      "sourcePath": "tests/jeniosB305ResendWebhookEndpoint.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3dbe6c92234bc7e2f1f80d829af7103d8e25752c96477be6f78bbaa44afc3f6c"
+    },
+    {
+      "path": "tests/jeniosB305SubscriptionLifecycleEmails.test.mjs",
+      "sourcePath": "tests/jeniosB305SubscriptionLifecycleEmails.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "c09c4341d5aed1af9447eae1d44fca38e115b8342a90b1519a33b9865699ca3c"
+    },
+    {
+      "path": "tests/jeniosB305TransactionalDelivery.test.mjs",
+      "sourcePath": "tests/jeniosB305TransactionalDelivery.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "087e829660804ccec6a0867774880e8afcecc5a69f64f498ad0dea9a364e97d7"
+    },
+    {
+      "path": "tests/jeniosB305UniversityDeliveryEvidence.test.mjs",
+      "sourcePath": "tests/jeniosB305UniversityDeliveryEvidence.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "6c6f13e0c47ca3b3e69cedd9168b6c345dc90931178c376821c9658478663916"
+    },
+    {
+      "path": "tests/jeniosB305UniversityMessageAdapter.test.mjs",
+      "sourcePath": "tests/jeniosB305UniversityMessageAdapter.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "e85071b825b10ba83f5ecfa250a0b8fbe05cb19ab0f27e61a364175a6648e787"
+    },
+    {
+      "path": "tests/jeniosB305UniversityMilestones.test.mjs",
+      "sourcePath": "tests/jeniosB305UniversityMilestones.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "0392c90ed7c8e3275c4c82d923f4cfc27b54ac5a3893caa9f9e775f0c85a5559"
+    },
+    {
+      "path": "tests/jeniosB305UniversityTransactionalWorker.test.mjs",
+      "sourcePath": "tests/jeniosB305UniversityTransactionalWorker.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "774959764eb218165c9a6e9ee52ca88a41f901cfa2be36e0598e0869d41ed8cb"
+    },
+    {
+      "path": "tests/platformB299PrivateConsentReplayJournal.test.mjs",
+      "sourcePath": "tests/platformB299PrivateConsentReplayJournal.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "d0737eb3e00cf3c11954065b967ec69dbcc4ec0a49c4182c0b8961ffc9df5ea2"
+    },
+    {
+      "path": "tests/platformB300EvidenceReconciliationGate.test.mjs",
+      "sourcePath": "tests/platformB300EvidenceReconciliationGate.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "3c620bee95c3d6c5a514901170d6b4b996d71308456db8c2c57db95b2b7560a2"
+    },
+    {
+      "path": "tests/platformB303ProtectedPreview.test.mjs",
+      "sourcePath": "tests/platformB303ProtectedPreview.test.mjs",
+      "sourceCommit": "c18eec737d67e2e884cbfb81b288f88b9089695c",
+      "sha256": "2146764699fd771306eaf7ba6e2413ebc65a9427ecb8dd50c0b74edb11a7d2da"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r1-adversarial-qa.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r1-adversarial-qa.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "037f67f0d4801e366cb3318e83d9df45ba7d19532c83ebb39cd2f30e7d476ef1"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r10-post-candle.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r10-post-candle.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "07ebd1f5800f9a8366ce9536354e05cbab922eb719a92f6fa12ee7b4994f2737"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r11-offline.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r11-offline.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7a110f75223d31bd59c67695f000716a99c6a8e14aebdfee84c912fa4f2a96bc"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r12-reconciliation.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r12-reconciliation.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f92eb226de60c2db493f3a921b5e22faf81c48019c23137592741c9b31c290c0"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r13-git-evidence-chain.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r13-git-evidence-chain.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "85336a34ff0c6ca301e5147fd4cf431ca1476b737fb253558559520e61ac25c0"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r14-outcome.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r14-outcome.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cce918f7c9771267c8d7d1e92f2c3e8f40c00015c610a6c1ac568ff14e0c5f85"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r14-post-candle-prep.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r14-post-candle-prep.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "84096c9610d234d51faa0d38f6a544b540f7c96d96b787ecd6910e96cc8163ec"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r14-public-context.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r14-public-context.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "29cff5233f3773c66acbcb4af17ac7ce91249cbb4742e23368cf503dd2ea85dc"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r15-context.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r15-context.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4c456a44764a65f81fa271baf8cf518c56e1e28e0f42ff0d025374420583de3b"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r15-multiwindow.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r15-multiwindow.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8e0d6896a90a06c367333f839ae2b1178368c3153a9fd3fc63e489fe1c3ec699"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r15-outcome.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r15-outcome.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "08bed394e56b940ac066b3889b6921b782a0313f2bd23b203b3fc239012cdba1"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r16-extensive-validation.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r16-extensive-validation.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8ba861fe6a5795f3c8099aacc31b74974eccca80459039ed18ca34162349df4b"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r17-decision-quality.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r17-decision-quality.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0211b3dec29afe4d72a03ee0a2454a290c52e41172a4665bce0464a18c06d208"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r18-ultrafast-foundation.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r18-ultrafast-foundation.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c6cf02a69df38205932c55586c719dea4b7f932f60b2371afabac6e7dda83077"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r19-integrated-refinement.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r19-integrated-refinement.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "1706e7a3d50c524ad13c187298e51fb7a0e130edea1bb295bb86443d4b7b2dcc"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r20-execution-microstructure.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r20-execution-microstructure.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f6df24bee081ed5b01b93e32748bdf1e75b70478cb2a5c36dc66c2e9f7427edf"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r21-oos-ultrafast-ranking.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r21-oos-ultrafast-ranking.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b5454392ce1fe3e14518fd1c4459903dc54b24d98b7f6fa9536ca5eef8397326"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r22-public-ranking-holdout.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r22-public-ranking-holdout.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ba06bd261b6940150199657d98141182aa57f77a187c0e407917f44050849550"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r22-public-snapshot.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r22-public-snapshot.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c568e7d868c5b9c6b98d7ee78f1f3569607ffabfae3f45eb6e6b7ba51b9b7438"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r23-multiwindow-ultrafast.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r23-multiwindow-ultrafast.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fe06f8bc38f2c59108e7709ba0cc6b0178fdf721bba74a2956d58aaa25616034"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r23-public-multiwindow.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r23-public-multiwindow.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2edf0180b1e0c738baa2707ff398e0b7331b88582a205941d0f463a177911af7"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r24-master-ledger.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r24-master-ledger.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cb30802dba264c2e1b6747e9ac140b560d2483bcfa2be388a400d959c4ba636e"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r25-exchange-cost-outage-stress.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r25-exchange-cost-outage-stress.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b9ec591234d45f5d61347d7f3d4e6604c89c94532d26624c937382e022f0dbdc"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r26-fee-evidence-recovery.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r26-fee-evidence-recovery.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a47f8d177130d7e059fa8e0f72ff7571e001e37b4e31845b22da39c46ed7131d"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r27-dynamic-breakeven.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r27-dynamic-breakeven.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9b9f54d60568d3f4b8391809b6f3c4fd2e6809fc1998a8a7f722d950f65b9afb"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r28-breakeven-recall.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r28-breakeven-recall.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c114e0e4950045f1839f9da82e289854a1207a2eb698f5e90375530001ed58e5"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r29-breakeven-holdout.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r29-breakeven-holdout.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "66016c138e2e20aaec79cfa892f6dd1aae1eff44ad15997d9aeeb8c1b72afcdd"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r3-prospective-blocks.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r3-prospective-blocks.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "473e4dad627fba1bf3ed975677307809b3d28b56379eb623972cbf5e310bd037"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r30-regime-adaptive-gate.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r30-regime-adaptive-gate.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9ed39547c8389b50162c3edd9e732b38826a4ed45be432b87992ad968586b6cf"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r31-recovery-regime-interlock.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r31-recovery-regime-interlock.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "294981b8681641d1b9a5df5c06f4958098769c9b1dc134edbaecc471017e415a"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r32-longrun-interlock-holdout.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r32-longrun-interlock-holdout.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0e4d9e66ada9a13ba6155f52fd3ef373c843ccd1d59fd72bebeec2bd4c51b542"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r33-hysteresis-session-risk.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r33-hysteresis-session-risk.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "5c95347b0f2dd67fdaeed6dd54e20946dcfd7a31e41e82a3f2eb51bf57066177"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r34-holdout-session-reauth.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r34-holdout-session-reauth.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cbe3553e641052797f547dcdad4676c27b997237c10593412c280aa63e4bafd2"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r35-multisession-recovery.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r35-multisession-recovery.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b3618ebef14e593343dc886b0cd6d8ea6d128e0dd2c6afa357ec2dc60b6ef414"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r36-idempotency-concurrency.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r36-idempotency-concurrency.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2592e02af3bfb7566cfbe1e74dce309f2a4a37b9980cdcc4f44d9b211c70565d"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r37-ordered-ingestion.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r37-ordered-ingestion.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b36ab32eeb464b1854357199278cbb90e799e3e0406040ba7b8175e78f7622d0"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r38-multistream-expiry.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r38-multistream-expiry.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a44ca675fc2d1b90f6fda2fa927a9e147071deec443618acd1f2b031692c2f44"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r39-state-restore-session-rotation.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r39-state-restore-session-rotation.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "74c6d28912318dbfb05e3c123634c87d622c977590dbbd3f6f6be0e192b039b8"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r4-execution-feasibility.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r4-execution-feasibility.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "60587016d4d28500df8647dc6aa9691265aec2cb52790c4f57803841dce3dacf"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r40-failclosed-snapshot.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r40-failclosed-snapshot.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "318e9d86ff39fb4744c945b803b19e97c1e26de2b7ce7318eef9f72e91b8db10"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r41-integrity-atomic-checkpoint.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r41-integrity-atomic-checkpoint.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9fcc0ed0234abccbf2b3f1944f9e9f3df013c2c2133d59a5a17cdc236348d56f"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r42-rollback-protection.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r42-rollback-protection.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3662c275b8a4917cffddb4cede7d3eaf63c79b0cc30b2459b88ed7f40adb8f34"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r43-quorum-checkpoint.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r43-quorum-checkpoint.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "08868d2ee22134456127db9e8f014279e3a44800f2a43bddca732b04f478109c"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r44-splitbrain-reconvergence.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r44-splitbrain-reconvergence.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "23cee3ef0f61e16cc9e9ddeeafdb2c7159a6c95eec73a57740b48bee13fa0762"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r45-leader-fencing.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r45-leader-fencing.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cdee97695e207a449d69fedee80442bbe88ae6421d18885fcc0763dc2a0f9332"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r46-lease-clockskew-handoff.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r46-lease-clockskew-handoff.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "28e1f2d84db519d0aca9e07bf56b78c70a5819ba273240fc6f6a7bed8363a354"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r47-marketdata-freshness-fence.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r47-marketdata-freshness-fence.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "51f076865f5a5ddcef65d1a898447c6b607238266ef6e5ce3eb68208b34ad5bd"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r48-reconnect-backpressure.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r48-reconnect-backpressure.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "31f11dfb1f88001dbb88bf41c02aa0335960889d4a664ca39542293d0fcaa882"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r49-order-reconciliation-races.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r49-order-reconciliation-races.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f981db198a155f6d38d79358ed11a92c69559e07dabc93a3f8df1f29bb165554"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r5-dual-source-offline.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r5-dual-source-offline.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "756cb5986b0fd38776ae0c150f94b031d166c0feeb742f5ae627f8447bc7e0f7"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r6-signed-witness.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r6-signed-witness.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ff4dde709bd7ffe43a38cc52b6d44c1e84bf847efef08ddae74c2f1d8ad091d8"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r7-public-h1.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r7-public-h1.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fe175d9e1cb889507650c05c814853e639dd09f35a4b97e738fceb96cbfc2e08"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r8-public-market.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r8-public-market.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "57db1afa3981a642fda8e5529521a5397ebac88e14af2a8a5b340b395bbc3fa7"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r9-private-precommit.yml",
+      "sourcePath": ".github/workflows/jenios-robot-r9-private-precommit.yml",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cdd8fd58017198e1ab49bd0b34084dd0e35b9ebc630726ec51659bae09bf84b8"
+    },
+    {
+      "path": "docs/platform/ROBOT-R1-ADVERSARIAL-VALIDATION.md",
+      "sourcePath": "docs/platform/ROBOT-R1-ADVERSARIAL-VALIDATION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a4af654df03d562fab17f71a18d77f95f6dfaba3c01ead7b6a1254cec18a197a"
+    },
+    {
+      "path": "docs/platform/ROBOT-R10-READINESS.md",
+      "sourcePath": "docs/platform/ROBOT-R10-READINESS.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "e81be6f7638b3de47bdccb3c2d996ca4ce5e311b61aab6b7e9563f2695b772fe"
+    },
+    {
+      "path": "docs/platform/ROBOT-R11-OFFLINE-HARDENING.md",
+      "sourcePath": "docs/platform/ROBOT-R11-OFFLINE-HARDENING.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "75cac041003cdf3e4228609ad695ec68452d8eef8a4d8b35789b0adc86078fa2"
+    },
+    {
+      "path": "docs/platform/ROBOT-R12-STRICT-EVIDENCE-LINKAGE.md",
+      "sourcePath": "docs/platform/ROBOT-R12-STRICT-EVIDENCE-LINKAGE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3524e51af6ee0586c54ef202b2b5f1fdc69fa03665a861a63e0420bbe5a692ed"
+    },
+    {
+      "path": "docs/platform/ROBOT-R13-GIT-EVIDENCE-CHAIN.md",
+      "sourcePath": "docs/platform/ROBOT-R13-GIT-EVIDENCE-CHAIN.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9f4d10c4f236db0d8e0fc8abd30ec3be05ce72cac000f8ea8ec6c2b8f8e6e764"
+    },
+    {
+      "path": "docs/platform/ROBOT-R15-MULTIWINDOW-PROSPECTIVE.md",
+      "sourcePath": "docs/platform/ROBOT-R15-MULTIWINDOW-PROSPECTIVE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f4f270a33b55900a096dba8c2e8dc099df3462abfcccc36848324a7063756fd2"
+    },
+    {
+      "path": "docs/platform/ROBOT-R16-EXTENSIVE-VALIDATION.md",
+      "sourcePath": "docs/platform/ROBOT-R16-EXTENSIVE-VALIDATION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "d4a52a178cd82805865b6e1bb894a13986557781cca32a88f056f157964b8b04"
+    },
+    {
+      "path": "docs/platform/ROBOT-R17-DECISION-QUALITY.md",
+      "sourcePath": "docs/platform/ROBOT-R17-DECISION-QUALITY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4ad43baafa531806c9457bee9f15ea9e987a2efe127060d0dd805d10a5582b5e"
+    },
+    {
+      "path": "docs/platform/ROBOT-R18-ULTRAFAST-FOUNDATION.md",
+      "sourcePath": "docs/platform/ROBOT-R18-ULTRAFAST-FOUNDATION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "362dba46bed471fd0382473ea39bd10ef57fd9549b8b590fbc4c61f0a87e44f7"
+    },
+    {
+      "path": "docs/platform/ROBOT-R19-INTEGRATED-REFINEMENT.md",
+      "sourcePath": "docs/platform/ROBOT-R19-INTEGRATED-REFINEMENT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "467060b7708e5f047157ddb619a7a1617a0ee809872c8cabbb15f2914206cf3e"
+    },
+    {
+      "path": "docs/platform/ROBOT-R20-EXECUTION-MICROSTRUCTURE.md",
+      "sourcePath": "docs/platform/ROBOT-R20-EXECUTION-MICROSTRUCTURE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7def22b536999c6e9fa2bdc2255d28d7fb6ee418f4eebde42137141e44b9ba1a"
+    },
+    {
+      "path": "docs/platform/ROBOT-R21-OOS-ULTRAFAST-RANKING.md",
+      "sourcePath": "docs/platform/ROBOT-R21-OOS-ULTRAFAST-RANKING.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "078e9baab660930ced27283dad6dd8056f45dcb64e3835660fbf5c7724b0357b"
+    },
+    {
+      "path": "docs/platform/ROBOT-R22-PUBLIC-RANKING-HOLDOUT.md",
+      "sourcePath": "docs/platform/ROBOT-R22-PUBLIC-RANKING-HOLDOUT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "19275243231ad7842c69f897bc281c1b307bb509f1296d8e99822163d1e40b46"
+    },
+    {
+      "path": "docs/platform/ROBOT-R23-MULTIWINDOW-ULTRAFAST.md",
+      "sourcePath": "docs/platform/ROBOT-R23-MULTIWINDOW-ULTRAFAST.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fbd424ccf0f58f94d58f9076473605cc2825ef1ea28861e1920420959d194629"
+    },
+    {
+      "path": "docs/platform/ROBOT-R24-MASTER-PERFORMANCE-LEDGER.md",
+      "sourcePath": "docs/platform/ROBOT-R24-MASTER-PERFORMANCE-LEDGER.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4ef21dd746b9e3b889d9cbafbedf3e746d9313271e00f878f5d24e0ee9920fb6"
+    },
+    {
+      "path": "docs/platform/ROBOT-R25-EXCHANGE-COST-OUTAGE-STRESS.md",
+      "sourcePath": "docs/platform/ROBOT-R25-EXCHANGE-COST-OUTAGE-STRESS.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "eda87113e197aced2ddf32d7dcf9ab28b1e91c94d9fce4d86811b488d00e1e3e"
+    },
+    {
+      "path": "docs/platform/ROBOT-R26-FEE-EVIDENCE-RECOVERY.md",
+      "sourcePath": "docs/platform/ROBOT-R26-FEE-EVIDENCE-RECOVERY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "38c122183bb6b4ca379120db19e51b6598d66cfc724416f4cd430d4f837533ef"
+    },
+    {
+      "path": "docs/platform/ROBOT-R27-DYNAMIC-BREAKEVEN.md",
+      "sourcePath": "docs/platform/ROBOT-R27-DYNAMIC-BREAKEVEN.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4e78f83cfe422698d9f924bd6f4421ea9c1cc489969c3d92215fefa7c64fcb34"
+    },
+    {
+      "path": "docs/platform/ROBOT-R28-BREAKEVEN-RECALL.md",
+      "sourcePath": "docs/platform/ROBOT-R28-BREAKEVEN-RECALL.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "17569821d98948664d98765391bb6131d4f70a40c52c4dc0a9c82d2ddbfab2f6"
+    },
+    {
+      "path": "docs/platform/ROBOT-R29-BREAKEVEN-HOLDOUT.md",
+      "sourcePath": "docs/platform/ROBOT-R29-BREAKEVEN-HOLDOUT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "255bcd83709588c2bb37babcafe0f1ea10479e1dea4da59a2b37d32c654ed809"
+    },
+    {
+      "path": "docs/platform/ROBOT-R3-PROSPECTIVE-BLOCK-RESEARCH.md",
+      "sourcePath": "docs/platform/ROBOT-R3-PROSPECTIVE-BLOCK-RESEARCH.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6bf1301aa7ccf01883b291448621b1c5233d490d08a74fe9f3ecd2b7760c4b48"
+    },
+    {
+      "path": "docs/platform/ROBOT-R30-REGIME-ADAPTIVE-GATE.md",
+      "sourcePath": "docs/platform/ROBOT-R30-REGIME-ADAPTIVE-GATE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "dcb2acd755846fef13df34052cf17159d7168996eaa2058f96bd6c1314e2220c"
+    },
+    {
+      "path": "docs/platform/ROBOT-R31-RECOVERY-REGIME-INTERLOCK.md",
+      "sourcePath": "docs/platform/ROBOT-R31-RECOVERY-REGIME-INTERLOCK.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4f366139295277a1869c6b723c466adca44751e6203141520e4eb5887e475652"
+    },
+    {
+      "path": "docs/platform/ROBOT-R32-LONGRUN-INTERLOCK-HOLDOUT.md",
+      "sourcePath": "docs/platform/ROBOT-R32-LONGRUN-INTERLOCK-HOLDOUT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f4271779b24543fcf485c806ae712ad0fe660a3bf7520fe77a2a9149b6f4c2c5"
+    },
+    {
+      "path": "docs/platform/ROBOT-R33-HYSTERESIS-SESSION-RISK.md",
+      "sourcePath": "docs/platform/ROBOT-R33-HYSTERESIS-SESSION-RISK.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3b5c73d2402666e08d771094916f2360a5392f97f42131a45bef784f1f91c331"
+    },
+    {
+      "path": "docs/platform/ROBOT-R4-EXECUTION-FEASIBILITY.md",
+      "sourcePath": "docs/platform/ROBOT-R4-EXECUTION-FEASIBILITY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b0da015d1d5fba3cffa00635b97d16f152f59604d503f5eaf5ceeef602b66431"
+    },
+    {
+      "path": "docs/platform/ROBOT-R5-PROSPECTIVE-SOURCE-INTEGRITY.md",
+      "sourcePath": "docs/platform/ROBOT-R5-PROSPECTIVE-SOURCE-INTEGRITY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "02fc9043c9e96728ce03a5b720e7f46a3c027c4710920e294805864417a3ed8a"
+    },
+    {
+      "path": "docs/platform/ROBOT-R6-CONFIGURED-WITNESS-INTEGRITY.md",
+      "sourcePath": "docs/platform/ROBOT-R6-CONFIGURED-WITNESS-INTEGRITY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "aad93fc2637b9bb59505a8fe82c3effe577c72dd239b753e03cef410f4eb783a"
+    },
+    {
+      "path": "docs/platform/ROBOT-R7-PUBLIC-H1.md",
+      "sourcePath": "docs/platform/ROBOT-R7-PUBLIC-H1.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "dfe7dbed194720ab6a8ffdcea746a2a8e3fe2f62b77f60ee3a9f3f231d38d15e"
+    },
+    {
+      "path": "docs/platform/ROBOT-R8-PUBLIC-CONTEXT.md",
+      "sourcePath": "docs/platform/ROBOT-R8-PUBLIC-CONTEXT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ae9f2bc9caf1df69d2d20f12b1779ca03cf14d45af5a3b8fa6bd1811b748794d"
+    },
+    {
+      "path": "docs/platform/ROBOT-R9-GENUINE-FORWARD-NO-GO.md",
+      "sourcePath": "docs/platform/ROBOT-R9-GENUINE-FORWARD-NO-GO.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9bc85fecc5c71587e7dfebdfa35ac10cb80ee43d069f8a7e27a4899b689407a7"
+    },
+    {
+      "path": "docs/platform/ROBOT_R34_HOLDOUT_SESSION_REAUTH.md",
+      "sourcePath": "docs/platform/ROBOT_R34_HOLDOUT_SESSION_REAUTH.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fde03f3a9027ea1dd74185113afe5b5997d30806366c76e7de7ea6aee57a3828"
+    },
+    {
+      "path": "docs/platform/ROBOT_R35_MULTISESSION_RECOVERY.md",
+      "sourcePath": "docs/platform/ROBOT_R35_MULTISESSION_RECOVERY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "dc512065a49471738371a352c4691c5565873f13a114b915498bbcecee9eb5d2"
+    },
+    {
+      "path": "docs/platform/ROBOT_R36_IDEMPOTENCY_CONCURRENCY.md",
+      "sourcePath": "docs/platform/ROBOT_R36_IDEMPOTENCY_CONCURRENCY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0c5f64be2202f0b2d367d5766feee016dbb0a7a15d854b1e2b540e2656901cbf"
+    },
+    {
+      "path": "docs/platform/ROBOT_R37_ORDERED_INGESTION.md",
+      "sourcePath": "docs/platform/ROBOT_R37_ORDERED_INGESTION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7b515ae99891e4e16bcc83f1f5ba40b031c0b252dfd845bbbeb66f19f51faf14"
+    },
+    {
+      "path": "docs/platform/ROBOT_R38_MULTISTREAM_EXPIRY.md",
+      "sourcePath": "docs/platform/ROBOT_R38_MULTISTREAM_EXPIRY.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2230ccf84a72f81d7c03b05a432e1bccaab06dd5fb4e9dece4126531b84bb58c"
+    },
+    {
+      "path": "docs/platform/ROBOT_R39_STATE_RESTORE_SESSION_ROTATION.md",
+      "sourcePath": "docs/platform/ROBOT_R39_STATE_RESTORE_SESSION_ROTATION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2bee21995a40e1757d61e143500909d574c3c2df49d3235d396f35fa433672e4"
+    },
+    {
+      "path": "docs/platform/ROBOT_R40_FAILCLOSED_SNAPSHOT.md",
+      "sourcePath": "docs/platform/ROBOT_R40_FAILCLOSED_SNAPSHOT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2d46ce1205e19f0ac77f238d9fcd4ef5be02ec5cd25d79e79cba44326088466f"
+    },
+    {
+      "path": "docs/platform/ROBOT_R41_INTEGRITY_ATOMIC_CHECKPOINT.md",
+      "sourcePath": "docs/platform/ROBOT_R41_INTEGRITY_ATOMIC_CHECKPOINT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9f7d301c813bee16bd9d02e0cadd81d79f06332863cd968c56b6f2cc0b0a0632"
+    },
+    {
+      "path": "docs/platform/ROBOT_R42_ROLLBACK_PROTECTION.md",
+      "sourcePath": "docs/platform/ROBOT_R42_ROLLBACK_PROTECTION.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4eab88e403eda366f758f62e8979290b8b21e0729411020cfd96bc46eef02b2d"
+    },
+    {
+      "path": "docs/platform/ROBOT_R43_QUORUM_CHECKPOINT.md",
+      "sourcePath": "docs/platform/ROBOT_R43_QUORUM_CHECKPOINT.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "bfdf43bcf8cd0df885ba0d37e9a2f7789b9fc686d34660e7ef1f7b1f75de14cc"
+    },
+    {
+      "path": "docs/platform/ROBOT_R44_SPLITBRAIN_RECONVERGENCE.md",
+      "sourcePath": "docs/platform/ROBOT_R44_SPLITBRAIN_RECONVERGENCE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7713c0f2dcf82b4d623cce867b76a117e1bceff809199aaca2d9fba83e2d0080"
+    },
+    {
+      "path": "docs/platform/ROBOT_R45_LEADER_FENCING.md",
+      "sourcePath": "docs/platform/ROBOT_R45_LEADER_FENCING.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "5363e88d60aed28dc5131a5d0020a3f4702fddd0573344184476cc2c1fc4710a"
+    },
+    {
+      "path": "docs/platform/ROBOT_R46_LEASE_CLOCKSKEW_HANDOFF.md",
+      "sourcePath": "docs/platform/ROBOT_R46_LEASE_CLOCKSKEW_HANDOFF.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "00f292fdb469f4df1edd8cc6b9b404800d03074a427ba64b6091d6ac63784ae9"
+    },
+    {
+      "path": "docs/platform/ROBOT_R47_MARKETDATA_FRESHNESS_FENCE.md",
+      "sourcePath": "docs/platform/ROBOT_R47_MARKETDATA_FRESHNESS_FENCE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "60ddac6da36afa93b3a57db278266d4b0affc557aac3b51cbaa6854b89dec562"
+    },
+    {
+      "path": "docs/platform/ROBOT_R48_RECONNECT_BACKPRESSURE.md",
+      "sourcePath": "docs/platform/ROBOT_R48_RECONNECT_BACKPRESSURE.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "33781569b5049288a32725e76d7b9e82d78f996ace2b214e55b2e0fa66e439c5"
+    },
+    {
+      "path": "docs/platform/ROBOT_R49_ORDER_RECONCILIATION_RACES.md",
+      "sourcePath": "docs/platform/ROBOT_R49_ORDER_RECONCILIATION_RACES.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "e72b728b5f99a5a12591f8beab43fb7207b4fd3e196b3e689f934fabf0273bc5"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "20834fa4891d8d0469a77b7ad0036e15bbdf1d809cbc0442d717dbafbe75cccc"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R14_20261022_1900UTC_PROTOCOL.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R14_20261022_1900UTC_PROTOCOL.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0e74cfdafc013f4a4d0d8e605b1b8abbf2e89f6efae87926c9862ed093b6aa76"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R14_LOCAL_PROTOCOL_SHA256.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R14_LOCAL_PROTOCOL_SHA256.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "e150d1b4a70701446ee88c70559b4c472b565cf12c9305e26f33de8c79ddf5c9"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R14_PREWINDOW_STATUS.md",
+      "sourcePath": "docs/platform/evidence/ROBOT_R14_PREWINDOW_STATUS.md",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "94ee2d1a7455b6c3bcfd2f291f6e9c7fd5bd8899eb710c8a12fb9a9dadfa7cc6"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R14_PRIVATE_DECISIONS_SHA256.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R14_PRIVATE_DECISIONS_SHA256.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "def7955a443f2c5a1f2c9ee48308006ee0b0eb03cc43023284439af4847ada29"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R14_PRIVATE_PRECOMMIT_FINAL_SHA256.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R14_PRIVATE_PRECOMMIT_FINAL_SHA256.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b13694494b22d46e1bf4c3c01483280adf57953fbdbbbb217a7dc502e9b7ba61"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R15_W01_PRIVATE_PRECOMMIT_SHA256.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R15_W01_PRIVATE_PRECOMMIT_SHA256.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9942d02e08deb921f38a38ede3cfe3bc0cefe877bd761ec120efd04bea6830a5"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R17_PRIVATE_RESULTS_SHA256.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R17_PRIVATE_RESULTS_SHA256.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "75e37acf47affeb02b97c9de2d59f72d8fca8a394784606df03a4f4ed6fd05d3"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R17_SANITIZED_SUMMARY.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R17_SANITIZED_SUMMARY.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "95da1b81b37e9fc0b56b60e87c56264f18d4080b237ee25e55c2b24903ab97fe"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R22_PUBLIC_SNAPSHOT_TRIGGER.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R22_PUBLIC_SNAPSHOT_TRIGGER.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "582b91d22403fc9e86a2a05617785130a1ad02c2f6a3a98efbf58c52b1c9d89d"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R23_PUBLIC_MULTIWINDOW_TRIGGER.txt",
+      "sourcePath": "docs/platform/evidence/ROBOT_R23_PUBLIC_MULTIWINDOW_TRIGGER.txt",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ada89502da66a0d4e8a1658772d194b172d58ec809cfbd3884adecd4b15f0937"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R34_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R34_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8ecf4b90f2a732546aa8e6d96edbc7c928f648157fb02a30d1b319e493256c3a"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R35_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R35_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f89e9ea271a89b69ed5f70623c0a16a69fac9f25ffcf0676035b41f2b81e2318"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R36_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R36_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "1527209b9940fe0ff3dade1875f203b2a504b7072b5a268fe47077a0dda94286"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R37_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R37_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a4f5a7bf2d68b5d275852d1f1d2c71a493df1407a08803a514cb0ef375b152b5"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R38_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R38_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b85de86823457bc83755c0c77ed4ca658495417824ef9d85e94e2e0438697386"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R39_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R39_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cc7e35238615b8a4a8cc744a4a7336086caf745a9c339235523b5ebd1799d61d"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R40_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R40_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9010572d29e58e0158e9d99ed29be8df76c4253367931cad2486d59478ca07dd"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R41_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R41_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "05ef16cc9aaa1c71172bf6893e4db01643268ef17d773abb674daf2055dcba6c"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R42_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R42_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f855593ebd2ae7bc85743e856114e885bfd04b8966569ee2810c6fdb9db71784"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R43_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R43_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4adf8f441ca24584b7359bc25c28430b635b8fb24a48eaa31a5c13006de840e6"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R44_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R44_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "da72f8d3772191186173ffb29a10de327ee66b320090ede8811b9e1b8d426240"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R45_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R45_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "70850ecebaead66816828e6118cac9bf22577b948bcceaa00f38fb2eea27538d"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R46_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R46_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b127dc26f2f2b0ec4458a39ec76bf890d4e2c479177a64167854a61f7f0f67b2"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R47_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R47_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "29c1bc8b050a8c4d0cf6ae45d5c0317329136ea0b8890e61142cec1a937eb5a7"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R48_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R48_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "cd74e65c24cffa6f1db933ad81ffb8b9d671ddd473a945129d45abf57a0f3d07"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R49_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R49_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4388e683d161abfb31722bdbfc6c000478525a107af6cede49de8bab5e29b5e3"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R9_20261022_1300UTC_PUBLIC_HASH_ONLY_PRECOMMIT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R9_20261022_1300UTC_PUBLIC_HASH_ONLY_PRECOMMIT.json",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4b7e7c3cb70e76e97483ac321945e50e159a29a0e1e86f778e391a01b6a6b34e"
+    },
+    {
+      "path": "lib/platform/research/robot-r1-adversarial-gates.mjs",
+      "sourcePath": "lib/platform/research/robot-r1-adversarial-gates.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "d771a517975d18299c58c84b836fc69b8364d1678b8d5a10fe9b47c5886afd19"
+    },
+    {
+      "path": "lib/platform/research/robot-r10-post-candle.mjs",
+      "sourcePath": "lib/platform/research/robot-r10-post-candle.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "05805429074c3fd11c4feeb061a1e5df950f3d0506fbcdb1c9b025abcc8e7b58"
+    },
+    {
+      "path": "lib/platform/research/robot-r12-evidence-reconciliation.mjs",
+      "sourcePath": "lib/platform/research/robot-r12-evidence-reconciliation.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c832bfbd069f43ede6a367543ce5b78a1ab1b02b6e411db5a8f54060a5e10b71"
+    },
+    {
+      "path": "lib/platform/research/robot-r13-git-evidence-chain.mjs",
+      "sourcePath": "lib/platform/research/robot-r13-git-evidence-chain.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "35214c3520569a22d0075f042ca6e664bc11df1c28303edf09d540595f8867ae"
+    },
+    {
+      "path": "lib/platform/research/robot-r14-post-candle.mjs",
+      "sourcePath": "lib/platform/research/robot-r14-post-candle.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "84aec7e688752b49dc8aed401d05442aecd82a47a50042a9b5fc6cb6d0d3619b"
+    },
+    {
+      "path": "lib/platform/research/robot-r15-multiwindow-protocol.mjs",
+      "sourcePath": "lib/platform/research/robot-r15-multiwindow-protocol.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3e7d368676c938e72f0d3a5b84b6950c3fbcf3ef81b02f39c40119e05779f594"
+    },
+    {
+      "path": "lib/platform/research/robot-r15-window-outcome.mjs",
+      "sourcePath": "lib/platform/research/robot-r15-window-outcome.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "82ff3db680b4d15d49a8bd17efab721ffe8e46337a8df21a76614ad4da49075b"
+    },
+    {
+      "path": "lib/platform/research/robot-r16-extensive-validation.mjs",
+      "sourcePath": "lib/platform/research/robot-r16-extensive-validation.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6f933b35be8579dc26a123cafae33f1ad5874f56cc1b28ec3f59ceb79d848b6e"
+    },
+    {
+      "path": "lib/platform/research/robot-r17-decision-quality.mjs",
+      "sourcePath": "lib/platform/research/robot-r17-decision-quality.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3161caf007f084a832cb6279682551a07c1f17ec331528b59aa188720f3b8fda"
+    },
+    {
+      "path": "lib/platform/research/robot-r18-ultrafast-foundation.mjs",
+      "sourcePath": "lib/platform/research/robot-r18-ultrafast-foundation.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c27c0485282f5c9b52b5fbc9e5d98cfe2c50a3cc03e76dc54807f6e7c71b999b"
+    },
+    {
+      "path": "lib/platform/research/robot-r19-assisted-refinement.mjs",
+      "sourcePath": "lib/platform/research/robot-r19-assisted-refinement.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "50c62ae3b181c6b1a0c9bfb4a0d7f458569125edb8f66a2979264ec613aeeff4"
+    },
+    {
+      "path": "lib/platform/research/robot-r19-ultrafast-microstructure.mjs",
+      "sourcePath": "lib/platform/research/robot-r19-ultrafast-microstructure.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3cba3d840042566db37abf8e6b7ecc68988737eedd4b07070c85e1db7e38936c"
+    },
+    {
+      "path": "lib/platform/research/robot-r20-alignment-calibration.mjs",
+      "sourcePath": "lib/platform/research/robot-r20-alignment-calibration.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f4e316b8a796137a0487c4f4d9d8139b00171170376386c0cc89a70f1e53397b"
+    },
+    {
+      "path": "lib/platform/research/robot-r20-ultrafast-execution.mjs",
+      "sourcePath": "lib/platform/research/robot-r20-ultrafast-execution.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "dae1eb19963b23fff75913b81a0bf0570fcca97e2e642218574799f5f00f34ba"
+    },
+    {
+      "path": "lib/platform/research/robot-r21-alignment-oos.mjs",
+      "sourcePath": "lib/platform/research/robot-r21-alignment-oos.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "10d98d9ac5c4a1d9682a7b95f58c38c062498530834719b56acff92a9a2ba227"
+    },
+    {
+      "path": "lib/platform/research/robot-r21-ultrafast-ranking.mjs",
+      "sourcePath": "lib/platform/research/robot-r21-ultrafast-ranking.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2bf772ba0709da8ed1b80d260d51f38e9090b634168c2594c37819769635d95c"
+    },
+    {
+      "path": "lib/platform/research/robot-r22-alignment-holdout.mjs",
+      "sourcePath": "lib/platform/research/robot-r22-alignment-holdout.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "92099d67a9da2f8a442a2576d352e9985e967ecc4419f40c060e8cad4a95d6d0"
+    },
+    {
+      "path": "lib/platform/research/robot-r22-public-crypto-ranking.mjs",
+      "sourcePath": "lib/platform/research/robot-r22-public-crypto-ranking.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "bacde99b5419b1fb5e668ac69a43902e2aa55037ec086170e05c0491e9b0c80b"
+    },
+    {
+      "path": "lib/platform/research/robot-r23-multiwindow-ultrafast.mjs",
+      "sourcePath": "lib/platform/research/robot-r23-multiwindow-ultrafast.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6eddecbe785aa143038afeab512ebbd1afa2e004d4f028735c03128a32d23e58"
+    },
+    {
+      "path": "lib/platform/research/robot-r25-exchange-cost-outage-stress.mjs",
+      "sourcePath": "lib/platform/research/robot-r25-exchange-cost-outage-stress.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6a6b2ef013334b7f463080141d6860b8f1ab248073120a24f4862e4b55e7e3cc"
+    },
+    {
+      "path": "lib/platform/research/robot-r26-fee-evidence.mjs",
+      "sourcePath": "lib/platform/research/robot-r26-fee-evidence.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "17b12b9623dff22629f529b34d4cf2e2b22fc830caedd140a3b67f3d821574b1"
+    },
+    {
+      "path": "lib/platform/research/robot-r26-recovery-state.mjs",
+      "sourcePath": "lib/platform/research/robot-r26-recovery-state.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "44bfd50c7a67fb89e45b3c0d5947a39a6472eae949d5387ca187194e4738159e"
+    },
+    {
+      "path": "lib/platform/research/robot-r27-dynamic-breakeven.mjs",
+      "sourcePath": "lib/platform/research/robot-r27-dynamic-breakeven.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2f02270dd45ecde2f712852859489344bdc11f4673b1a9251f9c42924e605f3d"
+    },
+    {
+      "path": "lib/platform/research/robot-r28-breakeven-recall.mjs",
+      "sourcePath": "lib/platform/research/robot-r28-breakeven-recall.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f6bb850a0391e2020ae3c7d0136bbf803384a9474491945eb66eab297d09272f"
+    },
+    {
+      "path": "lib/platform/research/robot-r29-breakeven-holdout.mjs",
+      "sourcePath": "lib/platform/research/robot-r29-breakeven-holdout.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0c646814b1d62c26a1d143131985155db9e3a58a171cc7053db3fd133eda2802"
+    },
+    {
+      "path": "lib/platform/research/robot-r3-prospective-block-audit.mjs",
+      "sourcePath": "lib/platform/research/robot-r3-prospective-block-audit.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0753d2d2f2e53f26da82ae956d8f87ec3909e22f881555069b4ab86da1a7427c"
+    },
+    {
+      "path": "lib/platform/research/robot-r30-regime-adaptive-gate.mjs",
+      "sourcePath": "lib/platform/research/robot-r30-regime-adaptive-gate.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6322747497661ac628e05fba6aeae2c33204dfd82244fae65272916bb65be095"
+    },
+    {
+      "path": "lib/platform/research/robot-r31-recovery-regime-interlock.mjs",
+      "sourcePath": "lib/platform/research/robot-r31-recovery-regime-interlock.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ca2c1ab4535f6a7423a8e1cd7d2e790aaed9c3fbd5361a0ff0d269c7ebbf09a8"
+    },
+    {
+      "path": "lib/platform/research/robot-r32-longrun-interlock-holdout.mjs",
+      "sourcePath": "lib/platform/research/robot-r32-longrun-interlock-holdout.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "14cd79aca2feaa370486b3f2c7bb48b2971fec70f27a38ff1f412b4ee195b954"
+    },
+    {
+      "path": "lib/platform/research/robot-r33-hysteresis-session-risk.mjs",
+      "sourcePath": "lib/platform/research/robot-r33-hysteresis-session-risk.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "d4311b6b23ccebda5164a8008809de19d8cbd405379d346fd9ce9fe118874a50"
+    },
+    {
+      "path": "lib/platform/research/robot-r34-holdout-session-reauth.mjs",
+      "sourcePath": "lib/platform/research/robot-r34-holdout-session-reauth.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "23946c19991460424785ea363c54e518d9daf4c4e61bf58f27925db1526f8a58"
+    },
+    {
+      "path": "lib/platform/research/robot-r35-multisession-recovery.mjs",
+      "sourcePath": "lib/platform/research/robot-r35-multisession-recovery.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2febce4c3549bd3160832abcb05e8aaa775f899c8800f52357a084978b888cac"
+    },
+    {
+      "path": "lib/platform/research/robot-r36-idempotency-concurrency.mjs",
+      "sourcePath": "lib/platform/research/robot-r36-idempotency-concurrency.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "1e07b56cf3dd17d812be359245abceb81a644952c2cae2935c75a00bb357dd35"
+    },
+    {
+      "path": "lib/platform/research/robot-r37-ordered-ingestion.mjs",
+      "sourcePath": "lib/platform/research/robot-r37-ordered-ingestion.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "5ccb2874a016d2c8d8c722fc5b5c0ef62fc83d863f427973129cfc8c0b27f22b"
+    },
+    {
+      "path": "lib/platform/research/robot-r38-multistream-expiry.mjs",
+      "sourcePath": "lib/platform/research/robot-r38-multistream-expiry.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a18413fc6f2b7ff11aa0b060d4acdf0c4fbaab29d14f6e3a39b0ed08c9cf5b7e"
+    },
+    {
+      "path": "lib/platform/research/robot-r39-state-restore-session-rotation.mjs",
+      "sourcePath": "lib/platform/research/robot-r39-state-restore-session-rotation.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "aacea1263b9d35e7455e1761d17c1089424982dfaf033cb4eb48b871e216d630"
+    },
+    {
+      "path": "lib/platform/research/robot-r4-execution-feasibility.mjs",
+      "sourcePath": "lib/platform/research/robot-r4-execution-feasibility.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9866da9275e2283d012f57be59c91b3d97358396d2141444f9da60de579fea6c"
+    },
+    {
+      "path": "lib/platform/research/robot-r40-failclosed-snapshot.mjs",
+      "sourcePath": "lib/platform/research/robot-r40-failclosed-snapshot.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b35adaca20771df5f4a2e34b324dedc062e3d92ecb90153d0a415bcb615faa25"
+    },
+    {
+      "path": "lib/platform/research/robot-r41-integrity-atomic-checkpoint.mjs",
+      "sourcePath": "lib/platform/research/robot-r41-integrity-atomic-checkpoint.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2f122e9d03df2a0f469e851fbd65a63ccaabbfe4e95dbc300fa0060630c62c07"
+    },
+    {
+      "path": "lib/platform/research/robot-r42-rollback-protection.mjs",
+      "sourcePath": "lib/platform/research/robot-r42-rollback-protection.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "522714344c1fe549cc35c15d78c3a523ed3945a13268432288b5d2a46ee05058"
+    },
+    {
+      "path": "lib/platform/research/robot-r43-quorum-checkpoint.mjs",
+      "sourcePath": "lib/platform/research/robot-r43-quorum-checkpoint.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9bd024c874e7245a667c0e84419d79a02999fec6dce392534f751d8edfd7b666"
+    },
+    {
+      "path": "lib/platform/research/robot-r44-splitbrain-reconvergence.mjs",
+      "sourcePath": "lib/platform/research/robot-r44-splitbrain-reconvergence.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fe2e3eb32e432e4942ff51df27f250f7c4a47b0a51a9e8371395ebd3a23b55dc"
+    },
+    {
+      "path": "lib/platform/research/robot-r45-leader-fencing.mjs",
+      "sourcePath": "lib/platform/research/robot-r45-leader-fencing.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "d16591fe4e721107786ea426f77a0452c95a805be600dc6bf6d8201fca0798a4"
+    },
+    {
+      "path": "lib/platform/research/robot-r46-lease-clockskew-handoff.mjs",
+      "sourcePath": "lib/platform/research/robot-r46-lease-clockskew-handoff.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ae7780a97aead9f565a7510c5df0d1fcea9905ef18048614bf021bdc857e40f9"
+    },
+    {
+      "path": "lib/platform/research/robot-r47-marketdata-freshness-fence.mjs",
+      "sourcePath": "lib/platform/research/robot-r47-marketdata-freshness-fence.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0268ee0c7ccd9957bbdd9890b8c1531377582f87451fbadee3c1c3da1d763639"
+    },
+    {
+      "path": "lib/platform/research/robot-r48-reconnect-backpressure.mjs",
+      "sourcePath": "lib/platform/research/robot-r48-reconnect-backpressure.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ab70bd8177611b9bb3d8bd1d79d40f6af956149c4f0f30292cb5f4efb0926fdd"
+    },
+    {
+      "path": "lib/platform/research/robot-r49-order-reconciliation-races.mjs",
+      "sourcePath": "lib/platform/research/robot-r49-order-reconciliation-races.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "e30c6f20e66c7b5245475844897dd96f8b1b38f8a0280cb202c94b4fc423e3d8"
+    },
+    {
+      "path": "lib/platform/research/robot-r5-dual-source-prospective.mjs",
+      "sourcePath": "lib/platform/research/robot-r5-dual-source-prospective.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ed4a1b7404ed0d61cae71b499f7f3322a532b07ea1d96f0134c0387d1079c6e9"
+    },
+    {
+      "path": "lib/platform/research/robot-r6-signed-witness-chain.mjs",
+      "sourcePath": "lib/platform/research/robot-r6-signed-witness-chain.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6681ca8e6fb3d52f89faaabb136b1dca18359ad139b166b806e2b494a414d162"
+    },
+    {
+      "path": "lib/platform/research/robot-r7-public-h1.mjs",
+      "sourcePath": "lib/platform/research/robot-r7-public-h1.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8290c3c2211775e8e399badbff5f472d8e1226c98f51363987f7943394a0ab2b"
+    },
+    {
+      "path": "lib/platform/research/robot-r8-public-market.mjs",
+      "sourcePath": "lib/platform/research/robot-r8-public-market.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "62068e09d51e101589a2c10fba50ba4a9f221500a3b91d1a9111a514dffcf83f"
+    },
+    {
+      "path": "lib/platform/research/robot-r9-private-precommit.mjs",
+      "sourcePath": "lib/platform/research/robot-r9-private-precommit.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8054a1471c6f1abab4d5688acecbd06538b6b8dc507bc549020cfd4f5c3ef98e"
+    },
+    {
+      "path": "lib/platform/ultrafast-entitlement.mjs",
+      "sourcePath": "lib/platform/ultrafast-entitlement.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f6ac6a83ac58ccbc57076868ebfe8506143906cdf03d13acc9c95da3a79b91ae"
+    },
+    {
+      "path": "scripts/platform/research/robot-r10-observe-once.mjs",
+      "sourcePath": "scripts/platform/research/robot-r10-observe-once.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c8eb8b5f1861e15fb62e9c6a80ff0b260aaf8794b7fda39ed35e52396e5e03dc"
+    },
+    {
+      "path": "scripts/platform/research/robot-r14-post-candle.mjs",
+      "sourcePath": "scripts/platform/research/robot-r14-post-candle.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4ded9fc66ea70523eac88fe69ed70b0449dfa78c8507cbd05a1bdeeac3916e6b"
+    },
+    {
+      "path": "scripts/platform/research/robot-r15-window-outcome.mjs",
+      "sourcePath": "scripts/platform/research/robot-r15-window-outcome.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3dc8c9220c9e925193ef261a821688cde193272c518b5673239aa43c1abdd6f3"
+    },
+    {
+      "path": "scripts/platform/research/robot-r7-public-h1.mjs",
+      "sourcePath": "scripts/platform/research/robot-r7-public-h1.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7e01c276247161001f5572b18415785bbc5ee82313b7fa23b4244c14e8e5b43a"
+    },
+    {
+      "path": "scripts/platform/research/robot-r8-public-market.mjs",
+      "sourcePath": "scripts/platform/research/robot-r8-public-market.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "87fb7f7ed71f0eca55c5f0d1345d254ca45425e541ec92dab00d45bb50ffd0f6"
+    },
+    {
+      "path": "tests/platformRobotR10PostCandle.test.mjs",
+      "sourcePath": "tests/platformRobotR10PostCandle.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a5c274d85a103c4be6349f3bac0c6a2d80995ec46ec3ce135892fcc274f3dc16"
+    },
+    {
+      "path": "tests/platformRobotR11OfflineEvidenceHardening.test.mjs",
+      "sourcePath": "tests/platformRobotR11OfflineEvidenceHardening.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3e5f7ba841f32981463f80b77cfaee01aafaf71ae1f99065104a3f780953d738"
+    },
+    {
+      "path": "tests/platformRobotR12EvidenceReconciliation.test.mjs",
+      "sourcePath": "tests/platformRobotR12EvidenceReconciliation.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "a3ef58936f63512cdcf04ea59008973cd3605a3fabff44d5224ca8dc9520279c"
+    },
+    {
+      "path": "tests/platformRobotR13GitEvidenceChain.test.mjs",
+      "sourcePath": "tests/platformRobotR13GitEvidenceChain.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c2be439dc181e6802d867f7aa3c32684874190a650d4f4e5de90ab28e9140f2b"
+    },
+    {
+      "path": "tests/platformRobotR14PostCandle.test.mjs",
+      "sourcePath": "tests/platformRobotR14PostCandle.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "46998278e7f8b5d5e9cfefedd3f9f6e60f0209b8ea6354bcae32dd70a312483b"
+    },
+    {
+      "path": "tests/platformRobotR15MultiwindowProtocol.test.mjs",
+      "sourcePath": "tests/platformRobotR15MultiwindowProtocol.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f5fc539ee5fc41935434538ac742925aed54c28d5c6ea583b9cc08b9a16a9f95"
+    },
+    {
+      "path": "tests/platformRobotR15WindowOutcome.test.mjs",
+      "sourcePath": "tests/platformRobotR15WindowOutcome.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fff3b5bd27ebee8e20b949369fcf4de64d8d36fb30db87eb0624dc9b72085e3a"
+    },
+    {
+      "path": "tests/platformRobotR16ExperimentInfrastructure.test.mjs",
+      "sourcePath": "tests/platformRobotR16ExperimentInfrastructure.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "53a883b9a8b4a16dd4244d714446cb12628c17bafbf526a3099d9c387afc2d56"
+    },
+    {
+      "path": "tests/platformRobotR16ExtensiveValidation.test.mjs",
+      "sourcePath": "tests/platformRobotR16ExtensiveValidation.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "532c89b14e1aa2893c066d05502d3b29d01e59090770f6fce8ba0a8b86986fee"
+    },
+    {
+      "path": "tests/platformRobotR17DecisionQuality.test.mjs",
+      "sourcePath": "tests/platformRobotR17DecisionQuality.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8ef16dc40ee3da6740bcc5316282e6d3545b403a58c120fb4e36f25c28166de8"
+    },
+    {
+      "path": "tests/platformRobotR17SanitizedResults.test.mjs",
+      "sourcePath": "tests/platformRobotR17SanitizedResults.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "fded967dd39476e52cb26a977f18e25696ba7a1f739994b139ec552df6597651"
+    },
+    {
+      "path": "tests/platformRobotR18UltrafastFoundation.test.mjs",
+      "sourcePath": "tests/platformRobotR18UltrafastFoundation.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f3368ffda8a07508f6c5965c61cb91905ecf9293729efddeabb23bcd63e024ad"
+    },
+    {
+      "path": "tests/platformRobotR19IntegratedRefinement.test.mjs",
+      "sourcePath": "tests/platformRobotR19IntegratedRefinement.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b71f34c501b9401b15d5bf58c805cabd72414aa4a8b8bb5953c6f4e04abfc381"
+    },
+    {
+      "path": "tests/platformRobotR1AdversarialGates.test.mjs",
+      "sourcePath": "tests/platformRobotR1AdversarialGates.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6f3c94f1cd9b1f374175f505a73cc15d2a8b9a9d7b1915a8bce57e2c2c7c65f8"
+    },
+    {
+      "path": "tests/platformRobotR1ScenarioSweeps.test.mjs",
+      "sourcePath": "tests/platformRobotR1ScenarioSweeps.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "1c612ac272ab35689754678d910d43eeec3b3152143ac85e20389733d3aca753"
+    },
+    {
+      "path": "tests/platformRobotR20ExecutionMicrostructure.test.mjs",
+      "sourcePath": "tests/platformRobotR20ExecutionMicrostructure.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "2fe31b548862b4b9d4bc4dbf93f540903064e251a8939ede30e1ab6d1fdf0c90"
+    },
+    {
+      "path": "tests/platformRobotR21OosUltrafastRanking.test.mjs",
+      "sourcePath": "tests/platformRobotR21OosUltrafastRanking.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "6592fc88127f4f6fe19f4f419a4a54bc1e09550335b5fbb66670ed50317a9fae"
+    },
+    {
+      "path": "tests/platformRobotR22PublicRankingHoldout.test.mjs",
+      "sourcePath": "tests/platformRobotR22PublicRankingHoldout.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9eadbd25765510d6231e1ec0b4af428f2ace1577c2a451a86face273edc14597"
+    },
+    {
+      "path": "tests/platformRobotR23MultiwindowUltrafast.test.mjs",
+      "sourcePath": "tests/platformRobotR23MultiwindowUltrafast.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "3a42268c1fc5549e14ee109e88a64a11ab91daed0a8f1be4effd326cf5747bcb"
+    },
+    {
+      "path": "tests/platformRobotR24MasterPerformanceLedger.test.mjs",
+      "sourcePath": "tests/platformRobotR24MasterPerformanceLedger.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "dd035d76222c1ea6ef9a4c459e5fc1049ff3f414493d295543508ad2b89fe8fb"
+    },
+    {
+      "path": "tests/platformRobotR25ExchangeCostOutageStress.test.mjs",
+      "sourcePath": "tests/platformRobotR25ExchangeCostOutageStress.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b7d3503590db665c8d8e51bd0d4469d92f82c545256970e5b62bd1b8b5ba2d6d"
+    },
+    {
+      "path": "tests/platformRobotR26FeeEvidenceRecovery.test.mjs",
+      "sourcePath": "tests/platformRobotR26FeeEvidenceRecovery.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "84cb22ddeea01732c50ef343a2a5e47f45b4dfd995f034b154563791dc2c807f"
+    },
+    {
+      "path": "tests/platformRobotR27DynamicBreakeven.test.mjs",
+      "sourcePath": "tests/platformRobotR27DynamicBreakeven.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4e94f4ee65da3896cf17e98eca2ad22aca227b53bad5b80ea7ab043ed248f078"
+    },
+    {
+      "path": "tests/platformRobotR28BreakevenRecall.test.mjs",
+      "sourcePath": "tests/platformRobotR28BreakevenRecall.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4b43b3b32cfdc4c7747c78ba483bc3dbfbaa5b7a2aeb81ce8e19fab10f3d0c1e"
+    },
+    {
+      "path": "tests/platformRobotR29BreakevenHoldout.test.mjs",
+      "sourcePath": "tests/platformRobotR29BreakevenHoldout.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f31131d252e69984e36a9668a027ca219d5fd6e99ec04f6e74787ce29de04f0f"
+    },
+    {
+      "path": "tests/platformRobotR30RegimeAdaptiveGate.test.mjs",
+      "sourcePath": "tests/platformRobotR30RegimeAdaptiveGate.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "5e8e76355f32a249aab56c2f848102e4ee57acaad0ac14812e86c2e64b671149"
+    },
+    {
+      "path": "tests/platformRobotR31RecoveryRegimeInterlock.test.mjs",
+      "sourcePath": "tests/platformRobotR31RecoveryRegimeInterlock.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c3c798043d2ddb9f95a8a8c604905b44b84040608266ee0ebc7614d00f1ca5d8"
+    },
+    {
+      "path": "tests/platformRobotR32LongrunInterlockHoldout.test.mjs",
+      "sourcePath": "tests/platformRobotR32LongrunInterlockHoldout.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "8b2b0fa49a23f51e058038fa23300aa598943bacdec59a95eb280e363031218d"
+    },
+    {
+      "path": "tests/platformRobotR33HysteresisSessionRisk.test.mjs",
+      "sourcePath": "tests/platformRobotR33HysteresisSessionRisk.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "f56c874daa20774a19cdce4110a519bcf3b8f55e8a26bd42da3997dc21b82561"
+    },
+    {
+      "path": "tests/platformRobotR34HoldoutSessionReauth.test.mjs",
+      "sourcePath": "tests/platformRobotR34HoldoutSessionReauth.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ac15b14132aed9995eeaa5b89753f069116249adaa84331e4326c70bf028d4dc"
+    },
+    {
+      "path": "tests/platformRobotR35MultisessionRecovery.test.mjs",
+      "sourcePath": "tests/platformRobotR35MultisessionRecovery.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "421c767b85638c940ffc097b99f6848f6681f1296e5dbb0e20999eb3fc6faaed"
+    },
+    {
+      "path": "tests/platformRobotR36IdempotencyConcurrency.test.mjs",
+      "sourcePath": "tests/platformRobotR36IdempotencyConcurrency.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "03a877c5cbbb9964c970f89184dabdc4740644badd11e7d52495c8eb13597173"
+    },
+    {
+      "path": "tests/platformRobotR37OrderedIngestion.test.mjs",
+      "sourcePath": "tests/platformRobotR37OrderedIngestion.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "e194d5716e4f8a75b2479d7eecededae54ab1711a51f4f15934739302955df1d"
+    },
+    {
+      "path": "tests/platformRobotR38MultistreamExpiry.test.mjs",
+      "sourcePath": "tests/platformRobotR38MultistreamExpiry.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0de9d5cd018469e13d2ade18fc646a1dfb9759047e53c48ebbd724e524a44502"
+    },
+    {
+      "path": "tests/platformRobotR39StateRestoreSessionRotation.test.mjs",
+      "sourcePath": "tests/platformRobotR39StateRestoreSessionRotation.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "29a55a1121c353e904b811471eb0099aab97b60afa00b6620f4fce946c8f12de"
+    },
+    {
+      "path": "tests/platformRobotR3ProspectiveBlocks.test.mjs",
+      "sourcePath": "tests/platformRobotR3ProspectiveBlocks.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "4a4bef31d7a8485ede254e67590abea63ad2e21b201db453bec4d391851f49cf"
+    },
+    {
+      "path": "tests/platformRobotR40FailclosedSnapshot.test.mjs",
+      "sourcePath": "tests/platformRobotR40FailclosedSnapshot.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0a1b658717c9969923d3219de4605b86424ee32f8ee4daa3bafc94b945c7309e"
+    },
+    {
+      "path": "tests/platformRobotR41IntegrityAtomicCheckpoint.test.mjs",
+      "sourcePath": "tests/platformRobotR41IntegrityAtomicCheckpoint.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "29558939d23b8a4e84d4532fd9e5f3269b92ac608bfbad96c045d53f3ec4a300"
+    },
+    {
+      "path": "tests/platformRobotR42RollbackProtection.test.mjs",
+      "sourcePath": "tests/platformRobotR42RollbackProtection.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "13a6e12c21d704f0bc25471abf6da48c1d607fdb35f891df095b44deb34fbd7e"
+    },
+    {
+      "path": "tests/platformRobotR43QuorumCheckpoint.test.mjs",
+      "sourcePath": "tests/platformRobotR43QuorumCheckpoint.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "830da6cba15481e432657abc7fd63c7575d0def6ad3cbc6ca51357b585046531"
+    },
+    {
+      "path": "tests/platformRobotR44SplitbrainReconvergence.test.mjs",
+      "sourcePath": "tests/platformRobotR44SplitbrainReconvergence.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "0c68bd3b5835af8d1bd6730e56a98968c5d61ca389ec615bfb930f53f8b367f5"
+    },
+    {
+      "path": "tests/platformRobotR45LeaderFencing.test.mjs",
+      "sourcePath": "tests/platformRobotR45LeaderFencing.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "c10facd9e7ba5a139dce0f02081d73e927b1fa9eb7fa56250b3260fd4189acb8"
+    },
+    {
+      "path": "tests/platformRobotR46LeaseClockskewHandoff.test.mjs",
+      "sourcePath": "tests/platformRobotR46LeaseClockskewHandoff.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "b61bca1fcc648fa6a591d8ccf0881a5fcd9931d21bcf95937c7229b3ffe00768"
+    },
+    {
+      "path": "tests/platformRobotR47MarketdataFreshnessFence.test.mjs",
+      "sourcePath": "tests/platformRobotR47MarketdataFreshnessFence.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7b8707f68d6e2506f2f29c6e9214bfc45a954af396a2f13a0ca2f33e3ec793b7"
+    },
+    {
+      "path": "tests/platformRobotR48ReconnectBackpressure.test.mjs",
+      "sourcePath": "tests/platformRobotR48ReconnectBackpressure.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "9852a3fb4826b66ff77bd76ffb8d3e575850f867b2f88218cd5b75e903e527cb"
+    },
+    {
+      "path": "tests/platformRobotR49OrderReconciliationRaces.test.mjs",
+      "sourcePath": "tests/platformRobotR49OrderReconciliationRaces.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "34454e4cd3cb57c3c01c25297fd22ff966f58785de879fa655ac3d84a92876fd"
+    },
+    {
+      "path": "tests/platformRobotR4ExecutionFeasibility.test.mjs",
+      "sourcePath": "tests/platformRobotR4ExecutionFeasibility.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "83b65f77631f7feeb168f6445c76ac08df27953d608df7100c7e1a4359d4d408"
+    },
+    {
+      "path": "tests/platformRobotR5DualSourceIntegrity.test.mjs",
+      "sourcePath": "tests/platformRobotR5DualSourceIntegrity.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "7307ada1bcbca0d5a7452e7e2eab804fc0fdd611db100021206928ebf9ab7cc3"
+    },
+    {
+      "path": "tests/platformRobotR6SignedWitnessChain.test.mjs",
+      "sourcePath": "tests/platformRobotR6SignedWitnessChain.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "09c9a8d209e1fbbaa13eae86fe43db7643e5805753c3e448ab6f19ed04e4de07"
+    },
+    {
+      "path": "tests/platformRobotR7PublicH1.test.mjs",
+      "sourcePath": "tests/platformRobotR7PublicH1.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "239a1d84d2939e41ec478bec18a9701d075ca1876638e558ad671221d4ff9c55"
+    },
+    {
+      "path": "tests/platformRobotR8PublicMarket.test.mjs",
+      "sourcePath": "tests/platformRobotR8PublicMarket.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "ef1070d2aed0e5b2734dccaa17231079b1952fcb6429c7ecd355e9c780474eda"
+    },
+    {
+      "path": "tests/platformRobotR9PrivatePrecommit.test.mjs",
+      "sourcePath": "tests/platformRobotR9PrivatePrecommit.test.mjs",
+      "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
+      "sha256": "5c6c5d1393d1a1d607ad9e9322989f9cc7c96b0035a84946c5f1b9a06eececed"
+    },
+    {
+      "path": "lib/platform/research/robot-r46-temporal-lease.mjs",
+      "sourcePath": "lib/platform/research/robot-r46-temporal-lease.mjs",
+      "sourceCommit": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db",
+      "sha256": "b5bb63355a367fd819b14832465bc8e721091e065dbd810e37b5201e2f472aaa"
+    },
+    {
+      "path": "tests/platformRobotR46TemporalLease.test.mjs",
+      "sourcePath": "tests/platformRobotR46TemporalLease.test.mjs",
+      "sourceCommit": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db",
+      "sha256": "51f5e36ced2ddfba46f84fadb9fd078f41de2192e82692877d6210c472dd05dd"
+    },
+    {
+      "path": "docs/platform/ROBOT_R46_TEMPORAL_LEASE.md",
+      "sourcePath": "docs/platform/ROBOT_R46_TEMPORAL_LEASE.md",
+      "sourceCommit": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db",
+      "sha256": "fbe5691e98b2052a5b9dbb3bacc7d23b082ab22df48cad2a3242093effb94612"
+    },
+    {
+      "path": "docs/platform/evidence/variants/ROBOT_R46_TEMPORAL_CERTIFIED_CHECKPOINT.json",
+      "sourcePath": "docs/platform/evidence/ROBOT_R46_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "c31a96aa8c74f9ae4d7818d70af8c10e884d96db",
+      "sha256": "954b37f102d2eb01aede0e85d2154a5c93aff6dce9427720681daf7380b46dba"
+    }
+  ],
+  "resolution": {
+    "vercel.json": "Preserve commercial crons; union deployment disable rules and ignore patterns; disable FC02 and its certified backup"
+  },
+  "certificationScope": "Source composition and offline regression; not live integration of the private robot engine"
+}

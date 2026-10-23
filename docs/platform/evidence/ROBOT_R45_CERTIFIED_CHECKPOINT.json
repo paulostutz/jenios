@@ -1,0 +1,43 @@
+{
+  "schema": "JENIOS_ROBOT_R45_CERTIFIED_CHECKPOINT_V1",
+  "block": "R45",
+  "base": {
+    "block": "R44",
+    "branch": "backup/jenios-robot-r44-splitbrain-reconvergence-certified-20261023",
+    "commit": "21eaec96341f0d5f36c3ab025c13bc29248963e6"
+  },
+  "branch": "research/jenios-robot-r45-leader-fencing-20261023",
+  "scope": {
+    "title": "Leader Election + Fencing Token / Lease",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "leaderRequiresMajorityQuorum": true,
+    "fencingTokenMonotonic": true,
+    "leaseEpochMonotonic": true,
+    "staleLeaderCannotRenewWithoutQuorum": true,
+    "staleWriterBlockedDuringPartition": true,
+    "newLeaderCanWriteWithFreshFence": true,
+    "staleWriterBlockedAfterReconvergence": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39941465956,
+    "directed": "202/202",
+    "general": "2008/2008",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

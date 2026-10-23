@@ -1,0 +1,51 @@
+{
+  "schema": "JENIOS_ROBOT_R35_CERTIFIED_CHECKPOINT_V1",
+  "block": "R35",
+  "base": {
+    "block": "R34",
+    "branch": "backup/jenios-robot-r34-holdout-session-reauth-certified-20261023",
+    "commit": "b6987f024383f5b0630d173e9bf7095604d1b4c6"
+  },
+  "branch": "research/jenios-robot-r35-multisession-recovery-20261023",
+  "scope": {
+    "title": "Multi-session Recovery / Reauthorization Stress",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "sessions": 12,
+    "eventsPerSession": 500,
+    "totalEvents": 6000,
+    "repeatedRiskHalts": true,
+    "partialRecoveryStages": [
+      "transport",
+      "market",
+      "account",
+      "risk"
+    ],
+    "staleSessionReentryBlocked": true,
+    "staleAuthorizationLeak": false,
+    "uniqueSessionAndAuthorizationRequired": true,
+    "recoveryReadyRequired": true,
+    "economicEligibilityRequired": true,
+    "hysteresisRequired": true
+  },
+  "evidence": {
+    "validationRun": 39884100085,
+    "directed": "142/142",
+    "general": "1948/1948",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "JENIOS_ROBOT_R43_CERTIFIED_CHECKPOINT_V1",
+  "block": "R43",
+  "base": {
+    "block": "R42",
+    "branch": "backup/jenios-robot-r42-rollback-protection-certified-20261023",
+    "commit": "cc9228fd74c308176192474e562a5f630f93b021"
+  },
+  "branch": "research/jenios-robot-r43-quorum-checkpoint-20261023",
+  "scope": {
+    "title": "Replicated Checkpoint Quorum + Divergence Detection",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "majorityRequiredToAdvanceHighWaterMark": true,
+    "identicalGenerationChecksumQuorumRequired": true,
+    "divergenceDetected": true,
+    "corruptedActiveCanFallbackOneGeneration": true,
+    "highWaterMarkPreservedDuringFallback": true,
+    "noValidQuorumFailsClosed": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39890622193,
+    "directed": "190/190",
+    "general": "1996/1996",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

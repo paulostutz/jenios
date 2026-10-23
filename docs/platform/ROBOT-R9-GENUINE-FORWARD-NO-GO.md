@@ -1,0 +1,5 @@
+# ROBOT R9 — Registro prospectivo privado: integridade e NO-GO de dados antigos
+Base certificada R8: de44b67fe26c4bc911a5db6398a790fe142fa703, CI 39770129783 SUCCESS. Backup antes da alteração: backup/jenios-robot-r9-pre-forward-prereg-de44b67f-20261022.
+Nova branch: fix/jenios-robot-r9-forward-private-core-prereg-20261022.
+R8 foi observado em 2026-10-22T11:23:05Z, embora o horário de referência fosse 11:10Z. NÃO constitui previsão prospectiva. Este bloco exige 6 decisões genuínas do motor, identificadores SHA dos bytes originais, captura anterior à decisão, registro com pelo menos dez minutos de antecedência do candle alvo. Mesmo o hash correto e os horários declarados não atestam independente o runtime, o consentimento, o carimbo temporal ou a origem da corretora.
+Sem contexto fresco do mercado obtido no runner privado, o R9 retorna NO-GO; não gera forecast novo inventado e não registra resultados futuros. Não há execução, corretora, perdas reais evitadas, lucro, ordens Paper, pagamentos, IA paga, alteração da produção ou do B303. A certificação de CI cobre apenas os contratos técnicos fail-closed.

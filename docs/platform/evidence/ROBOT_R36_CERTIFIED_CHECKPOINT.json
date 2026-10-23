@@ -1,0 +1,42 @@
+{
+  "schema": "JENIOS_ROBOT_R36_CERTIFIED_CHECKPOINT_V1",
+  "block": "R36",
+  "base": {
+    "block": "R35",
+    "branch": "backup/jenios-robot-r35-multisession-recovery-certified-20261023",
+    "commit": "ba2c654cf3711e28ca739ea52b5b03b97aaae22e"
+  },
+  "branch": "research/jenios-robot-r36-idempotency-concurrency-20261023",
+  "scope": {
+    "title": "Idempotency, Replay and Session/Auth Concurrency",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "exactDuplicateReplayIgnored": true,
+    "conflictingReplayBlocked": true,
+    "incompleteResetSessionSwitchBlocked": true,
+    "authorizationChangeWithinSessionBlocked": true,
+    "authorizationReuseAcrossSessionsBlocked": true,
+    "staleHaltedSessionRulesPreserved": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39885115535,
+    "directed": "148/148",
+    "general": "1954/1954",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

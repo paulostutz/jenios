@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R49_CERTIFIED_CHECKPOINT_V1",
+  "block": "R49",
+  "base": {
+    "block": "R48",
+    "branch": "backup/jenios-robot-r48-reconnect-backpressure-certified-20261023",
+    "commit": "61625bf6681658919267a98ea2c1be7573282344"
+  },
+  "branch": "research/jenios-robot-r49-order-reconciliation-races-20261023",
+  "scope": {
+    "title": "Partial Fill / Cancel-Replace Race Reconciliation",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "partialFillTracked": true,
+    "replaceBlockedBeforeCancelAck": true,
+    "latePreTerminalFillReconciled": true,
+    "duplicateFillIdempotent": true,
+    "fillAfterTerminalBlocked": true,
+    "overfillForcesReconciliation": true,
+    "brokerQtyMismatchBlocksNextOrder": true,
+    "replacementLineagePreserved": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39952592103,
+    "directed": "230/230",
+    "general": "2036/2036",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R47_CERTIFIED_CHECKPOINT_V1",
+  "block": "R47",
+  "base": {
+    "block": "R46",
+    "branch": "backup/jenios-robot-r46-lease-clockskew-handoff-certified-20261023",
+    "commit": "980cad4ae045f36ae4de37ca0e063d94ffad61f5"
+  },
+  "branch": "research/jenios-robot-r47-marketdata-freshness-fence-20261023",
+  "scope": {
+    "title": "Market-data Freshness Fencing",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "consecutiveFreshSnapshotsRequired": true,
+    "staleSnapshotBlocked": true,
+    "sourceEpochMismatchBlocked": true,
+    "sequenceGapRevokesReadiness": true,
+    "nonMonotonicExchangeTimeBlocked": true,
+    "leaderFenceMismatchBlocked": true,
+    "reconnectRequiresResync": true,
+    "handoffRequiresFreshResync": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39947113377,
+    "directed": "215/215",
+    "general": "2021/2021",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

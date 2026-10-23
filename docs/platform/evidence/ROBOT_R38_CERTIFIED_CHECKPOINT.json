@@ -1,0 +1,51 @@
+{
+  "schema": "JENIOS_ROBOT_R38_CERTIFIED_CHECKPOINT_V1",
+  "block": "R38",
+  "base": {
+    "block": "R37",
+    "branch": "backup/jenios-robot-r37-ordered-ingestion-certified-20261023",
+    "commit": "6313115df08f1d231a6162593bd4bb74c1d5ced8"
+  },
+  "branch": "research/jenios-robot-r38-multistream-expiry-20261023",
+  "scope": {
+    "title": "Multi-stream Ordering + Expired Replay Defense",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "independentOrderingPerStream": true,
+    "sameEventIdAcrossStreamsAllowed": true,
+    "activeDedupWindowBounded": true,
+    "expiredReplayTombstonesEnabled": true,
+    "veryOldReplayBlockedAfterActiveWindowExpiry": true,
+    "staleEpochRejected": true,
+    "excessiveForwardGapRejected": true,
+    "priorR31ToR37InterlocksPreserved": true,
+    "zeroFalseAllows": true
+  },
+  "stress": {
+    "streams": 4,
+    "nominalEpochsPerStream": 1800,
+    "activeDedupWindow": 128,
+    "tombstoneWindow": 4096,
+    "maxReorderGap": 4
+  },
+  "evidence": {
+    "validationRun": 39887816675,
+    "directed": "160/160",
+    "general": "1966/1966",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

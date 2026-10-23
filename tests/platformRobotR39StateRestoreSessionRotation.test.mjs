@@ -55,7 +55,7 @@ test('R39 session rotation requires complete reset and unique identifiers',()=>{
 
 test('R39 restart scenario blocks replay after process restoration',()=>{
   const before=Array.from({length:40},(_,i)=>ev('A',i+1));
-  const after=[ev('A',1,'S1','A1','A-S1-E1'),ev('A',41)];
+  const after=[ev('A',1,'S1','A1','A-S1-E1'),ev('A',41),ev('A',42),ev('A',43),ev('A',44)];
   const x=runR39RestartScenario({before,after,opts:{dedupWindow:16,maxReorderGap:3,tombstoneWindow:64}});
   assert.ok(x.replayBlocksAfterRestart>=1);
   assert.equal(x.falseAllows,0);

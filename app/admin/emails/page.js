@@ -24,6 +24,7 @@ const GATE_LABELS={
  JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED:'Runner privado',
  JENIOS_RESEND_WEBHOOK_ENABLED:'Webhook Resend'
 };
+const READINESS_STATE={ready:'PRONTO',pending:'PENDENTE',blocker:'BLOQUEADOR'};
 const CREDENTIAL_LABELS={
  resendApiKeyConfigured:'API do Resend',
  supabaseServerKeyConfigured:'Acesso server-side ao Supabase',
@@ -55,7 +56,17 @@ function EmailHealth(){
    {error&&<p role="alert" style={{padding:14,background:'#fff7ed',borderRadius:10}}>{error}</p>}
    {!data&&!error&&<p role="status">Carregando indicadores…</p>}
    {data&&<>
-    <section style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))',gap:14,margin:'20px 0'}}>
+    <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:20,margin:'20px 0'}}>
+     <div style={{display:'flex',justifyContent:'space-between',gap:16,alignItems:'baseline',flexWrap:'wrap'}}>
+      <div><small>PRONTIDÃO</small><h2 style={{margin:'4px 0 0'}}>Liberação de e-mails</h2></div>
+      <strong>{data.readiness.activationEligible?'PRONTO PARA ATIVAÇÃO CONTROLADA':data.readiness.blockers?'BLOQUEADO':'PENDÊNCIAS RESTANTES'}</strong>
+     </div>
+     <p style={{color:'#64748b'}}>Prontos: {data.readiness.ready} · Pendentes: {data.readiness.pending} · Bloqueadores: {data.readiness.blockers}</p>
+     <div style={{display:'grid',gap:7}}>{data.readiness.checks.map(item=><div key={item.id} style={{display:'flex',justifyContent:'space-between',gap:16,borderTop:'1px solid #f1f5f9',paddingTop:7}}>
+      <span>{item.label}</span><strong>{READINESS_STATE[item.state]||item.state}</strong>
+     </div>)}</div>
+    </section>
+    <section style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(230px,1fr))',gap:14,margin:'20px 0'}}> 
      {Object.entries(data.queues).map(([key,queue])=><article key={key} style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
       <small>{LABELS[key]||key}</small><strong style={{display:'block',fontSize:30,margin:'6px 0 12px'}}>{queue.total}</strong>
       <div style={{display:'grid',gap:6}}>{Object.entries(queue.statuses).map(([status,value])=><div key={status} style={{display:'flex',justifyContent:'space-between',fontSize:13}}>

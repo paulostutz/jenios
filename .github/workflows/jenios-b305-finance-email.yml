@@ -30,6 +30,10 @@ jobs:
       JENIOS_MARKETING_EMAILS_ENABLED: 'false'
       JENIOS_MARKETING_PLANNER_ENABLED: 'false'
       JENIOS_RESEND_WEBHOOK_ENABLED: 'false'
+      JENIOS_AUTH_TEMPLATES_APPLIED: 'false'
+      JENIOS_RESEND_WEBHOOK_ENDPOINT_CERTIFIED: 'false'
+      JENIOS_MARKETING_DELIVERY_WORKER_CERTIFIED: 'false'
+      JENIOS_UNIVERSITY_MILESTONE_DELIVERY_CERTIFIED: 'false'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -41,7 +45,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs tests/jeniosB305EmailReleaseReadiness.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -118,4 +122,6 @@ jobs:
             docs/platform/B305-R25-RESEND-SUPPRESSION-SAFETY.md
             docs/platform/B305-R26-EMAIL-OBSERVABILITY.md
             tests/jeniosB305EmailObservability.test.mjs
+            tests/jeniosB305EmailReleaseReadiness.test.mjs
+            docs/platform/B305-R27-EMAIL-RELEASE-READINESS.md
           retention-days: 30

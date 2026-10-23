@@ -27,6 +27,8 @@ jobs:
       JENIOS_SUBSCRIPTION_DUNNING_ENABLED: 'false'
       JENIOS_TRANSACTIONAL_EMAILS_ENABLED: 'false'
       JENIOS_B305_TEST_SEND_APPROVED: 'false'
+      JENIOS_MARKETING_EMAILS_ENABLED: 'false'
+      JENIOS_MARKETING_PLANNER_ENABLED: 'false'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -38,7 +40,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -59,11 +61,15 @@ jobs:
             lib/email/transactional-delivery-worker.mjs
             app/api/internal/email/transactional/route.js
             app/api/internal/billing/dunning/route.js
+            app/api/internal/email/marketing-plan/route.js
+            app/api/social/email-preferences/route.js
+            app/preferencias/page.js
             supabase/migrations/20261022220500_jenios_b305_subscription_dunning.sql
             supabase/migrations/20261022221000_jenios_b305_marketing_preferences.sql
             supabase/migrations/20261023002614_jenios_b305_transactional_delivery.sql
             supabase/migrations/20261023002638_jenios_b305_transactional_delivery_fk_indexes.sql
             supabase/migrations/20261023004751_jenios_b305_subscription_lifecycle_emails.sql
+            supabase/migrations/20261023005515_jenios_b305_marketing_planner.sql
             docs/platform/B305-R13-EMAIL-LIFECYCLE.md
             supabase/templates/jenios-confirmation.html
             supabase/templates/jenios-recovery.html
@@ -91,4 +97,6 @@ jobs:
             docs/platform/B305-R18-ONBOARDING-BRIDGE.md
             docs/platform/B305-R19-SUBSCRIPTION-LIFECYCLE-EMAILS.md
             tests/jeniosB305SubscriptionLifecycleEmails.test.mjs
+            tests/jeniosB305MarketingPlanner.test.mjs
+            docs/platform/B305-R20-MARKETING-PLANNER.md
           retention-days: 30

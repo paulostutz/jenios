@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T01:03:20Z",
-  "scope": "R12-R32",
+  "generatedAt": "2026-10-23T01:10:40Z",
+  "scope": "R12-R33",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -108,7 +108,8 @@
         "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos.",
         "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime.",
         "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica.",
-        "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas."
+        "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas.",
+        "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -185,6 +186,13 @@
           ],
           "falseAllows": 0,
           "invariantHolds": true
+        },
+        "r33HysteresisSessionRisk": {
+          "events": 2400,
+          "noisyBoundaryEvents": 400,
+          "transitionReductionVerified": true,
+          "cumulativeSessionDrawdown": true,
+          "haltedSessionDoesNotAutoResume": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -313,11 +321,17 @@
       "general": "1932/1932",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R33": {
+      "directed": "131/131",
+      "general": "1937/1937",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "combinar o interlock validado com stress econômico de sessão longa e drawdown acumulado",
-    "testar degradação lenta de custos/fill e hysteresis para evitar liga/desliga excessivo",
+    "validar histerese R33 em holdout independente com diferentes frequências de alternância",
+    "combinar drawdown de sessão com recovery R31 para exigir nova sessão após halt de risco",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

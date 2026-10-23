@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T12:51:49Z",
-  "scope": "R12-R58",
+  "generatedAt": "2026-10-23T12:55:40Z",
+  "scope": "R12-R59",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -110,9 +110,9 @@
     },
     {
       "robot": "ultrafast",
-      "status": "FOUNDATION_AND_MICROSTRUCTURE_VALIDATED",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
-      "decisionQuality": "MICROSTRUCTURE_LAB",
+      "decisionQuality": "MICROSTRUCTURE_AND_RESILIENCE_LAB",
       "commercialAccess": {
         "platform-nacional": false,
         "platform-global-crypto": true,
@@ -470,6 +470,12 @@
           }
         ],
         "notes": "Observacional, curtíssimo horizonte, não é sinal e não prova rentabilidade."
+      },
+      "finalResearchClassification": {
+        "technicalSafety": "PASS",
+        "resilienceValidation": "PASS",
+        "economicStressValidation": "PASS",
+        "realPerformanceCertified": false
       }
     }
   ],
@@ -781,12 +787,33 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39956380701
+    },
+    "R59": {
+      "directed": "254/254",
+      "general": "2060/2060",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956915048
     }
   },
   "nextObjectives": [
-    "executar certificação final consolidada dos quatro robôs",
-    "validar que todos os resultados reais permanecem null e que não houve execução real/Paper externo",
-    "consolidar limitações, evidências sintéticas e próximos passos de validação manual futura",
-    "preservar R15 prospectivo sem backfill"
-  ]
+    "testes manuais do usuário nos modos Manual, Híbrido, Reverso e UltraFast",
+    "qualquer futura validação real deve ser registrada separadamente sem backfill das evidências sintéticas",
+    "manter produção e transporte real desabilitados até autorização explícita"
+  ],
+  "finalCertification": {
+    "classification": "RESEARCH_CERTIFIED_FINAL",
+    "productionApproved": false,
+    "commercialPerformanceCertified": false,
+    "realWorldProfitabilityProven": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "alignmentGuardThreshold": 0.65,
+    "r15ProspectiveBackfill": false,
+    "note": "Certificação técnica e de pesquisa do ciclo atual; não constitui prova de rentabilidade real nem autorização de execução em produção."
+  }
 }

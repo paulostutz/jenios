@@ -1,0 +1,147 @@
+name: JENIOS HP04 authenticated journey on certified R59 FC03
+on:
+  push:
+    branches: [research/jenios-hp04-authenticated-journey-20261023]
+permissions:
+  contents: read
+concurrency:
+  group: jenios-platform-auth-qa
+  cancel-in-progress: false
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+  NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+  NEXT_PUBLIC_SUPABASE_URL: 'https://social-qa.invalid'
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: 'offline_social_placeholder'
+  JENIOS_DEMO_CONNECTORS_ENABLED: 'false'
+  JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+  JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+  JENIOS_REAL_EXECUTION_ENABLED: 'false'
+  JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+  JENIOS_INTER_CHARGES_ENABLED: 'false'
+  JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
+  JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED: 'false'
+  JENIOS_SUBSCRIPTION_DUNNING_ENABLED: 'false'
+  JENIOS_TRANSACTIONAL_EMAILS_ENABLED: 'false'
+  JENIOS_B305_TEST_SEND_APPROVED: 'false'
+  JENIOS_MARKETING_EMAILS_ENABLED: 'false'
+  JENIOS_MARKETING_PLANNER_ENABLED: 'false'
+  JENIOS_RESEND_WEBHOOK_ENABLED: 'false'
+  JENIOS_AUTH_TEMPLATES_APPLIED: 'false'
+  JENIOS_RESEND_WEBHOOK_ENDPOINT_CERTIFIED: 'false'
+  JENIOS_MARKETING_DELIVERY_WORKER_CERTIFIED: 'false'
+  JENIOS_UNIVERSITY_MILESTONE_DELIVERY_CERTIFIED: 'false'
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa_platform_publishable_placeholder'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify inherited certified sources and disabled deployments
+        run: |
+          node scripts/platform/verify-fc03-sources.mjs
+          node --check scripts/platform/hp04-authenticated-e2e.mjs
+          node --input-type=module - <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFileSync} from 'node:fs';
+          const config=JSON.parse(readFileSync('vercel.json'));
+          assert.equal(config.git.deploymentEnabled[process.env.GITHUB_REF_NAME],false);
+          console.log('HP04 deployment disabled for exact research branch.');
+          NODE
+      - name: Full regression Social and local build without credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-hp04-qa
+          npm run build 2>&1 | tee .jenios-hp04-qa/PREFLIGHT_BUILD.log
+      - name: Preserve preflight evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_HP04_PREFLIGHT
+          path: .jenios-hp04-qa/PREFLIGHT_BUILD.log
+          retention-days: 30
+          if-no-files-found: warn
+
+  authenticated-qa:
+    if: ${{ vars.PLATFORM_CP69_REMOTE_QA_ENABLED == 'true' && github.ref == 'refs/heads/research/jenios-hp04-authenticated-journey-20261023' }}
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    environment: jenios-platform-auth-qa
+    env:
+      HP04_PROTECTED_ENVIRONMENT: jenios-platform-auth-qa
+      PLATFORM_SUPABASE_URL: 'https://xaicvhagftzjkqphnbgx.supabase.co'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://xaicvhagftzjkqphnbgx.supabase.co'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PLATFORM_QA_PUBLISHABLE_KEY }}
+      PLATFORM_QA_PUBLISHABLE_KEY: ${{ secrets.PLATFORM_QA_PUBLISHABLE_KEY }}
+      PLATFORM_QA_NEXT_URL: 'http://127.0.0.1:3129'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Require protected dedicated credentials without exposing values
+        env:
+          PLATFORM_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLATFORM_SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          test -n "${PLATFORM_SUPABASE_SERVICE_ROLE_KEY:-}" || exit 1
+          test -n "${PLATFORM_QA_PUBLISHABLE_KEY:-}" || exit 1
+      - name: Install locked dependencies without server credentials
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Recheck source provenance and build with dedicated public configuration
+        run: |
+          node scripts/platform/verify-fc03-sources.mjs
+          node scripts/check-s05-env-scope.mjs
+          node_modules/.bin/next build
+      - name: Start ephemeral loopback-only application
+        env:
+          PLATFORM_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLATFORM_SUPABASE_SERVICE_ROLE_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          nohup node_modules/.bin/next start -H 127.0.0.1 -p 3129 > /tmp/jenios-hp04-server.log 2>&1 &
+          echo "$!" > /tmp/jenios-hp04-server.pid
+          for i in $(seq 1 60); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3129/platform/entrar; then exit 0; fi
+            sleep 1
+          done
+          echo 'HP04 local application failed to start.'
+          exit 1
+      - name: Authenticate fictitious accounts isolate records revoke sessions and clean up
+        env:
+          PLATFORM_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.PLATFORM_SUPABASE_SERVICE_ROLE_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-hp04-qa
+          node scripts/platform/hp04-authenticated-e2e.mjs 2>&1 | tee .jenios-hp04-qa/AUTHENTICATED.log
+      - name: Stop ephemeral local server
+        if: always()
+        run: |
+          if [ -f /tmp/jenios-hp04-server.pid ]; then
+            kill "$(cat /tmp/jenios-hp04-server.pid)" 2>/dev/null || true
+          fi
+      - name: Preserve sanitized authenticated evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_HP04_AUTHENTICATED
+          path: |
+            .jenios-hp04-qa/AUTHENTICATED_RESULT.json
+            .jenios-hp04-qa/AUTHENTICATED.log
+          retention-days: 30
+          if-no-files-found: warn

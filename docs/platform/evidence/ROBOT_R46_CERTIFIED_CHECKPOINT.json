@@ -1,0 +1,45 @@
+{
+  "schema": "JENIOS_ROBOT_R46_CERTIFIED_CHECKPOINT_V1",
+  "block": "R46",
+  "base": {
+    "block": "R45",
+    "branch": "backup/jenios-robot-r45-leader-fencing-certified-20261023",
+    "commit": "366662b1dfa3653efb7da259101f462eacd25bd9"
+  },
+  "branch": "research/jenios-robot-r46-lease-clockskew-handoff-20261023",
+  "scope": {
+    "title": "Lease Expiry + Clock Skew + Handoff / Crash Recovery",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "monotonicAuthorityTime": true,
+    "boundedClockSkewAllowed": true,
+    "excessiveClockSkewBlocked": true,
+    "gcStallExpiresLease": true,
+    "lostQuorumCannotRenewLease": true,
+    "gracefulHandoffAdvancesFence": true,
+    "staleWriterBlockedAfterHandoff": true,
+    "abruptCrashRecoveryAdvancesFence": true,
+    "crashedLeaderBlocked": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39944834789,
+    "directed": "209/209",
+    "general": "2015/2015",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

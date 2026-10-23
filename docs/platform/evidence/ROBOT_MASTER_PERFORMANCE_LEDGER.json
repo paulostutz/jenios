@@ -1,6 +1,6 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:07:30Z",
+  "generatedAt": "2026-10-23T00:08:40Z",
   "scope": "R12-R25",
   "globalRules": {
     "realOrdersSent": 0,
@@ -192,7 +192,7 @@
     },
     "R25": {
       "directed": "91/91",
-      "general": null,
+      "general": "1897/1897",
       "social": "94/94",
       "build": "PASS"
     }

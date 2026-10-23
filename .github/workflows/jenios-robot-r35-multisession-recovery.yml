@@ -1,0 +1,29 @@
+name: JENIOS ROBOT R35 multisession recovery (offline no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r35-multisession-recovery-20261023]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R35 integrated battery
+        run: node --test tests/platformRobotR35MultisessionRecovery.test.mjs tests/platformRobotR34HoldoutSessionReauth.test.mjs tests/platformRobotR33HysteresisSessionRisk.test.mjs tests/platformRobotR32LongrunInterlockHoldout.test.mjs tests/platformRobotR31RecoveryRegimeInterlock.test.mjs tests/platformRobotR30RegimeAdaptiveGate.test.mjs tests/platformRobotR29BreakevenHoldout.test.mjs tests/platformRobotR28BreakevenRecall.test.mjs tests/platformRobotR27DynamicBreakeven.test.mjs tests/platformRobotR26FeeEvidenceRecovery.test.mjs tests/platformRobotR25ExchangeCostOutageStress.test.mjs tests/platformRobotR24MasterPerformanceLedger.test.mjs tests/platformRobotR23MultiwindowUltrafast.test.mjs tests/platformRobotR22PublicRankingHoldout.test.mjs tests/platformRobotR21OosUltrafastRanking.test.mjs tests/platformRobotR20ExecutionMicrostructure.test.mjs tests/platformRobotR19IntegratedRefinement.test.mjs tests/platformRobotR18UltrafastFoundation.test.mjs tests/platformRobotR17DecisionQuality.test.mjs tests/platformRobotR17SanitizedResults.test.mjs tests/platformRobotR16ExtensiveValidation.test.mjs tests/platformRobotR16ExperimentInfrastructure.test.mjs tests/platformRobotR15MultiwindowProtocol.test.mjs tests/platformRobotR15WindowOutcome.test.mjs tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs
+      - run: npm run build

@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T02:15:49Z",
-  "scope": "R12-R39",
+  "generatedAt": "2026-10-23T02:20:42Z",
+  "scope": "R12-R40",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -115,7 +115,8 @@
         "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões.",
         "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado.",
         "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams.",
-        "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos."
+        "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos.",
+        "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -272,6 +273,15 @@
           "processedEventFingerprintsSurviveRestart": true,
           "perStreamSessionRotation": true,
           "oldSessionReplayBlockedAfterRestart": true,
+          "zeroFalseAllows": true
+        },
+        "r40FailclosedSnapshot": {
+          "incompatibleVersionFailsClosed": true,
+          "corruptSnapshotFailsClosed": true,
+          "staleBufferRejected": true,
+          "bufferEpochMismatchRejected": true,
+          "authorizationDisabledOnRestoreFailure": true,
+          "bufferedCheckpointRestores": true,
           "zeroFalseAllows": true
         }
       },
@@ -455,11 +465,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39888493568
+    },
+    "R40": {
+      "directed": "171/171",
+      "general": "1977/1977",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39888970612
     }
   },
   "nextObjectives": [
-    "validar corrupção parcial/versão incompatível de snapshot e fail-closed na restauração",
-    "testar checkpoint periódico durante buffers fora de ordem sem perder consistência após restart",
+    "adicionar integridade criptográfica/checksum ao snapshot e detectar truncamento ou alteração silenciosa antes da restauração",
+    "testar dupla gravação/checkpoint atomicamente substituído sob interrupção no meio da persistência",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

@@ -21,7 +21,16 @@ const GATE_LABELS={
  JENIOS_MARKETING_PLANNER_ENABLED:'Planner de marketing',
  JENIOS_MARKETING_EMAILS_ENABLED:'Entrega de marketing',
  JENIOS_B305_TEST_SEND_APPROVED:'Envio de teste',
- JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED:'Runner privado'
+ JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED:'Runner privado',
+ JENIOS_RESEND_WEBHOOK_ENABLED:'Webhook Resend'
+};
+const CREDENTIAL_LABELS={
+ resendApiKeyConfigured:'API do Resend',
+ supabaseServerKeyConfigured:'Acesso server-side ao Supabase',
+ cronSecretConfigured:'Segredo das rotas internas',
+ financeSenderConfigured:'Remetente Financeiro',
+ resendDomainVerified:'Domínio JENIOS verificado',
+ webhookSecretConfigured:'Signing secret do webhook'
 };
 
 function EmailHealth(){
@@ -63,6 +72,15 @@ function EmailHealth(){
       <p style={{display:'flex',justifyContent:'space-between'}}><span>Edições</span><strong>{data.newsletters.total}</strong></p>
       <p style={{display:'flex',justifyContent:'space-between'}}><span>Rascunhos</span><strong>{data.newsletters.draft}</strong></p>
       <p style={{display:'flex',justifyContent:'space-between'}}><span>Aprovadas</span><strong>{data.newsletters.approved}</strong></p>
+     </article>
+     <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
+      <h2 style={{fontSize:18}}>Bounce e complaint</h2>
+      {Object.entries({Total:data.webhookEvents.total,'Complaints':data.webhookEvents.complaints,'Hard bounces':data.webhookEvents.hardBounces,'Bounces transitórios':data.webhookEvents.transient,'Usuários não localizados':data.webhookEvents.unknownUsers}).map(([label,value])=><p key={label} style={{display:'flex',justifyContent:'space-between'}}><span>{label}</span><strong>{value}</strong></p>)}
+     </article>
+     <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
+      <h2 style={{fontSize:18}}>Prontidão de configuração</h2>
+      {Object.entries(data.credentials).map(([key,configured])=><p key={key} style={{display:'flex',justifyContent:'space-between',gap:12}}>
+       <span>{CREDENTIAL_LABELS[key]||key}</span><strong>{configured?'CONFIGURADO':'PENDENTE'}</strong></p>)}
      </article>
      <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
       <h2 style={{fontSize:18}}>Gates operacionais</h2>

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {paymentConfirmationEmail} from '../lib/email/finance-payment-confirmation.mjs';
 import {subscriptionDunningEmail} from '../lib/email/subscription-dunning.mjs';
 import {
-  socialWelcomeEmail,planActivatedEmail,cartRecoveryEmail,
+  socialWelcomeEmail,planActivatedEmail,planCancellationScheduledEmail,planCancelledEmail,
+  planReactivatedEmail,planChangedEmail,cartRecoveryEmail,
   noPlanNurtureEmail,marketNewsletterEmail
 } from '../lib/email/lifecycle-campaigns.mjs';
 
@@ -36,6 +37,10 @@ test('B305-R15 customer lifecycle emails never expose internal release markers',
   const messages=[
     socialWelcomeEmail({userId:'user_1',to:'cliente@example.com',customerName:'Cliente'}),
     planActivatedEmail({subscriptionId:'sub_1',to:'cliente@example.com',customerName:'Cliente',planName:'Plano JENIOS'}),
+    planCancellationScheduledEmail({subscriptionId:'sub_1',to:'cliente@example.com',customerName:'Cliente',planName:'Plano JENIOS',effectiveAt:'2026-11-23T12:00:00.000Z'}),
+    planCancelledEmail({subscriptionId:'sub_1',to:'cliente@example.com',customerName:'Cliente',planName:'Plano JENIOS',effectiveAt:'2026-11-23T12:00:00.000Z'}),
+    planReactivatedEmail({subscriptionId:'sub_1',cycleKey:'order_2',to:'cliente@example.com',customerName:'Cliente',planName:'Plano JENIOS'}),
+    planChangedEmail({subscriptionId:'sub_1',changeKey:'order_3',to:'cliente@example.com',customerName:'Cliente',previousPlanName:'Plano A',planName:'Plano B'}),
     ...[1,2,3].map(step=>cartRecoveryEmail({cartId:'cart_1',to:'cliente@example.com',customerName:'Cliente',planName:'Plano JENIOS',step,unsubscribeUrl})),
     ...[1,2].map(step=>noPlanNurtureEmail({userId:'user_1',to:'cliente@example.com',customerName:'Cliente',step,unsubscribeUrl})),
     marketNewsletterEmail({

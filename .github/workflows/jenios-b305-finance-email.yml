@@ -45,7 +45,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs tests/jeniosB305EmailReleaseReadiness.test.mjs tests/jeniosB305UniversityDeliveryEvidence.test.mjs tests/jeniosB305UniversityMessageAdapter.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs tests/jeniosB305EmailReleaseReadiness.test.mjs tests/jeniosB305UniversityDeliveryEvidence.test.mjs tests/jeniosB305UniversityMessageAdapter.test.mjs tests/jeniosB305MarketingMessageAdapter.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -130,4 +130,7 @@ jobs:
             lib/email/university-milestone-message.mjs
             tests/jeniosB305UniversityMessageAdapter.test.mjs
             docs/platform/B305-R29-UNIVERSITY-MESSAGE-ADAPTER.md
+            lib/email/marketing-message-adapter.mjs
+            tests/jeniosB305MarketingMessageAdapter.test.mjs
+            docs/platform/B305-R30-MARKETING-MESSAGE-ADAPTER.md
           retention-days: 30

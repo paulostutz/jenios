@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:02:19Z",
-  "scope": "R12-R23",
+  "generatedAt": "2026-10-23T00:07:30Z",
+  "scope": "R12-R25",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -99,39 +99,109 @@
         "Ranking precisa combinar volatilidade, liquidez, profundidade, atividade, spread, custo e fill.",
         "Maker/taker, fila, partial fills, cancel/replace, latência, adverse selection e rate limits modelados.",
         "Sessões de 10k/20k tentativas simuladas com custos, drawdown e loss streak.",
-        "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste."
+        "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste.",
+        "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
         "r20Microexecution": 194400,
-        "r23HighTurnoverStress": [10000, 20000]
+        "r23HighTurnoverStress": [
+          10000,
+          20000
+        ],
+        "r25ExchangeStress": "3 assets × 3 cost profiles × 2 styles × 5 edges × 4 fill levels × 4 win rates; sessions of 10,000 attempts."
       },
       "publicReadOnlyEvidence": {
-        "r22SingleSnapshot": ["SOLUSD","XBTUSD","ETHUSD"],
+        "r22SingleSnapshot": [
+          "SOLUSD",
+          "XBTUSD",
+          "ETHUSD"
+        ],
         "r23ThreeSnapshotAverageRanking": [
-          {"symbol":"SOLUSD","avgScore":69.555222},
-          {"symbol":"ETHUSD","avgScore":42.108319},
-          {"symbol":"XBTUSD","avgScore":40.968022}
+          {
+            "symbol": "SOLUSD",
+            "avgScore": 69.555222
+          },
+          {
+            "symbol": "ETHUSD",
+            "avgScore": 42.108319
+          },
+          {
+            "symbol": "XBTUSD",
+            "avgScore": 40.968022
+          }
         ],
         "notes": "Observacional, curtíssimo horizonte, não é sinal e não prova rentabilidade."
       }
     }
   ],
   "certifiedBlocks": {
-    "R16": {"directed":"40/40","general":"1846/1846","social":"94/94","build":"PASS"},
-    "R17": {"directed":"50/50","general":"1856/1856","social":"94/94","build":"PASS"},
-    "R18": {"directed":"55/55","general":"1861/1861","social":"94/94","build":"PASS"},
-    "R19": {"directed":"59/59","general":"1865/1865","social":"94/94","build":"PASS"},
-    "R20": {"directed":"65/65","general":"1871/1871","social":"94/94","build":"PASS"},
-    "R21": {"directed":"71/71","general":"1877/1877","social":"94/94","build":"PASS"},
-    "R22": {"directed":"76/76","general":"1882/1882","social":"94/94","build":"PASS"},
-    "R23": {"directed":"81/81","general":"1887/1887","social":"94/94","build":"PASS"}
+    "R16": {
+      "directed": "40/40",
+      "general": "1846/1846",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R17": {
+      "directed": "50/50",
+      "general": "1856/1856",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R18": {
+      "directed": "55/55",
+      "general": "1861/1861",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R19": {
+      "directed": "59/59",
+      "general": "1865/1865",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R20": {
+      "directed": "65/65",
+      "general": "1871/1871",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R21": {
+      "directed": "71/71",
+      "general": "1877/1877",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R22": {
+      "directed": "76/76",
+      "general": "1882/1882",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R23": {
+      "directed": "81/81",
+      "general": "1887/1887",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R24": {
+      "directed": "86/86",
+      "general": "1892/1892",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R25": {
+      "directed": "91/91",
+      "general": null,
+      "social": "94/94",
+      "build": "PASS"
+    }
   },
   "nextObjectives": [
-    "expandir evidência pública multijanelas em horizontes maiores",
-    "avaliar custos específicos por exchange/tier sem inventar taxa do cliente",
-    "stressar UltraFast por ativo com cenários de outage/maintenance",
-    "continuar refinando alignment guard sem reduzir abaixo de 0.65 sem nova evidência independente",
-    "preservar R15 prospectivo como trilha separada sem backfill"
+    "medir custos por exchange/tier somente quando houver fonte oficial e contexto contratual",
+    "ampliar outages/maintenance e recuperação pós-falha",
+    "continuar ranking multijanelas público read-only em horizontes maiores",
+    "preservar alignment guard em 0.65 até nova evidência independente",
+    "preservar R15 prospectivo sem backfill"
   ]
 }

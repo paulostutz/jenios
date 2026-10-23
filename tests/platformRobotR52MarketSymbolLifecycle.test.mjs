@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluateR52Lifecycle,runR52Battery} from '../lib/platform/research/robot-r52-market-symbol-lifecycle.mjs';
+test('R52 delisted exposure becomes close-only',()=>{const x=evaluateR52Lifecycle({marketStatus:'open',symbolStatus:'delisted',hasOpenExposure:true,accountReconciled:true,marketDataResynced:true});assert.equal(x.allowNewEntries,false);assert.equal(x.closeOnly,true);});
+test('R52 integrated battery passes',()=>{const x=runR52Battery();assert.equal(x.pass,true);assert.equal(x.ordersSent,0);});

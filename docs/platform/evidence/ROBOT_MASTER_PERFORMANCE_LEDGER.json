@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T11:16:52Z",
-  "scope": "R12-R46",
+  "generatedAt": "2026-10-23T11:36:28Z",
+  "scope": "R12-R47",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -122,7 +122,8 @@
         "R43 adicionou replicação com quorum: o high-water mark só avança com maioria, divergência entre cópias é detectada, fallback exige quorum íntegro da geração anterior e ausência de quorum válido resulta em fail-closed.",
         "R44 ampliou o quorum para 5 réplicas e validou partições 2/3: a minoria não promove geração, a maioria pode avançar, split-brain é detectado e a reconvergência reescreve todas as réplicas para o estado majoritário preservando o high-water mark.",
         "R45 adicionou eleição de líder com quorum e fencing token/lease monotônicos: líder antigo perde capacidade de escrita ao perder quorum, novo líder recebe fence superior e o stale writer continua bloqueado mesmo após reconvergência.",
-        "R46 adicionou tempo monotônico de autoridade para lease, defesa contra clock skew, expiração após GC stall, handoff gracioso e recuperação após crash; nenhum relógio local ou líder antigo consegue prolongar autorização após vencimento/fencing stale."
+        "R46 adicionou tempo monotônico de autoridade para lease, defesa contra clock skew, expiração após GC stall, handoff gracioso e recuperação após crash; nenhum relógio local ou líder antigo consegue prolongar autorização após vencimento/fencing stale.",
+        "R47 adicionou freshness fencing de market data: reconnect e handoff exigem novo source epoch, sequência contínua, janela de idade válida e reconfirmação sob o fencing token do líder atual; book stale ou feed antigo não libera decisão."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -347,6 +348,17 @@
           "lostQuorumCannotRenewLease": true,
           "gracefulHandoffAdvancesFence": true,
           "abruptCrashRecoveryAdvancesFence": true,
+          "zeroFalseAllows": true
+        },
+        "r47MarketdataFreshnessFence": {
+          "consecutiveFreshSnapshotsRequired": true,
+          "staleSnapshotBlocked": true,
+          "sourceEpochMismatchBlocked": true,
+          "sequenceGapRevokesReadiness": true,
+          "nonMonotonicExchangeTimeBlocked": true,
+          "leaderFenceMismatchBlocked": true,
+          "reconnectRequiresResync": true,
+          "handoffRequiresFreshResync": true,
           "zeroFalseAllows": true
         }
       },
@@ -586,12 +598,20 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39944834789
+    },
+    "R47": {
+      "directed": "215/215",
+      "general": "2021/2021",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39947113377
     }
   },
   "nextObjectives": [
-    "testar stale market-data/freshness fencing após reconnect e leader handoff para impedir decisão com book antigo",
     "stressar exchange reconnect storms, rate limits e backpressure adaptativo sem liberar execução indevida",
     "testar partial-fill/cancel-replace races e reconciliação de estado de ordens",
+    "testar fee/spread/slippage/liquidity shocks e adverse-selection cliffs",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

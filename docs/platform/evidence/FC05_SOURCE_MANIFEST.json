@@ -1,0 +1,25 @@
+{
+  "schema": "JENIOS_FC05_SOURCE_MANIFEST_V1",
+  "baseFC04": "65e640b17e670b0a5e5bc9d0e0c056fec5fc5fd6",
+  "baseTree": "bc06188e6c7b4fc09aefcc20f90facef540ceb49",
+  "modifications": [
+    {
+      "path": "app/components/assistant/FreeAssistantRoom.js",
+      "originalArchive": "docs/platform/evidence/variants/fc04-before-fc05/app/components/assistant/FreeAssistantRoom.js.txt",
+      "beforeSha256": "dde9089f39d5f947394bd8434ada8aaec1b6d20cf9ca43b56607f94ab000cdb8",
+      "afterSha256": "ca16b8d6a3171596265533ae8121d52aec6e1e4ebed8d929c6a8aa9f9c4dea3e"
+    },
+    {
+      "path": "app/relatorios/page.js",
+      "originalArchive": "docs/platform/evidence/variants/fc04-before-fc05/app/relatorios/page.js.txt",
+      "beforeSha256": "5b8455d77845f28a7759ebc01abe9e6850e86dff4858c30db3b2f0b031513105",
+      "afterSha256": "a6f7c377e1ea0a1543726f38146f5a31f0342f890575b9c73a0da4de25365ce1"
+    },
+    {
+      "path": "vercel.json",
+      "originalArchive": "docs/platform/evidence/variants/fc04-before-fc05/vercel.json.txt",
+      "beforeSha256": "aeb889db81024560b875ca25bdbf84d4b2a98cb4b34edc4a5046cfba2a0503a6",
+      "afterSha256": "1508b10a937c5e82baa1bfc3ee541efd36dd8165ecec4b8b8f705f7b19078a7d"
+    }
+  ]
+}

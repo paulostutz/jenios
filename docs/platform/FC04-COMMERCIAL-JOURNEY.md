@@ -36,3 +36,5 @@ O FC04 entrega refinamentos e evidência offline verificável, mas permanece par
 A CI FC04 roda R12–R59 e a variante temporal R46, os testes FC03/FC04, B305, suíte geral, Social e build/páginas. A evidência final registra as contagens e o commit efetivamente aprovado. Testes direcionados são subconjuntos da suíte geral e não devem ser somados a ela. Geração das páginas não equivale à homologação de todas as telas.
 
 Sem produção, merge, deploy, e-mail real, cobrança, ordem real ou Paper externo. A candidata e seu backup estão com publicação automática desativada.
+
+Validação inicial Linux: CI `39975515928`, commit `a2852193ca105e07830c9d26aa3cbd8f11772de5`, SUCCESS. Robôs 265/265, FC03 8/8, FC04 14/14, B305 85/85, geral 2.187/2.187, Social 94/94, build PASS e páginas 78/78. No macOS local, sete testes antigos de host recusaram o runtime por `UNREVIEWED_PRIVATE_WORKER_RUNTIME`; passaram sem alterações no ambiente Linux exigido. O manifesto do backup registrará a CI do commit final com este checkpoint.

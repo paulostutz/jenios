@@ -1,0 +1,135 @@
+{
+  "schema": "JENIOS_FC04_CHECKPOINT_V1",
+  "status": "OFFLINE_SCOPE_VERIFIED_COMMERCIAL_ACCEPTANCE_PENDING",
+  "blockComplete": false,
+  "offlineScopeVerified": true,
+  "branch": "research/jenios-fc04-commercial-journey-20261023",
+  "plannedBackup": "backup/jenios-fc04-commercial-offline-verified-20261023",
+  "baseFC03": "cdbedfccd65ade53ae0ffb46effd8a32ed7e4658",
+  "baseFC03CI": 39960374881,
+  "sourceManifest": "docs/platform/evidence/FC04_SOURCE_MANIFEST.json",
+  "readonlyQA": "docs/platform/evidence/FC04_READONLY_QA_EVIDENCE.json",
+  "sourcePreservation": {
+    "baseFiles": 1525,
+    "unchangedBaseFiles": 1512,
+    "explicitRefinementsWithArchivedOriginals": 13,
+    "certifiedBranchesModified": false,
+    "R59LedgerUnchanged": true,
+    "inheritedHashes": 353,
+    "R59SourceHashes": 33
+  },
+  "changes": [
+    "Shared server payment creation policy requires explicit global enablement and a separate Pix enablement; credentials alone are insufficient.",
+    "Checkout, direct gateway, Pix client and Pix checkout enforce creation policy before new external effects.",
+    "University/Pro new-sale paths honor the same creation gates; payment status lookup remains available.",
+    "Direct Platform checkout cannot bypass its catalog's unverified recurring lifecycle.",
+    "Fourteen new offline tests combine existing account, diagnostic, plan-access, email and payment modules."
+  ],
+  "validation": {
+    "initialLinuxRun": {
+      "commit": "a2852193ca105e07830c9d26aa3cbd8f11772de5",
+      "run": 39975515928,
+      "job": 120488947235,
+      "conclusion": "success",
+      "url": "https://github.com/paulostutz/jenios/actions/runs/39975515928",
+      "excerpts": [
+        "2026-10-23T15:07:28.1800174Z FC03: 353 inherited hashes and 33 R59 source hashes preserved; deployment disabled.",
+        "2026-10-23T15:07:28.2530966Z FC04: 1512/1525 base files unchanged; 13 explicit refinements with archived originals; deployment disabled.",
+        "2026-10-23T15:07:31.1047600Z # tests 265",
+        "2026-10-23T15:07:31.1048146Z # pass 265",
+        "2026-10-23T15:07:31.1048455Z # fail 0",
+        "2026-10-23T15:07:31.1049020Z # skipped 0",
+        "2026-10-23T15:07:31.4216135Z # tests 8",
+        "2026-10-23T15:07:31.4217074Z # pass 8",
+        "2026-10-23T15:07:31.4217633Z # fail 0",
+        "2026-10-23T15:07:31.4218453Z # skipped 0",
+        "2026-10-23T15:07:31.6118468Z # FC04_FIXTURE_TRACE {\"source\":\"LOCAL_FIXTURE_ONLY\",\"steps\":[\"pay_identity_verified\",\"subscription_access_resolved\",\"university_access_resolved\",\"activation_message_composed\",\"fake_delivery_acknowledged\"],\"externalRequests\":0,\"realEmails\":0,\"chargesCreated\":0,\"databaseLifecycleExecuted\":false}",
+        "2026-10-23T15:07:31.7085836Z # tests 14",
+        "2026-10-23T15:07:31.7086614Z # pass 14",
+        "2026-10-23T15:07:31.7087008Z # fail 0",
+        "2026-10-23T15:07:31.7087867Z # skipped 0",
+        "2026-10-23T15:07:32.4872922Z # tests 85",
+        "2026-10-23T15:07:32.4873554Z # pass 85",
+        "2026-10-23T15:07:32.4873861Z # fail 0",
+        "2026-10-23T15:07:32.4874486Z # skipped 0",
+        "2026-10-23T15:07:42.5285559Z # FC04_FIXTURE_TRACE {\"source\":\"LOCAL_FIXTURE_ONLY\",\"steps\":[\"pay_identity_verified\",\"subscription_access_resolved\",\"university_access_resolved\",\"activation_message_composed\",\"fake_delivery_acknowledged\"],\"externalRequests\":0,\"realEmails\":0,\"chargesCreated\":0,\"databaseLifecycleExecuted\":false}",
+        "2026-10-23T15:07:47.0365885Z # tests 2187",
+        "2026-10-23T15:07:47.0366453Z # pass 2187",
+        "2026-10-23T15:07:47.0366736Z # fail 0",
+        "2026-10-23T15:07:47.0367314Z # skipped 0",
+        "2026-10-23T15:07:47.5977213Z # tests 94",
+        "2026-10-23T15:07:47.5978025Z # pass 94",
+        "2026-10-23T15:07:47.5978369Z # fail 0",
+        "2026-10-23T15:07:47.5978966Z # skipped 0",
+        "2026-10-23T15:08:11.0567938Z  ✓ Compiled successfully in 21.0s",
+        "2026-10-23T15:08:16.1751283Z    Generating static pages (0/78) ...",
+        "2026-10-23T15:08:17.1800744Z    Generating static pages (19/78) ",
+        "2026-10-23T15:08:17.2751048Z    Generating static pages (38/78) ",
+        "2026-10-23T15:08:17.4079065Z    Generating static pages (58/78) ",
+        "2026-10-23T15:08:17.4620842Z  ✓ Generating static pages (78/78)"
+      ]
+    },
+    "counts": {
+      "robotR12ThroughR59PlusTemporalR46": 265,
+      "FC03": 8,
+      "FC04": 14,
+      "B305": 85,
+      "general": 2187,
+      "social": 94,
+      "staticPages": 78
+    },
+    "build": "PASS",
+    "subsetsIncludedInGeneral": [
+      "robots",
+      "FC03",
+      "FC04",
+      "B305"
+    ],
+    "localMacAttempt": {
+      "generalPassed": 2180,
+      "generalFailed": 7,
+      "reason": "Existing B213/B214/B239 host tests reject macOS as UNREVIEWED_PRIVATE_WORKER_RUNTIME; the unchanged checks pass on required Ubuntu 24.04/Node 22."
+    }
+  },
+  "fixtureLimits": {
+    "emails": "injected local transport only",
+    "subscriptions": "local rows; external subscription lifecycle and DB triggers not executed",
+    "authenticatedCustomerFlow": false,
+    "providerDeliveryVerified": false,
+    "realPaymentVerified": false
+  },
+  "pendingAcceptance": [
+    "Auth Templates: branch flag false; panel publication and controlled auth confirmation/recovery not directly verified.",
+    "Resend webhook: certification flag false; signing secret absent from branch-specific inventory; signed external event not tested.",
+    "Platform/PAY identity binding and provider recurring activation/renewal/cancellation/provisioning must be demonstrated before subscription checkout can be released.",
+    "Platform onboarding email delivery bridge remains unimplemented; durable diagnostic exists separately.",
+    "FC05 desktop/mobile authenticated full-product homologation remains pending."
+  ],
+  "robotDependency": "FC03 original private runtime and practical homologation tracked separately in Certificar robôs JENIOS R59; FC04 does not assert its completion.",
+  "completionPlan": {
+    "completed": [
+      "FC01",
+      "FC02"
+    ],
+    "partial": [
+      "FC03",
+      "FC04"
+    ],
+    "remaining": [
+      "FC03",
+      "FC04",
+      "FC05",
+      "FC06"
+    ]
+  },
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "productionTouched": false,
+  "mergePerformed": false,
+  "deployPerformed": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "realEmailsSent": 0,
+  "chargesCreated": 0
+}

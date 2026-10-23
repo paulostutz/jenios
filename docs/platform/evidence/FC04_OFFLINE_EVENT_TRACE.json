@@ -1,0 +1,19 @@
+{
+  "schema": "JENIOS_FC04_OFFLINE_TRACE_V1",
+  "events": [
+    {
+      "source": "LOCAL_FIXTURE_ONLY",
+      "steps": [
+        "pay_identity_verified",
+        "subscription_access_resolved",
+        "university_access_resolved",
+        "activation_message_composed",
+        "fake_delivery_acknowledged"
+      ],
+      "externalRequests": 0,
+      "realEmails": 0,
+      "chargesCreated": 0,
+      "databaseLifecycleExecuted": false
+    }
+  ]
+}

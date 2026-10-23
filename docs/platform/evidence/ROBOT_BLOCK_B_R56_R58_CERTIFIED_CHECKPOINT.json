@@ -1,0 +1,48 @@
+{
+  "schema": "JENIOS_ROBOT_BLOCK_B_R56_R58_CERTIFIED_CHECKPOINT_V1",
+  "block": "B",
+  "scope": "R56-R58 final Manual Hybrid Reverse refinement",
+  "base": {
+    "block": "A",
+    "branch": "backup/jenios-robot-block-a-r51-r55-final-ultrafast-certified-20261023",
+    "commit": "d10ea4a8a67a5b120981898445d7cc3147a9f5f8"
+  },
+  "branch": "research/jenios-robot-block-b-r56-r58-assisted-modes-final-20261023",
+  "validations": {
+    "manual": {
+      "operatorRetainsControl": true,
+      "automaticModeSwitch": false,
+      "automaticEntry": false,
+      "automaticExit": false
+    },
+    "hybrid": {
+      "alignmentGuardThreshold": 0.65,
+      "alignedOperatorProtected": true,
+      "lowConfidenceNoIntervention": true
+    },
+    "reverse": {
+      "selectiveReversal": true,
+      "megatrendException": true,
+      "losseshometroSyntheticOnly": true
+    },
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "evidence": {
+    "validationRun": 39956380701,
+    "directed": "250/250",
+    "general": "2056/2056",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

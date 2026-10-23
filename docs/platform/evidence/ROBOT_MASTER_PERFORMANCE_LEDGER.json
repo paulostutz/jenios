@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T02:25:45Z",
-  "scope": "R12-R41",
+  "generatedAt": "2026-10-23T02:32:37Z",
+  "scope": "R12-R42",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -117,7 +117,8 @@
         "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams.",
         "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos.",
         "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante.",
-        "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação."
+        "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação.",
+        "R42 adicionou geração monotônica e proteção contra rollback: snapshots válidos porém antigos são bloqueados pelo high-water mark; checkpoint mais recente corrompido pode cair apenas uma geração para a última cópia íntegra, sem reduzir o high-water mark."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -293,6 +294,15 @@
           "stagedCheckpointNotRecoverable": true,
           "committedCheckpointRecoverable": true,
           "integrityVerifiedBeforeRestore": true,
+          "zeroFalseAllows": true
+        },
+        "r42RollbackProtection": {
+          "monotonicGenerationEnforced": true,
+          "highWaterMarkNeverDecreases": true,
+          "validOldSnapshotBlocked": true,
+          "oneGenerationFallback": true,
+          "fallbackDoesNotLowerHighWaterMark": true,
+          "bothCopiesInvalidFailsClosed": true,
           "zeroFalseAllows": true
         }
       },
@@ -492,11 +502,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39889407195
+    },
+    "R42": {
+      "directed": "184/184",
+      "general": "1990/1990",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39890029445
     }
   },
   "nextObjectives": [
-    "adicionar geração monotônica e rollback protection para impedir restauração de checkpoint íntegro porém antigo",
-    "testar esquema de dupla cópia/último checkpoint válido quando o commit mais recente estiver corrompido",
+    "estender rollback protection para quorum/replicação de checkpoints e detectar divergência entre cópias",
+    "testar recovery após perda da cópia ativa com validação de continuidade do high-water mark",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

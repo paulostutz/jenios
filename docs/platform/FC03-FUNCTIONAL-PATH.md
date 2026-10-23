@@ -39,3 +39,7 @@ Recuperar os bytes originais, executar as funções originais no ambiente isolad
 FC04 e FC05 têm trabalho independente e podem avançar sem transformar essa pendência em aprovação. A homologação prática dos robôs também está em andamento no chat “Certificar robôs JENIOS R59”; consultar seu resultado antes de repetir jornadas.
 
 Produção, merge, deploy, ordens reais, Paper externo, e-mails e cobranças permanecem fora deste bloco. `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` permanecem null.
+
+## Evidência aprovada desta etapa
+
+CI `39959793275`, commit `062e357a9badc347626373e74636ce36fcdaff97`: robôs 265/265, FC03 8/8, comercial 85/85, suíte geral 2.173/2.173, Social 94/94, build PASS e 78/78 páginas estáticas geradas. Robôs, FC03 e comercial estão incluídos na suíte geral. A trilha por evento está em `evidence/FC03_OFFLINE_EVENT_TRACE.json`, explicitamente identificada como fixture local. A versão final de evidências será revalidada e o backup registrará seu commit/CI em manifesto separado. Esta aprovação não altera o estado incompleto do FC03.

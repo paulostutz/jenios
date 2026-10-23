@@ -1,6 +1,6 @@
 {
   "schema": "JENIOS_FC03_CHECKPOINT_V1",
-  "status": "OFFLINE_CANDIDATE_PENDING_CI_ORIGINAL_CORE_UNAVAILABLE",
+  "status": "OFFLINE_SCOPE_VERIFIED_ORIGINAL_CORE_PENDING",
   "blockComplete": false,
   "branch": "research/jenios-fc03-functional-path-20261023",
   "plannedBackup": "backup/jenios-fc03-offline-path-verified-20261023",
@@ -16,7 +16,9 @@
       "vercel.json"
     ],
     "priorR49LedgerArchived": "docs/platform/evidence/variants/ROBOT_MASTER_PERFORMANCE_LEDGER_R49.json",
-    "originalCertifiedBranchesModified": false
+    "originalCertifiedBranchesModified": false,
+    "fc02FileCount": 1482,
+    "unchangedFC02FileCount": 1480
   },
   "localValidation": {
     "research": "265/265",
@@ -118,5 +120,23 @@
   "chargesCreated": 0,
   "actualBrokerPnl": null,
   "actualLossesAvoided": null,
-  "realTradeAccuracy": null
+  "realTradeAccuracy": null,
+  "offlineScopeVerified": true,
+  "offlineEventTrace": "docs/platform/evidence/FC03_OFFLINE_EVENT_TRACE.json",
+  "linuxValidation": {
+    "testedCommit": "062e357a9badc347626373e74636ce36fcdaff97",
+    "run": 39959793275,
+    "job": 120434604371,
+    "url": "https://github.com/paulostutz/jenios/actions/runs/39959793275",
+    "conclusion": "success",
+    "research": "265/265",
+    "fc03": "8/8",
+    "commercial": "85/85",
+    "general": "2173/2173",
+    "social": "94/94",
+    "build": "PASS",
+    "staticPagesGenerated": "78/78",
+    "countsOverlap": "Research, FC03 and commercial tests are subsets of the general suite; do not add them.",
+    "scopeLimit": "No genuine private core execution and no authenticated external account tested."
+  }
 }

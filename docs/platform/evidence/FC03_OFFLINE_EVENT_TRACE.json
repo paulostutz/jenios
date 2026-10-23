@@ -1,0 +1,51 @@
+{
+  "schema": "JENIOS_FC03_OFFLINE_EVENT_TRACE_V1",
+  "sourceCommit": "062e357a9badc347626373e74636ce36fcdaff97",
+  "ciRun": 39959793275,
+  "source": "LOCAL_FIXTURE_ONLY",
+  "trace": [
+    {
+      "event": "account_read",
+      "source": "LOCAL_FIXTURE",
+      "complete": true
+    },
+    {
+      "event": "customer_bound",
+      "orderSubmissionEnabled": false
+    },
+    {
+      "event": "proposal_and_risk",
+      "mode": "direct",
+      "hypotheticalRisk": "4.6",
+      "canSubmit": false,
+      "genuineCoreDecision": false
+    },
+    {
+      "event": "proposal_and_risk",
+      "mode": "hybrid",
+      "hypotheticalRisk": "4.6",
+      "canSubmit": false,
+      "genuineCoreDecision": false
+    },
+    {
+      "event": "proposal_and_risk",
+      "mode": "reverse",
+      "hypotheticalRisk": "4.6",
+      "canSubmit": false,
+      "genuineCoreDecision": false
+    },
+    {
+      "event": "fixture_partial_observed",
+      "cumulativeQuantity": "0.5"
+    },
+    {
+      "event": "mismatch_blocks_next_order",
+      "nextOrderAllowed": false
+    }
+  ],
+  "fixtureGetCount": 7,
+  "externalRequests": 0,
+  "privateEngineLoaded": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0
+}

@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:08:40Z",
-  "scope": "R12-R25",
+  "generatedAt": "2026-10-23T00:16:10Z",
+  "scope": "R12-R26",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -100,7 +100,9 @@
         "Maker/taker, fila, partial fills, cancel/replace, latência, adverse selection e rate limits modelados.",
         "Sessões de 10k/20k tentativas simuladas com custos, drawdown e loss streak.",
         "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste.",
-        "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição."
+        "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição.",
+        "R26 exige proveniência explícita de custos: schedule oficial não prova tier real do cliente; custo realista só pode ser usado com tier verificado ou cenário sintético marcado.",
+        "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -195,13 +197,19 @@
       "general": "1897/1897",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R26": {
+      "directed": "97/97",
+      "general": "1903/1903",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "medir custos por exchange/tier somente quando houver fonte oficial e contexto contratual",
-    "ampliar outages/maintenance e recuperação pós-falha",
-    "continuar ranking multijanelas público read-only em horizontes maiores",
-    "preservar alignment guard em 0.65 até nova evidência independente",
+    "expandir custos oficiais por provider/tier com snapshot/versionamento sem assumir tier de cliente",
+    "stressar recuperação com reconexões intermitentes, sequências fora de ordem e exposição desconhecida",
+    "continuar ranking público multijanelas em horizontes maiores",
+    "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"
   ]
 }

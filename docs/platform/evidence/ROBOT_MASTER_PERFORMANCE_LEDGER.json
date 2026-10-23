@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T02:39:08Z",
-  "scope": "R12-R43",
+  "generatedAt": "2026-10-23T10:34:31Z",
+  "scope": "R12-R44",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -119,7 +119,8 @@
         "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante.",
         "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação.",
         "R42 adicionou geração monotônica e proteção contra rollback: snapshots válidos porém antigos são bloqueados pelo high-water mark; checkpoint mais recente corrompido pode cair apenas uma geração para a última cópia íntegra, sem reduzir o high-water mark.",
-        "R43 adicionou replicação com quorum: o high-water mark só avança com maioria, divergência entre cópias é detectada, fallback exige quorum íntegro da geração anterior e ausência de quorum válido resulta em fail-closed."
+        "R43 adicionou replicação com quorum: o high-water mark só avança com maioria, divergência entre cópias é detectada, fallback exige quorum íntegro da geração anterior e ausência de quorum válido resulta em fail-closed.",
+        "R44 ampliou o quorum para 5 réplicas e validou partições 2/3: a minoria não promove geração, a maioria pode avançar, split-brain é detectado e a reconvergência reescreve todas as réplicas para o estado majoritário preservando o high-water mark."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -314,6 +315,16 @@
           "oneGenerationFallbackWithQuorum": true,
           "highWaterMarkPreserved": true,
           "noValidQuorumFailsClosed": true,
+          "zeroFalseAllows": true
+        },
+        "r44SplitbrainReconvergence": {
+          "replicas": 5,
+          "quorum": 3,
+          "minorityPartitionCannotPromote": true,
+          "majorityPartitionCanPromote": true,
+          "splitBrainDetected": true,
+          "reconvergesToMajorityState": true,
+          "highWaterMarkPreserved": true,
           "zeroFalseAllows": true
         }
       },
@@ -529,11 +540,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39890622193
+    },
+    "R44": {
+      "directed": "196/196",
+      "general": "2002/2002",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39939925826
     }
   },
   "nextObjectives": [
-    "estender R43 para quorum de 5 réplicas, partições de rede e recuperação após reconvergência",
-    "testar split-brain com duas minorias divergentes e impedir promoção sem maioria",
+    "estender R44 para eleições/liderança temporária sob partições e impedir dual-leader sem quorum",
+    "testar lease/fencing token monotônico para impedir escritor antigo após reconvergência",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

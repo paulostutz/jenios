@@ -38,7 +38,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -65,6 +65,15 @@ jobs:
             supabase/migrations/20261023002638_jenios_b305_transactional_delivery_fk_indexes.sql
             docs/platform/B305-R13-EMAIL-LIFECYCLE.md
             supabase/templates/jenios-confirmation.html
+            supabase/templates/jenios-recovery.html
+            supabase/templates/jenios-email-change.html
+            supabase/templates/jenios-reauthentication.html
+            supabase/templates/jenios-password-changed-notification.html
+            supabase/templates/jenios-email-changed-notification.html
+            supabase/templates/jenios-identity-linked-notification.html
+            supabase/templates/jenios-identity-unlinked-notification.html
+            supabase/templates/jenios-mfa-enrolled-notification.html
+            supabase/templates/jenios-mfa-unenrolled-notification.html
             docs/platform/JENIOS-AUTH-EMAIL-TEMPLATE.md
             supabase/migrations/20261022133000_jenios_b305_finance_email_outbox.sql
             supabase/migrations/20261022183000_jenios_b305_finance_receipt_uniqueness_and_product.sql
@@ -75,4 +84,6 @@ jobs:
             tests/jeniosB305TransactionalDelivery.test.mjs
             tests/emailPublicCopyB305.test.mjs
             docs/platform/B305-R16-TRANSACTIONAL-DELIVERY.md
+            docs/platform/B305-R17-AUTH-SECURITY-EMAILS.md
+            tests/jeniosB305AuthLifecycleEmails.test.mjs
           retention-days: 30

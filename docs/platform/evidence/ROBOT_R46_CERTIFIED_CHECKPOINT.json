@@ -1,0 +1,53 @@
+{
+  "schema": "JENIOS_ROBOT_R46_CERTIFIED_CHECKPOINT_V1",
+  "block": "R46",
+  "base": {
+    "block": "R45",
+    "branch": "backup/jenios-robot-r45-leader-fencing-certified-20261023",
+    "commit": "366662b1dfa3653efb7da259101f462eacd25bd9"
+  },
+  "branch": "research/jenios-robot-r46-temporal-lease-20261023",
+  "scope": {
+    "title": "Temporal Lease Expiry, Skew, Stalls, Handoff and Crash",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "exactExpiryBlocksWriteAndRenew": true,
+    "writerClockCannotExtendAuthorityLease": true,
+    "pausedWriterRevalidatedOnResume": true,
+    "gracefulHandoffFencesPreviousOwner": true,
+    "crashTakeoverWaitsForExpiry": true,
+    "restartedOldNodeCannotReuseCredentials": true,
+    "fencingTokenAndLeaseEpochMonotonic": true,
+    "authorityClockFaultLatchesClosed": true,
+    "quorumRequiredForWritesAndRenewals": true,
+    "staleOrExpiredAllowsIn2000Cycles": 0,
+    "realEventLoopStallTestPassed": true
+  },
+  "limitations": [
+    "Single trusted in-memory authority model; synthetic/offline certification only",
+    "Independent authority clock drift and host-suspend behavior are not established",
+    "Authority restart persistence and real broker/storage enforcement require further research"
+  ],
+  "evidence": {
+    "validationRun": 39949672805,
+    "testedCommit": "e1ab3f2d698f4e4362e89e431c8cdff4461b636b",
+    "directed": "213/213",
+    "general": "2019/2019",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76",
+    "environment": "ubuntu-24.04 / Node.js 22"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

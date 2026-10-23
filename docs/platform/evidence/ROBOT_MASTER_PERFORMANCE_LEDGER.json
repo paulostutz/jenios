@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T11:39:05.117509+00:00",
-  "scope": "R12-R45",
+  "generatedAt": "2026-10-23T11:59:27.896898+00:00",
+  "scope": "R12-R46",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -566,32 +566,23 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39941465956
+    },
+    "R46": {
+      "validationRun": 39949672805,
+      "testedCommit": "e1ab3f2d698f4e4362e89e431c8cdff4461b636b",
+      "directed": "213/213",
+      "general": "2019/2019",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "environment": "ubuntu-24.04 / Node.js 22"
     }
   },
   "nextObjectives": [
-    "estender R45 para expiração temporal de lease e clock-skew sem permitir escrita após vencimento",
-    "testar leader handoff gracioso e crash abrupto preservando fencing monotônico",
+    "testar persistência e reinício da autoridade temporal sem reutilizar fencing token ou lease expirado",
+    "pesquisar drift e troca de autoridade temporal entre processos independentes",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"
-  ],
-  "pendingBlocks": {
-    "R46": {
-      "status": "PENDING_LINUX_CI_NOT_CERTIFIED",
-      "branch": "research/jenios-robot-r46-temporal-lease-20261023",
-      "baseCommit": "366662b1dfa3653efb7da259101f462eacd25bd9",
-      "directed": "213/213",
-      "generalMacOS": {
-        "pass": 2012,
-        "total": 2019,
-        "failed": 7,
-        "reason": "Existing host preflight tests require Linux; no controls relaxed"
-      },
-      "social": "94/94",
-      "build": "RUNNING",
-      "actualBrokerPnl": null,
-      "actualLossesAvoided": null,
-      "realTradeAccuracy": null
-    }
-  }
+  ]
 }

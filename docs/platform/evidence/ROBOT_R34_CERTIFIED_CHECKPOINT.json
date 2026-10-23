@@ -1,0 +1,61 @@
+{
+  "schema": "JENIOS_ROBOT_R34_CERTIFIED_CHECKPOINT_V1",
+  "block": "R34",
+  "base": {
+    "block": "R33",
+    "branch": "research/jenios-robot-r33-hysteresis-session-risk-20261023",
+    "commit": "dc7ab4d78926efd5eb0288b3f44bbf35fe08e275"
+  },
+  "branch": "research/jenios-robot-r34-holdout-session-reauth-20261023",
+  "scope": {
+    "title": "Independent Hysteresis Holdout + Session Reauthorization",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "independentHysteresisHoldout": {
+      "eventsPerFrequency": 3600,
+      "switchPeriods": [
+        1,
+        2,
+        3,
+        5,
+        8,
+        13,
+        21
+      ],
+      "totalEvents": 25200,
+      "r33PolicyFrozen": true,
+      "independentGenerator": true,
+      "allCasesNonIncreasingChatter": true
+    },
+    "sessionRiskRecoveryReauthorization": {
+      "r31RecoveryInterlockReused": true,
+      "r33SessionRiskReused": true,
+      "haltedSessionCannotAutoResume": true,
+      "recoveryReadyAloneCannotResumeHaltedSession": true,
+      "favorableEconomicsAloneCannotResumeHaltedSession": true,
+      "newSessionIdRequired": true,
+      "newAuthorizationIdRequired": true,
+      "newSessionStillRequiresRecoveryAndEconomicEligibility": true
+    }
+  },
+  "evidence": {
+    "validationRun": 39883430459,
+    "directed": "137/137",
+    "general": "1943/1943",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

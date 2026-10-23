@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:28:30Z",
-  "scope": "R12-R27",
+  "generatedAt": "2026-10-23T00:34:10Z",
+  "scope": "R12-R28",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -103,7 +103,8 @@
         "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição.",
         "R26 exige proveniência explícita de custos: schedule oficial não prova tier real do cliente; custo realista só pode ser usado com tier verificado ou cenário sintético marcado.",
         "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY.",
-        "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill."
+        "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill.",
+        "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -121,6 +122,19 @@
           "positiveGated": 548,
           "negativeConfigurationsAvoided": 2580,
           "note": "Gate conservador: preservou somente configurações que ficaram positivas no grid, mas também bloqueou parte de configurações positivas; precisa refinamento de recall."
+        },
+        "r28BreakevenRecall": {
+          "configurations": 4032,
+          "positiveConfigurations": 1452,
+          "baselineAllowed": 548,
+          "adaptiveAllowed": 619,
+          "baselinePositiveCaptured": 548,
+          "adaptivePositiveCaptured": 619,
+          "recoveredPositive": 71,
+          "baselineFalsePositive": 0,
+          "adaptiveFalsePositive": 0,
+          "recallBaseline": 0.37741,
+          "recallAdaptive": 0.426309
         }
       },
       "publicReadOnlyEvidence": {
@@ -219,11 +233,17 @@
       "general": "1908/1908",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R28": {
+      "directed": "108/108",
+      "general": "1914/1914",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "refinar o break-even gate para recuperar parte das oportunidades positivas sem reintroduzir configurações negativas",
-    "validar o gate em holdout independente de custos/fills/win-rates",
+    "validar o gate adaptativo R28 em holdout independente para evitar overfitting",
+    "calibrar margem adaptativa por regime de custo/fill sem aumentar falsos positivos",
     "continuar ranking público multijanelas em horizontes maiores",
     "stressar recovery pós-outage com reconexões intermitentes",
     "manter alignment guard em 0.65 e R15 sem backfill"

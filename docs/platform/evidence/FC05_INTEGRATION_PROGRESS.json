@@ -1,0 +1,15 @@
+{
+  "schema": "JENIOS_INTEGRATION_PROGRESS_V1",
+  "certifiedRobotLedgerSha256": "5d6202c718950e3801ecee60e53c2ed734ca2d84e13fd562d108181fb045fc09",
+  "FC05": {
+    "status": "LOCAL_UI_SCOPE_VERIFIED_AUTHENTICATED_ACCEPTANCE_PENDING",
+    "localScopeVerified": true,
+    "authenticatedAcceptance": false,
+    "checkpoint": "docs/platform/evidence/FC05_CHECKPOINT.json",
+    "initialSuccessfulCI": 39989564191,
+    "generalTests": 2194,
+    "socialTests": 94,
+    "browserAssertions": 101,
+    "staticPages": 78
+  }
+}

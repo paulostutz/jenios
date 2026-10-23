@@ -1,0 +1,88 @@
+{
+  "schema": "JENIOS_FC05_CHECKPOINT_V1",
+  "status": "LOCAL_UI_SCOPE_VERIFIED_AUTHENTICATED_ACCEPTANCE_PENDING",
+  "blockComplete": false,
+  "localScopeVerified": true,
+  "branch": "research/jenios-fc05-integrated-homologation-20261023",
+  "plannedBackup": "backup/jenios-fc05-local-ui-verified-20261023",
+  "baseFC04": "65e640b17e670b0a5e5bc9d0e0c056fec5fc5fd6",
+  "changes": [
+    "Validate free assistant replies before rendering; preserve conversation and recover after malformed JSON, service or network failure.",
+    "Replace fabricated report figures and fake PDF confirmation with explicit unverified-result state.",
+    "Make administrative access-denied text and navigation readable without changing permission rules."
+  ],
+  "sourcePreservation": {
+    "baseFiles": 1549,
+    "unchangedBaseFiles": 1545,
+    "explicitRefinementsWithArchivedOriginals": 4,
+    "inheritedHashes": 353,
+    "R59SourceHashes": 33,
+    "certifiedBranchesModified": false,
+    "certifiedRobotLedgerSha256": "5d6202c718950e3801ecee60e53c2ed734ca2d84e13fd562d108181fb045fc09"
+  },
+  "validation": {
+    "initialSuccessfulCommit": "3fb730864c547676564e998d7c2c6670e6441685",
+    "initialSuccessfulCI": 39989564191,
+    "evidence": "docs/platform/evidence/FC05_INITIAL_CI_EVIDENCE.json",
+    "general": 2194,
+    "social": 94,
+    "robotsR12ThroughR59PlusTemporalR46": 265,
+    "FC03": 8,
+    "FC04": 14,
+    "FC05NewUnitTests": 7,
+    "B305": 85,
+    "browserAssertions": 101,
+    "browserPageRoutes": 12,
+    "viewportWidths": [
+      1280,
+      390,
+      320
+    ],
+    "build": "PASS",
+    "staticPages": 78,
+    "subsetsIncludedInGeneral": [
+      "robots",
+      "FC03",
+      "FC04",
+      "FC05",
+      "B305"
+    ],
+    "uncaughtBrowserErrorsInAcceptedFlows": 0,
+    "dependencyFaultFixturesInjected": 5
+  },
+  "evidenceLimits": {
+    "browser": "Chromium and actual local production Next server on Ubuntu 24.04/Node 22; no live account session.",
+    "fixtures": "Only assistant failure responses are injected. Normal assistant and unauthenticated API responses execute actual local routes.",
+    "externalNetwork": "Browser page requests outside localhost are blocked; public server-side market-data reads may occur. No private provider credentials are present.",
+    "macOS": "Fault reproduced, corrected recovery and selected desktop/mobile screenshots verified. Full dev-server navigation hit timing limits; complete acceptance is from Linux CI.",
+    "priorCIInvocations": "Two runs passed general/Social/build but failed browser script assumptions (selector escaping, then checkout message); corrected before successful run."
+  },
+  "pendingAcceptance": [
+    "Authenticated customer and Master browser journeys with actual QA permissions.",
+    "HP04 authenticated QA job awaits required GitHub environment review by paulostutz; reviewer policy remains unchanged.",
+    "Original private runtime integrated into current authenticated journey with R59 alignment guard 0.65.",
+    "FC04 external subscription lifecycle and confirmation/recovery/email delivery evidence.",
+    "FC06 final recovery package and human acceptance."
+  ],
+  "parallelEvidence": {
+    "HP03": "Original private runtime recovered and executed offline; integrated product acceptance pending.",
+    "HP04": {
+      "checkpointObserved": "2026-10-23T16:34:04.378127+00:00",
+      "commit": "a380510b3e5cf99c890848cb8c3042f16b25dfaa",
+      "run": 39986597171,
+      "status": "PREFLIGHT_PASSED_AWAITING_REQUIRED_GITHUB_REVIEW",
+      "authenticatedPassCount": null,
+      "originalRuntimeIntegrationVerified": false
+    }
+  },
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "productionTouched": false,
+  "mergePerformed": false,
+  "deployPerformed": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "realEmailsSent": 0,
+  "chargesCreated": 0
+}

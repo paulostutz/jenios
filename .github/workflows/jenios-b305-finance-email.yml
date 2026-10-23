@@ -70,6 +70,8 @@ jobs:
             supabase/migrations/20261023002638_jenios_b305_transactional_delivery_fk_indexes.sql
             supabase/migrations/20261023004751_jenios_b305_subscription_lifecycle_emails.sql
             supabase/migrations/20261023005515_jenios_b305_marketing_planner.sql
+            supabase/migrations/20261023010607_jenios_b305_marketing_delivery.sql
+            supabase/migrations/20261023010634_jenios_b305_marketing_suppression_ack.sql
             docs/platform/B305-R13-EMAIL-LIFECYCLE.md
             supabase/templates/jenios-confirmation.html
             supabase/templates/jenios-recovery.html
@@ -100,5 +102,6 @@ jobs:
             tests/jeniosB305MarketingPlanner.test.mjs
             docs/platform/B305-R20-MARKETING-PLANNER.md
             docs/platform/B305-R22-NONFINANCIAL-LIFECYCLE.md
+            docs/platform/B305-R21-MARKETING-DELIVERY-SAFETY-CHECKPOINT.md
             tests/jeniosB305NonFinancialLifecycle.test.mjs
           retention-days: 30

@@ -20,6 +20,12 @@
       "originalArchive": "docs/platform/evidence/variants/fc04-before-fc05/vercel.json.txt",
       "beforeSha256": "aeb889db81024560b875ca25bdbf84d4b2a98cb4b34edc4a5046cfba2a0503a6",
       "afterSha256": "1508b10a937c5e82baa1bfc3ee541efd36dd8165ecec4b8b8f705f7b19078a7d"
+    },
+    {
+      "path": "app/components/AdminAccess.js",
+      "originalArchive": "docs/platform/evidence/variants/fc04-before-fc05/app/components/AdminAccess.js.txt",
+      "beforeSha256": "4e78bc8008add48aa18aa118d76014caea25484f8429db9f117dbebd9309a54f",
+      "afterSha256": "c6550071da60f04a9af7740c5154e0f5ceebc5034a2f036a1e44f4146e652c26"
     }
   ]
 }

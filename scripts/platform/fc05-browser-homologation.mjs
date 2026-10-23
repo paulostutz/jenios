@@ -10,7 +10,7 @@ assert.equal(origin.protocol,'http:');assert.ok(['localhost','127.0.0.1','[::1]'
 const output=process.env.JENIOS_FC05_OUTPUT||'/tmp/jenios-fc05-browser';await mkdir(output,{recursive:true});
 const profile=await mkdtemp(join(tmpdir(),'jenios-fc05-')),port=Number(process.env.JENIOS_FC05_CDP_PORT||9365);
 const chrome=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-first-run','--disable-background-networking','--disable-extensions','--remote-allow-origins=*','--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port,'--user-data-dir='+profile,'about:blank'],{stdio:'ignore'});
-const checks=[],blocked=[],responses=[],exceptions=[],interceptionErrors=[],pending=new Map();
+const checks=[],faultsApplied=[],blocked=[],responses=[],exceptions=[],interceptionErrors=[],pending=new Map();
 let socket,serial=0,spawnError,fault=null,success=false;
 chrome.on('error',e=>spawnError=e);
 function cd(method,params={}){return new Promise((resolve,reject)=>{const id=++serial,timer=setTimeout(()=>{pending.delete(id);reject(Error('CDP_TIMEOUT '+method));},20000);pending.set(id,{resolve,reject,timer});socket.send(JSON.stringify({id,method,params}));});}
@@ -26,8 +26,9 @@ async function intercept(p){
  const u=new URL(p.request.url);
  if(u.origin!==origin.origin){blocked.push({origin:u.origin,path:u.pathname});await cd('Fetch.failRequest',{requestId:p.requestId,errorReason:'BlockedByClient'});return;}
  if(fault&&u.pathname==='/api/assistant/free'&&p.request.method==='POST'){
-  if(fault.network){await cd('Fetch.failRequest',{requestId:p.requestId,errorReason:'Failed'});return;}
-  await cd('Fetch.fulfillRequest',{requestId:p.requestId,responseCode:fault.status||200,responseHeaders:[{name:'content-type',value:'application/json'}],body:Buffer.from(typeof fault.body==='string'?fault.body:JSON.stringify(fault.body)).toString('base64')});return;
+  const simulated=fault;assert.equal(JSON.parse(p.request.postData).message,simulated.message);faultsApplied.push(simulated.label);
+  if(simulated.network){await cd('Fetch.failRequest',{requestId:p.requestId,errorReason:'Failed'});return;}
+  await cd('Fetch.fulfillRequest',{requestId:p.requestId,responseCode:simulated.status||200,responseHeaders:[{name:'content-type',value:'application/json'}],body:Buffer.from(typeof simulated.body==='string'?simulated.body:JSON.stringify(simulated.body)).toString('base64')});return;
  }
  await cd('Fetch.continueRequest',{requestId:p.requestId});
 }
@@ -47,11 +48,14 @@ try{
   ['service unavailable',{status:503,body:{ok:false,error:'Serviço temporariamente indisponível.'}}],
   ['network failure',{network:true}]
  ]){
-  fault=response;await question('Pergunta de recuperação '+name);await wait('document.querySelector("[role=alert]")!==null && !document.querySelector("#jenios-free-question").disabled');
+  const message='Pergunta de recuperação '+name;fault={...response,label:name,message};const previous=faultsApplied.length;await question(message);
+  for(let i=0;i<200&&faultsApplied.length===previous;i++)await sleep(25);assert.equal(faultsApplied.length,previous+1,name+' response intercepted');
+  await wait('document.querySelector("[role=alert]")!==null && !document.querySelector("#jenios-free-question").disabled');
   pass(exceptions.length===0,'fault fixture '+name+' keeps the conversation usable');
   pass(await evaluate(bodyIncludes('O plano Global Crypto')),'fault fixture '+name+' preserves previous verified reply');
   if(name==='missing links')await screenshot('assistant-malformed-recovered');
  }
+ pass(faultsApplied.length===5,'all five dependency faults were actually injected');
  fault=null;await question('Como contratar a JENIOS?');await wait('document.querySelector("#jenios-free-question").value==="" && !document.querySelector("#jenios-free-question").disabled');
  pass(await evaluate('document.querySelector("[role=alert]")===null'),'actual local assistant API recovers after fault fixtures');
  const pages=[
@@ -60,7 +64,7 @@ try{
   ['/platform/assistente','document.querySelector("#jenios-free-question")!==null'],
   ['/universidade',bodyIncludes('Entrar para contratar')],
   ['/platform/aprender',bodyIncludes('Seu próximo passo começa aqui')],
-  ['/checkout',bodyIncludes('Nenhuma contratação foi iniciada')],
+  ['/checkout',bodyIncludes('Assinaturas em preparação')],
   ['/relatorios',bodyIncludes('Ainda não há resultados de operações reais verificados')],
   ['/platform/entrar',bodyIncludes('Acesso da Platform')],
   ['/platform/recuperar',bodyIncludes('Recuperar acesso')],
@@ -72,9 +76,12 @@ try{
   await cd('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});
   for(const [path,ready] of pages){await nav(path,ready);pass(await evaluate('document.documentElement.scrollWidth<=innerWidth+2'),path+' '+width+'px no horizontal overflow');pass(exceptions.length===0,path+' '+width+'px no uncaught render errors');await screenshot(path.slice(1).replaceAll('/','-')+'-'+width);}
  }
+ await nav('/checkout',bodyIncludes('Assinaturas em preparação'));
+ pass(await evaluate('![...document.querySelectorAll("button")].some(b=>/Contratar plano mensal/.test(b.textContent))'),'fallback catalog has no payment creation action');
  await nav('/universidade',bodyIncludes('Entrar para contratar'));
  pass(await evaluate('!document.querySelector("input[type=checkbox], #university-pix-code")'),'University guest cannot consent to purchase or see a Pix code');
  await nav('/admin/emails',bodyIncludes('Entre com sua conta de administrador.'));
+ pass(await evaluate(`(()=>{const el=document.querySelector('[role=status]');const bg=el.closest('main');const luminance=color=>{const rgb=color.match(/[\\d.]+/g).slice(0,3).map(Number).map(x=>{const v=x/255;return v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4;});return rgb[0]*0.2126+rgb[1]*0.7152+rgb[2]*0.0722;};const background=luminance(getComputedStyle(bg).backgroundColor);return [el,el.querySelector('a')].every(e=>{const fg=luminance(getComputedStyle(e).color);return (Math.max(fg,background)+0.05)/(Math.min(fg,background)+0.05)>=4.5;});})()`),'Master denial text and login link remain readable against their background');
  pass(await evaluate('!document.body.innerText.includes("Liberação de e-mails")'),'Master email data never renders for guest');
  await nav('/relatorios',bodyIncludes('Ainda não há resultados de operações reais verificados'));
  pass(await evaluate('!document.body.innerText.includes("86.5%") && !document.body.innerText.includes("1.395") && ![...document.querySelectorAll("button")].some(b=>/PDF|Exportar/i.test(b.textContent))'),'reports show no invented performance or fake export action');
@@ -89,6 +96,6 @@ try{
  pass(interceptionErrors.length===0,'network interception completed without errors');pass(exceptions.length===0,'no uncaught browser errors in accepted flows');success=true;
  console.log('FC05_BROWSER_ACCEPTANCE='+checks.length+' localhost-only; authenticated acceptance remains pending');
 }finally{
- await writeFile(join(output,'BROWSER_EVIDENCE.json'),JSON.stringify({schema:'JENIOS_FC05_BROWSER_V1',success,checks,blockedExternalRequests:blocked,localAPIResponses:responses,uncaughtErrors:exceptions,interceptionErrors,faultsAreFixtures:true,authenticatedAcceptance:false,productionTouched:false,realOrdersSent:0,externalPaperOrdersSent:0,realEmailsSent:0,chargesCreated:0},null,2));
+ await writeFile(join(output,'BROWSER_EVIDENCE.json'),JSON.stringify({schema:'JENIOS_FC05_BROWSER_V1',success,checks,faultsApplied,blockedExternalRequests:blocked,localAPIResponses:responses,uncaughtErrors:exceptions,interceptionErrors,faultsAreFixtures:true,authenticatedAcceptance:false,productionTouched:false,realOrdersSent:0,externalPaperOrdersSent:0,realEmailsSent:0,chargesCreated:0},null,2));
  for(const p of pending.values())clearTimeout(p.timer);try{socket?.close();}catch{}try{chrome.kill('SIGTERM');}catch{}await rm(profile,{recursive:true,force:true}).catch(()=>{});
 }

@@ -15,7 +15,13 @@ export default function AdminAccess({permission,children,loginRedirect='/login?n
  void load();const sub=supabase?.auth.onAuthStateChange(event=>{if(!['INITIAL_SESSION','TOKEN_REFRESHED'].includes(event)){epoch.current++;setPermissions(null);setTimeout(load,0);}});
  return()=>{live=false;epoch.current++;sub?.data?.subscription?.unsubscribe();};
  },[]);
- if(!permissions)return <p role="status">{error||'Verificando acesso…'} {error&&<Link href={loginRedirect}>Entrar</Link>}</p>;
- if(!permissions.length||!(Array.isArray(permission)?permission.some(p=>permissions.includes(p)):permissions.includes(permission)))return <p role="alert">A Central Administrativa é exclusiva do usuário Master.</p>;
+ if(!permissions)return <main style={{minHeight:'70vh',display:'grid',placeItems:'center',padding:24,background:'#0f172a',color:'#f8fafc',fontFamily:'system-ui'}}>
+  <section role="status" style={{maxWidth:440,textAlign:'center',lineHeight:1.6}}>{error||'Verificando acesso…'}
+   {error&&<p><Link href={loginRedirect} style={{color:'#c4b5fd'}}>Entrar</Link></p>}
+  </section></main>;
+ if(!permissions.length||!(Array.isArray(permission)?permission.some(p=>permissions.includes(p)):permissions.includes(permission)))return <main style={{minHeight:'70vh',display:'grid',placeItems:'center',padding:24,background:'#0f172a',color:'#f8fafc',fontFamily:'system-ui'}}>
+  <section role="alert" style={{maxWidth:440,textAlign:'center',lineHeight:1.6}}>A Central Administrativa é exclusiva do usuário Master.
+   <p><Link href="/social" style={{color:'#c4b5fd'}}>Voltar à Social</Link></p>
+  </section></main>;
  return typeof children==='function'?children(permissions):children;
 }

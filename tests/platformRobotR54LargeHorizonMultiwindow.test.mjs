@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluateR54Series,runR54Battery} from '../lib/platform/research/robot-r54-large-horizon-multiwindow.mjs';
+test('R54 stable multiwindow series remains eligible',()=>{const x=evaluateR54Series({symbol:'X',scores:Array(24).fill(60),eligibleFlags:Array(24).fill(true)});assert.equal(x.eligible,true);});
+test('R54 battery penalizes unstable horizons',()=>{const x=runR54Battery();assert.equal(x.pass,true);assert.equal(x.largerHorizonWindows,true);});

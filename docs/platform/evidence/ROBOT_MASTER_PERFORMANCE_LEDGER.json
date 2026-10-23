@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:16:10Z",
-  "scope": "R12-R26",
+  "generatedAt": "2026-10-23T00:28:30Z",
+  "scope": "R12-R27",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -102,7 +102,8 @@
         "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste.",
         "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição.",
         "R26 exige proveniência explícita de custos: schedule oficial não prova tier real do cliente; custo realista só pode ser usado com tier verificado ou cenário sintético marcado.",
-        "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY."
+        "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY.",
+        "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -111,7 +112,16 @@
           10000,
           20000
         ],
-        "r25ExchangeStress": "3 assets × 3 cost profiles × 2 styles × 5 edges × 4 fill levels × 4 win rates; sessions of 10,000 attempts."
+        "r25ExchangeStress": "3 assets × 3 cost profiles × 2 styles × 5 edges × 4 fill levels × 4 win rates; sessions of 10,000 attempts.",
+        "r27DynamicBreakeven": {
+          "configurations": 4032,
+          "allowed": 548,
+          "blocked": 3484,
+          "positiveUngated": 1452,
+          "positiveGated": 548,
+          "negativeConfigurationsAvoided": 2580,
+          "note": "Gate conservador: preservou somente configurações que ficaram positivas no grid, mas também bloqueou parte de configurações positivas; precisa refinamento de recall."
+        }
       },
       "publicReadOnlyEvidence": {
         "r22SingleSnapshot": [
@@ -203,13 +213,19 @@
       "general": "1903/1903",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R27": {
+      "directed": "102/102",
+      "general": "1908/1908",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "expandir custos oficiais por provider/tier com snapshot/versionamento sem assumir tier de cliente",
-    "stressar recuperação com reconexões intermitentes, sequências fora de ordem e exposição desconhecida",
+    "refinar o break-even gate para recuperar parte das oportunidades positivas sem reintroduzir configurações negativas",
+    "validar o gate em holdout independente de custos/fills/win-rates",
     "continuar ranking público multijanelas em horizontes maiores",
-    "manter alignment guard em 0.65",
-    "preservar R15 prospectivo sem backfill"
+    "stressar recovery pós-outage com reconexões intermitentes",
+    "manter alignment guard em 0.65 e R15 sem backfill"
   ]
 }

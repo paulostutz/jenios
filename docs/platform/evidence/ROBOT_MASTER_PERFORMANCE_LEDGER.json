@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T11:59:44Z",
-  "scope": "R12-R48",
+  "generatedAt": "2026-10-23T12:21:34Z",
+  "scope": "R12-R49",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -124,7 +124,8 @@
         "R45 adicionou eleição de líder com quorum e fencing token/lease monotônicos: líder antigo perde capacidade de escrita ao perder quorum, novo líder recebe fence superior e o stale writer continua bloqueado mesmo após reconvergência.",
         "R46 adicionou tempo monotônico de autoridade para lease, defesa contra clock skew, expiração após GC stall, handoff gracioso e recuperação após crash; nenhum relógio local ou líder antigo consegue prolongar autorização após vencimento/fencing stale.",
         "R47 adicionou freshness fencing de market data: reconnect e handoff exigem novo source epoch, sequência contínua, janela de idade válida e reconfirmação sob o fencing token do líder atual; book stale ou feed antigo não libera decisão.",
-        "R48 adicionou controle de reconnect storms, budget de requests e backpressure adaptativo: reconnect invalida trabalho antigo, fila é limitada, orçamento interrompe retry storm e tarefas/decisões vencidas são descartadas antes de qualquer autorização."
+        "R48 adicionou controle de reconnect storms, budget de requests e backpressure adaptativo: reconnect invalida trabalho antigo, fila é limitada, orçamento interrompe retry storm e tarefas/decisões vencidas são descartadas antes de qualquer autorização.",
+        "R49 adicionou reconciliação de corridas partial-fill/cancel-replace: replace só nasce após cancel ack, fill tardio pré-terminal é reconciliado, eventos duplicados são idempotentes e overfill/mismatch com corretora bloqueiam novas ordens até reconciliação."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -371,6 +372,17 @@
           "staleDecisionBlocked": true,
           "highBackpressureBlocksDecision": true,
           "reconnectInvalidatesOldWork": true,
+          "zeroFalseAllows": true
+        },
+        "r49OrderReconciliationRaces": {
+          "partialFillTracked": true,
+          "replaceBlockedBeforeCancelAck": true,
+          "latePreTerminalFillReconciled": true,
+          "duplicateFillIdempotent": true,
+          "fillAfterTerminalBlocked": true,
+          "overfillForcesReconciliation": true,
+          "brokerQtyMismatchBlocksNextOrder": true,
+          "replacementLineagePreserved": true,
           "zeroFalseAllows": true
         }
       },
@@ -626,12 +638,20 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39949920828
+    },
+    "R49": {
+      "directed": "230/230",
+      "general": "2036/2036",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39952592103
     }
   },
   "nextObjectives": [
-    "testar partial-fill/cancel-replace races e reconciliação de estado de ordens",
     "testar fee/spread/slippage/liquidity shocks e adverse-selection cliffs",
-    "executar soak/fuzz/chaos de longa duração combinando reconnect, stale data, lease e backpressure",
+    "executar soak/fuzz/chaos de longa duração combinando reconnect, stale data, lease, backpressure e order reconciliation",
+    "testar exchange maintenance/halts e symbol delisting/listing sem exposição órfã",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

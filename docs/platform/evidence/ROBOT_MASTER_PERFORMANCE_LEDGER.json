@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T10:34:31Z",
-  "scope": "R12-R44",
+  "generatedAt": "2026-10-23T10:47:47Z",
+  "scope": "R12-R45",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -120,7 +120,8 @@
         "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação.",
         "R42 adicionou geração monotônica e proteção contra rollback: snapshots válidos porém antigos são bloqueados pelo high-water mark; checkpoint mais recente corrompido pode cair apenas uma geração para a última cópia íntegra, sem reduzir o high-water mark.",
         "R43 adicionou replicação com quorum: o high-water mark só avança com maioria, divergência entre cópias é detectada, fallback exige quorum íntegro da geração anterior e ausência de quorum válido resulta em fail-closed.",
-        "R44 ampliou o quorum para 5 réplicas e validou partições 2/3: a minoria não promove geração, a maioria pode avançar, split-brain é detectado e a reconvergência reescreve todas as réplicas para o estado majoritário preservando o high-water mark."
+        "R44 ampliou o quorum para 5 réplicas e validou partições 2/3: a minoria não promove geração, a maioria pode avançar, split-brain é detectado e a reconvergência reescreve todas as réplicas para o estado majoritário preservando o high-water mark.",
+        "R45 adicionou eleição de líder com quorum e fencing token/lease monotônicos: líder antigo perde capacidade de escrita ao perder quorum, novo líder recebe fence superior e o stale writer continua bloqueado mesmo após reconvergência."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -325,6 +326,15 @@
           "splitBrainDetected": true,
           "reconvergesToMajorityState": true,
           "highWaterMarkPreserved": true,
+          "zeroFalseAllows": true
+        },
+        "r45LeaderFencing": {
+          "replicas": 5,
+          "majorityElectionRequired": true,
+          "fencingTokenMonotonic": true,
+          "leaseEpochMonotonic": true,
+          "staleWriterBlockedDuringPartition": true,
+          "staleWriterBlockedAfterReconvergence": true,
           "zeroFalseAllows": true
         }
       },
@@ -548,11 +558,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39939925826
+    },
+    "R45": {
+      "directed": "202/202",
+      "general": "2008/2008",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39941465956
     }
   },
   "nextObjectives": [
-    "estender R44 para eleições/liderança temporária sob partições e impedir dual-leader sem quorum",
-    "testar lease/fencing token monotônico para impedir escritor antigo após reconvergência",
+    "estender R45 para expiração temporal de lease e clock-skew sem permitir escrita após vencimento",
+    "testar leader handoff gracioso e crash abrupto preservando fencing monotônico",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

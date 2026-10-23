@@ -19,6 +19,7 @@ async function wait(expression){for(let i=0;i<180;i++){if(await evaluate(express
 function pass(value,label){assert.ok(value,label);checks.push(label);console.log('PASS FC05 '+label);}
 async function nav(path,expression){await cd('Page.navigate',{url:new URL(path,origin).href});await wait('location.pathname==='+JSON.stringify(path)+' && document.readyState==="complete"');if(expression)await wait(expression);}
 async function screenshot(name){const r=await cd('Page.captureScreenshot',{format:'png'});await writeFile(join(output,name+'.png'),Buffer.from(r.data,'base64'));}
+const element=selector=>'document.querySelector('+JSON.stringify(selector)+')';
 const bodyIncludes=text=>'document.body.innerText.includes('+JSON.stringify(text)+')';
 async function question(text){await evaluate(`(()=>{const el=document.querySelector('#jenios-free-question');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(el,${JSON.stringify(text)});el.dispatchEvent(new Event('input',{bubbles:true}));})()`);await wait('!document.querySelector("#jenios-free-question").closest("form").querySelector("button").disabled');await evaluate('document.querySelector("#jenios-free-question").closest("form").requestSubmit()');}
 async function intercept(p){
@@ -38,7 +39,7 @@ try{
  await cd('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
  await nav('/platform/assistente','document.querySelector("#jenios-free-question")!==null');
  await question('O que está incluído no plano de R$ 149,90?');await wait(bodyIncludes('O plano Global Crypto'));
- pass(await evaluate('document.querySelector("a[href=\"/checkout\"]")!==null'),'visitor → free assistant → actual local API → approved plan and checkout link');
+ pass(await evaluate(element('a[href="/checkout"]')+'!==null'),'visitor → free assistant → actual local API → approved plan and checkout link');
  for(const [name,response] of [
   ['missing links',{body:{ok:true,persona:'genio',paidAi:false,name:'Gênio',explanation:'Resposta incompleta simulada'}}],
   ['invalid link collection',{body:{ok:true,persona:'genio',paidAi:false,name:'Gênio',explanation:'Resposta simulada',links:{}}}],
@@ -55,7 +56,7 @@ try{
  pass(await evaluate('document.querySelector("[role=alert]")===null'),'actual local assistant API recovers after fault fixtures');
  const pages=[
   ['/lp',bodyIncludes('CLAREZA ANTES DO CLIQUE')],
-  ['/social','document.querySelector("a[href=\"/lp\"]")!==null'],
+  ['/social',element('a[href="/lp"]')+'!==null'],
   ['/platform/assistente','document.querySelector("#jenios-free-question")!==null'],
   ['/universidade',bodyIncludes('Entrar para contratar')],
   ['/platform/aprender',bodyIncludes('Seu próximo passo começa aqui')],
@@ -81,8 +82,8 @@ try{
   const r=await evaluate(`(async()=>{const r=await fetch(${JSON.stringify(path)},{method:${JSON.stringify(method)},headers:{'content-type':'application/json'},${method==='POST'?"body:'{}',":''}cache:'no-store'});return {status:r.status,body:await r.json()};})()`);
   pass(r.status===401&&!r.body.order&&!r.body.access&&!r.body.permissions,'actual local API rejects unauthenticated '+method+' '+path);
  }
- await nav('/social','document.querySelector("a[href=\"/lp\"]")!==null');
- await evaluate('document.querySelector("a[href=\"/lp\"]").click()');await wait('location.pathname==="/lp" && document.body.innerText.includes("CLAREZA ANTES DO CLIQUE")');pass(true,'Social link reaches Platform introduction');
+ await nav('/social',element('a[href="/lp"]')+'!==null');
+ await evaluate(element('a[href="/lp"]')+'.click()');await wait('location.pathname==="/lp" && document.body.innerText.includes("CLAREZA ANTES DO CLIQUE")');pass(true,'Social link reaches Platform introduction');
  await cd('Page.navigate',{url:new URL('/planos',origin).href});await wait('location.pathname==="/checkout"');pass(true,'legacy plans route reaches guarded checkout');
  await cd('Page.navigate',{url:new URL('/dashboard-logado',origin).href});await wait('location.pathname==="/platform/entrar"');pass(true,'guest account page redirects to Platform login');
  pass(interceptionErrors.length===0,'network interception completed without errors');pass(exceptions.length===0,'no uncaught browser errors in accepted flows');success=true;

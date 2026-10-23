@@ -29,6 +29,7 @@ jobs:
       JENIOS_B305_TEST_SEND_APPROVED: 'false'
       JENIOS_MARKETING_EMAILS_ENABLED: 'false'
       JENIOS_MARKETING_PLANNER_ENABLED: 'false'
+      JENIOS_RESEND_WEBHOOK_ENABLED: 'false'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -40,7 +41,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -76,6 +77,7 @@ jobs:
             supabase/migrations/20261023010607_jenios_b305_marketing_delivery.sql
             supabase/migrations/20261023010634_jenios_b305_marketing_suppression_ack.sql
             supabase/migrations/20261023012300_jenios_b305_university_milestones.sql
+            supabase/migrations/20261023015029_jenios_b305_resend_suppression_webhook.sql
             docs/platform/B305-R13-EMAIL-LIFECYCLE.md
             supabase/templates/jenios-confirmation.html
             supabase/templates/jenios-recovery.html
@@ -112,4 +114,6 @@ jobs:
             docs/platform/B305-R23-UNIVERSITY-MILESTONES.md
             docs/platform/B305-R24-EMAIL-ADMIN-HEALTH.md
             tests/jeniosB305EmailAdminHealth.test.mjs
+            tests/jeniosB305ResendSuppressionLedger.test.mjs
+            docs/platform/B305-R25-RESEND-SUPPRESSION-SAFETY.md
           retention-days: 30

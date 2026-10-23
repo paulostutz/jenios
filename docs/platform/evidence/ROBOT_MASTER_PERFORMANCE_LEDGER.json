@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:41:10Z",
-  "scope": "R12-R29",
+  "generatedAt": "2026-10-23T00:46:30Z",
+  "scope": "R12-R30",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -105,7 +105,8 @@
         "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY.",
         "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill.",
         "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid.",
-        "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos."
+        "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos.",
+        "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -151,6 +152,16 @@
           "recallBaseline": 0.430995,
           "recallAdaptive": 0.460407,
           "note": "Holdout independente dos grids R27/R28; política R28 congelada."
+        },
+        "r30RegimeAdaptive": {
+          "sessions": 3,
+          "attemptsPerRegime": 2500,
+          "behaviors": [
+            "favorable→cost spike→recovery→low fill",
+            "mid→bad signal→signal recovery",
+            "cheap→adverse→normalized"
+          ],
+          "staleAuthorizationCarryover": false
         }
       },
       "publicReadOnlyEvidence": {
@@ -261,13 +272,19 @@
       "general": "1918/1918",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R30": {
+      "directed": "116/116",
+      "general": "1922/1922",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "promover R28 como candidato de laboratório após holdout R29, sem chamar de performance real",
-    "testar gate adaptativo por regimes temporais e custos variáveis",
+    "stressar R30 em sequências mais longas e regimes alternando rapidamente",
+    "combinar gate econômico com recovery/outage para impedir reentrada após falha até READY + novo regime favorável",
     "continuar ranking público multijanelas em horizontes maiores",
-    "stressar recovery pós-outage com reconexões intermitentes",
-    "manter alignment guard em 0.65 e R15 sem backfill"
+    "manter alignment guard em 0.65",
+    "preservar R15 prospectivo sem backfill"
   ]
 }

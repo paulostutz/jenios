@@ -40,7 +40,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
-        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs
+        run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -59,10 +59,13 @@ jobs:
             lib/email/lifecycle-campaigns.mjs
             lib/email/marketing-policy.mjs
             lib/email/transactional-delivery-worker.mjs
+            lib/email/admin-health.mjs
             app/api/internal/email/transactional/route.js
             app/api/internal/billing/dunning/route.js
             app/api/internal/email/marketing-plan/route.js
             app/api/social/email-preferences/route.js
+            app/api/admin/email-health/route.js
+            app/admin/emails/page.js
             app/preferencias/page.js
             supabase/migrations/20261022220500_jenios_b305_subscription_dunning.sql
             supabase/migrations/20261022221000_jenios_b305_marketing_preferences.sql
@@ -107,4 +110,6 @@ jobs:
             tests/jeniosB305NonFinancialLifecycle.test.mjs
             tests/jeniosB305UniversityMilestones.test.mjs
             docs/platform/B305-R23-UNIVERSITY-MILESTONES.md
+            docs/platform/B305-R24-EMAIL-ADMIN-HEALTH.md
+            tests/jeniosB305EmailAdminHealth.test.mjs
           retention-days: 30

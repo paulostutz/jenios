@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T12:21:34Z",
-  "scope": "R12-R49",
+  "generatedAt": "2026-10-23T12:55:40Z",
+  "scope": "R12-R59",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -14,14 +14,15 @@
   "robots": [
     {
       "robot": "manual",
-      "status": "RESEARCH_VALIDATED",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "keyFindings": [
         "Operador decide sozinho.",
         "Sistema pode detectar sequência de perdas e sugerir pausa/educação.",
         "Nenhuma troca automática de modo.",
-        "Sinais/prévias não são tratados como ordens executadas."
+        "Sinais/prévias não são tratados como ordens executadas.",
+        "R56 refinou alertas do Manual sem retirar o controle do operador: nenhuma troca automática de modo, entrada ou saída; loss streak e drawdown apenas geram orientação/alerta."
       ],
       "syntheticPerformance": {
         "r17BaselineNetR": 1667.746008,
@@ -30,11 +31,19 @@
       "prospectiveEvidence": {
         "r14": "ABSTAIN_ONLY",
         "r15": "W01_VALID_W02_NO_GO_OTHER_WINDOWS_NOT_RETROFILLED"
+      },
+      "finalRefinement": {
+        "r56": {
+          "operatorRetainsControl": true,
+          "automaticModeSwitch": false,
+          "automaticEntry": false,
+          "automaticExit": false
+        }
       }
     },
     {
       "robot": "hybrid",
-      "status": "RESEARCH_VALIDATED_REFINING",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "alignmentGuardThreshold": 0.65,
@@ -42,7 +51,8 @@
         "Ajuda cresce conforme aumenta o erro de intenção do operador sintético.",
         "Prejudicava operador já alinhado em parte dos cenários do R17.",
         "Alignment guard adicionado no R19.",
-        "0.65 venceu 0.50 em dois holdouts independentes R21/R22."
+        "0.65 venceu 0.50 em dois holdouts independentes R21/R22.",
+        "R57 revalidou o alignment guard congelado em 0.65 em três datasets determinísticos independentes; operador alinhado é protegido, discordância material pode ser aconselhada e baixa confiança não intervém."
       ],
       "syntheticPerformance": {
         "r17NetUpliftR": 5653.6391265,
@@ -56,11 +66,18 @@
           "1.00": 4464.3326575
         },
         "notes": "Todos os números são de laboratório sintético."
+      },
+      "finalRefinement": {
+        "r57": {
+          "threshold": 0.65,
+          "alignedOperatorProtected": true,
+          "lowConfidenceNoIntervention": true
+        }
       }
     },
     {
       "robot": "reverse",
-      "status": "RESEARCH_VALIDATED_REFINING",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "alignmentGuardThreshold": 0.65,
@@ -68,7 +85,8 @@
         "Maior benefício sintético aparece quando o operador está claramente errado.",
         "Megatendência e segurança impedem inversão cega.",
         "Alignment guard evita interferência quando operador e contexto já estão alinhados.",
-        "Transporte de ordens permanece desabilitado."
+        "Transporte de ordens permanece desabilitado.",
+        "R58 validou reversão seletiva: desacordo material + confiança >=0.65 pode gerar referência reversa; megatendência, operador alinhado e baixa confiança impedem inversão. Losseshômetro permanece hipotético/sintético."
       ],
       "syntheticPerformance": {
         "unvalidatedNetUpliftR": 6043.6992337,
@@ -81,13 +99,20 @@
           "1.00": 4542.3446791
         },
         "notes": "Resultados exclusivamente sintéticos/laboratoriais."
+      },
+      "finalRefinement": {
+        "r58": {
+          "selectiveReversal": true,
+          "megatrendException": true,
+          "losseshometroSyntheticOnly": true
+        }
       }
     },
     {
       "robot": "ultrafast",
-      "status": "FOUNDATION_AND_MICROSTRUCTURE_VALIDATED",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
-      "decisionQuality": "MICROSTRUCTURE_LAB",
+      "decisionQuality": "MICROSTRUCTURE_AND_RESILIENCE_LAB",
       "commercialAccess": {
         "platform-nacional": false,
         "platform-global-crypto": true,
@@ -125,7 +150,13 @@
         "R46 adicionou tempo monotônico de autoridade para lease, defesa contra clock skew, expiração após GC stall, handoff gracioso e recuperação após crash; nenhum relógio local ou líder antigo consegue prolongar autorização após vencimento/fencing stale.",
         "R47 adicionou freshness fencing de market data: reconnect e handoff exigem novo source epoch, sequência contínua, janela de idade válida e reconfirmação sob o fencing token do líder atual; book stale ou feed antigo não libera decisão.",
         "R48 adicionou controle de reconnect storms, budget de requests e backpressure adaptativo: reconnect invalida trabalho antigo, fila é limitada, orçamento interrompe retry storm e tarefas/decisões vencidas são descartadas antes de qualquer autorização.",
-        "R49 adicionou reconciliação de corridas partial-fill/cancel-replace: replace só nasce após cancel ack, fill tardio pré-terminal é reconciliado, eventos duplicados são idempotentes e overfill/mismatch com corretora bloqueiam novas ordens até reconciliação."
+        "R49 adicionou reconciliação de corridas partial-fill/cancel-replace: replace só nasce após cancel ack, fill tardio pré-terminal é reconciliado, eventos duplicados são idempotentes e overfill/mismatch com corretora bloqueiam novas ordens até reconciliação.",
+        "R50 adicionou stress econômico de microestrutura: fee, spread, slippage, adverse selection e cliffs de liquidez são incorporados ao custo/fill efetivos; choques revogam autorização por epoch e recuperação exige novo regime favorável.",
+        "R51 executou soak/chaos integrado determinístico com 50.000 eventos combinando reconnects, trocas de líder, stale data, backpressure, reconciliação e revogações econômicas, com zero false allows.",
+        "R52 validou manutenção/halt/delisting/relisting: novas entradas ficam bloqueadas e exposição existente vira close-only quando o ativo não está operacional, exigindo reconciliação e resync para retorno.",
+        "R53 refinou seleção dinâmica de ativos considerando volatilidade, spread, profundidade, fill, custo, adverse selection e estabilidade; choque econômico pode retirar um ativo do ranking elegível.",
+        "R54 ampliou a validação multijanelas para 24 janelas e penalizou séries instáveis mesmo com scores pontuais altos.",
+        "R55 executou stress longo de 100.000 eventos com mudanças de regime, outages, stale data, risk halts e resets de sessão, mantendo zero execução externa."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -384,6 +415,38 @@
           "brokerQtyMismatchBlocksNextOrder": true,
           "replacementLineagePreserved": true,
           "zeroFalseAllows": true
+        },
+        "r50EconomicShockCliffs": {
+          "feeSpikeRevokes": true,
+          "spreadShockRevokes": true,
+          "liquidityCliffRevokes": true,
+          "adverseSelectionRevokes": true,
+          "lowDepthReducesFill": true,
+          "lowDepthRaisesCost": true,
+          "normalizedRegimeReauthorizes": true,
+          "noAuthorizationCarryover": true,
+          "zeroFalseAllows": true
+        },
+        "r51ChaosSoak": {
+          "events": 50000,
+          "zeroFalseAllows": true
+        },
+        "r52MarketSymbolLifecycle": {
+          "maintenanceBlocks": true,
+          "delistingCloseOnly": true,
+          "relistRequiresReconcile": true
+        },
+        "r53DynamicAssetSelection": {
+          "costLiquidityAdaptive": true,
+          "shockCanRemoveAsset": true
+        },
+        "r54LargeHorizonMultiwindow": {
+          "windows": 24,
+          "stabilityPenalty": true
+        },
+        "r55LongSessionStress": {
+          "events": 100000,
+          "sessionResets": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -407,6 +470,12 @@
           }
         ],
         "notes": "Observacional, curtíssimo horizonte, não é sinal e não prova rentabilidade."
+      },
+      "finalResearchClassification": {
+        "technicalSafety": "PASS",
+        "resilienceValidation": "PASS",
+        "economicStressValidation": "PASS",
+        "realPerformanceCertified": false
       }
     }
   ],
@@ -646,14 +715,105 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39952592103
+    },
+    "R50": {
+      "directed": "236/236",
+      "general": "2042/2042",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39953913426
+    },
+    "R51": {
+      "directed": "237/237",
+      "general": "2050/2050",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39955760574
+    },
+    "R52": {
+      "directed": "239/239",
+      "general": "2050/2050",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39955760574
+    },
+    "R53": {
+      "directed": "241/241",
+      "general": "2050/2050",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39955760574
+    },
+    "R54": {
+      "directed": "243/243",
+      "general": "2050/2050",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39955760574
+    },
+    "R55": {
+      "directed": "244/244",
+      "general": "2050/2050",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39955760574
+    },
+    "R56": {
+      "directed": "246/246",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
+    },
+    "R57": {
+      "directed": "248/248",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
+    },
+    "R58": {
+      "directed": "250/250",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
+    },
+    "R59": {
+      "directed": "254/254",
+      "general": "2060/2060",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956915048
     }
   },
   "nextObjectives": [
-    "testar fee/spread/slippage/liquidity shocks e adverse-selection cliffs",
-    "executar soak/fuzz/chaos de longa duração combinando reconnect, stale data, lease, backpressure e order reconciliation",
-    "testar exchange maintenance/halts e symbol delisting/listing sem exposição órfã",
-    "continuar ranking público multijanelas em horizontes maiores",
-    "manter alignment guard em 0.65",
-    "preservar R15 prospectivo sem backfill"
-  ]
+    "testes manuais do usuário nos modos Manual, Híbrido, Reverso e UltraFast",
+    "qualquer futura validação real deve ser registrada separadamente sem backfill das evidências sintéticas",
+    "manter produção e transporte real desabilitados até autorização explícita"
+  ],
+  "finalCertification": {
+    "classification": "RESEARCH_CERTIFIED_FINAL",
+    "productionApproved": false,
+    "commercialPerformanceCertified": false,
+    "realWorldProfitabilityProven": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "alignmentGuardThreshold": 0.65,
+    "r15ProspectiveBackfill": false,
+    "note": "Certificação técnica e de pesquisa do ciclo atual; não constitui prova de rentabilidade real nem autorização de execução em produção."
+  }
 }

@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluateR56ManualAdvisory,runR56Battery} from '../lib/platform/research/robot-r56-manual-final-advisory.mjs';
+test('R56 never takes control from manual operator',()=>{const x=evaluateR56ManualAdvisory({consecutiveLosses:5,sessionDrawdownR:7,confidence:.4,operatorRequestedHelp:true});assert.equal(x.operatorRetainsControl,true);assert.equal(x.automaticModeSwitch,false);assert.equal(x.automaticEntry,false);assert.equal(x.automaticExit,false);});
+test('R56 integrated battery passes',()=>{const x=runR56Battery();assert.equal(x.pass,true);assert.equal(x.ordersSent,0);assert.equal(x.actualLossesAvoided,null);});

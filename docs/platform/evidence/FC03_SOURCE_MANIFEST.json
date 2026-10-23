@@ -1,0 +1,210 @@
+{
+  "schema": "JENIOS_FC03_SOURCE_MANIFEST_V1",
+  "fc02Commit": "1995a3c4f87f269b9506af0caada7633d05f149a",
+  "r59Commit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+  "r59CI": 39957136366,
+  "inheritedManifest": "docs/platform/evidence/FC02_SOURCE_MANIFEST.json",
+  "inheritedRelocations": {
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json": "docs/platform/evidence/variants/ROBOT_MASTER_PERFORMANCE_LEDGER_R49.json"
+  },
+  "sources": [
+    {
+      "path": ".github/workflows/jenios-robot-block-a-r51-r55-final-ultrafast.yml",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": ".github/workflows/jenios-robot-block-a-r51-r55-final-ultrafast.yml",
+      "sha256": "59ee93b16a8a009a502e4a5d89c8690d9104e8ce3fb828ac601777b3fd6629cd"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-block-b-r56-r58-assisted-modes-final.yml",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": ".github/workflows/jenios-robot-block-b-r56-r58-assisted-modes-final.yml",
+      "sha256": "b67178e71773df84fa6df18a9f8833fa9ffb742a5cb99f2453de143a1cc0aba7"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-block-c-r59-final-certification.yml",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": ".github/workflows/jenios-robot-block-c-r59-final-certification.yml",
+      "sha256": "f793096193656f86042e1f1763f63f3a9e3b1c1a15f36e972b8ffc3243eb4bee"
+    },
+    {
+      "path": ".github/workflows/jenios-robot-r50-economic-shock-cliffs.yml",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": ".github/workflows/jenios-robot-r50-economic-shock-cliffs.yml",
+      "sha256": "6eb8f3ec88a9535b55b5ff5e27c6c3cfc01f090c47245ad2b311c7c9f98f5b11"
+    },
+    {
+      "path": "docs/platform/ROBOT_BLOCK_A_R51_R55_FINAL_ULTRAFAST.md",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/ROBOT_BLOCK_A_R51_R55_FINAL_ULTRAFAST.md",
+      "sha256": "be0cc24bd1474ed7c395f4977e2a52cd746aa0b16ac3f252f62060c8e750db83"
+    },
+    {
+      "path": "docs/platform/ROBOT_BLOCK_B_R56_R58_ASSISTED_MODES_FINAL.md",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/ROBOT_BLOCK_B_R56_R58_ASSISTED_MODES_FINAL.md",
+      "sha256": "db96f366c5341fcf10e1fda3d3471357d7e86f047c742daba8787f3f79480dca"
+    },
+    {
+      "path": "docs/platform/ROBOT_R50_ECONOMIC_SHOCK_CLIFFS.md",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/ROBOT_R50_ECONOMIC_SHOCK_CLIFFS.md",
+      "sha256": "e7d8e353de6456bf47d6754ac49fa8039c66a267da7a27e45b28746bb8b4d0a1"
+    },
+    {
+      "path": "docs/platform/ROBOT_R59_FINAL_CERTIFICATION.md",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/ROBOT_R59_FINAL_CERTIFICATION.md",
+      "sha256": "bbd7bf055186a802aa5754a4514f3b7cc4076fe53e4c9f058495db23e8c2dc57"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_BLOCK_A_R51_R55_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/evidence/ROBOT_BLOCK_A_R51_R55_CERTIFIED_CHECKPOINT.json",
+      "sha256": "4f1dcdc41692834e3becee89e825eac4a52d46fd2c951621c4ad573432acf87b"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_BLOCK_B_R56_R58_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/evidence/ROBOT_BLOCK_B_R56_R58_CERTIFIED_CHECKPOINT.json",
+      "sha256": "fcd076b15f13a4d1495d95cc0a1ca80939a24ad2b26db53a13adad0a7c05e88c"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "sha256": "5d6202c718950e3801ecee60e53c2ed734ca2d84e13fd562d108181fb045fc09"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R50_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/evidence/ROBOT_R50_CERTIFIED_CHECKPOINT.json",
+      "sha256": "0b435780f1d1b686ceee4a861197749a6a9bcbbe9e3cae0b9943ef90d347cdfd"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R59_FINAL_CERTIFIED_CHECKPOINT.json",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "docs/platform/evidence/ROBOT_R59_FINAL_CERTIFIED_CHECKPOINT.json",
+      "sha256": "b0a8fb1b1d4d1ddd1463b55436becc7afcf194bdb9e2f543fe0eedbccb1f9de0"
+    },
+    {
+      "path": "lib/platform/research/robot-r50-economic-shock-cliffs.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r50-economic-shock-cliffs.mjs",
+      "sha256": "a683f09e3f2a96e09ba1efe7175a5155bc548ca29c513cc5fa03d61e7949b616"
+    },
+    {
+      "path": "lib/platform/research/robot-r51-chaos-soak-integrated.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r51-chaos-soak-integrated.mjs",
+      "sha256": "18c5a4f470a1a29d55afe3e20fe43fa4ed0627d48ceb8e81eeeb566f883ef6b7"
+    },
+    {
+      "path": "lib/platform/research/robot-r52-market-symbol-lifecycle.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r52-market-symbol-lifecycle.mjs",
+      "sha256": "85bcea5c616234775e7c9e038e9661c60f2920327af9be210c2453959c4a19f7"
+    },
+    {
+      "path": "lib/platform/research/robot-r53-dynamic-asset-selection.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r53-dynamic-asset-selection.mjs",
+      "sha256": "55994543f67564e0147af4ee352fa6434678c1f5b9520d718b9cb2db4bf35831"
+    },
+    {
+      "path": "lib/platform/research/robot-r54-large-horizon-multiwindow.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r54-large-horizon-multiwindow.mjs",
+      "sha256": "d7b9c6856d91f398f0538b0ac22c95b5067b9038f2b81681786812b829d255ee"
+    },
+    {
+      "path": "lib/platform/research/robot-r55-long-session-stress.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r55-long-session-stress.mjs",
+      "sha256": "5db541cc719bf8b6d991b0abe10ac3a59c2c7c0e78720df7650c511ce6ef4c38"
+    },
+    {
+      "path": "lib/platform/research/robot-r56-manual-final-advisory.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r56-manual-final-advisory.mjs",
+      "sha256": "2c1f40fa3ec64d862f500527855e29d0e552afde9f758ffa45a67e5d9c95ec3f"
+    },
+    {
+      "path": "lib/platform/research/robot-r57-hybrid-final-alignment.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r57-hybrid-final-alignment.mjs",
+      "sha256": "7fddacb2caf7df3116417d72c837f32e603c5b00b1ee5b747c6f7ef77a0e4dd9"
+    },
+    {
+      "path": "lib/platform/research/robot-r58-reverse-final-stress.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r58-reverse-final-stress.mjs",
+      "sha256": "df6c00c4d189ebe2af620ae0f3004c1a2c218fd94ea9c40ce79f5efb8dd301ae"
+    },
+    {
+      "path": "lib/platform/research/robot-r59-final-certification.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "lib/platform/research/robot-r59-final-certification.mjs",
+      "sha256": "d51ef6a49174a24fe01b9513ec0158b4f3cc68f82ea885fd92b909d63b74cbc0"
+    },
+    {
+      "path": "tests/platformRobotR50EconomicShockCliffs.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR50EconomicShockCliffs.test.mjs",
+      "sha256": "5635f837faaaef9a8f7586e99481b9b1b3c756f14b3a9031a7e6c0260b5ffff6"
+    },
+    {
+      "path": "tests/platformRobotR51ChaosSoakIntegrated.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR51ChaosSoakIntegrated.test.mjs",
+      "sha256": "d1e99c9a890aa550aa53e81fc1ffda1ce44b98cb5e325526a6abbe595cde10eb"
+    },
+    {
+      "path": "tests/platformRobotR52MarketSymbolLifecycle.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR52MarketSymbolLifecycle.test.mjs",
+      "sha256": "7c08e1be9f2ba0b3de6c36f1182bce031f9766651ccbf173d83fa26df89b5c61"
+    },
+    {
+      "path": "tests/platformRobotR53DynamicAssetSelection.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR53DynamicAssetSelection.test.mjs",
+      "sha256": "0f64f7df86247827bc2e467821780b50f97c9e5b03239c492a52f7b885021115"
+    },
+    {
+      "path": "tests/platformRobotR54LargeHorizonMultiwindow.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR54LargeHorizonMultiwindow.test.mjs",
+      "sha256": "6950afdbd85cc58058ad6369680607db5e206531fd09a7755349a870e59142c4"
+    },
+    {
+      "path": "tests/platformRobotR55LongSessionStress.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR55LongSessionStress.test.mjs",
+      "sha256": "e28a66e25adc36baea2e66759cd907a20d079facd28a880ae9a1049c450c4cc4"
+    },
+    {
+      "path": "tests/platformRobotR56ManualFinalAdvisory.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR56ManualFinalAdvisory.test.mjs",
+      "sha256": "c4e87f49d97ad0eaa87fcbc8cd5148cea358878117c5eb224537320a5c0421f6"
+    },
+    {
+      "path": "tests/platformRobotR57HybridFinalAlignment.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR57HybridFinalAlignment.test.mjs",
+      "sha256": "1329b802923d0c6c838081ba549843cb7c986a0c82d43fccf4857fa3f5c137ef"
+    },
+    {
+      "path": "tests/platformRobotR58ReverseFinalStress.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR58ReverseFinalStress.test.mjs",
+      "sha256": "9fd7f5e98722f6891123857c0590e4ee810796aff84f36e554f276322172b637"
+    },
+    {
+      "path": "tests/platformRobotR59FinalCertification.test.mjs",
+      "sourceCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+      "sourcePath": "tests/platformRobotR59FinalCertification.test.mjs",
+      "sha256": "8c60bb9e1f0054175128b7ed8fb86ba6deaad6a168e2d324be571dbaab071098"
+    }
+  ]
+}

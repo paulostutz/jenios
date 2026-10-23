@@ -1,0 +1,122 @@
+{
+  "schema": "JENIOS_FC03_CHECKPOINT_V1",
+  "status": "OFFLINE_CANDIDATE_PENDING_CI_ORIGINAL_CORE_UNAVAILABLE",
+  "blockComplete": false,
+  "branch": "research/jenios-fc03-functional-path-20261023",
+  "plannedBackup": "backup/jenios-fc03-offline-path-verified-20261023",
+  "baseFC02": "1995a3c4f87f269b9506af0caada7633d05f149a",
+  "researchR59": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+  "researchR59CI": 39957136366,
+  "sourceManifest": "docs/platform/evidence/FC03_SOURCE_MANIFEST.json",
+  "inheritedFilesVerified": 353,
+  "researchUpdateFilesVerified": 33,
+  "sourcePreservation": {
+    "fc02ModifiedPaths": [
+      "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "vercel.json"
+    ],
+    "priorR49LedgerArchived": "docs/platform/evidence/variants/ROBOT_MASTER_PERFORMANCE_LEDGER_R49.json",
+    "originalCertifiedBranchesModified": false
+  },
+  "localValidation": {
+    "research": "265/265",
+    "fc03": "8/8"
+  },
+  "privateCoreInspection": {
+    "schema": "JENIOS_FC03_ORIGINAL_CORE_INSPECTION_V1",
+    "status": "ORIGINAL_CORE_UNAVAILABLE_OR_UNVERIFIED",
+    "files": [
+      {
+        "name": "engine.mjs",
+        "expectedSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+        "observedSha256": null,
+        "status": "DIRECTORY_NOT_CONFIGURED"
+      },
+      {
+        "name": "service.mjs",
+        "expectedSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+        "observedSha256": null,
+        "status": "DIRECTORY_NOT_CONFIGURED"
+      }
+    ],
+    "originalBytesMatch": false,
+    "privateEngineLoaded": false,
+    "runtimeImported": false,
+    "runtimeDependenciesVerified": false,
+    "originalDecisionObserved": false,
+    "externalIntegrationCertified": false,
+    "ordersSent": 0,
+    "paperOrdersSent": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "originalCoreRecovery": {
+    "documentedSources": [
+      "Library B53 consolidated private backup",
+      "Private B101-B105 service"
+    ],
+    "documentedAt": [
+      "docs/platform/B149-B154-AUDIT.md",
+      "docs/platform/R45-B92-PRIVATE-CORE-BRIDGE.md"
+    ],
+    "searches": [
+      "Available Documents/Downloads/Desktop paths",
+      "51 JENIOS ZIP archives in Downloads",
+      "Connected Google Drive searches: JENIOS and engine.mjs",
+      "Accessible ChatGPT Pages search: JENIOS",
+      "Historical B52 and B297 thread references"
+    ],
+    "result": "NO_MATCHING_ORIGINAL_EXECUTABLE_LOCATED_IN_SEARCHED_SOURCES",
+    "libraryDirectAccess": "Browser unavailable; generic Library file search is not exposed by connected tools",
+    "fullLibraryExhaustivelySearched": false
+  },
+  "functionalPath": {
+    "adapterExercised": "Existing Alpaca Paper read/proposal/lookup path with local response fixtures",
+    "requestMethods": "GET-only fixtures; no external request",
+    "steps": [
+      "account_read",
+      "customer_binding",
+      "three_mode_proposal",
+      "fixed_point_risk",
+      "partial_observation",
+      "R49_reconciliation",
+      "mismatch_blocks_next_order"
+    ],
+    "originalCoreDecisionObserved": false,
+    "productionAdapterSelected": false,
+    "authenticatedBrokerConnectionTested": false,
+    "testCountsDoNotProveRuntimeIntegration": true
+  },
+  "pendingAcceptance": [
+    "Recover exact original engine.mjs/service.mjs privately and inspect their dependencies",
+    "Run existing B297 original core capture in an isolated offline environment",
+    "Connect and observe the original decisions through the adopted customer-account path without external orders"
+  ],
+  "completionPlan": {
+    "completed": [
+      "FC01",
+      "FC02"
+    ],
+    "inProgress": "FC03",
+    "remaining": [
+      "FC03",
+      "FC04",
+      "FC05",
+      "FC06"
+    ],
+    "correctionReserve": 2
+  },
+  "privateEngineLoaded": false,
+  "externalIntegrationCertified": false,
+  "productionTouched": false,
+  "mergePerformed": false,
+  "deployPerformed": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "emailsSent": 0,
+  "chargesCreated": 0,
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null
+}

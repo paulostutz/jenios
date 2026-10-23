@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runR55LongSession} from '../lib/platform/research/robot-r55-long-session-stress.mjs';
+test('R55 long session remains bounded and synthetic',()=>{const x=runR55LongSession({events:100000});assert.equal(x.pass,true);assert.ok(x.sessions>=5);assert.ok(x.trades>0);assert.ok(x.blocked>0);assert.equal(x.ordersSent,0);assert.equal(x.paperOrdersSent,0);assert.equal(x.actualBrokerPnl,null);});

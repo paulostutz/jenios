@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {R57_FROZEN_THRESHOLD,runR57Battery} from '../lib/platform/research/robot-r57-hybrid-final-alignment.mjs';
+test('R57 freezes threshold at 0.65',()=>assert.equal(R57_FROZEN_THRESHOLD,.65));
+test('R57 final alignment battery protects aligned operator',()=>{const x=runR57Battery();assert.equal(x.pass,true);assert.equal(x.alignedOperatorProtected,true);assert.equal(x.materialDisagreementAdvised,true);assert.equal(x.lowConfidenceDoesNotIntervene,true);assert.equal(x.ordersSent,0);});

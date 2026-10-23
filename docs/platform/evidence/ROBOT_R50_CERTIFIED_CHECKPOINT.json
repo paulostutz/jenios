@@ -1,0 +1,44 @@
+{
+  "schema": "JENIOS_ROBOT_R50_CERTIFIED_CHECKPOINT_V1",
+  "block": "R50",
+  "base": {
+    "block": "R49",
+    "branch": "backup/jenios-robot-r49-order-reconciliation-races-certified-20261023",
+    "commit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac"
+  },
+  "branch": "research/jenios-robot-r50-economic-shock-cliffs-20261023",
+  "scope": {
+    "title": "Economic Shock / Liquidity-cliff / Adverse-selection Stress",
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "validations": {
+    "feeSpikeRevokes": true,
+    "spreadShockRevokes": true,
+    "liquidityCliffRevokes": true,
+    "adverseSelectionRevokes": true,
+    "lowDepthReducesFill": true,
+    "lowDepthRaisesCost": true,
+    "normalizedRegimeReauthorizes": true,
+    "noAuthorizationCarryover": true,
+    "zeroFalseAllows": true
+  },
+  "evidence": {
+    "validationRun": 39953913426,
+    "directed": "236/236",
+    "general": "2042/2042",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

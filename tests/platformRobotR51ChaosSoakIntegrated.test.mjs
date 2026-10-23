@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runR51ChaosSoak} from '../lib/platform/research/robot-r51-chaos-soak-integrated.mjs';
+test('R51 integrated chaos soak has zero false allows',()=>{const x=runR51ChaosSoak({events:50000});assert.equal(x.pass,true);assert.equal(x.falseAllows,0);assert.ok(x.reconnects>0);assert.ok(x.leaderChanges>0);assert.equal(x.ordersSent,0);assert.equal(x.paperOrdersSent,0);});

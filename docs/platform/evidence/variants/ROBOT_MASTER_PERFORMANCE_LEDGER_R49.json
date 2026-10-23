@@ -1,0 +1,659 @@
+{
+  "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
+  "generatedAt": "2026-10-23T12:21:34Z",
+  "scope": "R12-R49",
+  "globalRules": {
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "productionDeployPerformed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  },
+  "robots": [
+    {
+      "robot": "manual",
+      "status": "RESEARCH_VALIDATED",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "keyFindings": [
+        "Operador decide sozinho.",
+        "Sistema pode detectar sequência de perdas e sugerir pausa/educação.",
+        "Nenhuma troca automática de modo.",
+        "Sinais/prévias não são tratados como ordens executadas."
+      ],
+      "syntheticPerformance": {
+        "r17BaselineNetR": 1667.746008,
+        "notes": "Baseline sintético usado como referência de comparação; não é PnL real."
+      },
+      "prospectiveEvidence": {
+        "r14": "ABSTAIN_ONLY",
+        "r15": "W01_VALID_W02_NO_GO_OTHER_WINDOWS_NOT_RETROFILLED"
+      }
+    },
+    {
+      "robot": "hybrid",
+      "status": "RESEARCH_VALIDATED_REFINING",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "alignmentGuardThreshold": 0.65,
+      "keyFindings": [
+        "Ajuda cresce conforme aumenta o erro de intenção do operador sintético.",
+        "Prejudicava operador já alinhado em parte dos cenários do R17.",
+        "Alignment guard adicionado no R19.",
+        "0.65 venceu 0.50 em dois holdouts independentes R21/R22."
+      ],
+      "syntheticPerformance": {
+        "r17NetUpliftR": 5653.6391265,
+        "r17HarmedRateApprox": 0.2712,
+        "r17AbstentionRateApprox": 0.5,
+        "intentErrorUpliftR": {
+          "0": -1464.2770272,
+          "0.15": -339.4566101,
+          "0.35": 896.2497542,
+          "0.60": 2096.7903521,
+          "1.00": 4464.3326575
+        },
+        "notes": "Todos os números são de laboratório sintético."
+      }
+    },
+    {
+      "robot": "reverse",
+      "status": "RESEARCH_VALIDATED_REFINING",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "alignmentGuardThreshold": 0.65,
+      "keyFindings": [
+        "Maior benefício sintético aparece quando o operador está claramente errado.",
+        "Megatendência e segurança impedem inversão cega.",
+        "Alignment guard evita interferência quando operador e contexto já estão alinhados.",
+        "Transporte de ordens permanece desabilitado."
+      ],
+      "syntheticPerformance": {
+        "unvalidatedNetUpliftR": 6043.6992337,
+        "hypotheticallyCalibratedNetUpliftR": 5745.7427736,
+        "unvalidatedIntentErrorUpliftR": {
+          "0": -1386.2650058,
+          "0.15": -261.4445889,
+          "0.35": 974.2617756,
+          "0.60": 2174.8023737,
+          "1.00": 4542.3446791
+        },
+        "notes": "Resultados exclusivamente sintéticos/laboratoriais."
+      }
+    },
+    {
+      "robot": "ultrafast",
+      "status": "FOUNDATION_AND_MICROSTRUCTURE_VALIDATED",
+      "technicalSafety": "PASS",
+      "decisionQuality": "MICROSTRUCTURE_LAB",
+      "commercialAccess": {
+        "platform-nacional": false,
+        "platform-global-crypto": true,
+        "platform-internacional-pro": true,
+        "perTradeFee": false
+      },
+      "keyFindings": [
+        "Foco inicial em cripto.",
+        "Ranking precisa combinar volatilidade, liquidez, profundidade, atividade, spread, custo e fill.",
+        "Maker/taker, fila, partial fills, cancel/replace, latência, adverse selection e rate limits modelados.",
+        "Sessões de 10k/20k tentativas simuladas com custos, drawdown e loss streak.",
+        "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste.",
+        "R25 adicionou perfis sintéticos configuráveis de custo, non-fill penalty, outage, maintenance, symbol offline, stale data, ack lento e clusters de rejeição.",
+        "R26 exige proveniência explícita de custos: schedule oficial não prova tier real do cliente; custo realista só pode ser usado com tier verificado ou cenário sintético marcado.",
+        "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY.",
+        "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill.",
+        "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid.",
+        "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos.",
+        "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime.",
+        "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica.",
+        "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas.",
+        "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar.",
+        "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas.",
+        "R35 estendeu o R34 para stress longo multi-sessão: 12 sessões, 6.000 eventos, múltiplos halts e recoveries parciais, exigindo novos sessionId/authorizationId e mantendo zero vazamento de autorização ou reentrada de sessão haltada.",
+        "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões.",
+        "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado.",
+        "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams.",
+        "R39 adicionou persistência/restauração segura por stream e rotação de sessão: epochs, tombstones, halts, fingerprints de eventos e autorizações sobrevivem a restart do processo; sessões novas exigem reset completo e identificadores inéditos.",
+        "R40 endureceu a restauração de estado: snapshots incompatíveis, corrompidos ou com buffers inválidos falham fechados, com autorização operacional desabilitada; checkpoints feitos durante reordenação preservam o buffer e só drenam após o epoch faltante.",
+        "R41 adicionou integridade SHA-256 e checkpoint atômico em duas fases: alteração silenciosa/truncamento invalidam o snapshot; estado apenas STAGED nunca é recuperável; somente checkpoint COMMITTED e verificado pode restaurar operação.",
+        "R42 adicionou geração monotônica e proteção contra rollback: snapshots válidos porém antigos são bloqueados pelo high-water mark; checkpoint mais recente corrompido pode cair apenas uma geração para a última cópia íntegra, sem reduzir o high-water mark.",
+        "R43 adicionou replicação com quorum: o high-water mark só avança com maioria, divergência entre cópias é detectada, fallback exige quorum íntegro da geração anterior e ausência de quorum válido resulta em fail-closed.",
+        "R44 ampliou o quorum para 5 réplicas e validou partições 2/3: a minoria não promove geração, a maioria pode avançar, split-brain é detectado e a reconvergência reescreve todas as réplicas para o estado majoritário preservando o high-water mark.",
+        "R45 adicionou eleição de líder com quorum e fencing token/lease monotônicos: líder antigo perde capacidade de escrita ao perder quorum, novo líder recebe fence superior e o stale writer continua bloqueado mesmo após reconvergência.",
+        "R46 adicionou tempo monotônico de autoridade para lease, defesa contra clock skew, expiração após GC stall, handoff gracioso e recuperação após crash; nenhum relógio local ou líder antigo consegue prolongar autorização após vencimento/fencing stale.",
+        "R47 adicionou freshness fencing de market data: reconnect e handoff exigem novo source epoch, sequência contínua, janela de idade válida e reconfirmação sob o fencing token do líder atual; book stale ou feed antigo não libera decisão.",
+        "R48 adicionou controle de reconnect storms, budget de requests e backpressure adaptativo: reconnect invalida trabalho antigo, fila é limitada, orçamento interrompe retry storm e tarefas/decisões vencidas são descartadas antes de qualquer autorização.",
+        "R49 adicionou reconciliação de corridas partial-fill/cancel-replace: replace só nasce após cancel ack, fill tardio pré-terminal é reconciliado, eventos duplicados são idempotentes e overfill/mismatch com corretora bloqueiam novas ordens até reconciliação."
+      ],
+      "labScale": {
+        "r19Microstructure": ">100000 combinations",
+        "r20Microexecution": 194400,
+        "r23HighTurnoverStress": [
+          10000,
+          20000
+        ],
+        "r25ExchangeStress": "3 assets × 3 cost profiles × 2 styles × 5 edges × 4 fill levels × 4 win rates; sessions of 10,000 attempts.",
+        "r27DynamicBreakeven": {
+          "configurations": 4032,
+          "allowed": 548,
+          "blocked": 3484,
+          "positiveUngated": 1452,
+          "positiveGated": 548,
+          "negativeConfigurationsAvoided": 2580,
+          "note": "Gate conservador: preservou somente configurações que ficaram positivas no grid, mas também bloqueou parte de configurações positivas; precisa refinamento de recall."
+        },
+        "r28BreakevenRecall": {
+          "configurations": 4032,
+          "positiveConfigurations": 1452,
+          "baselineAllowed": 548,
+          "adaptiveAllowed": 619,
+          "baselinePositiveCaptured": 548,
+          "adaptivePositiveCaptured": 619,
+          "recoveredPositive": 71,
+          "baselineFalsePositive": 0,
+          "adaptiveFalsePositive": 0,
+          "recallBaseline": 0.37741,
+          "recallAdaptive": 0.426309
+        },
+        "r29IndependentHoldout": {
+          "configurations": 2688,
+          "attemptsPerConfiguration": 7000,
+          "positiveConfigurations": 884,
+          "baselineAllowed": 381,
+          "adaptiveAllowed": 407,
+          "baselinePositiveCaptured": 381,
+          "adaptivePositiveCaptured": 407,
+          "recoveredPositive": 26,
+          "baselineFalsePositive": 0,
+          "adaptiveFalsePositive": 0,
+          "recallBaseline": 0.430995,
+          "recallAdaptive": 0.460407,
+          "note": "Holdout independente dos grids R27/R28; política R28 congelada."
+        },
+        "r30RegimeAdaptive": {
+          "sessions": 3,
+          "attemptsPerRegime": 2500,
+          "behaviors": [
+            "favorable→cost spike→recovery→low fill",
+            "mid→bad signal→signal recovery",
+            "cheap→adverse→normalized"
+          ],
+          "staleAuthorizationCarryover": false
+        },
+        "r31RecoveryRegimeInterlock": {
+          "pattern": [
+            "READY+GOOD=ALLOW",
+            "UNKNOWN_EXPOSURE+GOOD=BLOCK",
+            "READY+BAD_ECONOMICS=BLOCK",
+            "READY+NEW_GOOD=ALLOW"
+          ],
+          "noAuthorizationCarryover": true
+        },
+        "r32LongrunInterlock": {
+          "totalEvents": 9120,
+          "lengths": [
+            120,
+            600,
+            1200,
+            2400,
+            4800
+          ],
+          "falseAllows": 0,
+          "invariantHolds": true
+        },
+        "r33HysteresisSessionRisk": {
+          "events": 2400,
+          "noisyBoundaryEvents": 400,
+          "transitionReductionVerified": true,
+          "cumulativeSessionDrawdown": true,
+          "haltedSessionDoesNotAutoResume": true
+        },
+        "r34IndependentHysteresisReauth": {
+          "totalEvents": 25200,
+          "eventsPerSwitchFrequency": 3600,
+          "switchPeriods": [
+            1,
+            2,
+            3,
+            5,
+            8,
+            13,
+            21
+          ],
+          "policyFrozenFromR33": true,
+          "generatorIndependentFromR33": true,
+          "allCasesNonIncreasingChatter": true,
+          "haltedSessionCannotAutoResume": true,
+          "newSessionIdRequired": true,
+          "newAuthorizationIdRequired": true
+        },
+        "r35MultisessionRecovery": {
+          "sessions": 12,
+          "eventsPerSession": 500,
+          "totalEvents": 6000,
+          "partialRecoveryStages": [
+            "transport",
+            "market",
+            "account",
+            "risk"
+          ],
+          "repeatedRiskHalts": true,
+          "staleSessionReentryBlocked": true,
+          "staleAuthorizationLeak": false,
+          "uniqueSessionAndAuthorizationRequired": true
+        },
+        "r36IdempotencyConcurrency": {
+          "exactDuplicateReplayIgnored": true,
+          "conflictingReplayBlocked": true,
+          "incompleteResetSessionSwitchBlocked": true,
+          "authorizationChangeWithinSessionBlocked": true,
+          "authorizationReuseAcrossSessionsBlocked": true,
+          "zeroFalseAllows": true
+        },
+        "r37OrderedIngestion": {
+          "nominalEpochs": 5000,
+          "dedupWindow": 256,
+          "maxReorderGap": 4,
+          "nearFutureReorderingBuffered": true,
+          "lateEpochRejected": true,
+          "excessiveForwardGapRejected": true,
+          "boundedDedupWindow": true,
+          "zeroFalseAllows": true
+        },
+        "r38MultistreamExpiry": {
+          "streams": 4,
+          "nominalEpochsPerStream": 1800,
+          "activeDedupWindow": 128,
+          "tombstoneWindow": 4096,
+          "maxReorderGap": 4,
+          "independentOrderingPerStream": true,
+          "expiredReplayBlocked": true,
+          "boundedActiveDedup": true,
+          "boundedTombstones": true,
+          "zeroFalseAllows": true
+        },
+        "r39StateRestoreSessionRotation": {
+          "streams": 3,
+          "snapshotRestorePreservesEpochs": true,
+          "tombstonesSurviveRestart": true,
+          "haltedSessionsSurviveRestart": true,
+          "processedEventFingerprintsSurviveRestart": true,
+          "perStreamSessionRotation": true,
+          "oldSessionReplayBlockedAfterRestart": true,
+          "zeroFalseAllows": true
+        },
+        "r40FailclosedSnapshot": {
+          "incompatibleVersionFailsClosed": true,
+          "corruptSnapshotFailsClosed": true,
+          "staleBufferRejected": true,
+          "bufferEpochMismatchRejected": true,
+          "authorizationDisabledOnRestoreFailure": true,
+          "bufferedCheckpointRestores": true,
+          "zeroFalseAllows": true
+        },
+        "r41IntegrityAtomicCheckpoint": {
+          "sha256IntegritySeal": true,
+          "deterministicCanonicalChecksum": true,
+          "silentMutationDetected": true,
+          "truncationDetected": true,
+          "stagedCheckpointNotRecoverable": true,
+          "committedCheckpointRecoverable": true,
+          "integrityVerifiedBeforeRestore": true,
+          "zeroFalseAllows": true
+        },
+        "r42RollbackProtection": {
+          "monotonicGenerationEnforced": true,
+          "highWaterMarkNeverDecreases": true,
+          "validOldSnapshotBlocked": true,
+          "oneGenerationFallback": true,
+          "fallbackDoesNotLowerHighWaterMark": true,
+          "bothCopiesInvalidFailsClosed": true,
+          "zeroFalseAllows": true
+        },
+        "r43QuorumCheckpoint": {
+          "replicas": 3,
+          "majorityRequired": true,
+          "identicalGenerationChecksumQuorumRequired": true,
+          "divergenceDetected": true,
+          "oneGenerationFallbackWithQuorum": true,
+          "highWaterMarkPreserved": true,
+          "noValidQuorumFailsClosed": true,
+          "zeroFalseAllows": true
+        },
+        "r44SplitbrainReconvergence": {
+          "replicas": 5,
+          "quorum": 3,
+          "minorityPartitionCannotPromote": true,
+          "majorityPartitionCanPromote": true,
+          "splitBrainDetected": true,
+          "reconvergesToMajorityState": true,
+          "highWaterMarkPreserved": true,
+          "zeroFalseAllows": true
+        },
+        "r45LeaderFencing": {
+          "replicas": 5,
+          "majorityElectionRequired": true,
+          "fencingTokenMonotonic": true,
+          "leaseEpochMonotonic": true,
+          "staleWriterBlockedDuringPartition": true,
+          "staleWriterBlockedAfterReconvergence": true,
+          "zeroFalseAllows": true
+        },
+        "r46LeaseClockskewHandoff": {
+          "replicas": 5,
+          "monotonicAuthorityTime": true,
+          "boundedClockSkewAllowed": true,
+          "excessiveClockSkewBlocked": true,
+          "gcStallExpiresLease": true,
+          "lostQuorumCannotRenewLease": true,
+          "gracefulHandoffAdvancesFence": true,
+          "abruptCrashRecoveryAdvancesFence": true,
+          "zeroFalseAllows": true
+        },
+        "r47MarketdataFreshnessFence": {
+          "consecutiveFreshSnapshotsRequired": true,
+          "staleSnapshotBlocked": true,
+          "sourceEpochMismatchBlocked": true,
+          "sequenceGapRevokesReadiness": true,
+          "nonMonotonicExchangeTimeBlocked": true,
+          "leaderFenceMismatchBlocked": true,
+          "reconnectRequiresResync": true,
+          "handoffRequiresFreshResync": true,
+          "zeroFalseAllows": true
+        },
+        "r48ReconnectBackpressure": {
+          "reconnectBackoffIncreases": true,
+          "staleReconnectEpochBlocked": true,
+          "queueOverflowBlocked": true,
+          "requestBudgetStopsRetryStorm": true,
+          "staleTasksDropped": true,
+          "staleDecisionBlocked": true,
+          "highBackpressureBlocksDecision": true,
+          "reconnectInvalidatesOldWork": true,
+          "zeroFalseAllows": true
+        },
+        "r49OrderReconciliationRaces": {
+          "partialFillTracked": true,
+          "replaceBlockedBeforeCancelAck": true,
+          "latePreTerminalFillReconciled": true,
+          "duplicateFillIdempotent": true,
+          "fillAfterTerminalBlocked": true,
+          "overfillForcesReconciliation": true,
+          "brokerQtyMismatchBlocksNextOrder": true,
+          "replacementLineagePreserved": true,
+          "zeroFalseAllows": true
+        }
+      },
+      "publicReadOnlyEvidence": {
+        "r22SingleSnapshot": [
+          "SOLUSD",
+          "XBTUSD",
+          "ETHUSD"
+        ],
+        "r23ThreeSnapshotAverageRanking": [
+          {
+            "symbol": "SOLUSD",
+            "avgScore": 69.555222
+          },
+          {
+            "symbol": "ETHUSD",
+            "avgScore": 42.108319
+          },
+          {
+            "symbol": "XBTUSD",
+            "avgScore": 40.968022
+          }
+        ],
+        "notes": "Observacional, curtíssimo horizonte, não é sinal e não prova rentabilidade."
+      }
+    }
+  ],
+  "certifiedBlocks": {
+    "R16": {
+      "directed": "40/40",
+      "general": "1846/1846",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R17": {
+      "directed": "50/50",
+      "general": "1856/1856",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R18": {
+      "directed": "55/55",
+      "general": "1861/1861",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R19": {
+      "directed": "59/59",
+      "general": "1865/1865",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R20": {
+      "directed": "65/65",
+      "general": "1871/1871",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R21": {
+      "directed": "71/71",
+      "general": "1877/1877",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R22": {
+      "directed": "76/76",
+      "general": "1882/1882",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R23": {
+      "directed": "81/81",
+      "general": "1887/1887",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R24": {
+      "directed": "86/86",
+      "general": "1892/1892",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R25": {
+      "directed": "91/91",
+      "general": "1897/1897",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R26": {
+      "directed": "97/97",
+      "general": "1903/1903",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R27": {
+      "directed": "102/102",
+      "general": "1908/1908",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R28": {
+      "directed": "108/108",
+      "general": "1914/1914",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R29": {
+      "directed": "112/112",
+      "general": "1918/1918",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R30": {
+      "directed": "116/116",
+      "general": "1922/1922",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R31": {
+      "directed": "121/121",
+      "general": "1927/1927",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R32": {
+      "directed": "126/126",
+      "general": "1932/1932",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R33": {
+      "directed": "131/131",
+      "general": "1937/1937",
+      "social": "94/94",
+      "build": "PASS"
+    },
+    "R34": {
+      "directed": "137/137",
+      "general": "1943/1943",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39883430459
+    },
+    "R35": {
+      "directed": "142/142",
+      "general": "1948/1948",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39884100085
+    },
+    "R36": {
+      "directed": "148/148",
+      "general": "1954/1954",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39885115535
+    },
+    "R37": {
+      "directed": "154/154",
+      "general": "1960/1960",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39885859865
+    },
+    "R38": {
+      "directed": "160/160",
+      "general": "1966/1966",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39887816675
+    },
+    "R39": {
+      "directed": "165/165",
+      "general": "1971/1971",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39888493568
+    },
+    "R40": {
+      "directed": "171/171",
+      "general": "1977/1977",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39888970612
+    },
+    "R41": {
+      "directed": "178/178",
+      "general": "1984/1984",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39889407195
+    },
+    "R42": {
+      "directed": "184/184",
+      "general": "1990/1990",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39890029445
+    },
+    "R43": {
+      "directed": "190/190",
+      "general": "1996/1996",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39890622193
+    },
+    "R44": {
+      "directed": "196/196",
+      "general": "2002/2002",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39939925826
+    },
+    "R45": {
+      "directed": "202/202",
+      "general": "2008/2008",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39941465956
+    },
+    "R46": {
+      "directed": "209/209",
+      "general": "2015/2015",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39944834789
+    },
+    "R47": {
+      "directed": "215/215",
+      "general": "2021/2021",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39947113377
+    },
+    "R48": {
+      "directed": "222/222",
+      "general": "2028/2028",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39949920828
+    },
+    "R49": {
+      "directed": "230/230",
+      "general": "2036/2036",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39952592103
+    }
+  },
+  "nextObjectives": [
+    "testar fee/spread/slippage/liquidity shocks e adverse-selection cliffs",
+    "executar soak/fuzz/chaos de longa duração combinando reconnect, stale data, lease, backpressure e order reconciliation",
+    "testar exchange maintenance/halts e symbol delisting/listing sem exposição órfã",
+    "continuar ranking público multijanelas em horizontes maiores",
+    "manter alignment guard em 0.65",
+    "preservar R15 prospectivo sem backfill"
+  ]
+}

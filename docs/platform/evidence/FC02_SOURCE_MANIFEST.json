@@ -2070,7 +2070,7 @@
       "sha256": "83b65f77631f7feeb168f6445c76ac08df27953d608df7100c7e1a4359d4d408"
     },
     {
-      "path": "tests/platformRobotR5DualSourceIntegrity.test.mjs",
+      "path": "docs/platform/evidence/variants/platformRobotR5DualSourceIntegrity.original.mjs",
       "sourcePath": "tests/platformRobotR5DualSourceIntegrity.test.mjs",
       "sourceCommit": "4c21384f1e9a37c4889b2a75731bb702b9aa8dac",
       "sha256": "7307ada1bcbca0d5a7452e7e2eab804fc0fdd611db100021206928ebf9ab7cc3"
@@ -2125,7 +2125,8 @@
     }
   ],
   "resolution": {
-    "vercel.json": "Preserve commercial crons; union deployment disable rules and ignore patterns; disable FC02 and its certified backup"
+    "vercel.json": "Preserve commercial crons and deployment disable map; compact ignore patterns to 173 characters, covering every disabled branch and FC02 backup.",
+    "tests/platformRobotR5DualSourceIntegrity.test.mjs": "Original bytes preserved in evidence/variants/platformRobotR5DualSourceIntegrity.original.mjs. Only the deployment guard assertion is adapted in the candidate: execute the ignore command for each historical branch instead of requiring literal branch strings. R5 research assertions remain unchanged; B303 256-character limit remains unchanged."
   },
   "certificationScope": "Source composition and offline regression; not live integration of the private robot engine"
 }

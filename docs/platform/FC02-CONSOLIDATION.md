@@ -10,7 +10,7 @@ FC02 reúne código comercial B305/R35, pesquisa dos robôs até R49 e a variant
 
 O manifesto `evidence/FC02_SOURCE_MANIFEST.json` registra 353 arquivos e hashes originais. O checkpoint R46 da linha R49 fica no caminho original; o da variante temporal fica em `evidence/variants/`. Nenhum dos dois é substituído ou apresentado como sucessor do outro.
 
-A única sobreposição de alterações entre produto e pesquisa era `vercel.json`. A resolução preserva a configuração comercial de cron, reúne os bloqueios de publicação e desativa publicação automática para a candidata e o backup FC02. Os demais arquivos foram incorporados sem modificar o conteúdo certificado. Não foi executado merge em nenhuma branch de origem.
+A única sobreposição de alterações entre produto e pesquisa era `vercel.json`. A resolução preserva a configuração comercial de cron, reúne os bloqueios de publicação e desativa publicação automática para a candidata e o backup FC02. Uma asserção de configuração do teste R5 foi adaptada na candidata: ela agora executa o bloqueio para cada branch histórica, em vez de exigir nomes literais incompatíveis com o limite de 256 caracteres do B303. A versão original integral do teste está preservada em `evidence/variants/platformRobotR5DualSourceIntegrity.original.mjs`, com hash no manifesto; nenhuma asserção de pesquisa R5 foi alterada. Os demais arquivos foram incorporados sem modificar o conteúdo certificado. Não foi executado merge em nenhuma branch de origem.
 
 ## Inventário do caminho técnico
 

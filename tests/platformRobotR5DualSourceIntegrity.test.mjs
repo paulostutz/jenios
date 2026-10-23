@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import {
  sealR5ProspectiveBatch,reviewR5DualSourceEvidence,
  ROBOT_R5_FROZEN_PROTOCOL
@@ -245,6 +246,9 @@ test('R5 and every preceding private research branch remain blocked from Vercel 
   'fix/jenios-b301-private-durable-cohort-20261021'
  ]){
   assert.equal(vercel.git.deploymentEnabled[b],false);
-  assert.ok(vercel.ignoreCommand.includes(b));
+  // FC02 uses compact branch patterns; verify the actual deployment-ignore result.
+  const ignored=spawnSync('/bin/sh',['-c',vercel.ignoreCommand],{env:{VERCEL_GIT_COMMIT_REF:b},encoding:'utf8'});
+  assert.ifError(ignored.error);
+  assert.equal(ignored.status,0,`Deployment must be ignored for ${b}`);
  }
 });

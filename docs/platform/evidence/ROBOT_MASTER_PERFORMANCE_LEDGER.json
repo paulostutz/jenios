@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:34:10Z",
-  "scope": "R12-R28",
+  "generatedAt": "2026-10-23T00:41:10Z",
+  "scope": "R12-R29",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -104,7 +104,8 @@
         "R26 exige proveniência explícita de custos: schedule oficial não prova tier real do cliente; custo realista só pode ser usado com tier verificado ou cenário sintético marcado.",
         "R26 adicionou recuperação pós-outage: HALTED → RECONNECTING → MARKET_RESYNC → ACCOUNT_RECONCILE → RISK_RECONCILE → READY; novas entradas só em READY.",
         "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill.",
-        "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid."
+        "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid.",
+        "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -135,6 +136,21 @@
           "adaptiveFalsePositive": 0,
           "recallBaseline": 0.37741,
           "recallAdaptive": 0.426309
+        },
+        "r29IndependentHoldout": {
+          "configurations": 2688,
+          "attemptsPerConfiguration": 7000,
+          "positiveConfigurations": 884,
+          "baselineAllowed": 381,
+          "adaptiveAllowed": 407,
+          "baselinePositiveCaptured": 381,
+          "adaptivePositiveCaptured": 407,
+          "recoveredPositive": 26,
+          "baselineFalsePositive": 0,
+          "adaptiveFalsePositive": 0,
+          "recallBaseline": 0.430995,
+          "recallAdaptive": 0.460407,
+          "note": "Holdout independente dos grids R27/R28; política R28 congelada."
         }
       },
       "publicReadOnlyEvidence": {
@@ -239,11 +255,17 @@
       "general": "1914/1914",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R29": {
+      "directed": "112/112",
+      "general": "1918/1918",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "validar o gate adaptativo R28 em holdout independente para evitar overfitting",
-    "calibrar margem adaptativa por regime de custo/fill sem aumentar falsos positivos",
+    "promover R28 como candidato de laboratório após holdout R29, sem chamar de performance real",
+    "testar gate adaptativo por regimes temporais e custos variáveis",
     "continuar ranking público multijanelas em horizontes maiores",
     "stressar recovery pós-outage com reconexões intermitentes",
     "manter alignment guard em 0.65 e R15 sem backfill"

@@ -1,0 +1,137 @@
+{
+  "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
+  "generatedAt": "2026-10-23T00:02:19Z",
+  "scope": "R12-R23",
+  "globalRules": {
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "productionDeployPerformed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  },
+  "robots": [
+    {
+      "robot": "manual",
+      "status": "RESEARCH_VALIDATED",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "keyFindings": [
+        "Operador decide sozinho.",
+        "Sistema pode detectar sequência de perdas e sugerir pausa/educação.",
+        "Nenhuma troca automática de modo.",
+        "Sinais/prévias não são tratados como ordens executadas."
+      ],
+      "syntheticPerformance": {
+        "r17BaselineNetR": 1667.746008,
+        "notes": "Baseline sintético usado como referência de comparação; não é PnL real."
+      },
+      "prospectiveEvidence": {
+        "r14": "ABSTAIN_ONLY",
+        "r15": "W01_VALID_W02_NO_GO_OTHER_WINDOWS_NOT_RETROFILLED"
+      }
+    },
+    {
+      "robot": "hybrid",
+      "status": "RESEARCH_VALIDATED_REFINING",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "alignmentGuardThreshold": 0.65,
+      "keyFindings": [
+        "Ajuda cresce conforme aumenta o erro de intenção do operador sintético.",
+        "Prejudicava operador já alinhado em parte dos cenários do R17.",
+        "Alignment guard adicionado no R19.",
+        "0.65 venceu 0.50 em dois holdouts independentes R21/R22."
+      ],
+      "syntheticPerformance": {
+        "r17NetUpliftR": 5653.6391265,
+        "r17HarmedRateApprox": 0.2712,
+        "r17AbstentionRateApprox": 0.5,
+        "intentErrorUpliftR": {
+          "0": -1464.2770272,
+          "0.15": -339.4566101,
+          "0.35": 896.2497542,
+          "0.60": 2096.7903521,
+          "1.00": 4464.3326575
+        },
+        "notes": "Todos os números são de laboratório sintético."
+      }
+    },
+    {
+      "robot": "reverse",
+      "status": "RESEARCH_VALIDATED_REFINING",
+      "technicalSafety": "PASS",
+      "decisionQuality": "LAB_EVALUATED",
+      "alignmentGuardThreshold": 0.65,
+      "keyFindings": [
+        "Maior benefício sintético aparece quando o operador está claramente errado.",
+        "Megatendência e segurança impedem inversão cega.",
+        "Alignment guard evita interferência quando operador e contexto já estão alinhados.",
+        "Transporte de ordens permanece desabilitado."
+      ],
+      "syntheticPerformance": {
+        "unvalidatedNetUpliftR": 6043.6992337,
+        "hypotheticallyCalibratedNetUpliftR": 5745.7427736,
+        "unvalidatedIntentErrorUpliftR": {
+          "0": -1386.2650058,
+          "0.15": -261.4445889,
+          "0.35": 974.2617756,
+          "0.60": 2174.8023737,
+          "1.00": 4542.3446791
+        },
+        "notes": "Resultados exclusivamente sintéticos/laboratoriais."
+      }
+    },
+    {
+      "robot": "ultrafast",
+      "status": "FOUNDATION_AND_MICROSTRUCTURE_VALIDATED",
+      "technicalSafety": "PASS",
+      "decisionQuality": "MICROSTRUCTURE_LAB",
+      "commercialAccess": {
+        "platform-nacional": false,
+        "platform-global-crypto": true,
+        "platform-internacional-pro": true,
+        "perTradeFee": false
+      },
+      "keyFindings": [
+        "Foco inicial em cripto.",
+        "Ranking precisa combinar volatilidade, liquidez, profundidade, atividade, spread, custo e fill.",
+        "Maker/taker, fila, partial fills, cancel/replace, latência, adverse selection e rate limits modelados.",
+        "Sessões de 10k/20k tentativas simuladas com custos, drawdown e loss streak.",
+        "Ranking multijanelas ganhou penalidade de estabilidade reforçada após falha de teste."
+      ],
+      "labScale": {
+        "r19Microstructure": ">100000 combinations",
+        "r20Microexecution": 194400,
+        "r23HighTurnoverStress": [10000, 20000]
+      },
+      "publicReadOnlyEvidence": {
+        "r22SingleSnapshot": ["SOLUSD","XBTUSD","ETHUSD"],
+        "r23ThreeSnapshotAverageRanking": [
+          {"symbol":"SOLUSD","avgScore":69.555222},
+          {"symbol":"ETHUSD","avgScore":42.108319},
+          {"symbol":"XBTUSD","avgScore":40.968022}
+        ],
+        "notes": "Observacional, curtíssimo horizonte, não é sinal e não prova rentabilidade."
+      }
+    }
+  ],
+  "certifiedBlocks": {
+    "R16": {"directed":"40/40","general":"1846/1846","social":"94/94","build":"PASS"},
+    "R17": {"directed":"50/50","general":"1856/1856","social":"94/94","build":"PASS"},
+    "R18": {"directed":"55/55","general":"1861/1861","social":"94/94","build":"PASS"},
+    "R19": {"directed":"59/59","general":"1865/1865","social":"94/94","build":"PASS"},
+    "R20": {"directed":"65/65","general":"1871/1871","social":"94/94","build":"PASS"},
+    "R21": {"directed":"71/71","general":"1877/1877","social":"94/94","build":"PASS"},
+    "R22": {"directed":"76/76","general":"1882/1882","social":"94/94","build":"PASS"},
+    "R23": {"directed":"81/81","general":"1887/1887","social":"94/94","build":"PASS"}
+  },
+  "nextObjectives": [
+    "expandir evidência pública multijanelas em horizontes maiores",
+    "avaliar custos específicos por exchange/tier sem inventar taxa do cliente",
+    "stressar UltraFast por ativo com cenários de outage/maintenance",
+    "continuar refinando alignment guard sem reduzir abaixo de 0.65 sem nova evidência independente",
+    "preservar R15 prospectivo como trilha separada sem backfill"
+  ]
+}

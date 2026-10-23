@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T01:21:31Z",
-  "scope": "R12-R34",
+  "generatedAt": "2026-10-23T01:28:37Z",
+  "scope": "R12-R35",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -110,7 +110,8 @@
         "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica.",
         "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas.",
         "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar.",
-        "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas."
+        "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas.",
+        "R35 estendeu o R34 para stress longo multi-sessão: 12 sessões, 6.000 eventos, múltiplos halts e recoveries parciais, exigindo novos sessionId/authorizationId e mantendo zero vazamento de autorização ou reentrada de sessão haltada."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -213,6 +214,21 @@
           "haltedSessionCannotAutoResume": true,
           "newSessionIdRequired": true,
           "newAuthorizationIdRequired": true
+        },
+        "r35MultisessionRecovery": {
+          "sessions": 12,
+          "eventsPerSession": 500,
+          "totalEvents": 6000,
+          "partialRecoveryStages": [
+            "transport",
+            "market",
+            "account",
+            "risk"
+          ],
+          "repeatedRiskHalts": true,
+          "staleSessionReentryBlocked": true,
+          "staleAuthorizationLeak": false,
+          "uniqueSessionAndAuthorizationRequired": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -355,11 +371,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39883430459
+    },
+    "R35": {
+      "directed": "142/142",
+      "general": "1948/1948",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39884100085
     }
   },
   "nextObjectives": [
-    "estender o interlock R34 para holdout longo multi-sessão com múltiplos halts, outages e ciclos de recovery/reauthorization",
-    "testar reconciliação parcial e recovery atrasado sem permitir reentrada prematura",
+    "estender o R35 para stress ainda mais longo com resets incompletos, eventos duplicados e mudanças de sessão concorrentes",
+    "testar replay/idempotência de eventos de recovery e autorização para impedir dupla liberação",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

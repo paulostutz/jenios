@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evaluateR58Reverse,runR58Battery} from '../lib/platform/research/robot-r58-reverse-final-stress.mjs';
+test('R58 megatrend exception overrides reversal',()=>{const x=evaluateR58Reverse({operatorSide:'buy',technicalSide:'sell',confidence:.99,megaTrend:true,lossStreak:10,syntheticLossIfFollowedR:3});assert.equal(x.reverseReference,false);assert.equal(x.suggestReverseMode,false);});
+test('R58 losseshometro remains hypothetical only',()=>{const x=runR58Battery();assert.equal(x.pass,true);assert.ok(x.syntheticLosseshometroOnly);assert.equal(x.actualLossesAvoided,null);assert.equal(x.ordersSent,0);});

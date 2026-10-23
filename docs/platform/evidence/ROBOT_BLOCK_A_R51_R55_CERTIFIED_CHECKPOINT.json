@@ -1,0 +1,42 @@
+{
+  "schema": "JENIOS_ROBOT_BLOCK_A_R51_R55_CERTIFIED_CHECKPOINT_V1",
+  "block": "A",
+  "scope": "R51-R55 final UltraFast refinement",
+  "base": {
+    "block": "R50",
+    "branch": "backup/jenios-robot-r50-economic-shock-cliffs-certified-20261023",
+    "commit": "461aa63f77f29642ea3ea0f2c04cbd3167e96b39"
+  },
+  "branch": "research/jenios-robot-block-a-r51-r55-final-ultrafast-20261023",
+  "validations": {
+    "r51ChaosSoak": {
+      "events": 50000,
+      "zeroFalseAllows": true
+    },
+    "r52MarketSymbolLifecycle": true,
+    "r53DynamicAssetSelection": true,
+    "r54LargeHorizonMultiwindow": true,
+    "r55LongSessionStress": {
+      "events": 100000
+    },
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "evidence": {
+    "validationRun": 39955760574,
+    "directed": "244/244",
+    "general": "2050/2050",
+    "social": "94/94",
+    "build": "PASS",
+    "pages": "76/76"
+  },
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

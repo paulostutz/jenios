@@ -8,7 +8,7 @@ import {
 } from '../lib/platform/research/robot-r34-holdout-session-reauth.mjs';
 
 const good=epoch=>({
-  epoch,totalCostBps:1,fillProbability:.95,estimatedWinRate:.62,grossWinBps:15,grossLossBps:9
+  regime:'GOOD',epoch,totalCostBps:1,fillProbability:.95,estimatedWinRate:.62,grossWinBps:15,grossLossBps:9
 });
 const ready=[
   {transportConnected:true},

@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T01:47:23Z",
-  "scope": "R12-R37",
+  "generatedAt": "2026-10-23T02:08:23Z",
+  "scope": "R12-R38",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -113,7 +113,8 @@
         "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas.",
         "R35 estendeu o R34 para stress longo multi-sessão: 12 sessões, 6.000 eventos, múltiplos halts e recoveries parciais, exigindo novos sessionId/authorizationId e mantendo zero vazamento de autorização ou reentrada de sessão haltada.",
         "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões.",
-        "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado."
+        "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado.",
+        "R38 estendeu a ingestão ordenada para múltiplos streams independentes e adicionou tombstones limitados: replays muito antigos continuam bloqueados mesmo após saírem da janela ativa de deduplicação, sem colisão entre streams."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -248,6 +249,18 @@
           "lateEpochRejected": true,
           "excessiveForwardGapRejected": true,
           "boundedDedupWindow": true,
+          "zeroFalseAllows": true
+        },
+        "r38MultistreamExpiry": {
+          "streams": 4,
+          "nominalEpochsPerStream": 1800,
+          "activeDedupWindow": 128,
+          "tombstoneWindow": 4096,
+          "maxReorderGap": 4,
+          "independentOrderingPerStream": true,
+          "expiredReplayBlocked": true,
+          "boundedActiveDedup": true,
+          "boundedTombstones": true,
           "zeroFalseAllows": true
         }
       },
@@ -415,11 +428,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39885859865
+    },
+    "R38": {
+      "directed": "160/160",
+      "general": "1966/1966",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39887816675
     }
   },
   "nextObjectives": [
-    "estender R37 para multi-sessão com ordenação independente por sessão e concorrência realista entre streams",
-    "testar expiração da janela de deduplicação e replays muito antigos sem permitir reexecução",
+    "estender R38 para rotação de sessão dentro de cada stream mantendo ordenação e tombstones independentes",
+    "testar recuperação de estado após reinicialização do processo sem perder proteção contra replay antigo",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

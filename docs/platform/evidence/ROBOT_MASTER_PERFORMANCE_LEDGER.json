@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:46:30Z",
-  "scope": "R12-R30",
+  "generatedAt": "2026-10-23T00:53:40Z",
+  "scope": "R12-R31",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -106,7 +106,8 @@
         "R27 adicionou Dynamic Break-even Gate: só libera tentativa quando win-rate estimado e edge líquido superam break-even + margem de segurança após custos e fill.",
         "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid.",
         "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos.",
-        "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime."
+        "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime.",
+        "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -162,6 +163,15 @@
             "cheap→adverse→normalized"
           ],
           "staleAuthorizationCarryover": false
+        },
+        "r31RecoveryRegimeInterlock": {
+          "pattern": [
+            "READY+GOOD=ALLOW",
+            "UNKNOWN_EXPOSURE+GOOD=BLOCK",
+            "READY+BAD_ECONOMICS=BLOCK",
+            "READY+NEW_GOOD=ALLOW"
+          ],
+          "noAuthorizationCarryover": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -278,11 +288,17 @@
       "general": "1922/1922",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R31": {
+      "directed": "121/121",
+      "general": "1927/1927",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "stressar R30 em sequências mais longas e regimes alternando rapidamente",
-    "combinar gate econômico com recovery/outage para impedir reentrada após falha até READY + novo regime favorável",
+    "stressar interlock R31 em timelines longas com outages repetidos e regime econômico oscilante",
+    "validar interlock em holdout de sequências não usadas no R31",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

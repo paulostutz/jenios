@@ -1,0 +1,88 @@
+{
+  "schema": "JENIOS_FC04_SOURCE_MANIFEST_V1",
+  "baseFC03": "cdbedfccd65ade53ae0ffb46effd8a32ed7e4658",
+  "baseFC03CI": 39960374881,
+  "inheritedVerifier": "scripts/platform/verify-fc03-sources.mjs",
+  "modifications": [
+    {
+      "path": "lib/assistant/pro-topups.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/lib/assistant/pro-topups.mjs.txt",
+      "beforeSha256": "2eeca48cccf1c8bd46b64d7a2e91a57e89a55de2497992200032b348e98b6f29",
+      "afterSha256": "0c0c8e489753fcf20606787dc882a72d2d6b17b0eab4f2b3bbdae91e10a3ed2d"
+    },
+    {
+      "path": "lib/assistant/university-subscription.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/lib/assistant/university-subscription.mjs.txt",
+      "beforeSha256": "6ef0dc876da62d28d92c8c6cf8ebb2ce19ae684fe92248f6632d19383b45600e",
+      "afterSha256": "e2cb191cb857e0f07b149e37d38656437a9ac4c1b9f29d14635c6113168c4d42"
+    },
+    {
+      "path": "lib/pay/checkout.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/lib/pay/checkout.mjs.txt",
+      "beforeSha256": "76ba51f54558697a888106dac919a2a357c426bc6eb28016caee810c994530da",
+      "afterSha256": "1c512bcb28d1333f720213f559951b417af96cfbc7e19ae568159945f1203ce4"
+    },
+    {
+      "path": "lib/pay/gateway.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/lib/pay/gateway.mjs.txt",
+      "beforeSha256": "4162593d24d1aacc8992257804d48aeacc4004234ac7a0361533992bb8476504",
+      "afterSha256": "4b3ce133c46341f8fb97ff33ba356d9f204ca36c2605ea201fe188d188a45605"
+    },
+    {
+      "path": "lib/pay/inter-pix.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/lib/pay/inter-pix.mjs.txt",
+      "beforeSha256": "b4e701a273ba1884cc5bd1852529cc7bda343d92b2735d1ccf870b8590a949e6",
+      "afterSha256": "bb3961db7c0bd44b690b4cc79c283871a4d3622c0a3c864f2ecfb85b8dd08b39"
+    },
+    {
+      "path": "tests/interPix.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/interPix.test.mjs.txt",
+      "beforeSha256": "4d60945263270a8d44bddc6ad2e508ef109dfad256b5afb40e0516f35e8dcfd4",
+      "afterSha256": "a390d2ac0a9a9fe1c09d6fa85fe3e9eb7202ba2bc0d57a9e2cdaf0b6c98d90fe"
+    },
+    {
+      "path": "tests/jeniosProTopupsB146.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/jeniosProTopupsB146.test.mjs.txt",
+      "beforeSha256": "8048b9494a9fb6d98e04cd9ddd7bd3f45cb8da47204f21cf4ec6dda38cae2178",
+      "afterSha256": "d67911a53ba5cbec45d0b46040890fe77fb3ddbb0acfe23f41d65ba681a0e103"
+    },
+    {
+      "path": "tests/jeniosUniversityMonthlyB147.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/jeniosUniversityMonthlyB147.test.mjs.txt",
+      "beforeSha256": "8ad61b744e59d9521d431178a107c2e469a78ba1ec01e696d63118b163dc88d8",
+      "afterSha256": "65105e0673bb54833dd46d8fe1d283fa6e23fda8c2f32733e17d2d809a408379"
+    },
+    {
+      "path": "tests/payAccess.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/payAccess.test.mjs.txt",
+      "beforeSha256": "6231ad686f300e91f91e971c83610588ec865ceac2a61266af44a887a9a23984",
+      "afterSha256": "d4dd532ebdf3f60ce4b478187db5c77fc4672cc3a8db8bdfb1c80af39dcf1e08"
+    },
+    {
+      "path": "tests/payCatalog.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/payCatalog.test.mjs.txt",
+      "beforeSha256": "133b8d7e6f4b218ddccc2663a6c8b3f090cde08231cc408c7227b6fb954811fd",
+      "afterSha256": "89d11e026cf8501601ee00f82940529637ed753043cfcb289daa39173e0ee973"
+    },
+    {
+      "path": "tests/payCheckoutService.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/payCheckoutService.test.mjs.txt",
+      "beforeSha256": "1ee0cb5f58bf955873ead7126ddcb1611c1e211d306cf26dbdfc4d1ce913a5db",
+      "afterSha256": "6dd5e123f2837e2bbd420863c584b975d1975a4ce784f66ecdd0c47be4b638ef"
+    },
+    {
+      "path": "vercel.json",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/vercel.json.txt",
+      "beforeSha256": "c221958745b150cbdc61dae72a5eb14d05e64ef3b3404dafec123f0b058877d4",
+      "afterSha256": "aeb889db81024560b875ca25bdbf84d4b2a98cb4b34edc4a5046cfba2a0503a6"
+    },
+    {
+      "path": "tests/jeniosBoostB148.test.mjs",
+      "originalArchive": "docs/platform/evidence/variants/fc03-before-fc04/tests/jeniosBoostB148.test.mjs.txt",
+      "beforeSha256": "c567fd830c1fe277e775b2ba4557fea95bebe8b1d13280fad31c0ef445263420",
+      "afterSha256": "3bdf463a4cb33a0d7de2278f33851edcb6472adaec32587395aa51bf3e934dd4"
+    }
+  ],
+  "certifiedBranchesModified": false,
+  "originalCoreIncluded": false
+}

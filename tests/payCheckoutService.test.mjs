@@ -36,7 +36,7 @@ function memoryDb({product=DEFAULT_PRODUCTS[0],profile=null}={}) {
   return db;
 }
 const body={productCode:'social-bankscore-report',amount_cents:1,target:{codigo:'C123',periodo:'202606'}};
-const base={body,user:{id:'user-1'},scope:'social',key:'12345678-1234-1234-1234-123456789abc',configured:()=>true,bankscoreReady:()=>true};
+const base={env:{JENIOS_PAY_PAYMENTS_ENABLED:'true'},body,user:{id:'user-1'},scope:'social',key:'12345678-1234-1234-1234-123456789abc',configured:()=>true,bankscoreReady:()=>true};
 
 test('BankScore sem dados conferíveis não cria pedido ou chama gateway', async () => {
   const db = memoryDb(); let calls = 0;

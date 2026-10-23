@@ -9,7 +9,7 @@ import {PRO_TOPUP_PRODUCT,handleProTopups,loadOfficialProFx,projectProTopupQuote
 
 const NOW=Date.now(),A='11111111-1111-4111-8111-111111111111',B='22222222-2222-4222-8222-222222222222';
 const KEY='test-topup-quote-0001',ORDER_KEY='test-topup-order-0001';
-const env={JENIOS_PRO_PAYMENTS_ENABLED:'true',JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'test-only-id',INTER_CLIENT_SECRET:'test-only-secret',INTER_CERTIFICATE:'test-only-certificate',INTER_PRIVATE_KEY:'test-only-key',INTER_PIX_KEY:'test-only-pix'};
+const env={JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:'true',JENIOS_PRO_PAYMENTS_ENABLED:'true',JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'test-only-id',INTER_CLIENT_SECRET:'test-only-secret',INTER_CERTIFICATE:'test-only-certificate',INTER_PRIVATE_KEY:'test-only-key',INTER_PIX_KEY:'test-only-pix'};
 const fx={brlMicrosPerUsd:5_123_456,source:'BCB:PTAX_USD_VENDA',sourceAt:new Date(NOW-3600_000).toISOString()};
 const product={...DEFAULT_PRODUCTS.find(row=>row.code===PRO_TOPUP_PRODUCT),id:'33333333-3333-4333-8333-333333333333',active:true};
 const config=()=>({id:true,generation_enabled:false,payments_enabled:true,requires_reconciliation:false,pricing_version:PRO_PRICING_VERSION,pricing_approved:true,rates_verified_at:new Date(NOW-3600_000).toISOString(),allowed_models:['gpt-5.4-nano'],monthly_provider_limit_nano_usd:100_000_000_000,max_request_provider_nano_usd:100_000_000,crypto_allowance_nano_usd:0,global_allowance_nano_usd:0,topup_currency:'BRL',topup_amount_minor:2500,commercial_terms_version:'test-approved-terms-1'});

@@ -1,0 +1,180 @@
+{
+  "schema": "JENIOS_FC04_READONLY_QA_EVIDENCE_V1",
+  "observedAt": "2026-10-23T15:02:04.475Z",
+  "scope": "QA metadata and branch-specific configuration only; no user rows, secrets, DB writes or deployment",
+  "fc03Backup": {
+    "ref": "backup/jenios-fc03-offline-path-verified-20261023",
+    "commit": "cdbedfccd65ade53ae0ffb46effd8a32ed7e4658",
+    "ci": 39960374881,
+    "conclusion": "success"
+  },
+  "socialQA": {
+    "project": "jenios-social-homologacao",
+    "preflight": {
+      "allRequired": true,
+      "dunningClaim": true,
+      "resendEvents": true,
+      "dunningOutbox": true,
+      "financeOutbox": true,
+      "marketingClaim": true,
+      "marketingLedger": true,
+      "marketingPlanner": true,
+      "marketingSuppress": true,
+      "newsletterEditions": true,
+      "transactionalClaim": true,
+      "transactionalOutbox": true,
+      "marketingPreferences": true,
+      "resendSuppressionRpc": true,
+      "financeRecipientIndex": true,
+      "transactionalComplete": true,
+      "universityMilestoneTrigger": true,
+      "subscriptionLifecycleTrigger": true
+    },
+    "tables": [
+      {
+        "table_name": "jenios_pay_entitlements",
+        "rls_enabled": true,
+        "policies": 1
+      },
+      {
+        "table_name": "jenios_pay_orders",
+        "rls_enabled": true,
+        "policies": 1
+      },
+      {
+        "table_name": "jenios_pay_subscriptions",
+        "rls_enabled": true,
+        "policies": 1
+      },
+      {
+        "table_name": "jenios_transactional_email_outbox_b305",
+        "rls_enabled": true,
+        "policies": 0
+      },
+      {
+        "table_name": "jenios_university_invoices_b147",
+        "rls_enabled": true,
+        "policies": 0
+      }
+    ]
+  },
+  "platformQA": {
+    "project": "jenios-platform-homologacao",
+    "tables": [
+      {
+        "table_name": "jenios_platform_diagnostics",
+        "rls_enabled": true,
+        "policies": 0
+      }
+    ]
+  },
+  "b305Preview": {
+    "branch": "fix/jenios-b305-finance-email-20261022",
+    "flags": [
+      {
+        "key": "JENIOS_UNIVERSITY_MILESTONE_DELIVERY_CERTIFIED",
+        "value": "true",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_MARKETING_DELIVERY_WORKER_CERTIFIED",
+        "value": "true",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_RESEND_WEBHOOK_ENDPOINT_CERTIFIED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_AUTH_TEMPLATES_APPLIED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_RESEND_WEBHOOK_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_MARKETING_PLANNER_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_MARKETING_EMAILS_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_TRANSACTIONAL_EMAILS_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_SUBSCRIPTION_DUNNING_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_INTER_CHARGES_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_PAY_PAYMENTS_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      },
+      {
+        "key": "JENIOS_PAYMENT_EMAILS_ENABLED",
+        "value": "false",
+        "gitBranch": "fix/jenios-b305-finance-email-20261022",
+        "target": [
+          "preview"
+        ]
+      }
+    ],
+    "webhookSecretPresentInBranchInventory": false,
+    "secretValuesRead": false,
+    "authTemplatesPublishedDirectlyVerified": false
+  },
+  "limitations": [
+    "Metadata presence and RLS enabled do not constitute authenticated end-to-end verification.",
+    "Auth template state is the configured false flag; template panel contents were not inspected.",
+    "No real Resend event, email, payment, subscription renewal or broker action executed."
+  ]
+}

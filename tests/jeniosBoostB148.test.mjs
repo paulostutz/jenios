@@ -74,7 +74,7 @@ test('B148 eligible audience still passes through viewer RLS and signed-proof co
 });
 test('B148 readiness never activates missing financial configuration or returns a secret',()=>{
  const result=boostReadiness({});assert.equal(result.ready,false);assert.doesNotMatch(JSON.stringify(result),/API_TOKEN|SIGNING_SECRET|CLIENT_SECRET/);
- const env={JENIOS_PAY_CHECKOUT_URL:'https://example.com/checkout',JENIOS_PAY_API_TOKEN:'fixture-token',JENIOS_BOOST_CAMPAIGNS_ENABLED:'true',NEXT_PUBLIC_SOCIAL_PROMOTIONS_ENABLED:'true',JENIOS_BOOST_SIGNING_SECRET:'s'.repeat(32)};
+ const env={JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PAY_CHECKOUT_URL:'https://example.com/checkout',JENIOS_PAY_API_TOKEN:'fixture-token',JENIOS_BOOST_CAMPAIGNS_ENABLED:'true',NEXT_PUBLIC_SOCIAL_PROMOTIONS_ENABLED:'true',JENIOS_BOOST_SIGNING_SECRET:'s'.repeat(32)};
  assert.equal(boostReadiness(env).ready,true);
  assert.equal(boostReadiness({...env,JENIOS_BOOST_CAMPAIGNS_ENABLED:'false'}).ready,false);
  assert.equal(boostReadiness({...env,NEXT_PUBLIC_SOCIAL_PROMOTIONS_ENABLED:'false'}).ready,false);

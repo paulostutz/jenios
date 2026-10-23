@@ -45,7 +45,9 @@
       "research/jenios-fc02-consolidation-20261023": false,
       "backup/jenios-fc02-consolidation-certified-20261023": false,
       "research/jenios-fc03-functional-path-20261023": false,
-      "backup/jenios-fc03-offline-path-verified-20261023": false
+      "backup/jenios-fc03-offline-path-verified-20261023": false,
+      "research/jenios-fc04-commercial-journey-20261023": false,
+      "backup/jenios-fc04-commercial-offline-verified-20261023": false
     }
   },
   "ignoreCommand": "case \"$VERCEL_GIT_COMMIT_REF\" in fix/jenios-b29[7-9]-*|fix/jenios-b30[01]-*|fix/jenios-b303-*|fix/jenios-robot-*|research/jenios-*|backup/jenios-*) exit 0;; *) exit 1;; esac",

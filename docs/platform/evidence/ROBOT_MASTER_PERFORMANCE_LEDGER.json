@@ -1,6 +1,6 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T10:47:47Z",
+  "generatedAt": "2026-10-23T11:39:05.117509+00:00",
   "scope": "R12-R45",
   "globalRules": {
     "realOrdersSent": 0,
@@ -574,5 +574,24 @@
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"
-  ]
+  ],
+  "pendingBlocks": {
+    "R46": {
+      "status": "PENDING_LINUX_CI_NOT_CERTIFIED",
+      "branch": "research/jenios-robot-r46-temporal-lease-20261023",
+      "baseCommit": "366662b1dfa3653efb7da259101f462eacd25bd9",
+      "directed": "213/213",
+      "generalMacOS": {
+        "pass": 2012,
+        "total": 2019,
+        "failed": 7,
+        "reason": "Existing host preflight tests require Linux; no controls relaxed"
+      },
+      "social": "94/94",
+      "build": "RUNNING",
+      "actualBrokerPnl": null,
+      "actualLossesAvoided": null,
+      "realTradeAccuracy": null
+    }
+  }
 }

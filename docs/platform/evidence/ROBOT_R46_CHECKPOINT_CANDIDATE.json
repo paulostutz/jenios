@@ -1,0 +1,46 @@
+{
+  "schema": "JENIOS_ROBOT_R46_CHECKPOINT_CANDIDATE_V1",
+  "block": "R46",
+  "certified": false,
+  "base": {
+    "branch": "backup/jenios-robot-r45-leader-fencing-certified-20261023",
+    "commit": "366662b1dfa3653efb7da259101f462eacd25bd9"
+  },
+  "scope": {
+    "syntheticOfflineOnly": true,
+    "productionTouched": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0
+  },
+  "evidence": {
+    "status": "PENDING_LINUX_CI_NOT_CERTIFIED",
+    "branch": "research/jenios-robot-r46-temporal-lease-20261023",
+    "baseCommit": "366662b1dfa3653efb7da259101f462eacd25bd9",
+    "directed": "213/213",
+    "generalMacOS": {
+      "pass": 2012,
+      "total": 2019,
+      "failed": 7,
+      "reason": "Existing host preflight tests require Linux; no controls relaxed"
+    },
+    "social": "94/94",
+    "build": "RUNNING",
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "remaining": [
+    "Complete build/pages",
+    "Publish research branch with explicit approval",
+    "Pass Linux CI including general suite",
+    "Create certified checkpoint and certified backup only after all required checks pass"
+  ],
+  "performanceClassification": {
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

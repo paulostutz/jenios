@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T12:46:54Z",
-  "scope": "R12-R55",
+  "generatedAt": "2026-10-23T12:51:49Z",
+  "scope": "R12-R58",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -14,14 +14,15 @@
   "robots": [
     {
       "robot": "manual",
-      "status": "RESEARCH_VALIDATED",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "keyFindings": [
         "Operador decide sozinho.",
         "Sistema pode detectar sequência de perdas e sugerir pausa/educação.",
         "Nenhuma troca automática de modo.",
-        "Sinais/prévias não são tratados como ordens executadas."
+        "Sinais/prévias não são tratados como ordens executadas.",
+        "R56 refinou alertas do Manual sem retirar o controle do operador: nenhuma troca automática de modo, entrada ou saída; loss streak e drawdown apenas geram orientação/alerta."
       ],
       "syntheticPerformance": {
         "r17BaselineNetR": 1667.746008,
@@ -30,11 +31,19 @@
       "prospectiveEvidence": {
         "r14": "ABSTAIN_ONLY",
         "r15": "W01_VALID_W02_NO_GO_OTHER_WINDOWS_NOT_RETROFILLED"
+      },
+      "finalRefinement": {
+        "r56": {
+          "operatorRetainsControl": true,
+          "automaticModeSwitch": false,
+          "automaticEntry": false,
+          "automaticExit": false
+        }
       }
     },
     {
       "robot": "hybrid",
-      "status": "RESEARCH_VALIDATED_REFINING",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "alignmentGuardThreshold": 0.65,
@@ -42,7 +51,8 @@
         "Ajuda cresce conforme aumenta o erro de intenção do operador sintético.",
         "Prejudicava operador já alinhado em parte dos cenários do R17.",
         "Alignment guard adicionado no R19.",
-        "0.65 venceu 0.50 em dois holdouts independentes R21/R22."
+        "0.65 venceu 0.50 em dois holdouts independentes R21/R22.",
+        "R57 revalidou o alignment guard congelado em 0.65 em três datasets determinísticos independentes; operador alinhado é protegido, discordância material pode ser aconselhada e baixa confiança não intervém."
       ],
       "syntheticPerformance": {
         "r17NetUpliftR": 5653.6391265,
@@ -56,11 +66,18 @@
           "1.00": 4464.3326575
         },
         "notes": "Todos os números são de laboratório sintético."
+      },
+      "finalRefinement": {
+        "r57": {
+          "threshold": 0.65,
+          "alignedOperatorProtected": true,
+          "lowConfidenceNoIntervention": true
+        }
       }
     },
     {
       "robot": "reverse",
-      "status": "RESEARCH_VALIDATED_REFINING",
+      "status": "RESEARCH_VALIDATED_FINAL",
       "technicalSafety": "PASS",
       "decisionQuality": "LAB_EVALUATED",
       "alignmentGuardThreshold": 0.65,
@@ -68,7 +85,8 @@
         "Maior benefício sintético aparece quando o operador está claramente errado.",
         "Megatendência e segurança impedem inversão cega.",
         "Alignment guard evita interferência quando operador e contexto já estão alinhados.",
-        "Transporte de ordens permanece desabilitado."
+        "Transporte de ordens permanece desabilitado.",
+        "R58 validou reversão seletiva: desacordo material + confiança >=0.65 pode gerar referência reversa; megatendência, operador alinhado e baixa confiança impedem inversão. Losseshômetro permanece hipotético/sintético."
       ],
       "syntheticPerformance": {
         "unvalidatedNetUpliftR": 6043.6992337,
@@ -81,6 +99,13 @@
           "1.00": 4542.3446791
         },
         "notes": "Resultados exclusivamente sintéticos/laboratoriais."
+      },
+      "finalRefinement": {
+        "r58": {
+          "selectiveReversal": true,
+          "megatrendException": true,
+          "losseshometroSyntheticOnly": true
+        }
       }
     },
     {
@@ -732,13 +757,36 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39955760574
+    },
+    "R56": {
+      "directed": "246/246",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
+    },
+    "R57": {
+      "directed": "248/248",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
+    },
+    "R58": {
+      "directed": "250/250",
+      "general": "2056/2056",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39956380701
     }
   },
   "nextObjectives": [
-    "executar refinamento final específico de Manual, Híbrido e Reverso",
-    "confirmar alignment guard 0.65 em bateria final dos modos assistidos",
-    "stressar megatendência, reversão seletiva, loss streak e losseshômetro no Reverso",
-    "consolidar certificação final dos quatro robôs e separar claramente evidência sintética de qualquer teste real futuro",
+    "executar certificação final consolidada dos quatro robôs",
+    "validar que todos os resultados reais permanecem null e que não houve execução real/Paper externo",
+    "consolidar limitações, evidências sintéticas e próximos passos de validação manual futura",
     "preservar R15 prospectivo sem backfill"
   ]
 }

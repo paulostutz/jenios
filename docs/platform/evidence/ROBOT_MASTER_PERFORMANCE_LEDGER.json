@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T01:39:25Z",
-  "scope": "R12-R36",
+  "generatedAt": "2026-10-23T01:47:23Z",
+  "scope": "R12-R37",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -112,7 +112,8 @@
         "R33 adicionou histerese econômica e memória de risco da sessão: requer confirmação de snapshots favoráveis para ligar, revoga rapidamente em regime ruim e mantém halt por drawdown/loss streak mesmo se a economia voltar a melhorar.",
         "R34 validou a histerese congelada do R33 em holdout independente com 7 frequências de alternância e 25.200 eventos; também combinou halt de risco com recovery R31, exigindo nova sessão e nova autorização antes de permitir novas entradas.",
         "R35 estendeu o R34 para stress longo multi-sessão: 12 sessões, 6.000 eventos, múltiplos halts e recoveries parciais, exigindo novos sessionId/authorizationId e mantendo zero vazamento de autorização ou reentrada de sessão haltada.",
-        "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões."
+        "R36 adicionou idempotência e proteção contra corrida/replay: duplicatas exatas são ignoradas, replay conflitante é bloqueado, troca de sessão exige reset completo e autorização não pode mudar dentro da sessão nem ser reutilizada entre sessões.",
+        "R37 adicionou ingestão ordenada: reordenação curta é bufferizada e só drenada após chegada dos epochs faltantes; epochs atrasadas com ID novo e gaps excessivos são bloqueados; a janela de deduplicação é limitada para evitar crescimento não controlado."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -237,6 +238,16 @@
           "incompleteResetSessionSwitchBlocked": true,
           "authorizationChangeWithinSessionBlocked": true,
           "authorizationReuseAcrossSessionsBlocked": true,
+          "zeroFalseAllows": true
+        },
+        "r37OrderedIngestion": {
+          "nominalEpochs": 5000,
+          "dedupWindow": 256,
+          "maxReorderGap": 4,
+          "nearFutureReorderingBuffered": true,
+          "lateEpochRejected": true,
+          "excessiveForwardGapRejected": true,
+          "boundedDedupWindow": true,
           "zeroFalseAllows": true
         }
       },
@@ -396,11 +407,19 @@
       "build": "PASS",
       "pages": "76/76",
       "validationRun": 39885115535
+    },
+    "R37": {
+      "directed": "154/154",
+      "general": "1960/1960",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "validationRun": 39885859865
     }
   },
   "nextObjectives": [
-    "estender R36 para ordenação fora de sequência, epochs atrasadas e eventos concorrentes chegando em ordem adversa",
-    "testar janela de deduplicação/idempotência sob stress maior sem crescimento não controlado de estado",
+    "estender R37 para multi-sessão com ordenação independente por sessão e concorrência realista entre streams",
+    "testar expiração da janela de deduplicação e replays muito antigos sem permitir reexecução",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

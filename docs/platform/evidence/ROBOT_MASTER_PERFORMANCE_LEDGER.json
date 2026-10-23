@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_MASTER_PERFORMANCE_LEDGER_V1",
-  "generatedAt": "2026-10-23T00:53:40Z",
-  "scope": "R12-R31",
+  "generatedAt": "2026-10-23T01:03:20Z",
+  "scope": "R12-R32",
   "globalRules": {
     "realOrdersSent": 0,
     "externalPaperOrdersSent": 0,
@@ -107,7 +107,8 @@
         "R28 refinou o break-even gate com margem adaptativa apenas em cenários favoráveis, recuperando oportunidades positivas sem aumentar falsos positivos negativos no grid.",
         "R29 validou o gate adaptativo R28 em holdout independente sem recalibração: melhor recall e zero falsos positivos negativos.",
         "R30 validou reavaliação por regime: autorização é revogada quando custo/sinal pioram e só retorna após nova avaliação favorável em epoch distinta; nenhum ok anterior atravessa mudança de regime.",
-        "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica."
+        "R31 intertravou recovery e regime econômico: novas entradas exigem simultaneamente recovery=READY e novo regime elegível; nenhuma autorização anterior atravessa outage ou mudança econômica.",
+        "R32 validou o interlock R31 em 9.120 eventos de holdout longo com outages/recovery/regimes alternados e zero liberações indevidas."
       ],
       "labScale": {
         "r19Microstructure": ">100000 combinations",
@@ -172,6 +173,18 @@
             "READY+NEW_GOOD=ALLOW"
           ],
           "noAuthorizationCarryover": true
+        },
+        "r32LongrunInterlock": {
+          "totalEvents": 9120,
+          "lengths": [
+            120,
+            600,
+            1200,
+            2400,
+            4800
+          ],
+          "falseAllows": 0,
+          "invariantHolds": true
         }
       },
       "publicReadOnlyEvidence": {
@@ -294,11 +307,17 @@
       "general": "1927/1927",
       "social": "94/94",
       "build": "PASS"
+    },
+    "R32": {
+      "directed": "126/126",
+      "general": "1932/1932",
+      "social": "94/94",
+      "build": "PASS"
     }
   },
   "nextObjectives": [
-    "stressar interlock R31 em timelines longas com outages repetidos e regime econômico oscilante",
-    "validar interlock em holdout de sequências não usadas no R31",
+    "combinar o interlock validado com stress econômico de sessão longa e drawdown acumulado",
+    "testar degradação lenta de custos/fill e hysteresis para evitar liga/desliga excessivo",
     "continuar ranking público multijanelas em horizontes maiores",
     "manter alignment guard em 0.65",
     "preservar R15 prospectivo sem backfill"

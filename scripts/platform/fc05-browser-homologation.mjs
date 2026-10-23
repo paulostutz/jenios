@@ -10,6 +10,7 @@ assert.equal(origin.protocol,'http:');assert.ok(['localhost','127.0.0.1','[::1]'
 const output=process.env.JENIOS_FC05_OUTPUT||'/tmp/jenios-fc05-browser';await mkdir(output,{recursive:true});
 const profile=await mkdtemp(join(tmpdir(),'jenios-fc05-')),port=Number(process.env.JENIOS_FC05_CDP_PORT||9365);
 const chrome=spawn(process.env.CHROME_BIN||'google-chrome',['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--no-first-run','--disable-background-networking','--disable-extensions','--remote-allow-origins=*','--remote-debugging-address=127.0.0.1','--remote-debugging-port='+port,'--user-data-dir='+profile,'about:blank'],{stdio:'ignore'});
+const canceledRequests=new Set(),interceptions=new Set(),canceledInterceptions=[];
 const checks=[],faultsApplied=[],blocked=[],responses=[],exceptions=[],interceptionErrors=[],pending=new Map();
 let socket,serial=0,spawnError,fault=null,success=false;
 chrome.on('error',e=>spawnError=e);
@@ -45,7 +46,7 @@ async function intercept(p){
 try{
  let addr;for(let i=0;i<300;i++){if(spawnError)throw spawnError;try{addr=(await(await fetch('http://127.0.0.1:'+port+'/json')).json()).find(x=>x.type==='page')?.webSocketDebuggerUrl;if(addr)break;}catch{}await sleep(200);}assert.ok(addr,'Chrome unavailable');
  socket=new WebSocket(addr);await new Promise((resolve,reject)=>{socket.onopen=resolve;socket.onerror=reject;});
- socket.onmessage=e=>{const d=JSON.parse(e.data);if(d.method==='Fetch.requestPaused')void intercept(d.params).catch(e=>interceptionErrors.push(e.message));if(d.method==='Runtime.exceptionThrown')exceptions.push(d.params.exceptionDetails.exception?.description||d.params.exceptionDetails.text);if(d.method==='Network.responseReceived'&&d.params.response.url.startsWith(origin.origin+'/api/'))responses.push({url:new URL(d.params.response.url).pathname,status:d.params.response.status});const j=pending.get(d.id);if(j){clearTimeout(j.timer);pending.delete(d.id);d.error?j.reject(Error(d.error.message)):j.resolve(d.result||{});}};
+ socket.onmessage=e=>{const d=JSON.parse(e.data);if(d.method==='Network.loadingFailed'&&d.params.canceled===true)canceledRequests.add(d.params.requestId);if(d.method==='Fetch.requestPaused'){const task=intercept(d.params).catch(e=>interceptionErrors.push({message:e.message,networkId:d.params.networkId,url:new URL(d.params.request.url).pathname}));interceptions.add(task);void task.finally(()=>interceptions.delete(task));}if(d.method==='Runtime.exceptionThrown')exceptions.push(d.params.exceptionDetails.exception?.description||d.params.exceptionDetails.text);if(d.method==='Network.responseReceived'&&d.params.response.url.startsWith(origin.origin+'/api/'))responses.push({url:new URL(d.params.response.url).pathname,status:d.params.response.status});const j=pending.get(d.id);if(j){clearTimeout(j.timer);pending.delete(d.id);d.error?j.reject(Error(d.error.message)):j.resolve(d.result||{});}};
  await cd('Page.enable');await cd('Runtime.enable');await cd('Network.enable');await cd('Fetch.enable',{patterns:[{urlPattern:'*',requestStage:'Request'}]});
  await cd('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
  await nav('/platform/assistente','document.querySelector("#jenios-free-question")!==null');
@@ -108,9 +109,13 @@ try{
  await evaluate(element('a[href="/lp"]')+'.click()');await wait('location.pathname==="/lp" && document.body.innerText.includes("CLAREZA ANTES DO CLIQUE")');pass(true,'Social link reaches Platform introduction');
  await cd('Page.navigate',{url:new URL('/planos',origin).href});await wait('location.pathname==="/checkout"');pass(true,'legacy plans route reaches guarded checkout');
  await cd('Page.navigate',{url:new URL('/dashboard-logado',origin).href});await wait('location.pathname==="/platform/entrar"');pass(true,'guest account page redirects to Platform login');
- pass(interceptionErrors.length===0,'network interception completed without errors');pass(exceptions.length===0,'no uncaught browser errors in accepted flows');success=true;
+ await Promise.allSettled([...interceptions]);
+ // A navigation may cancel a paused request before Fetch.continue/fail reaches Chrome.
+ // Accept only the matching Network cancellation; unknown interception failures still fail.
+ for(let i=interceptionErrors.length-1;i>=0;i--){const e=interceptionErrors[i];if(e.networkId&&canceledRequests.has(e.networkId)&&/Invalid InterceptionId/i.test(e.message)){canceledInterceptions.push(e);interceptionErrors.splice(i,1);}}
+ pass(interceptionErrors.length===0,'network interception completed without errors '+JSON.stringify(interceptionErrors));pass(exceptions.length===0,'no uncaught browser errors in accepted flows');success=true;
  console.log('FC05_BROWSER_ACCEPTANCE='+checks.length+' localhost-only; authenticated acceptance remains pending');
 }finally{
- await writeFile(join(output,'BROWSER_EVIDENCE.json'),JSON.stringify({schema:'JENIOS_FC05_BROWSER_V1',success,checks,faultsApplied,blockedExternalRequests:blocked,localAPIResponses:responses,uncaughtErrors:exceptions,interceptionErrors,faultsAreFixtures:true,authenticatedAcceptance:false,productionTouched:false,realOrdersSent:0,externalPaperOrdersSent:0,realEmailsSent:0,chargesCreated:0},null,2));
+ await writeFile(join(output,'BROWSER_EVIDENCE.json'),JSON.stringify({schema:'JENIOS_FC05_BROWSER_V1',success,checks,faultsApplied,blockedExternalRequests:blocked,localAPIResponses:responses,uncaughtErrors:exceptions,interceptionErrors,canceledInterceptions,faultsAreFixtures:true,authenticatedAcceptance:false,productionTouched:false,realOrdersSent:0,externalPaperOrdersSent:0,realEmailsSent:0,chargesCreated:0},null,2));
  for(const p of pending.values())clearTimeout(p.timer);try{socket?.close();}catch{}try{chrome.kill('SIGTERM');}catch{}await rm(profile,{recursive:true,force:true}).catch(()=>{});
 }

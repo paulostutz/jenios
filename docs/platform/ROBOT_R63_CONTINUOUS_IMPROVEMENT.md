@@ -52,7 +52,7 @@ A identidade real do proprietário e a leitura através de um admin publicado n�
 
 O analista recebe no máximo 48 eventos minimizados, sem texto livre, credenciais, identificadores reais ou valores financeiros. A saída usa enums e referências já presentes, passa por validação e nunca concede autoridade para promoção, execução ou deploy. Uma análise com confiança alta não equivale a uma métrica comprovada.
 
-A chamada requer habilitação, um provedor explicitamente injetado e reserva atômica de orçamento pelo host. Há uma tentativa, até 700 tokens de saída e timeout de 10 segundos. O worker pode exigir uma hipótese admitida do analista e ainda submete a candidata à avaliação determinística independente. Erro, resposta inválida, falta de orçamento ou proposta fora do domínio não permite evolução.
+A chamada requer habilitação, um provedor explicitamente injetado e reserva atômica de orçamento pelo host. Há uma tentativa e timeout de 10 segundos. O contrato solicita no máximo 700 tokens de saída; o adaptador do provedor deverá impor esse limite e respeitar a reserva de orçamento do host. Este módulo limita a resposta a 16.000 caracteres e não mede consumo de tokens. O worker pode exigir uma hipótese admitida do analista e ainda submete a candidata à avaliação determinística independente. Erro, resposta inválida, falta de orçamento ou proposta fora do domínio não permite evolução.
 
 Nenhum provedor pago foi conectado ou acionado neste bloco. As respostas de teste usam provedores injetados. O resultado da análise é retornado pelo worker, mas respostas e identidade do provedor ainda não compõem o registro durável; isso precisará de integração e auditoria próprias antes de ativar um analista operacional.
 

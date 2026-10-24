@@ -67,7 +67,8 @@
     "rawProviderResponsesPersisted": false,
     "budgetRequired": true,
     "maxCallsPerAnalysis": 1,
-    "maxOutputTokens": 700
+    "requestedMaxOutputTokens": 700,
+    "providerTokenUsageVerified": false
   },
   "invariants": {
     "r12r62CertifiedAlgorithmsChanged": false,
@@ -100,7 +101,19 @@
     "preservedBrowserCases": 41,
     "newBrowserCases": 11,
     "authenticatedRealAdminSessionTested": false,
-    "authContractTestedWithInjectedIdentity": true
+    "authContractTestedWithInjectedIdentity": true,
+    "attempts": [
+      {
+        "runId": 40105575123,
+        "commit": "f5feea2bd60ae87ecb8500168561d4c3bf794d21",
+        "stage": "Next.js build",
+        "reason": "Webpack treated directory URL ../../../ as an asset dependency.",
+        "directed": "442/442",
+        "general": "2248/2248",
+        "social": "94/94",
+        "browser": "NOT_RUN"
+      }
+    ]
   },
   "limitations": [
     "Only SYNTHETIC_FIXTURE events accepted. Operational/customer events are rejected.",

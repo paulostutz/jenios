@@ -47,11 +47,11 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
         run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs tests/jeniosB305EmailReleaseReadiness.test.mjs tests/jeniosB305UniversityDeliveryEvidence.test.mjs tests/jeniosB305UniversityMessageAdapter.test.mjs tests/jeniosB305MarketingMessageAdapter.test.mjs tests/jeniosB305FinanceOutboxIndex.test.mjs tests/jeniosB305EmailPreflightSql.test.mjs tests/jeniosB305ResendWebhookEndpoint.test.mjs tests/jeniosB305MarketingDeliveryWorker.test.mjs tests/jeniosB305UniversityTransactionalWorker.test.mjs
-      - name: R36-R37 platform and commercial boundary regression
+      - name: R36-R38 platform and commercial boundary regression
         run: |
           set -o pipefail
           mkdir -p artifacts
-          node --test tests/jeniosB305BlockAAdminContract.test.mjs tests/jeniosB305BlockAJourney.test.mjs tests/jeniosB305BlockBCheckoutRelease.test.mjs tests/jeniosB305BlockBCommerceFlow.test.mjs | tee artifacts/jenios-r37-contracts.tap
+          node --test tests/jeniosB305BlockAAdminContract.test.mjs tests/jeniosB305BlockAJourney.test.mjs tests/jeniosB305BlockBCheckoutRelease.test.mjs tests/jeniosB305BlockBCommerceFlow.test.mjs tests/jeniosB305CheckoutBuildConfig.test.mjs | tee artifacts/jenios-r38-contracts.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -59,6 +59,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: JENIOS_B305_FINANCE_EMAIL_ISOLATED
+          include-hidden-files: true
           path: |
             docs/platform/B305-FINANCE-BRANDED-EMAILS.md
             lib/email/jenios-identity.mjs
@@ -166,5 +167,11 @@ jobs:
             tests/jeniosB305BlockBCheckoutRelease.test.mjs
             tests/jeniosB305BlockBCommerceFlow.test.mjs
             docs/platform/B305-R37-BLOCK-AB-CHECKOUT-BOUNDARY.md
-            artifacts/jenios-r37-contracts.tap
+            vercel.json
+            docs/release/S05-CRITICAL-API-SHA256.json
+            tests/release-s05/integrity.test.mjs
+            tests/jeniosB305CheckoutBuildConfig.test.mjs
+            docs/platform/B305-R38-REPAIR-AND-INTEGRITY-REVIEW.md
+            .github/workflows/jenios-b305-finance-email.yml
+            artifacts/jenios-r38-contracts.tap
           retention-days: 30

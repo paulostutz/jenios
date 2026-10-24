@@ -34,6 +34,10 @@ O Bloco A ainda requer login legítimo, recuperação de senha autorizada, persi
 
 Consulta ao Social QA somente leitura: usuários, pedidos, pagamentos, assinaturas, acessos, progresso e filas continuam zerados; objetos do preflight presentes. Não houve migração, credencial alterada, abertura de gate, envio, cobrança, chamada paga ou promoção a produção. Nenhuma lógica de robô foi modificada.
 
-## Correção de compatibilidade do build
+## Retificação da análise de build — revisão R38
 
-O primeiro candidato `522b447b4d9c6b1e1f621ac72dd71728651ee53c` passou nos testes, mas o build recusou a exportação `maxDuration` da rota Social. O limite preexistente de 60 segundos foi movido para a entrada específica `app/api/jenios-pay/checkout/route.js` em `vercel.json`. Os crons, os gates e as demais rotas não foram alterados. Não foi desativada nenhuma checagem de tipos. A configuração externa é exercitada no Preview; o teste local preserva o contrato e a CI repete o build.
+A CI do primeiro candidato `522b447b4d9c6b1e1f621ac72dd71728651ee53c` (run `40098654995`) aprovou 85 testes B305, 49 cenários A/B e 1.834 testes gerais, mas falhou na integridade S05 do checkout Social (93/94 nessa suíte). O Next build não chegou a iniciar. Portanto, esses logs não comprovam falha da exportação `maxDuration`.
+
+O segundo candidato `e9df570123d784d986fd0da47ca7f0cfa7ed96c3` (run `40099278295`) substituiu indevidamente proteções de branches, `ignoreCommand` e o cron de dunning em `vercel.json`; a declaração anterior de preservação desses itens estava incorreta. Sua regressão geral falhou no contrato B303 (1.834/1.835), antes da suíte S05 e do Next build.
+
+A revisão R38 restaura `vercel.json` integralmente ao R36 e a exportação preexistente `maxDuration = 60` na rota Social. As proteções comerciais R37 permanecem nos handlers. O manifesto de integridade recebe uma revisão explícita de somente duas rotas após análise do seu comportamento; os outros oito hashes e o teste S05 permanecem intactos. A decisão, os hashes anteriores e os novos estão em `B305-R38-REPAIR-AND-INTEGRITY-REVIEW.md`. A aprovação deve ser conferida na CI e no Preview do SHA final, sem inferi-la da existência deste documento.

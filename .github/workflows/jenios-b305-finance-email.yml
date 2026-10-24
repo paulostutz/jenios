@@ -52,6 +52,11 @@ jobs:
           set -o pipefail
           mkdir -p artifacts
           node --test tests/jeniosB305BlockAAdminContract.test.mjs tests/jeniosB305BlockAJourney.test.mjs tests/jeniosB305BlockBCheckoutRelease.test.mjs tests/jeniosB305BlockBCommerceFlow.test.mjs tests/jeniosB305CheckoutBuildConfig.test.mjs | tee artifacts/jenios-r38-contracts.tap
+      - name: R39 administrative session revocation and response isolation
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          node --test tests/platformAdminSessionR39.test.mjs | tee artifacts/jenios-r39-session.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -174,4 +179,26 @@ jobs:
             docs/platform/B305-R38-REPAIR-AND-INTEGRITY-REVIEW.md
             .github/workflows/jenios-b305-finance-email.yml
             artifacts/jenios-r38-contracts.tap
+            app/components/platform/PlatformAdminAccess.js
+            lib/platform/admin-session.mjs
+            lib/social/session-fence.mjs
+            tests/platformAdminSessionR39.test.mjs
+            docs/platform/B305-R39-ADMIN-SESSION-REVOCATION.md
+            artifacts/jenios-r39-session.tap
           retention-days: 30
+      - name: Archive complete R39 source with commit and checksum
+        if: success()
+        run: |
+          mkdir -p artifacts/r39-source
+          git archive --format=zip --output=artifacts/r39-source/JENIOS_B305_R39_SOURCE.zip HEAD
+          git rev-parse HEAD > artifacts/r39-source/COMMIT.txt
+          cd artifacts/r39-source
+          sha256sum JENIOS_B305_R39_SOURCE.zip > SHA256SUMS.txt
+      - name: Preserve complete R39 source backup
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_B305_R39_FULL_SOURCE
+          path: artifacts/r39-source/
+          retention-days: 30
+          if-no-files-found: error

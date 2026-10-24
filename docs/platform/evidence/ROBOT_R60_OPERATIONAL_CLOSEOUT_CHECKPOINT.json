@@ -1,0 +1,62 @@
+{
+  "schema": "JENIOS_ROBOT_R60_OPERATIONAL_CLOSEOUT_CHECKPOINT_V1",
+  "block": "R60",
+  "classification": "OPERATIONAL_CLOSEOUT_AWAITING_CI",
+  "scope": "research deployment isolation, truthful demonstration UI, and manual acceptance handoff",
+  "base": {
+    "branch": "backup/jenios-robot-r59-final-research-certified-20261023",
+    "commit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+    "validationRun": 39957136366
+  },
+  "branch": "research/jenios-robot-r60-operational-closeout-20261024",
+  "backupPlanned": "backup/jenios-robot-r60-operational-closeout-certified-20261024",
+  "createdAt": "2026-10-24T12:12:46Z",
+  "invariantPreservation": {
+    "researchR12R59ModulesChanged": false,
+    "r15ProspectiveBackfill": false,
+    "alignmentGuardThreshold": 0.65,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "productionDeployPerformed": false,
+    "mergePerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "changes": {
+    "ignoreCommandPreviousLength": 2121,
+    "ignoreCommandCurrentLength": 39,
+    "nativeResearchAndBackupExclusions": true,
+    "reverseUiSyntheticProfitRemoved": true,
+    "riskUiFalsePersistenceRemoved": true
+  },
+  "acceptance": {
+    "researchCertification": "RESEARCH_CERTIFIED_FINAL",
+    "uiBrowserAcceptance": "NOT_EXECUTED",
+    "productIntegrationVerified": false,
+    "manualScenarios": {
+      "notExecuted": 11,
+      "blockedIntegration": 3
+    },
+    "guide": "docs/platform/ROBOT_R60_MANUAL_ACCEPTANCE.md"
+  },
+  "validation": {
+    "status": "AWAITING_CI",
+    "localUiBoundaryTests": {
+      "passed": 3,
+      "total": 3
+    },
+    "localGuardSamples": {
+      "researchExitCode": 0,
+      "normalBranchExitCode": 1
+    },
+    "localGuardSuite": "NOT_VALIDATED_LOCAL_CHILD_PROCESS_EPERM; full suite required in GitHub Actions"
+  },
+  "limitations": [
+    "Source-level checks and CI build are not browser end-to-end acceptance.",
+    "The four certified research policies are not yet all connected to the audited product UI.",
+    "Future real execution requires separate evidence and authorization."
+  ]
+}
+

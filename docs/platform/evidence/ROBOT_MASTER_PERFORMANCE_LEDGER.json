@@ -815,5 +815,33 @@
     "alignmentGuardThreshold": 0.65,
     "r15ProspectiveBackfill": false,
     "note": "Certificação técnica e de pesquisa do ciclo atual; não constitui prova de rentabilidade real nem autorização de execução em produção."
+  },
+  "operationalCloseout": {
+    "revision": "R60",
+    "status": "AWAITING_CI",
+    "researchCertificationPreserved": "R12-R59",
+    "baseResearchCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
+    "baseResearchRun": 39957136366,
+    "researchBehaviorChanged": false,
+    "researchDeploymentExclusions": "native branch rules plus dependency-free ignore script",
+    "uiEvidenceCorrections": [
+      "remove fabricated reversal profit and execution claims",
+      "label risk controls as volatile local draft"
+    ],
+    "productIntegrationVerified": false,
+    "manualAcceptanceCompleted": false,
+    "manualAcceptanceGuide": "docs/platform/ROBOT_R60_MANUAL_ACCEPTANCE.md",
+    "blockedIntegration": [
+      "Manual R56 advisory in operator UI",
+      "Hybrid R57 alignment guard in operator UI",
+      "Reverse R58 selective reversal in operator UI",
+      "UltraFast product session flow"
+    ],
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "productionApproved": false
   }
 }
+

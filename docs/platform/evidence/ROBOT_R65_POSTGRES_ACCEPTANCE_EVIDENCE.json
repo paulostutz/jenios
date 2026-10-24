@@ -1,0 +1,196 @@
+{
+  "schema": "JENIOS_R65_POSTGRES_ACCEPTANCE_V1",
+  "status": "PASS",
+  "commit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+  "capturedAt": "2026-10-24T17:15:43.143Z",
+  "database": "DISPOSABLE_LOCAL_POSTGRESQL",
+  "realConcurrentConnections": true,
+  "counts": {
+    "total": 42,
+    "passed": 42,
+    "failed": 0,
+    "notRun": 0
+  },
+  "checks": [
+    {
+      "name": "additive review schema applies twice without dropping or purging history",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous and authenticated clients cannot access any lifecycle table or RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "all six lifecycle tables have RLS as defense in depth",
+      "status": "PASS"
+    },
+    {
+      "name": "worker can disable paid generation but cannot enable it or approve funding",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown provider result is visible as a pending reservation",
+      "status": "PASS"
+    },
+    {
+      "name": "pending archive, system cost resolution, wrong fingerprint and cross-scope access are denied",
+      "status": "PASS"
+    },
+    {
+      "name": "independent concurrent administrative retries settle exactly once",
+      "status": "PASS"
+    },
+    {
+      "name": "confirmed no-charge releases the hold without invented spending",
+      "status": "PASS"
+    },
+    {
+      "name": "reconciliation preserves the complete original R64 cycle snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "resolved cycle is removed from pending overview without changing historical state",
+      "status": "PASS"
+    },
+    {
+      "name": "cost reconciliation leaves paid generation disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "divergent or renamed resolution retries cannot alter the accounting decision",
+      "status": "PASS"
+    },
+    {
+      "name": "confirmed cost above reservation is accounted with an explicit overage incident",
+      "status": "PASS"
+    },
+    {
+      "name": "late crashed worker cannot rewrite a reconciled cycle",
+      "status": "PASS"
+    },
+    {
+      "name": "provider response identity cannot settle another cycle",
+      "status": "PASS"
+    },
+    {
+      "name": "reconciliation ledger has no worker update or delete capability",
+      "status": "PASS"
+    },
+    {
+      "name": "archive commit binds scope and reviewed digest and is concurrent-idempotent",
+      "status": "PASS"
+    },
+    {
+      "name": "logical archive returns a verified copy including the administrative resolution",
+      "status": "PASS"
+    },
+    {
+      "name": "archival retains original rows and claims no physical deletion",
+      "status": "PASS"
+    },
+    {
+      "name": "committed archives are immutable and digest verification detects injected corruption",
+      "status": "PASS"
+    },
+    {
+      "name": "observation and signed runtime provenance are atomically idempotent",
+      "status": "PASS"
+    },
+    {
+      "name": "conflicting runtime provenance cannot replace an admitted observation",
+      "status": "PASS"
+    },
+    {
+      "name": "disabled generation yields no model hypothesis from a completed source cycle",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent initialization creates one immutable evolution revision",
+      "status": "PASS"
+    },
+    {
+      "name": "a stale creation cannot overwrite an existing evolution state",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL registration independently requires persisted runtime provenance for every receipt",
+      "status": "PASS"
+    },
+    {
+      "name": "prospective plan is stored with the complete immutable observation journal",
+      "status": "PASS"
+    },
+    {
+      "name": "validation cannot be recorded before the database-clock window opens",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent case retries retain the first authoritative timestamp",
+      "status": "PASS"
+    },
+    {
+      "name": "all validation definitions come from the frozen plan and results from R47 execution",
+      "status": "PASS"
+    },
+    {
+      "name": "validation evidence is isolated by scope",
+      "status": "PASS"
+    },
+    {
+      "name": "missing cases cannot be added after closure while acknowledged retries retain the original case",
+      "status": "PASS"
+    },
+    {
+      "name": "engine-valid but retrospectively changed validation evidence cannot be persisted",
+      "status": "PASS"
+    },
+    {
+      "name": "independently executed validation persists the measured QA version application",
+      "status": "PASS"
+    },
+    {
+      "name": "rollback is durable, monotonic and concurrent-idempotent without deleting the applied version",
+      "status": "PASS"
+    },
+    {
+      "name": "a new store instance reloads every revision and the active rollback generation",
+      "status": "PASS"
+    },
+    {
+      "name": "evolution snapshots cannot be rewritten or deleted by the worker",
+      "status": "PASS"
+    },
+    {
+      "name": "logical event archives retain signed runtime provenance and unchanged original receipts",
+      "status": "PASS"
+    },
+    {
+      "name": "archive preserves receipt idempotency and the producer sequence replay fence",
+      "status": "PASS"
+    },
+    {
+      "name": "hypothesis bridge exposes only digest and proposal from an explicitly simulated settled result",
+      "status": "PASS"
+    },
+    {
+      "name": "hypothesis bridge never leaks another scope or a reconciled outcome",
+      "status": "PASS"
+    },
+    {
+      "name": "acceptance exits with paid generation disabled",
+      "status": "PASS"
+    }
+  ],
+  "archiveMode": "LOGICAL_COPY_ONLY",
+  "physicalDeletionPerformed": false,
+  "spaceReclaimedBytes": 0,
+  "generationEnabledAtExit": false,
+  "independentRuntimeAttestation": false,
+  "paidProviderCalls": 0,
+  "customerWalletDebits": 0,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "productionDatabaseAccessed": false,
+  "migrationAppliedToSupabase": false,
+  "productionConfigurationChanged": false
+}

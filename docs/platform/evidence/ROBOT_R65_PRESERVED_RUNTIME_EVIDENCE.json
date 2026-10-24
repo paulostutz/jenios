@@ -1,0 +1,494 @@
+{
+  "schema": "JENIOS_R64_RUNTIME_ACCEPTANCE_V1",
+  "status": "PASS",
+  "startedAt": "2026-10-24T17:18:21.193Z",
+  "commit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+  "scope": {
+    "evidenceKind": "SIGNED_QA_REPLAY",
+    "fixtureScopeId": "scope:0000000000000064",
+    "nextOrigin": "http://127.0.0.1:4318",
+    "gatewayOrigin": "https://127.0.0.1:4319",
+    "authentication": "EXPLICIT_FIXTURE_USERS",
+    "restGateway": "LOOPBACK_HTTPS_POSTGREST_MOCK",
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseRole": "service_role",
+    "tls": "EPHEMERAL_CA_TRUSTED_WITH_NODE_EXTRA_CA_CERTS",
+    "networkRestriction": "BROWSER_REQUESTS_AND_WEBSOCKETS_ONLY",
+    "serverAndIntakeClock": "REAL_WALL_CLOCK",
+    "schedulerPositivePath": "REAL_HTTP_WALL_CLOCK",
+    "productionDeploymentTested": false,
+    "customerMonitoringActive": false,
+    "independentCustomerConsentVerified": false,
+    "independentBrokerAttestation": false,
+    "paidProviderTested": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  },
+  "runtime": {
+    "node": "v22.23.3",
+    "expectedPlaywright": "1.56.1",
+    "playwright": "1.56.1",
+    "chromium": "141.0.7390.37"
+  },
+  "cases": [
+    {
+      "id": "disposable-database-ready",
+      "category": "real-sql",
+      "status": "PASS",
+      "elapsedMs": 75,
+      "evidence": {
+        "schemaApplied": true,
+        "generationEnabled": false,
+        "fixtureScopeInitiallyEmpty": true
+      }
+    },
+    {
+      "id": "admin-without-session-401",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 602
+    },
+    {
+      "id": "admin-member-403",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 35
+    },
+    {
+      "id": "admin-anonymous-401",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 7
+    },
+    {
+      "id": "scheduler-without-token-401",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 6
+    },
+    {
+      "id": "scheduler-wrong-token-401",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 4
+    },
+    {
+      "id": "scheduler-nonempty-body-400",
+      "category": "authorization",
+      "status": "PASS",
+      "elapsedMs": 6
+    },
+    {
+      "id": "intake-media-type-415",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 5
+    },
+    {
+      "id": "signed-seven-intakes-202",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 339,
+      "evidence": {
+        "signedEvents": 7,
+        "realPostgresReceipts": 7
+      }
+    },
+    {
+      "id": "exact-replay-idempotent-200",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 76
+    },
+    {
+      "id": "signed-conflict-409",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 42
+    },
+    {
+      "id": "signature-tamper-400",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 3
+    },
+    {
+      "id": "unconfigured-source-400",
+      "category": "signed-intake",
+      "status": "PASS",
+      "elapsedMs": 2
+    },
+    {
+      "id": "cycle-durably-records-report",
+      "category": "scheduler-and-storage",
+      "status": "PASS",
+      "elapsedMs": 232,
+      "evidence": {
+        "httpStatus": "STORED_OPERATIONAL_QA_REPORT",
+        "positivePath": "REAL_HTTP_WALL_CLOCK",
+        "persistedReports": 1
+      }
+    },
+    {
+      "id": "cycle-retry-idempotent",
+      "category": "scheduler-and-storage",
+      "status": "PASS",
+      "elapsedMs": 74
+    },
+    {
+      "id": "admin-feed-matches-postgres",
+      "category": "admin-read",
+      "status": "PASS",
+      "elapsedMs": 40,
+      "evidence": {
+        "persistedReportDigest": "4828996fdbaeed1d43db931423edf2fc53b75ee3f848fc61385084632244f46a",
+        "tlsVerifiedByNext": true,
+        "fixtureAdminAccepted": true
+      }
+    },
+    {
+      "id": "provider-disabled-zero-budget",
+      "category": "provider-boundary",
+      "status": "PASS",
+      "elapsedMs": 33,
+      "evidence": {
+        "providerHttpRequests": 0,
+        "inferenceRequests": 0,
+        "reservationNanoUsd": 0,
+        "settledNanoUsd": 0
+      }
+    },
+    {
+      "id": "evidence-limits-and-zero-orders",
+      "category": "honest-reporting",
+      "status": "PASS",
+      "elapsedMs": 0
+    },
+    {
+      "id": "database-unavailable-admin-503",
+      "category": "failure-boundary",
+      "status": "PASS",
+      "elapsedMs": 5
+    },
+    {
+      "id": "database-unavailable-scheduler-503-or-not-due",
+      "category": "failure-boundary",
+      "status": "PASS",
+      "elapsedMs": 5,
+      "evidence": {
+        "schedulerDue": true,
+        "responseStatus": 503
+      }
+    },
+    {
+      "id": "database-unavailable-intake-503",
+      "category": "failure-boundary",
+      "status": "PASS",
+      "elapsedMs": 38
+    },
+    {
+      "id": "admin-recovery-preserves-report",
+      "category": "failure-boundary",
+      "status": "PASS",
+      "elapsedMs": 40
+    },
+    {
+      "id": "browser-ssr-persisted-report",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 1087
+    },
+    {
+      "id": "browser-four-robots",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 14
+    },
+    {
+      "id": "browser-evidence-and-limitations",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 9
+    },
+    {
+      "id": "browser-reload-retains-persisted-report",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 659
+    },
+    {
+      "id": "browser-mobile-375-no-overflow",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 22,
+      "evidence": {
+        "viewport": 375,
+        "document": 375,
+        "body": 375
+      }
+    },
+    {
+      "id": "browser-mobile-320-no-overflow",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 68,
+      "evidence": {
+        "viewport": 320,
+        "document": 320,
+        "body": 320
+      }
+    },
+    {
+      "id": "browser-no-forbidden-traffic",
+      "category": "browser",
+      "status": "PASS",
+      "elapsedMs": 24,
+      "evidence": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "id": "missing-r64-flag-routes-404",
+      "category": "disabled-gate",
+      "status": "PASS",
+      "elapsedMs": 1103
+    },
+    {
+      "id": "missing-r64-flag-page-404",
+      "category": "disabled-gate",
+      "status": "PASS",
+      "elapsedMs": 43
+    }
+  ],
+  "attempts": {
+    "externalRequests": 0,
+    "apiRequests": 0,
+    "mutations": 0,
+    "webSockets": 0
+  },
+  "gatewayCalls": [
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/rest/v1/jenios_platform_admin_permissions",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 400,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_ingest",
+      "errorCode": "R64_DATABASE_RECEIPT_CONFLICT"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_cycle",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_cycle"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_receipts",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_receipts"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_claim_cycle",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_claim_cycle"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_analyst_policy",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_analyst_policy"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_complete_cycle",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_complete_cycle"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_cycle",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_cycle"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_reports",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_reports"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_reports",
+      "status": 503,
+      "realSqlExecuted": false,
+      "injectedUnavailable": true
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_cycle",
+      "status": 503,
+      "realSqlExecuted": false,
+      "injectedUnavailable": true
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_ingest",
+      "status": 503,
+      "realSqlExecuted": false,
+      "injectedUnavailable": true
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_reports",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_reports"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_reports",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_reports"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r64_read_reports",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r64_read_reports"
+    }
+  ],
+  "networkEvents": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "artifacts": {
+    "mobile": "/home/runner/work/_temp/jenios-r65-evidence/r64-observation-mobile.png",
+    "report": "/home/runner/work/_temp/jenios-r65-evidence/r64-runtime-acceptance.json",
+    "serverLog": "/home/runner/work/_temp/jenios-r65-evidence/r64-runtime-next-servers.log"
+  },
+  "errors": [],
+  "summary": {
+    "planned": 31,
+    "passed": 31,
+    "failed": 0,
+    "notRun": 0,
+    "allPlannedCasesRan": true
+  },
+  "counts": {
+    "total": 31,
+    "passed": 31,
+    "failed": 0,
+    "notRun": 0,
+    "pageErrors": 0
+  },
+  "finishedAt": "2026-10-24T17:18:26.540Z",
+  "elapsedMs": 5347
+}

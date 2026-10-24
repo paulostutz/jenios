@@ -2,7 +2,7 @@
 
 ## Estado e base preservada
 
-Implementação em validação. Os resultados observados e a execução de referência serão registrados no checkpoint antes da certificação final. Um backup certificado só pode apontar para o commit consolidado depois de sua CI completa concluir com sucesso.
+Validação de referência concluída com sucesso em QA. Os resultados abaixo preservam o commit de origem. O fechamento final exige outra CI completa sobre o commit consolidado; somente após seu sucesso o backup certificado pode ser criado no mesmo SHA.
 
 Base consultada: `backup/jenios-robot-r64-operational-integration-certified-20261024`, commit `58e1699ee1d01bdefb71ea969f360d278605732f`, CI `40110326680` concluída com sucesso. R64 preservado: 519 direcionados, 2.325 gerais, 94 Social, 32 PostgreSQL, 52 casos de navegador preservados, 31 casos de integração de runtime, build aprovado e 76 páginas.
 
@@ -77,3 +77,24 @@ Fontes executáveis da validação: workflow R65, seis arquivos de testes `platf
 Manual conserva 100% do controle do operador. Híbrido e Reverso conservam alignment guard `0.65`. Reverso mantém a seleção e exceção de megatendência; losseshômetro permanece sintético. R15 não recebe backfill. `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` permanecem `null`. Ordens reais e Paper externo permanecem zero. Performance comercial não é certificada.
 
 O próximo bloco operacional depende do runtime proprietário e de sua identidade verificável, persistência e retransmissão do emissor, revisão do uso de dados de clientes, ambiente hospedado de homologação, aplicação controlada do esquema, configuração de Auth e host do worker, orçamento/provedor autorizados e teste observacional antes de qualquer promoção sobre operações de clientes. Não houve merge, deploy, alteração de produção ou ativação de monitoramento de clientes neste bloco.
+
+## Resultados de referência verificados
+
+CI [40115226351](https://github.com/paulostutz/jenios/actions/runs/40115226351) — SUCCESS. Commit de origem `5044ec1f04dedf38e98024c970991068fba3bd86`.
+
+| Verificação | Resultado |
+|---|---:|
+| Direcionados R12–R65 | 645/645 |
+| Gerais | 2451/2451 |
+| Social | 94/94 |
+| PostgreSQL R65 | 42/42 |
+| PostgreSQL R64 preservado | 32/32 |
+| Integração Next/HTTP/DB/navegador R65 | 33/33 |
+| Integração R64 preservada | 31/31 |
+| Casos de navegador R61–R63 preservados | 52/52 |
+| Build | PASS |
+| Páginas estáticas geradas | 76/76 |
+
+As contagens se sobrepõem; não representam operações independentes de mercado. Os arquivos JSON mantêm seus SHAs de origem. O ZIP foi verificado pelo SHA-256 publicado pela Actions, e a captura mobile foi inspecionada. A evidência integrada usa `REAL_HTTP_WALL_CLOCK`; não houve chamada paga, ordem real ou Paper externo.
+
+A primeira tentativa foi preservada no checkpoint: o Next normalizou `127.0.0.1` para `localhost`, causando rejeição de origem em ações administrativas. A correção fixa a origem canônica no servidor e mantém a rejeição de origem não autorizada. Os casos seguintes de reversão, arquivo e reconciliação foram reexecutados, sem aceitar as falhas anteriores como certificação.

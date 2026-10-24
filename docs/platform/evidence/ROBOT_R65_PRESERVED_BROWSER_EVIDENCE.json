@@ -1,0 +1,1001 @@
+{
+  "schema": "JENIOS_R63_BROWSER_ACCEPTANCE_V1",
+  "status": "PASS",
+  "startedAt": "2026-10-24T17:16:59.951Z",
+  "commit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+  "coverage": {
+    "baseline": "R61",
+    "baselineCases": 33,
+    "additionalBoundaryCases": 8,
+    "additionalEvolutionCases": 11
+  },
+  "scope": {
+    "evidenceKind": "SYNTHETIC_FIXTURE",
+    "origin": "http://127.0.0.1:4317",
+    "networkRestriction": "BROWSER_REQUESTS_AND_WEBSOCKETS_ONLY",
+    "authenticatedAccountTested": false,
+    "brokerConnectionTested": false,
+    "productionDeploymentTested": false,
+    "commercialPerformanceCertified": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "runtime": {
+    "node": "v22.23.3",
+    "expectedPlaywright": "1.56.1",
+    "playwright": "1.56.1",
+    "chromium": "141.0.7390.37"
+  },
+  "cases": [
+    {
+      "id": "preview_route_parent_link_and_scope",
+      "category": "access",
+      "status": "PASS",
+      "evidence": {
+        "parentLink": true,
+        "syntheticBoundaryVisible": true,
+        "noindex": true
+      },
+      "durationMs": 817
+    },
+    {
+      "id": "manual_stress_preserves_operator_control",
+      "category": "manual",
+      "status": "PASS",
+      "evidence": {
+        "mode": "manual",
+        "action": "MANUAL_CONTROL",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 36
+    },
+    {
+      "id": "manual_requested_help_and_low_confidence",
+      "category": "manual",
+      "status": "PASS",
+      "evidence": {
+        "mode": "manual",
+        "action": "MANUAL_CONTROL",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 80
+    },
+    {
+      "id": "assisted_edit_discards_previous_result",
+      "category": "invalidation",
+      "status": "PASS",
+      "durationMs": 8
+    },
+    {
+      "id": "hybrid_below_065_does_not_intervene",
+      "category": "hybrid",
+      "status": "PASS",
+      "evidence": {
+        "mode": "hybrid",
+        "action": "KEEP_OPERATOR_DECISION",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 40
+    },
+    {
+      "id": "hybrid_at_065_advises_without_mode_switch",
+      "category": "hybrid",
+      "status": "PASS",
+      "evidence": {
+        "mode": "hybrid",
+        "action": "ADVISE_REVIEW",
+        "suggestedSide": "sell",
+        "alignmentGuard": 0.65
+      },
+      "durationMs": 75
+    },
+    {
+      "id": "hybrid_aligned_operator_is_preserved",
+      "category": "hybrid",
+      "status": "PASS",
+      "evidence": {
+        "mode": "hybrid",
+        "action": "KEEP_OPERATOR_DECISION",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 40
+    },
+    {
+      "id": "reverse_at_065_selective_synthetic_reference",
+      "category": "reverse",
+      "status": "PASS",
+      "evidence": {
+        "mode": "reverse",
+        "action": "REVERSE_REFERENCE",
+        "suggestedSide": "sell",
+        "alignmentGuard": 0.65,
+        "hypotheticalLossAvoidedR": 2
+      },
+      "durationMs": 55
+    },
+    {
+      "id": "reverse_megatrend_exception",
+      "category": "reverse",
+      "status": "PASS",
+      "evidence": {
+        "mode": "reverse",
+        "action": "KEEP_OPERATOR_DECISION",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 79
+    },
+    {
+      "id": "reverse_low_confidence_does_not_reverse",
+      "category": "reverse",
+      "status": "PASS",
+      "evidence": {
+        "mode": "reverse",
+        "action": "KEEP_OPERATOR_DECISION",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 81
+    },
+    {
+      "id": "reverse_aligned_operator_does_not_reverse",
+      "category": "reverse",
+      "status": "PASS",
+      "evidence": {
+        "mode": "reverse",
+        "action": "KEEP_OPERATOR_DECISION",
+        "suggestedSide": "buy"
+      },
+      "durationMs": 49
+    },
+    {
+      "id": "assisted_invalid_html_input_cannot_keep_result",
+      "category": "invalidation",
+      "status": "PASS",
+      "durationMs": 71
+    },
+    {
+      "id": "ultrafast_start_contains_two_normal_snapshots",
+      "category": "ultrafast",
+      "status": "PASS",
+      "evidence": {
+        "status": "RUNNING",
+        "allowSyntheticDecision": true,
+        "eventCount": 2,
+        "sessionId": "qa-1792862223013-4p6w2ws"
+      },
+      "durationMs": 54
+    },
+    {
+      "id": "ultrafast_pause_revokes_readiness_and_disables_steps",
+      "category": "ultrafast",
+      "status": "PASS",
+      "evidence": {
+        "status": "PAUSED",
+        "allowSyntheticDecision": false,
+        "eventCount": 3,
+        "sessionId": "qa-1792862223013-4p6w2ws"
+      },
+      "durationMs": 48
+    },
+    {
+      "id": "ultrafast_resume_requires_two_fresh_normal_events",
+      "category": "ultrafast",
+      "status": "PASS",
+      "evidence": {
+        "resumed": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 4,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 5,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 6,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 144
+    },
+    {
+      "id": "ultrafast_stale_book_blocks_then_requires_two_normals",
+      "category": "ultrafast_fault",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "stale_book",
+        "reason": "R47_STALE_MARKET_DATA",
+        "fault": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 7,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 8,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 9,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 151
+    },
+    {
+      "id": "ultrafast_cost_shock_blocks_then_requires_two_normals",
+      "category": "ultrafast_fault",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "cost_shock",
+        "reason": "R53_ASSET_NOT_ELIGIBLE",
+        "fault": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 10,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 11,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 12,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 149
+    },
+    {
+      "id": "ultrafast_maintenance_blocks_then_requires_two_normals",
+      "category": "ultrafast_fault",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "maintenance",
+        "reason": "MARKET_NOT_OPEN",
+        "fault": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 13,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 14,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 15,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 150
+    },
+    {
+      "id": "ultrafast_unknown_exposure_blocks_then_requires_two_normals",
+      "category": "ultrafast_fault",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "unknown_exposure",
+        "reason": "RECOVERY_NOT_READY",
+        "fault": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 16,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 17,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 18,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 150
+    },
+    {
+      "id": "ultrafast_missing_entitlement_blocks_then_requires_two_normals",
+      "category": "ultrafast_fault",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "missing_entitlement",
+        "reason": "REQUIRES_GLOBAL_CRYPTO_OR_PRO",
+        "fault": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 19,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "first": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 20,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        },
+        "second": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 21,
+          "sessionId": "qa-1792862223013-4p6w2ws"
+        }
+      },
+      "durationMs": 133
+    },
+    {
+      "id": "ultrafast_halt_persists_and_cannot_resume",
+      "category": "ultrafast",
+      "status": "PASS",
+      "evidence": {
+        "status": "HALTED",
+        "allowSyntheticDecision": false,
+        "eventCount": 22,
+        "sessionId": "qa-1792862223013-4p6w2ws"
+      },
+      "durationMs": 66
+    },
+    {
+      "id": "ultrafast_new_session_is_required_after_halt",
+      "category": "ultrafast",
+      "status": "PASS",
+      "evidence": {
+        "oldSessionId": "qa-1792862223013-4p6w2ws",
+        "status": "RUNNING",
+        "allowSyntheticDecision": true,
+        "eventCount": 2,
+        "sessionId": "qa-1792862224061-t0g37v2"
+      },
+      "durationMs": 53
+    },
+    {
+      "id": "ultra_capital_edit_discards_session",
+      "category": "invalidation",
+      "status": "PASS",
+      "evidence": {
+        "field": "ultra-capital",
+        "value": "1200",
+        "status": "RUNNING",
+        "allowSyntheticDecision": true,
+        "eventCount": 2,
+        "sessionId": "qa-1792862224112-konhkrc"
+      },
+      "durationMs": 50
+    },
+    {
+      "id": "ultra_leverage_edit_discards_session",
+      "category": "invalidation",
+      "status": "PASS",
+      "evidence": {
+        "field": "ultra-leverage",
+        "value": "3",
+        "status": "RUNNING",
+        "allowSyntheticDecision": true,
+        "eventCount": 2,
+        "sessionId": "qa-1792862224179-23cot63"
+      },
+      "durationMs": 67
+    },
+    {
+      "id": "ultra_symbol_edit_discards_session",
+      "category": "invalidation",
+      "status": "PASS",
+      "evidence": {
+        "field": "ultra-symbol",
+        "value": "ETH-USD",
+        "status": "RUNNING",
+        "allowSyntheticDecision": true,
+        "eventCount": 2,
+        "sessionId": "qa-1792862224245-pfzdy7s"
+      },
+      "durationMs": 65
+    },
+    {
+      "id": "ultrafast_plan_edit_invalidates_and_denies_unentitled_plan",
+      "category": "invalidation",
+      "status": "PASS",
+      "evidence": {
+        "status": "RUNNING",
+        "allowSyntheticDecision": false,
+        "eventCount": 2,
+        "sessionId": "qa-1792862224295-dvtlruw"
+      },
+      "durationMs": 52
+    },
+    {
+      "id": "ultra_capital_invalid_value_clears_authorization",
+      "category": "invalidation",
+      "status": "PASS",
+      "durationMs": 47
+    },
+    {
+      "id": "ultra_leverage_invalid_value_clears_authorization",
+      "category": "invalidation",
+      "status": "PASS",
+      "durationMs": 53
+    },
+    {
+      "id": "reload_discards_all_local_evaluations",
+      "category": "invalidation",
+      "status": "PASS",
+      "durationMs": 771
+    },
+    {
+      "id": "mobile_controls_results_and_no_horizontal_overflow",
+      "category": "mobile",
+      "status": "PASS",
+      "evidence": [
+        {
+          "viewport": 375,
+          "document": 375,
+          "body": 375
+        },
+        {
+          "viewport": 320,
+          "document": 320,
+          "body": 320
+        }
+      ],
+      "durationMs": 265
+    },
+    {
+      "id": "r62_snapshot_limit_revokes_previous_decision_and_allows_new_session",
+      "category": "session_limit",
+      "status": "PASS",
+      "evidence": {
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "boundary": "maxSnapshots",
+        "limit": 500,
+        "interaction": "Playwright locator.click; DOM count and state confirmed after every accepted event.",
+        "snapshotEventsObserved": 500,
+        "normalEventButtonClicksBeforeRejection": 498,
+        "initial": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 2,
+          "sessionId": "qa-1792862226028-hhiwwpo"
+        },
+        "before": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 500,
+          "sessionId": "qa-1792862226028-hhiwwpo"
+        },
+        "rejected": {
+          "attemptedEventCount": 501,
+          "previousSessionId": "qa-1792862226028-hhiwwpo",
+          "previousAllowedResultRemoved": true,
+          "advancePauseResumeDisabled": true,
+          "visibleAlert": "O evento não pôde ser validado. A sessão foi encerrada nesta tela; inicie uma nova homologação."
+        },
+        "restarted": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 2,
+          "sessionId": "qa-1792862243777-5qfn615"
+        }
+      },
+      "durationMs": 18346
+    },
+    {
+      "id": "r62_event_limit_revokes_previous_decision_and_allows_new_session",
+      "category": "session_limit",
+      "status": "PASS",
+      "evidence": {
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "boundary": "maxEvents",
+        "limit": 1000,
+        "interaction": "Playwright locator.click; DOM count and state confirmed after every accepted event.",
+        "pauseButtonClicks": 498,
+        "resumeButtonClicks": 498,
+        "snapshotEventsFromObservedActions": 4,
+        "initial": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 2,
+          "sessionId": "qa-1792862244411-04m7xvr"
+        },
+        "awaitingConfirmation": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": false,
+          "eventCount": 998,
+          "sessionId": "qa-1792862244411-04m7xvr"
+        },
+        "before": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 1000,
+          "sessionId": "qa-1792862244411-04m7xvr"
+        },
+        "rejected": {
+          "attemptedEventCount": 1001,
+          "previousSessionId": "qa-1792862244411-04m7xvr",
+          "previousAllowedResultRemoved": true,
+          "advancePauseResumeDisabled": true,
+          "visibleAlert": "O evento não pôde ser validado. A sessão foi encerrada nesta tela; inicie uma nova homologação."
+        },
+        "restarted": {
+          "status": "RUNNING",
+          "allowSyntheticDecision": true,
+          "eventCount": 2,
+          "sessionId": "qa-1792862277859-p2egpfw"
+        }
+      },
+      "durationMs": 34081
+    },
+    {
+      "id": "r63_preview_route_scope_and_no_presumed_result",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "fixtureOnly": true,
+        "noPresumedReport": true
+      },
+      "durationMs": 734
+    },
+    {
+      "id": "r63_auto_applied_candidate_changes_freshness",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "automaticallyApplied": 1,
+        "maxAgeMs": 500,
+        "decisionChanged": true
+      },
+      "durationMs": 92
+    },
+    {
+      "id": "r63_rollback_updates_current_version",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "restoredMaxAgeMs": 750,
+        "priorOperationsUndone": false
+      },
+      "durationMs": 26
+    },
+    {
+      "id": "r63_edit_invalidates_result",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "previousReportRemoved": true
+      },
+      "durationMs": 16
+    },
+    {
+      "id": "r63_regression_is_rejected",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "regressionRejected": true
+      },
+      "durationMs": 54
+    },
+    {
+      "id": "r63_insufficient_keeps_baseline",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "insufficient",
+        "noPromotion": true
+      },
+      "durationMs": 41
+    },
+    {
+      "id": "r63_control_violation_keeps_baseline",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "control_violation",
+        "noPromotion": true
+      },
+      "durationMs": 35
+    },
+    {
+      "id": "r63_reload_discards_local_preview",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "localPreviewDiscarded": true,
+        "durableAdminJournalUnaffected": true
+      },
+      "durationMs": 572
+    },
+    {
+      "id": "r63_mobile_report_and_disclosure",
+      "category": "continuous_evolution",
+      "status": "PASS",
+      "evidence": {
+        "widths": [
+          {
+            "viewport": 375,
+            "document": 375,
+            "body": 375
+          },
+          {
+            "viewport": 320,
+            "document": 320,
+            "body": 320
+          }
+        ],
+        "noPerfectionClaim": true
+      },
+      "durationMs": 146
+    },
+    {
+      "id": "r63_admin_http_requires_identity",
+      "category": "continuous_evolution_access",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r63_admin_without_identity",
+        "status": 401,
+        "reportExposed": false
+      },
+      "durationMs": 12
+    },
+    {
+      "id": "r63_disabled_feature_is_404_and_link_absent",
+      "category": "continuous_evolution_access",
+      "status": "PASS",
+      "evidence": {
+        "routeStatus": 404,
+        "apiStatus": 404,
+        "parentLinkAbsent": true
+      },
+      "durationMs": 3901
+    },
+    {
+      "id": "r62_real_execution_true_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_real_execution_true_is_404",
+        "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+        "fixtureValue": "true",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2275
+    },
+    {
+      "id": "r62_real_execution_absent_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_real_execution_absent_is_404",
+        "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+        "fixtureValue": "ABSENT",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2287
+    },
+    {
+      "id": "r62_private_paper_transport_true_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_private_paper_transport_true_is_404",
+        "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+        "fixtureValue": "true",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2265
+    },
+    {
+      "id": "r62_private_paper_transport_absent_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_private_paper_transport_absent_is_404",
+        "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+        "fixtureValue": "ABSENT",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2267
+    },
+    {
+      "id": "r62_private_paper_executor_true_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_private_paper_executor_true_is_404",
+        "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+        "fixtureValue": "true",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2283
+    },
+    {
+      "id": "r62_private_paper_executor_absent_is_404",
+      "category": "execution_flag_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "r62_private_paper_executor_absent_is_404",
+        "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+        "fixtureValue": "ABSENT",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentStatus": 200,
+        "parentLinkAbsent": true,
+        "transportAttempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        }
+      },
+      "durationMs": 2282
+    },
+    {
+      "id": "production_is_404_even_with_qa_flags",
+      "category": "negative_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "production_is_404_even_with_qa_flags",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false
+      },
+      "durationMs": 1671
+    },
+    {
+      "id": "missing_robot_qa_flag_is_404",
+      "category": "negative_gate",
+      "status": "PASS",
+      "evidence": {
+        "scenario": "missing_robot_qa_flag_is_404",
+        "expectedStatus": 404,
+        "status": 404,
+        "consoleRendered": false,
+        "parentLinkAbsent": true
+      },
+      "durationMs": 2265
+    },
+    {
+      "id": "zero_external_api_mutation_socket_attempts_and_page_errors",
+      "category": "transport_boundary",
+      "status": "PASS",
+      "evidence": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0,
+        "pageErrors": 0,
+        "renderedZeroOrderChecks": 57
+      },
+      "durationMs": 0
+    }
+  ],
+  "gateResults": [
+    {
+      "scenario": "preview_all_required_flags",
+      "expectedStatus": 200,
+      "status": 200,
+      "consoleRendered": true
+    },
+    {
+      "scenario": "r62_real_execution_true_is_404",
+      "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+      "fixtureValue": "true",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "r62_real_execution_absent_is_404",
+      "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+      "fixtureValue": "ABSENT",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "r62_private_paper_transport_true_is_404",
+      "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+      "fixtureValue": "true",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "r62_private_paper_transport_absent_is_404",
+      "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+      "fixtureValue": "ABSENT",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "r62_private_paper_executor_true_is_404",
+      "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+      "fixtureValue": "true",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "r62_private_paper_executor_absent_is_404",
+      "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+      "fixtureValue": "ABSENT",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentStatus": 200,
+      "parentLinkAbsent": true,
+      "transportAttempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      }
+    },
+    {
+      "scenario": "production_is_404_even_with_qa_flags",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false
+    },
+    {
+      "scenario": "missing_robot_qa_flag_is_404",
+      "expectedStatus": 404,
+      "status": 404,
+      "consoleRendered": false,
+      "parentLinkAbsent": true
+    }
+  ],
+  "attempts": {
+    "externalRequests": 0,
+    "apiRequests": 0,
+    "mutations": 0,
+    "webSockets": 0
+  },
+  "networkEvents": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "artifacts": {
+    "desktop": "/home/runner/work/_temp/jenios-r65-evidence/r63-browser-desktop.png",
+    "mobile": "/home/runner/work/_temp/jenios-r65-evidence/r63-browser-mobile.png",
+    "evolution": "/home/runner/work/_temp/jenios-r65-evidence/r63-evolution-mobile.png",
+    "report": "/home/runner/work/_temp/jenios-r65-evidence/r63-browser-acceptance.json",
+    "log": "/home/runner/work/_temp/jenios-r65-evidence/r63-next-servers.log"
+  },
+  "errors": [],
+  "serverHttpChecks": [
+    {
+      "scenario": "r63_admin_without_identity",
+      "status": 401,
+      "reportExposed": false
+    }
+  ],
+  "counts": {
+    "total": 52,
+    "passed": 52,
+    "failed": 0,
+    "notRun": 0,
+    "pageErrors": 0,
+    "renderedZeroOrderChecks": 57
+  },
+  "finishedAt": "2026-10-24T17:18:21.130Z",
+  "durationMs": 81179
+}

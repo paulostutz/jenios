@@ -1804,5 +1804,326 @@
       "The existing real Platform account session, provider account and deployed-host integration remain unverified.",
       "R64 hypotheses never promote robot configuration; the separate R63 synthetic approval domain remains unchanged."
     ]
+  },
+  "durableEvolutionCycle": {
+    "revision": "R65",
+    "classification": "QA_EVOLUTION_CYCLE_CERTIFIED",
+    "createdAt": "2026-10-24T16:55:56.993345+00:00",
+    "base": {
+      "branch": "backup/jenios-robot-r64-operational-integration-certified-20261024",
+      "commit": "58e1699ee1d01bdefb71ea969f360d278605732f",
+      "validationRun": 40110326680
+    },
+    "scope": "SIGNED_QA_OBSERVATION_TO_SYNTHETIC_EVALUATION_AND_DURABLE_APPLICATION",
+    "authorization": {
+      "ownerAutomaticImprovementPreapprovalPreserved": "OWNER_PREAPPROVAL_20261024",
+      "productionChangeAuthorized": false,
+      "paidProviderActivationAuthorized": false
+    },
+    "implemented": {
+      "executedFourRobotQaSource": true,
+      "dualSignedProvenance": true,
+      "atomicIntake": true,
+      "frozenR64StudyReplay": true,
+      "registeredIndependentSyntheticPlan": true,
+      "databaseTimedValidationCases": true,
+      "boundedAutomaticApplication": true,
+      "durableRevisionAndDigestCas": true,
+      "activeRuntimeConsumption": true,
+      "rollbackAndHistory": true,
+      "logicalArchive": true,
+      "adminCostReconciliation": true,
+      "adminPanelAndPersistedQaPreview": true,
+      "explicitHostWorkerEntry": true
+    },
+    "automaticPolicy": {
+      "robot": "ultrafast",
+      "parameter": "maxAgeMs",
+      "from": 750,
+      "to": 500,
+      "maximumApplications": 1,
+      "freshConfirmationsAfterGenerationChange": 2,
+      "falseAllowsCandidate": 0,
+      "strictFalseAllowReductionRequired": true,
+      "noFalseBlockRegressionRequired": true,
+      "arbitraryGeneratedCodeExecution": false
+    },
+    "evidence": {
+      "observation": "SIGNED_QA_REPLAY",
+      "runtimeOrigin": "R61_SYNTHETIC_RUNTIME",
+      "validation": "SYNTHETIC_FIXTURE",
+      "privateEngineConnected": false,
+      "customerMonitoringActive": false,
+      "durableEmitterOutbox": false
+    },
+    "database": {
+      "schema": "db/schema/robot-r65-lifecycle-store.sql",
+      "status": "REVIEW_ONLY_NOT_APPLIED_TO_HOSTED_DATABASE",
+      "realSupabaseDatabasesChanged": 0,
+      "validationClock": "POSTGRESQL_CLOCK_TIMESTAMP",
+      "archiveMode": "LOGICAL_COPY_ONLY",
+      "physicalDeletionPerformed": false,
+      "spaceReclaimedBytes": 0,
+      "originalR64RecordsRewritten": false
+    },
+    "invariants": {
+      "r12r64ResearchAlgorithmsChanged": false,
+      "r15ProspectiveBackfill": false,
+      "alignmentGuardThreshold": 0.65,
+      "manualOperatorControlPreserved": true,
+      "losseshometroSyntheticOnly": true,
+      "actualBrokerPnl": null,
+      "actualLossesAvoided": null,
+      "realTradeAccuracy": null,
+      "realOrdersSent": 0,
+      "externalPaperOrdersSent": 0,
+      "paidProviderCalls": 0,
+      "customerMonitoringActive": false,
+      "productionConfigurationChanged": false,
+      "productionDeployPerformed": false,
+      "mergePerformed": false,
+      "commercialPerformanceCertified": false
+    },
+    "validation": {
+      "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
+      "finalConsolidatedRun": "Required before backup creation",
+      "local": {
+        "tests": 124,
+        "passed": 124,
+        "failed": 0,
+        "skipped": 0,
+        "node": "v24.22.1"
+      },
+      "localPostgres": {
+        "version": "16",
+        "tests": 42,
+        "passed": 42,
+        "preservedR64WithR65Extension": 32
+      },
+      "attempts": [
+        {
+          "runId": 40114572954,
+          "commit": "10ea0348cda91510b73580fc50535f291339da19",
+          "conclusion": "FAILURE",
+          "directed": "643/643",
+          "general": "2449/2449",
+          "social": "94/94",
+          "build": "PASS",
+          "pages": "76/76",
+          "preservedBrowser": "52/52",
+          "preservedPostgres": "32/32",
+          "postgres": "42/42",
+          "preservedRuntime": "31/31",
+          "runtimeIntegration": {
+            "total": 33,
+            "passed": 23,
+            "failed": 10,
+            "notRun": 0
+          },
+          "cause": "NextURL normalizes 127.0.0.1 to localhost; valid browser Origin failed direct request.url-origin comparison, blocking admin actions and downstream assertions.",
+          "fix": "Server-pinned canonical JENIOS_ROBOT_R65_ADMIN_ORIGIN; preserve malicious-origin rejection and ignore forwarded authority."
+        }
+      ],
+      "originRefinement": {
+        "tests": 34,
+        "passed": 34,
+        "newRegressionCases": 2
+      },
+      "evidence": {
+        "validationRun": 40115226351,
+        "validatedCommit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+        "directed": "645/645",
+        "general": "2451/2451",
+        "social": "94/94",
+        "build": "PASS",
+        "pages": "76/76",
+        "postgres": "42/42",
+        "preservedPostgres": "32/32",
+        "runtimeIntegration": "33/33",
+        "preservedRuntime": "31/31",
+        "preservedBrowser": "52/52",
+        "failures": 0,
+        "skipped": 0,
+        "countsAreOverlapping": true
+      },
+      "postgresAcceptance": {
+        "reportFile": "docs/platform/evidence/ROBOT_R65_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+        "total": 42,
+        "passed": 42,
+        "failed": 0,
+        "notRun": 0,
+        "realConcurrentConnections": true,
+        "database": "DISPOSABLE_LOCAL_POSTGRESQL",
+        "archiveMode": "LOGICAL_COPY_ONLY",
+        "physicalDeletionPerformed": false,
+        "generationEnabledAtExit": false
+      },
+      "runtimeAcceptance": {
+        "reportFile": "docs/platform/evidence/ROBOT_R65_RUNTIME_ACCEPTANCE_EVIDENCE.json",
+        "total": 33,
+        "passed": 33,
+        "failed": 0,
+        "notRun": 0,
+        "pageErrors": 0,
+        "allPlannedCasesRan": true,
+        "scope": {
+          "observationEvidenceKind": "SIGNED_QA_REPLAY",
+          "runtimeOrigin": "R61_SYNTHETIC_RUNTIME",
+          "validationEvidenceKind": "SYNTHETIC_FIXTURE",
+          "fixtureScopeId": "scope:6500217fddcbc8da",
+          "nextOrigin": "http://127.0.0.1:4320",
+          "gatewayOrigin": "https://127.0.0.1:4321",
+          "authentication": "EXPLICIT_FIXTURE_USERS",
+          "restGateway": "LOOPBACK_HTTPS_POSTGREST_MOCK",
+          "database": "REAL_DISPOSABLE_POSTGRESQL",
+          "databaseRole": "service_role",
+          "tls": "EPHEMERAL_CA_TRUSTED_WITH_NODE_EXTRA_CA_CERTS",
+          "networkRestriction": "BROWSER_REQUESTS_AND_WEBSOCKETS_ONLY",
+          "serverAndIntakeClock": "REAL_WALL_CLOCK",
+          "closedCalendarOffsetMs": 0,
+          "registrationPositivePath": "REAL_HTTP_WALL_CLOCK",
+          "validationClock": "UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+          "retrospectiveValidationCreated": false,
+          "productionDeploymentTested": false,
+          "realAdminIdentityTested": false,
+          "realProviderConnectionTested": false,
+          "customerMonitoringActive": false,
+          "privateEngineConnected": false,
+          "independentCustomerConsentVerified": false,
+          "independentBrokerAttestation": false,
+          "paidProviderCalls": 0,
+          "realOrdersSent": 0,
+          "externalPaperOrdersSent": 0,
+          "actualBrokerPnl": null,
+          "actualLossesAvoided": null,
+          "realTradeAccuracy": null,
+          "commercialPerformanceCertified": false
+        },
+        "runtime": {
+          "node": "v22.23.3",
+          "expectedPlaywright": "1.56.1",
+          "playwright": "1.56.1",
+          "chromium": "141.0.7390.37"
+        },
+        "permittedAuthenticatedAdminReads": 2,
+        "attempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        },
+        "consoleErrors": 0,
+        "screenshotReviewed": "r65-cycle-mobile.png",
+        "serverLogsReviewed": true,
+        "humanOwnerAcceptanceCompleted": false
+      },
+      "preservedEvidence": {
+        "r64-postgres-acceptance.json": "docs/platform/evidence/ROBOT_R65_PRESERVED_POSTGRES_EVIDENCE.json",
+        "r64-runtime-acceptance.json": "docs/platform/evidence/ROBOT_R65_PRESERVED_RUNTIME_EVIDENCE.json",
+        "r63-browser-acceptance.json": "docs/platform/evidence/ROBOT_R65_PRESERVED_BROWSER_EVIDENCE.json",
+        "r63-continuous-improvement-evidence.json": "docs/platform/evidence/ROBOT_R65_PRESERVED_EVOLUTION_EVIDENCE.json"
+      },
+      "artifact": {
+        "id": 12568062163,
+        "name": "r65-evolution-evidence-5044ec1f04dedf38e98024c970991068fba3bd86",
+        "sourceRun": 40115226351,
+        "sourceCommit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+        "bytes": 1026813,
+        "zipSha256": "6dd97cb99f4e5cd894fd8707f9f140f87f67111a5f069e92fcb611793079bb60",
+        "zipHashVerified": true,
+        "expiresAt": "2026-11-07T17:18:46Z",
+        "files": [
+          {
+            "name": "r63-browser-acceptance.json",
+            "bytes": 28270,
+            "sha256": "6b5cd6d16d6103b81a56022e60f43c5eea374fd0a373115c512efbc8757696b2"
+          },
+          {
+            "name": "r63-browser-desktop.png",
+            "bytes": 250243,
+            "sha256": "e94e470a228351aa02cdba6991c3b3f077eeba8695afef5caa60f72f14017930"
+          },
+          {
+            "name": "r63-browser-mobile.png",
+            "bytes": 306712,
+            "sha256": "4f42d39b8c0bad3f31f534795ce0a188098dc6b916bb3df51e20abb27362619e"
+          },
+          {
+            "name": "r63-continuous-improvement-evidence.json",
+            "bytes": 35774,
+            "sha256": "28c4b2865281def05b7c1f44e123b36e3e116fea047d377b0568f4273747dd2c"
+          },
+          {
+            "name": "r63-evolution-mobile.png",
+            "bytes": 199836,
+            "sha256": "7d1edd5c1e5b868c1fcbcffa86cf0e3a9691986a71118d9e9af67e4e6f49672c"
+          },
+          {
+            "name": "r63-next-servers.log",
+            "bytes": 5055,
+            "sha256": "9ca770421df4920d98ad0374119b82a27f7b27303602760d4490b49d396f0f9a"
+          },
+          {
+            "name": "r64-observation-mobile.png",
+            "bytes": 133959,
+            "sha256": "0291f010ca5f514c0353dccae8a5f3f0706e424dc00e3bf3b0066424d3f93b48"
+          },
+          {
+            "name": "r64-postgres-acceptance.json",
+            "bytes": 4329,
+            "sha256": "4191fd509e42bac6d223b9f251e239302326beba92eee8ae17e220f979a66cc3"
+          },
+          {
+            "name": "r64-runtime-acceptance.json",
+            "bytes": 12443,
+            "sha256": "fa2d6a85834156ff0e614b69cc2c785b158c071de761abd41e9a85249b9f415d"
+          },
+          {
+            "name": "r64-runtime-next-servers.log",
+            "bytes": 1014,
+            "sha256": "0669a69c79ea06ae69a6447eff48c344884dcaf8afb025888c1a02adfbd99303"
+          },
+          {
+            "name": "r65-cycle-mobile.png",
+            "bytes": 167459,
+            "sha256": "d56253df99792ed30d1cd30bbba7b8ad74191a2352c9bd6f35b1750168df23d3"
+          },
+          {
+            "name": "r65-postgres-acceptance.json",
+            "bytes": 6028,
+            "sha256": "693f4450793c52ec2759a74bed3cdd305d498292928e8623013d7274562ca42c"
+          },
+          {
+            "name": "r65-runtime-acceptance.json",
+            "bytes": 30051,
+            "sha256": "845ccaf7474579994631c36fe294ce097e12710324ad03e0068b8ddeb50532e0"
+          },
+          {
+            "name": "r65-runtime-next-servers.log",
+            "bytes": 1194,
+            "sha256": "589e1bb44d46e7c310d1bad992efd8d75ebea8e7ba35e61df37f9c31b4a47c49"
+          }
+        ]
+      },
+      "noDeployVerification": {
+        "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+        "projectName": "jenios-ecossistem",
+        "verifiedCommit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+        "deploymentCount": 0
+      },
+      "newR65UnitTests": 126
+    },
+    "remainingOperationalWork": [
+      "Verified external private runtime source integration",
+      "Durable emitter retry/outbox across process restart",
+      "Customer data handling and disclosures",
+      "Hosted QA database, actual identity and scheduler setup",
+      "Authorized provider and budget activation",
+      "Controlled operational observation and manual acceptance",
+      "Physical purge only after durable replay markers exist"
+    ],
+    "certificationRule": "The recorded reference CI is successful; final closure requires another complete successful CI on the consolidated commit and creation of its matching certified backup. Evidence retains its original source SHA.",
+    "branch": "research/jenios-robot-r65-evolution-cycle-20261024",
+    "certifiedBackup": "backup/jenios-robot-r65-evolution-cycle-certified-20261024"
   }
 }

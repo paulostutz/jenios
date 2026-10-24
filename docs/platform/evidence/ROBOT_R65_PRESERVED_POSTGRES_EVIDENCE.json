@@ -1,0 +1,151 @@
+{
+  "schema": "JENIOS_R64_POSTGRES_ACCEPTANCE_V1",
+  "status": "PASS",
+  "commit": "5044ec1f04dedf38e98024c970991068fba3bd86",
+  "capturedAt": "2026-10-24T17:15:30.258Z",
+  "database": "DISPOSABLE_LOCAL_POSTGRESQL",
+  "realConcurrentConnections": true,
+  "counts": {
+    "total": 32,
+    "passed": 32,
+    "failed": 0,
+    "notRun": 0
+  },
+  "checks": [
+    {
+      "name": "review SQL applies twice without deleting history",
+      "status": "PASS"
+    },
+    {
+      "name": "new installation has zero budget and paid generation disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "client roles cannot access tables or RPCs; all four tables have RLS",
+      "status": "PASS"
+    },
+    {
+      "name": "worker cannot approve its own paid policy",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent duplicate receipt commits once",
+      "status": "PASS"
+    },
+    {
+      "name": "identical signed envelope readmitted later is idempotent",
+      "status": "PASS"
+    },
+    {
+      "name": "conflicting identity and stale sequence are rejected; committed events survive restart",
+      "status": "PASS"
+    },
+    {
+      "name": "scope and period filters isolate receipts",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL itself refuses operational or broker evidence classifications",
+      "status": "PASS"
+    },
+    {
+      "name": "independent concurrent claims produce one lease owner",
+      "status": "PASS"
+    },
+    {
+      "name": "expired pre-dispatch lease is reclaimed with immutable input and a new generation",
+      "status": "PASS"
+    },
+    {
+      "name": "old worker cannot dispatch or complete after lease loss",
+      "status": "PASS"
+    },
+    {
+      "name": "a later replay cannot replace the frozen period input",
+      "status": "PASS"
+    },
+    {
+      "name": "default policy denies dispatch before any reservation",
+      "status": "PASS"
+    },
+    {
+      "name": "underquoted reservations cannot bypass the approved fixed quote",
+      "status": "PASS"
+    },
+    {
+      "name": "two connections reserve once and grant only one provider dispatch",
+      "status": "PASS"
+    },
+    {
+      "name": "single reservation uses internal nanoUSD without a customer wallet",
+      "status": "PASS"
+    },
+    {
+      "name": "confirmed usage settles once and identical completion is idempotent",
+      "status": "PASS"
+    },
+    {
+      "name": "completed report cannot be rewritten",
+      "status": "PASS"
+    },
+    {
+      "name": "unused reservation is released and measured cost retained",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent different cycles respect the shared monthly limit",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown result holds reservation and persists a safe reconciliation report",
+      "status": "PASS"
+    },
+    {
+      "name": "uncertain paid dispatch is never automatically retried",
+      "status": "PASS"
+    },
+    {
+      "name": "ambiguous provider usage remains reserved without invented cost",
+      "status": "PASS"
+    },
+    {
+      "name": "admin exposes expired dispatched cycles even when their old period is never revisited",
+      "status": "PASS"
+    },
+    {
+      "name": "crash after dispatch becomes reconciliation without acquiring a new lease",
+      "status": "PASS"
+    },
+    {
+      "name": "admin can see a crashed dispatched cycle without a fabricated report",
+      "status": "PASS"
+    },
+    {
+      "name": "cost above reservation is not falsely settled or presented as an approved hypothesis",
+      "status": "PASS"
+    },
+    {
+      "name": "provider response reused across cycles requires reconciliation",
+      "status": "PASS"
+    },
+    {
+      "name": "lease expiring during a real budget-lock wait cannot reserve or dispatch",
+      "status": "PASS"
+    },
+    {
+      "name": "lease expiring during settlement wait keeps reservation and removes settled-hypothesis claims",
+      "status": "PASS"
+    },
+    {
+      "name": "admin report projection excludes private input, leases and provider result",
+      "status": "PASS"
+    }
+  ],
+  "customerWalletDebits": 0,
+  "paidProviderCalls": 0,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "productionDatabaseAccessed": false,
+  "migrationAppliedToSupabase": false,
+  "generationEnabledAtExit": false
+}

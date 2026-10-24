@@ -1,0 +1,16 @@
+{
+  "parentCommit": "81a0cd8f3ce1205f4d5db456388a4fe32964b4b8",
+  "reason": "Honor the existing explicit payment activation flag at catalog, health and creation boundaries; retain read-only Inter diagnostics.",
+  "reviewedBlobs": {
+    "lib/pay/gateway.mjs": "22079ffea599b33ea7b1ace69cdefd2b65819854",
+    "lib/pay/inter-pix.mjs": "7a5315dab7476863516bc32525ae2c4912b2e695",
+    "app/api/jenios-pay/health/route.js": "0b1a0ab97013130f4584964aeb117e75fead6ff0",
+    "tests/interPix.test.mjs": "beb5e4c3a09627ddd623885d351dc9091966d7cc",
+    "tests/payCatalog.test.mjs": "334149a919494157242db57a265aaec76e244180",
+    "tests/payAccess.test.mjs": "dd703d7775d65549be2599c6eed7f8ae7f89846d",
+    "tests/jeniosProTopupsB146.test.mjs": "80caa44a9d5886129e9e1fb3f5b3af69e63f25e0",
+    "tests/paymentActivationR44.test.mjs": "8b07c4e71f0e4786a3f820002f7d839b956991e1",
+    "scripts/check-client-experience-r44.mjs": "919f7ced10c19021a9063863dc08ed3f0dd14321",
+    "tests/jeniosBoostB148.test.mjs": "caeb34ff7282662601b89ed625e2c6f4e244714a"
+  }
+}

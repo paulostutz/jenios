@@ -15,8 +15,11 @@ export function verifyIntegratedR44(){
  for(const path of Object.keys(review.reviewedBlobs)){
   assert.ok(!/^(?:supabase\/|lib\/(?:email\/|jenios-pay|subscriptions|inter|brokers\/)|app\/api\/(?:email|webhooks|jenios-pay|payments|inter))/.test(path),'R44 must preserve the financial/email/database engines: '+path);
  }
+ const payment=JSON.parse(readFileSync('docs/platform/R44-PAYMENT-ACTIVATION-BASELINE.json','utf8'));
+ assert.equal(payment.parentCommit,'81a0cd8f3ce1205f4d5db456388a4fe32964b4b8');
+ assert.deepEqual(Object.keys(payment.reviewedBlobs).sort(),["app/api/jenios-pay/health/route.js", "lib/pay/gateway.mjs", "lib/pay/inter-pix.mjs", "scripts/check-client-experience-r44.mjs", "tests/interPix.test.mjs", "tests/jeniosBoostB148.test.mjs", "tests/jeniosProTopupsB146.test.mjs", "tests/payAccess.test.mjs", "tests/payCatalog.test.mjs", "tests/paymentActivationR44.test.mjs"]);
  const blob=body=>createHash('sha1').update(Buffer.from('blob '+body.byteLength+'\0')).update(body).digest('hex');
- for(const [path,expected] of Object.entries({...baseline.blobs,...review.reviewedBlobs}))
+ for(const [path,expected] of Object.entries({...baseline.blobs,...review.reviewedBlobs,...payment.reviewedBlobs}))
   assert.equal(blob(readFileSync(path)),expected,'File changed outside exact reviewed R44/G44 integration: '+path);
- console.log('R44_G44_INTEGRATED_BASELINE_PASS='+Object.keys(baseline.blobs).length+' published files; '+Object.keys(review.reviewedBlobs).length+' exact reviewed client/commercial changes; email, payments, brokers and migrations preserved.');
+ console.log('R44_G44_INTEGRATED_BASELINE_PASS='+Object.keys(baseline.blobs).length+' published files; '+Object.keys(review.reviewedBlobs).length+' exact reviewed client/commercial changes; explicit payment activation correction exact-pinned separately; email, brokers and migrations preserved.');
 }

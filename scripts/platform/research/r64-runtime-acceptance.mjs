@@ -436,9 +436,10 @@ check('browser-ssr-persisted-report', 'browser', async () => {
   browserText = await page.getByTestId('r64-report').innerText();
 });
 check('browser-four-robots', 'browser', async () => {
-  for (const [label, count] of [['Manual', 1], ['Híbrido', 1], ['Reverso', 1], ['UltraFast', 4]]) {
+  for (const [label, text] of [['Manual', '1 observação de QA'], ['Híbrido', '1 observação de QA'],
+    ['Reverso', '1 observação de QA'], ['UltraFast', '4 observações de QA']]) {
     const robot = page.getByTestId('r64-report').getByText(label, { exact: true });
-    await expect(robot).toBeVisible(); await expect(robot.locator('..')).toContainText(`${count} observações de QA`);
+    await expect(robot).toBeVisible(); await expect(robot.locator('..')).toContainText(text);
   }
 });
 check('browser-evidence-and-limitations', 'browser', async () => {

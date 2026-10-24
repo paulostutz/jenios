@@ -1,0 +1,1101 @@
+{
+  "schema": "JENIOS_R63_CONTINUOUS_IMPROVEMENT_EVIDENCE_V1",
+  "status": "PASS",
+  "commit": "5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da",
+  "capturedAt": "2026-10-24T16:04:59.667Z",
+  "scope": "SYNTHETIC_RESEARCH_ONLY",
+  "ownerPreapproval": {
+    "schema": "JENIOS_R63_OWNER_PREAPPROVAL_V1",
+    "authorizationId": "OWNER_PREAPPROVAL_20261024",
+    "autoApprovalGranted": true,
+    "allowedEnvironment": "research",
+    "allowedEvidenceKind": "SYNTHETIC_FIXTURE",
+    "allowedChange": "TIGHTEN_MARKET_FRESHNESS",
+    "baselineMaxAgeMs": 750,
+    "candidateMaxAgeMs": 500,
+    "minConsecutiveFresh": 2,
+    "alignmentGuardThreshold": 0.65,
+    "minValidationCases": 6,
+    "minCasesPerClass": 2,
+    "maxValidationCases": 200,
+    "maxWindowMs": 86400000,
+    "minCycleIntervalMs": 3600000,
+    "maxJournalCommands": 32,
+    "maxPromotions": 1,
+    "privacyDisclosureRequiredForOperationalData": true,
+    "operationalDataAccepted": false,
+    "arbitraryCodeAllowed": false,
+    "liveExecutionAllowed": false,
+    "externalPaperExecutionAllowed": false,
+    "automaticDeploymentAllowed": false
+  },
+  "cases": {
+    "improve": {
+      "evaluation": {
+        "planId": "plan:000a21a1",
+        "status": "AUTO_APPLIED",
+        "reason": "INDEPENDENT_SYNTHETIC_IMPROVEMENT",
+        "atMs": 1792756860001,
+        "baselineVersionId": "research:r63-v1",
+        "candidateVersionId": "research:r63-v2",
+        "baseline": {
+          "total": 6,
+          "positiveCases": 2,
+          "negativeCases": 4,
+          "allowed": 4,
+          "blocked": 2,
+          "correct": 4,
+          "falseAllows": 2,
+          "falseBlocks": 0
+        },
+        "candidate": {
+          "total": 6,
+          "positiveCases": 2,
+          "negativeCases": 4,
+          "allowed": 2,
+          "blocked": 4,
+          "correct": 6,
+          "falseAllows": 0,
+          "falseBlocks": 0
+        },
+        "registeredAtMs": 1792756800001,
+        "validationStartsAtMs": 1792756810000,
+        "validationEndsAtMs": 1792756860000,
+        "candidateMaxAgeMs": 500,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "before": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "after": {
+        "allow": false,
+        "reason": "R47_FEED_NOT_READY",
+        "version": "research:r63-v2",
+        "maxAgeMs": 500,
+        "activationGeneration": 1,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "report": {
+        "schema": "JENIOS_R63_ADMIN_EVOLUTION_REPORT_V1",
+        "reportId": "r63-report:fixture:00000001:1792724400000:1792810800000",
+        "scopeId": "fixture:00000001",
+        "period": {
+          "startMs": 1792724400000,
+          "endMs": 1792810800000
+        },
+        "generatedAtMs": 1792843200000,
+        "timeZone": "America/Sao_Paulo",
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "scope": "SYNTHETIC_ONLY",
+        "adminOnly": true,
+        "customerTechnicalNotifications": false,
+        "operationalDataDisclosureRequired": true,
+        "delivery": "NOT_DISPATCHED",
+        "scheduledDeliveryActive": false,
+        "observations": {
+          "eventCount": 7,
+          "decisionCount": 4,
+          "incidentCount": 3,
+          "byRobot": {
+            "manual": 1,
+            "hybrid": 1,
+            "reverse": 1,
+            "ultrafast": 4
+          },
+          "byIssue": {
+            "NONE": 4,
+            "STALE_CONTEXT": 3,
+            "SEQUENCE_GAP": 0,
+            "CONNECTION_FAILURE": 0,
+            "CONTROL_VIOLATION": 0
+          },
+          "blockedDecisions": 0,
+          "firstOccurredAtMs": 1792756790000,
+          "lastOccurredAtMs": 1792756797000
+        },
+        "robots": [
+          {
+            "robot": "manual",
+            "label": "Manual",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "hybrid",
+            "label": "Híbrido",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "reverse",
+            "label": "Reverso",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "ultrafast",
+            "label": "UltraFast",
+            "observations": 4,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [
+              {
+                "code": "STALE_CONTEXT",
+                "robot": "ultrafast",
+                "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+                "severity": "REVIEW",
+                "eventCount": 3,
+                "distinctOccurredAtCount": 3,
+                "evidenceEventIds": [
+                  "evt:000a21aa",
+                  "evt:000a21ab",
+                  "evt:000a21ac"
+                ]
+              }
+            ],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          }
+        ],
+        "findings": [
+          {
+            "code": "STALE_CONTEXT",
+            "robot": "ultrafast",
+            "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+            "severity": "REVIEW",
+            "eventCount": 3,
+            "distinctOccurredAtCount": 3,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab",
+              "evt:000a21ac"
+            ]
+          }
+        ],
+        "proposals": [
+          {
+            "kind": "TIGHTEN_MARKET_FRESHNESS",
+            "maxAgeMs": 500,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab",
+              "evt:000a21ac"
+            ],
+            "assessment": "HYPOTHESIS_REQUIRES_INDEPENDENT_VALIDATION"
+          }
+        ],
+        "evidenceEventIds": [
+          "evt:000a21a1",
+          "evt:000a21a2",
+          "evt:000a21a3",
+          "evt:000a21a4",
+          "evt:000a21aa",
+          "evt:000a21ab",
+          "evt:000a21ac"
+        ],
+        "activeVersion": {
+          "versionId": "research:r63-v2",
+          "maxAgeMs": 500,
+          "activatedAtMs": 1792756860001,
+          "activationGeneration": 1
+        },
+        "revision": 2,
+        "improvements": {
+          "period": {
+            "registered": 1,
+            "automaticallyApplied": 1,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "cumulative": {
+            "registered": 1,
+            "automaticallyApplied": 1,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "actions": [
+            {
+              "action": "EVALUATION_REGISTERED",
+              "atMs": 1792756800001,
+              "planId": "plan:000a21a1",
+              "fromVersionId": "research:r63-v1",
+              "toVersionId": null,
+              "reason": "FROZEN_SYNTHETIC_HYPOTHESIS"
+            },
+            {
+              "action": "AUTO_APPLIED",
+              "atMs": 1792756860001,
+              "planId": "plan:000a21a1",
+              "fromVersionId": "research:r63-v1",
+              "toVersionId": "research:r63-v2",
+              "reason": "INDEPENDENT_SYNTHETIC_IMPROVEMENT"
+            }
+          ],
+          "evaluations": [
+            {
+              "planId": "plan:000a21a1",
+              "status": "AUTO_APPLIED",
+              "reason": "INDEPENDENT_SYNTHETIC_IMPROVEMENT",
+              "atMs": 1792756860001,
+              "baselineVersionId": "research:r63-v1",
+              "candidateVersionId": "research:r63-v2",
+              "baseline": {
+                "total": 6,
+                "positiveCases": 2,
+                "negativeCases": 4,
+                "allowed": 4,
+                "blocked": 2,
+                "correct": 4,
+                "falseAllows": 2,
+                "falseBlocks": 0
+              },
+              "candidate": {
+                "total": 6,
+                "positiveCases": 2,
+                "negativeCases": 4,
+                "allowed": 2,
+                "blocked": 4,
+                "correct": 6,
+                "falseAllows": 0,
+                "falseBlocks": 0
+              },
+              "registeredAtMs": 1792756800001,
+              "validationStartsAtMs": 1792756810000,
+              "validationEndsAtMs": 1792756860000,
+              "candidateMaxAgeMs": 500,
+              "evidenceKind": "SYNTHETIC_FIXTURE",
+              "environment": "research",
+              "liveExecutionAllowed": false,
+              "externalPaperExecutionAllowed": false,
+              "deploymentPerformed": false,
+              "actualBrokerPnl": null,
+              "actualLossesAvoided": null,
+              "realTradeAccuracy": null,
+              "realOrdersSent": 0,
+              "externalPaperOrdersSent": 0
+            }
+          ],
+          "pendingEvaluationPlanId": null
+        },
+        "maturity": {
+          "stage": "SYNTHETIC_IMPROVEMENT_APPLIED",
+          "label": "Melhoria aplicada e avaliada em pesquisa sintética",
+          "completionCeilingKnown": false,
+          "productionIntegrationVerified": false,
+          "externalExecutionValidated": false,
+          "commercialPerformanceCertified": false
+        },
+        "pending": [
+          "Integração operacional e evidências externas ainda não validadas.",
+          "O serviço agendado e a entrega no admin dependem da ativação do ambiente autorizado.",
+          "Dados de clientes exigem finalidade, transparência e controles de acesso definidos."
+        ],
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null
+      }
+    },
+    "regression": {
+      "evaluation": {
+        "planId": "plan:000a21a1",
+        "status": "REJECTED",
+        "reason": "CANDIDATE_FALSE_BLOCK_REGRESSION",
+        "atMs": 1792756860001,
+        "baselineVersionId": "research:r63-v1",
+        "candidateVersionId": null,
+        "baseline": {
+          "total": 6,
+          "positiveCases": 4,
+          "negativeCases": 2,
+          "allowed": 4,
+          "blocked": 2,
+          "correct": 6,
+          "falseAllows": 0,
+          "falseBlocks": 0
+        },
+        "candidate": {
+          "total": 6,
+          "positiveCases": 4,
+          "negativeCases": 2,
+          "allowed": 2,
+          "blocked": 4,
+          "correct": 4,
+          "falseAllows": 0,
+          "falseBlocks": 2
+        },
+        "registeredAtMs": 1792756800001,
+        "validationStartsAtMs": 1792756810000,
+        "validationEndsAtMs": 1792756860000,
+        "candidateMaxAgeMs": 500,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "before": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "after": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "report": {
+        "schema": "JENIOS_R63_ADMIN_EVOLUTION_REPORT_V1",
+        "reportId": "r63-report:fixture:00000001:1792724400000:1792810800000",
+        "scopeId": "fixture:00000001",
+        "period": {
+          "startMs": 1792724400000,
+          "endMs": 1792810800000
+        },
+        "generatedAtMs": 1792843200000,
+        "timeZone": "America/Sao_Paulo",
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "scope": "SYNTHETIC_ONLY",
+        "adminOnly": true,
+        "customerTechnicalNotifications": false,
+        "operationalDataDisclosureRequired": true,
+        "delivery": "NOT_DISPATCHED",
+        "scheduledDeliveryActive": false,
+        "observations": {
+          "eventCount": 7,
+          "decisionCount": 4,
+          "incidentCount": 3,
+          "byRobot": {
+            "manual": 1,
+            "hybrid": 1,
+            "reverse": 1,
+            "ultrafast": 4
+          },
+          "byIssue": {
+            "NONE": 4,
+            "STALE_CONTEXT": 3,
+            "SEQUENCE_GAP": 0,
+            "CONNECTION_FAILURE": 0,
+            "CONTROL_VIOLATION": 0
+          },
+          "blockedDecisions": 0,
+          "firstOccurredAtMs": 1792756790000,
+          "lastOccurredAtMs": 1792756797000
+        },
+        "robots": [
+          {
+            "robot": "manual",
+            "label": "Manual",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "hybrid",
+            "label": "Híbrido",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "reverse",
+            "label": "Reverso",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "ultrafast",
+            "label": "UltraFast",
+            "observations": 4,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [
+              {
+                "code": "STALE_CONTEXT",
+                "robot": "ultrafast",
+                "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+                "severity": "REVIEW",
+                "eventCount": 3,
+                "distinctOccurredAtCount": 3,
+                "evidenceEventIds": [
+                  "evt:000a21aa",
+                  "evt:000a21ab",
+                  "evt:000a21ac"
+                ]
+              }
+            ],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          }
+        ],
+        "findings": [
+          {
+            "code": "STALE_CONTEXT",
+            "robot": "ultrafast",
+            "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+            "severity": "REVIEW",
+            "eventCount": 3,
+            "distinctOccurredAtCount": 3,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab",
+              "evt:000a21ac"
+            ]
+          }
+        ],
+        "proposals": [
+          {
+            "kind": "TIGHTEN_MARKET_FRESHNESS",
+            "maxAgeMs": 500,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab",
+              "evt:000a21ac"
+            ],
+            "assessment": "HYPOTHESIS_REQUIRES_INDEPENDENT_VALIDATION"
+          }
+        ],
+        "evidenceEventIds": [
+          "evt:000a21a1",
+          "evt:000a21a2",
+          "evt:000a21a3",
+          "evt:000a21a4",
+          "evt:000a21aa",
+          "evt:000a21ab",
+          "evt:000a21ac"
+        ],
+        "activeVersion": {
+          "activatedAtMs": 1792756780000,
+          "activationGeneration": 0,
+          "maxAgeMs": 750,
+          "versionId": "research:r63-v1"
+        },
+        "revision": 2,
+        "improvements": {
+          "period": {
+            "registered": 1,
+            "automaticallyApplied": 0,
+            "rejected": 1,
+            "rolledBack": 0
+          },
+          "cumulative": {
+            "registered": 1,
+            "automaticallyApplied": 0,
+            "rejected": 1,
+            "rolledBack": 0
+          },
+          "actions": [
+            {
+              "action": "EVALUATION_REGISTERED",
+              "atMs": 1792756800001,
+              "planId": "plan:000a21a1",
+              "fromVersionId": "research:r63-v1",
+              "toVersionId": null,
+              "reason": "FROZEN_SYNTHETIC_HYPOTHESIS"
+            },
+            {
+              "action": "REJECTED",
+              "atMs": 1792756860001,
+              "planId": "plan:000a21a1",
+              "fromVersionId": "research:r63-v1",
+              "toVersionId": null,
+              "reason": "CANDIDATE_FALSE_BLOCK_REGRESSION"
+            }
+          ],
+          "evaluations": [
+            {
+              "planId": "plan:000a21a1",
+              "status": "REJECTED",
+              "reason": "CANDIDATE_FALSE_BLOCK_REGRESSION",
+              "atMs": 1792756860001,
+              "baselineVersionId": "research:r63-v1",
+              "candidateVersionId": null,
+              "baseline": {
+                "total": 6,
+                "positiveCases": 4,
+                "negativeCases": 2,
+                "allowed": 4,
+                "blocked": 2,
+                "correct": 6,
+                "falseAllows": 0,
+                "falseBlocks": 0
+              },
+              "candidate": {
+                "total": 6,
+                "positiveCases": 4,
+                "negativeCases": 2,
+                "allowed": 2,
+                "blocked": 4,
+                "correct": 4,
+                "falseAllows": 0,
+                "falseBlocks": 2
+              },
+              "registeredAtMs": 1792756800001,
+              "validationStartsAtMs": 1792756810000,
+              "validationEndsAtMs": 1792756860000,
+              "candidateMaxAgeMs": 500,
+              "evidenceKind": "SYNTHETIC_FIXTURE",
+              "environment": "research",
+              "liveExecutionAllowed": false,
+              "externalPaperExecutionAllowed": false,
+              "deploymentPerformed": false,
+              "actualBrokerPnl": null,
+              "actualLossesAvoided": null,
+              "realTradeAccuracy": null,
+              "realOrdersSent": 0,
+              "externalPaperOrdersSent": 0
+            }
+          ],
+          "pendingEvaluationPlanId": null
+        },
+        "maturity": {
+          "stage": "SYNTHETIC_OBSERVATION_RECORDED",
+          "label": "Observações sintéticas registradas; melhoria ainda não aplicada",
+          "completionCeilingKnown": false,
+          "productionIntegrationVerified": false,
+          "externalExecutionValidated": false,
+          "commercialPerformanceCertified": false
+        },
+        "pending": [
+          "Integração operacional e evidências externas ainda não validadas.",
+          "O serviço agendado e a entrega no admin dependem da ativação do ambiente autorizado.",
+          "Dados de clientes exigem finalidade, transparência e controles de acesso definidos."
+        ],
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null
+      }
+    },
+    "insufficient": {
+      "evaluation": {
+        "status": "NO_CHANGE",
+        "reason": "NO_ELIGIBLE_HYPOTHESIS"
+      },
+      "before": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "after": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "report": {
+        "schema": "JENIOS_R63_ADMIN_EVOLUTION_REPORT_V1",
+        "reportId": "r63-report:fixture:00000001:1792724400000:1792810800000",
+        "scopeId": "fixture:00000001",
+        "period": {
+          "startMs": 1792724400000,
+          "endMs": 1792810800000
+        },
+        "generatedAtMs": 1792843200000,
+        "timeZone": "America/Sao_Paulo",
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "scope": "SYNTHETIC_ONLY",
+        "adminOnly": true,
+        "customerTechnicalNotifications": false,
+        "operationalDataDisclosureRequired": true,
+        "delivery": "NOT_DISPATCHED",
+        "scheduledDeliveryActive": false,
+        "observations": {
+          "eventCount": 6,
+          "decisionCount": 4,
+          "incidentCount": 2,
+          "byRobot": {
+            "manual": 1,
+            "hybrid": 1,
+            "reverse": 1,
+            "ultrafast": 3
+          },
+          "byIssue": {
+            "NONE": 4,
+            "STALE_CONTEXT": 2,
+            "SEQUENCE_GAP": 0,
+            "CONNECTION_FAILURE": 0,
+            "CONTROL_VIOLATION": 0
+          },
+          "blockedDecisions": 0,
+          "firstOccurredAtMs": 1792756790000,
+          "lastOccurredAtMs": 1792756796000
+        },
+        "robots": [
+          {
+            "robot": "manual",
+            "label": "Manual",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "hybrid",
+            "label": "Híbrido",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "reverse",
+            "label": "Reverso",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "ultrafast",
+            "label": "UltraFast",
+            "observations": 3,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [
+              {
+                "code": "STALE_CONTEXT",
+                "robot": "ultrafast",
+                "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+                "severity": "REVIEW",
+                "eventCount": 2,
+                "distinctOccurredAtCount": 2,
+                "evidenceEventIds": [
+                  "evt:000a21aa",
+                  "evt:000a21ab"
+                ]
+              }
+            ],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          }
+        ],
+        "findings": [
+          {
+            "code": "STALE_CONTEXT",
+            "robot": "ultrafast",
+            "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+            "severity": "REVIEW",
+            "eventCount": 2,
+            "distinctOccurredAtCount": 2,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab"
+            ]
+          }
+        ],
+        "proposals": [],
+        "evidenceEventIds": [
+          "evt:000a21a1",
+          "evt:000a21a2",
+          "evt:000a21a3",
+          "evt:000a21a4",
+          "evt:000a21aa",
+          "evt:000a21ab"
+        ],
+        "activeVersion": {
+          "versionId": "research:r63-v1",
+          "maxAgeMs": 750,
+          "activatedAtMs": 1792756780000,
+          "activationGeneration": 0
+        },
+        "revision": 0,
+        "improvements": {
+          "period": {
+            "registered": 0,
+            "automaticallyApplied": 0,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "cumulative": {
+            "registered": 0,
+            "automaticallyApplied": 0,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "actions": [],
+          "evaluations": [],
+          "pendingEvaluationPlanId": null
+        },
+        "maturity": {
+          "stage": "SYNTHETIC_OBSERVATION_RECORDED",
+          "label": "Observações sintéticas registradas; melhoria ainda não aplicada",
+          "completionCeilingKnown": false,
+          "productionIntegrationVerified": false,
+          "externalExecutionValidated": false,
+          "commercialPerformanceCertified": false
+        },
+        "pending": [
+          "Integração operacional e evidências externas ainda não validadas.",
+          "O serviço agendado e a entrega no admin dependem da ativação do ambiente autorizado.",
+          "Dados de clientes exigem finalidade, transparência e controles de acesso definidos."
+        ],
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null
+      }
+    },
+    "control_violation": {
+      "evaluation": {
+        "status": "NO_CHANGE",
+        "reason": "NO_ELIGIBLE_HYPOTHESIS"
+      },
+      "before": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "after": {
+        "allow": true,
+        "ageMs": 650,
+        "version": "research:r63-v1",
+        "maxAgeMs": 750,
+        "activationGeneration": 0,
+        "decisionScope": "R47_FRESHNESS_SYNTHETIC_ONLY",
+        "orderAuthorized": false,
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "environment": "research",
+        "liveExecutionAllowed": false,
+        "externalPaperExecutionAllowed": false,
+        "deploymentPerformed": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0
+      },
+      "report": {
+        "schema": "JENIOS_R63_ADMIN_EVOLUTION_REPORT_V1",
+        "reportId": "r63-report:fixture:00000001:1792724400000:1792810800000",
+        "scopeId": "fixture:00000001",
+        "period": {
+          "startMs": 1792724400000,
+          "endMs": 1792810800000
+        },
+        "generatedAtMs": 1792843200000,
+        "timeZone": "America/Sao_Paulo",
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "scope": "SYNTHETIC_ONLY",
+        "adminOnly": true,
+        "customerTechnicalNotifications": false,
+        "operationalDataDisclosureRequired": true,
+        "delivery": "NOT_DISPATCHED",
+        "scheduledDeliveryActive": false,
+        "observations": {
+          "eventCount": 8,
+          "decisionCount": 4,
+          "incidentCount": 4,
+          "byRobot": {
+            "manual": 2,
+            "hybrid": 1,
+            "reverse": 1,
+            "ultrafast": 4
+          },
+          "byIssue": {
+            "NONE": 4,
+            "STALE_CONTEXT": 3,
+            "SEQUENCE_GAP": 0,
+            "CONNECTION_FAILURE": 0,
+            "CONTROL_VIOLATION": 1
+          },
+          "blockedDecisions": 0,
+          "firstOccurredAtMs": 1792756790000,
+          "lastOccurredAtMs": 1792756799000
+        },
+        "robots": [
+          {
+            "robot": "manual",
+            "label": "Manual",
+            "observations": 2,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [
+              {
+                "code": "CONTROL_VIOLATION",
+                "robot": "manual",
+                "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+                "severity": "HIGH",
+                "eventCount": 1,
+                "distinctOccurredAtCount": 1,
+                "evidenceEventIds": [
+                  "evt:000a21b4"
+                ]
+              }
+            ],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "hybrid",
+            "label": "Híbrido",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "reverse",
+            "label": "Reverso",
+            "observations": 1,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          },
+          {
+            "robot": "ultrafast",
+            "label": "UltraFast",
+            "observations": 4,
+            "status": "SYNTHETIC_OBSERVED",
+            "findings": [
+              {
+                "code": "STALE_CONTEXT",
+                "robot": "ultrafast",
+                "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+                "severity": "REVIEW",
+                "eventCount": 3,
+                "distinctOccurredAtCount": 3,
+                "evidenceEventIds": [
+                  "evt:000a21aa",
+                  "evt:000a21ab",
+                  "evt:000a21ac"
+                ]
+              }
+            ],
+            "productionIntegrationVerified": false,
+            "realPerformanceMeasured": false
+          }
+        ],
+        "findings": [
+          {
+            "code": "CONTROL_VIOLATION",
+            "robot": "manual",
+            "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+            "severity": "HIGH",
+            "eventCount": 1,
+            "distinctOccurredAtCount": 1,
+            "evidenceEventIds": [
+              "evt:000a21b4"
+            ]
+          },
+          {
+            "code": "STALE_CONTEXT",
+            "robot": "ultrafast",
+            "classification": "OBSERVED_SYNTHETIC_SIGNAL",
+            "severity": "REVIEW",
+            "eventCount": 3,
+            "distinctOccurredAtCount": 3,
+            "evidenceEventIds": [
+              "evt:000a21aa",
+              "evt:000a21ab",
+              "evt:000a21ac"
+            ]
+          }
+        ],
+        "proposals": [],
+        "evidenceEventIds": [
+          "evt:000a21a1",
+          "evt:000a21a2",
+          "evt:000a21a3",
+          "evt:000a21a4",
+          "evt:000a21aa",
+          "evt:000a21ab",
+          "evt:000a21ac",
+          "evt:000a21b4"
+        ],
+        "activeVersion": {
+          "versionId": "research:r63-v1",
+          "maxAgeMs": 750,
+          "activatedAtMs": 1792756780000,
+          "activationGeneration": 0
+        },
+        "revision": 0,
+        "improvements": {
+          "period": {
+            "registered": 0,
+            "automaticallyApplied": 0,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "cumulative": {
+            "registered": 0,
+            "automaticallyApplied": 0,
+            "rejected": 0,
+            "rolledBack": 0
+          },
+          "actions": [],
+          "evaluations": [],
+          "pendingEvaluationPlanId": null
+        },
+        "maturity": {
+          "stage": "SYNTHETIC_OBSERVATION_RECORDED",
+          "label": "Observações sintéticas registradas; melhoria ainda não aplicada",
+          "completionCeilingKnown": false,
+          "productionIntegrationVerified": false,
+          "externalExecutionValidated": false,
+          "commercialPerformanceCertified": false
+        },
+        "pending": [
+          "Integração operacional e evidências externas ainda não validadas.",
+          "O serviço agendado e a entrega no admin dependem da ativação do ambiente autorizado.",
+          "Dados de clientes exigem finalidade, transparência e controles de acesso definidos."
+        ],
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null
+      }
+    }
+  },
+  "durability": {
+    "entries": 2,
+    "idempotentRetry": "ALREADY_STORED",
+    "nextDayImprovements": 0,
+    "activeMaxAgeMs": 500
+  },
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "paidProviderCalls": 0,
+  "productionSchedulerStarted": false,
+  "productionDeployPerformed": false,
+  "commercialPerformanceCertified": false,
+  "limits": [
+    "Virtual-clock fixture preregistration, not external prospective attestation.",
+    "Local journal does not prove delivery to a deployed admin.",
+    "No real identity, brokerage, customer, provider or production session was exercised."
+  ]
+}

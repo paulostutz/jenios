@@ -1481,5 +1481,328 @@
       "Generative contract tested with injected providers only; paid service and persistent provider-response audit remain unverified.",
       "Manual owner acceptance and production/external execution integration remain outstanding."
     ]
+  },
+  "operationalObservationIntegration": {
+    "revision": "R64",
+    "status": "QA_OPERATIONAL_INTEGRATION_CERTIFIED",
+    "scope": "SIGNED_QA_REPLAY_OPERATIONAL_INTEGRATION_PREPARATION",
+    "base": {
+      "branch": "backup/jenios-robot-r63-continuous-improvement-certified-20261024",
+      "commit": "a5a42b9e67b56786d1f0aeeddc5cd7f348a2275c",
+      "validationRun": 40106514889
+    },
+    "authorization": {
+      "ownerAutomaticImprovementPreapprovalPreserved": "OWNER_PREAPPROVAL_20261024",
+      "productionChangeAuthorized": false,
+      "paidProviderActivationAuthorized": false
+    },
+    "implemented": {
+      "signedIntakeEndpoint": true,
+      "serverPinnedScopeAndSource": true,
+      "closedDailyObservationStudy": true,
+      "incrementalPostgresStore": true,
+      "immutableCycleSnapshot": true,
+      "leaseGenerationFencing": true,
+      "idempotentBudgetAndDispatch": true,
+      "internalBudgetWithoutClientWallet": true,
+      "confirmedUsageAudit": true,
+      "ambiguousResultHeldForReconciliation": true,
+      "adminReadEndpoint": true,
+      "adminReportComponent": true,
+      "persistedQaPreview": true,
+      "explicitHostWorkerEntry": true,
+      "authenticatedSchedulerEndpoint": true
+    },
+    "reportSchedule": {
+      "cadence": "DAILY_09",
+      "timeZone": "America/Sao_Paulo",
+      "period": "previous closed local day",
+      "backfill": false,
+      "productionSchedulerActive": false
+    },
+    "generative": {
+      "transportPrepared": "OpenAI Responses API with input-token preflight",
+      "productionProviderCalled": false,
+      "paidProviderCalls": 0,
+      "maxInputTokens": 8000,
+      "maxOutputTokens": 700,
+      "oneInferenceAttemptPerCycle": true,
+      "automaticRetries": false,
+      "tariffSource": "Existing explicitly approved pricing snapshot; no assertion of current public tariff",
+      "customerWalletDebited": false,
+      "hypothesesCanPromote": false
+    },
+    "database": {
+      "schema": "db/schema/robot-r64-operational-store.sql",
+      "status": "REVIEW_ONLY_NOT_APPLIED_TO_SUPABASE",
+      "intendedClient": "Existing dedicated JENIOS Platform admin client",
+      "realSupabaseDatabasesChanged": 0,
+      "ciPostgres": "Disposable local service only",
+      "leaseClock": "Database wall clock",
+      "role": "service_role-only RPCs, SECURITY INVOKER, RLS and explicit revocations",
+      "tenantIsolation": "Server-pinned scope plus scoped SQL predicates; service_role bypasses RLS, so RLS is not claimed as its tenant isolation"
+    },
+    "invariants": {
+      "r12r63ResearchAlgorithmsChanged": false,
+      "r15ProspectiveBackfill": false,
+      "alignmentGuardThreshold": 0.65,
+      "manualOperatorControlPreserved": true,
+      "losseshometroSyntheticOnly": true,
+      "r63SyntheticPromotionUnchanged": true,
+      "r64AutomaticPromotionAllowed": false,
+      "r64AutonomousChangesApplied": 0,
+      "actualBrokerPnl": null,
+      "actualLossesAvoided": null,
+      "realTradeAccuracy": null,
+      "realOrdersSent": 0,
+      "externalPaperOrdersSent": 0,
+      "customerMonitoringActive": false,
+      "productionConfigurationChanged": false,
+      "productionDeployPerformed": false,
+      "mergePerformed": false,
+      "commercialPerformanceCertified": false
+    },
+    "validation": {
+      "status": "PASS",
+      "local": {
+        "tests": 77,
+        "passed": 77,
+        "failed": 0,
+        "skipped": 0,
+        "runtime": "v24.22.1"
+      },
+      "preservedBrowserCases": 52,
+      "realAdminIdentityTested": false,
+      "realProviderConnectionTested": false,
+      "realPostgresAcceptance": "PASS_32_OF_32",
+      "nextHttpAndBrowserAcceptance": "PASS_31_OF_31",
+      "attempts": [
+        {
+          "commit": "8ebac5727c74be7131b0ca2443963475061ed4aa",
+          "runId": 40109540039,
+          "conclusion": "FAILURE",
+          "stage": "WORKFLOW_VALIDATION_BEFORE_ANY_JOB",
+          "fix": "Move runner.temp artifact directory context from job-level env to step-level env."
+        },
+        {
+          "commit": "a6efee949b0350a7fb64d732ca81ce14ded3777e",
+          "runId": 40109611001,
+          "conclusion": "FAILURE",
+          "stage": "POSTGRES_CLIENT_BEFORE_SQL",
+          "directed": "519/519",
+          "general": "NOT_RUN",
+          "social": "NOT_RUN",
+          "build": "NOT_RUN",
+          "browser": "NOT_RUN",
+          "reason": "psql interpreted an explicitly empty PGSERVICE as a named service; no acceptance SQL executed.",
+          "fix": "Remove inherited libpq configuration variables rather than assigning an empty PGSERVICE value."
+        }
+      ],
+      "evidence": {
+        "validationRun": 40109756044,
+        "validatedCommit": "5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da",
+        "directed": "519/519",
+        "general": "2325/2325",
+        "social": "94/94",
+        "build": "PASS",
+        "pages": "76/76",
+        "preservedBrowser": "52/52",
+        "postgres": "32/32",
+        "runtimeIntegration": "31/31",
+        "failures": 0,
+        "skipped": 0,
+        "countsAreOverlapping": true
+      },
+      "postgresAcceptance": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R64_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+        "total": 32,
+        "passed": 32,
+        "failed": 0,
+        "notRun": 0,
+        "realConcurrentConnections": true,
+        "reviewSchemaAppliedTwice": true,
+        "productionDatabaseAccessed": false,
+        "migrationAppliedToSupabase": false,
+        "customerWalletDebits": 0,
+        "paidProviderCalls": 0,
+        "generationEnabledAtExit": false
+      },
+      "runtimeAcceptance": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R64_RUNTIME_ACCEPTANCE_EVIDENCE.json",
+        "total": 31,
+        "passed": 31,
+        "failed": 0,
+        "notRun": 0,
+        "pageErrors": 0,
+        "allPlannedCasesRan": true,
+        "authentication": "EXPLICIT_FIXTURE_USERS",
+        "restGateway": "LOOPBACK_HTTPS_POSTGREST_MOCK",
+        "database": "REAL_DISPOSABLE_POSTGRESQL",
+        "tls": "EPHEMERAL_CA_TRUSTED_WITH_NODE_EXTRA_CA_CERTS",
+        "schedulerPositivePath": "REAL_HTTP_WALL_CLOCK",
+        "serverAndIntakeClock": "REAL_WALL_CLOCK",
+        "signedReceipts": 7,
+        "incidents": 3,
+        "persistedReports": 1,
+        "persistedReportDigest": "9d4509c33e909d74c6891b31da037354eb89f17e021245735558664c1c35ee7c",
+        "adminApiEqualsDatabaseReport": true,
+        "reloadRetainsReport": true,
+        "databaseUnavailableStatus": 503,
+        "fixtureAdminAccepted": true,
+        "memberStatus": 403,
+        "anonymousStatus": 401,
+        "noSessionStatus": 401,
+        "providerHttpRequests": 0,
+        "inferenceRequests": 0,
+        "reservationNanoUsd": 0,
+        "settledNanoUsd": 0,
+        "autonomousChangesApplied": 0,
+        "viewportWidths": [
+          375,
+          320
+        ],
+        "horizontalOverflow": false,
+        "attempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        },
+        "consoleErrors": 0,
+        "playwright": "1.56.1",
+        "chromium": "141.0.7390.37",
+        "screenshotReviewed": "r64-observation-mobile.png",
+        "serverLogsReviewed": true,
+        "realAdminIdentityTested": false,
+        "realProviderConnectionTested": false,
+        "humanOwnerAcceptanceCompleted": false
+      },
+      "preservedBrowserAcceptance": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R64_PRESERVED_BROWSER_EVIDENCE.json",
+        "total": 52,
+        "passed": 52,
+        "failed": 0,
+        "notRun": 0,
+        "pageErrors": 0,
+        "renderedZeroOrderChecks": 57,
+        "attempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        },
+        "expectedHttp404ConsoleMessages": 9,
+        "preservedCases": 52
+      },
+      "preservedSyntheticEvolution": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R64_PRESERVED_EVOLUTION_EVIDENCE.json",
+        "evidenceKind": "SYNTHETIC_FIXTURE",
+        "automaticStatus": "AUTO_APPLIED",
+        "baselineFalseAllows": 2,
+        "candidateFalseAllows": 0,
+        "falseBlockRegression": false,
+        "validationCases": 6,
+        "maxAgeMs": 500,
+        "idempotentRetry": "ALREADY_STORED",
+        "nextDayImprovements": 0,
+        "paidProviderCalls": 0
+      },
+      "artifact": {
+        "id": 12566032946,
+        "name": "r64-operational-evidence-5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da",
+        "sourceRun": 40109756044,
+        "sourceCommit": "5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da",
+        "bytes": 860146,
+        "zipSha256": "873e6ed7f2038f30b9180b46b6150f3acd3f315bd33c0a8c74ded461f8b06849",
+        "zipHashVerified": true,
+        "expiresAt": "2026-11-07T16:06:53Z",
+        "files": [
+          {
+            "name": "r63-browser-acceptance.json",
+            "bytes": 28270,
+            "sha256": "730cbac92d1922258556db4b7bb77e3a79357ac4ea92cbe5922b073095f0dc30"
+          },
+          {
+            "name": "r63-browser-desktop.png",
+            "bytes": 250243,
+            "sha256": "e94e470a228351aa02cdba6991c3b3f077eeba8695afef5caa60f72f14017930"
+          },
+          {
+            "name": "r63-browser-mobile.png",
+            "bytes": 306712,
+            "sha256": "4f42d39b8c0bad3f31f534795ce0a188098dc6b916bb3df51e20abb27362619e"
+          },
+          {
+            "name": "r63-continuous-improvement-evidence.json",
+            "bytes": 35774,
+            "sha256": "914d40ce63bc667ded5f7e32b77fef294556f2bf703fc3ace41ff1e68aae50ec"
+          },
+          {
+            "name": "r63-evolution-mobile.png",
+            "bytes": 199836,
+            "sha256": "7d1edd5c1e5b868c1fcbcffa86cf0e3a9691986a71118d9e9af67e4e6f49672c"
+          },
+          {
+            "name": "r63-next-servers.log",
+            "bytes": 5055,
+            "sha256": "19174dbbe101a90a96323d451afa0c8338e3660942bdd2b67ab45d08c7d8ea21"
+          },
+          {
+            "name": "r64-observation-mobile.png",
+            "bytes": 134054,
+            "sha256": "3a6fecbb0fb9ebee1275fcbc644c83bfa5c0b3bafb6711a5b74f443e276f3ccb"
+          },
+          {
+            "name": "r64-postgres-acceptance.json",
+            "bytes": 4329,
+            "sha256": "ca4e62347cf910cabb823bb450bab9e33cc7fc36a5e29a056bea17c30d262351"
+          },
+          {
+            "name": "r64-runtime-acceptance.json",
+            "bytes": 12445,
+            "sha256": "98f04718fd65eda92364e0c4fd6dcdade794058c7481f56767c4455a2bfdbcc0"
+          },
+          {
+            "name": "r64-runtime-next-servers.log",
+            "bytes": 1014,
+            "sha256": "6df4b976473399570e13bc01c9a190d7fc2eb3b5a51e62fe81c7c2396795dbfb"
+          }
+        ]
+      },
+      "finalPolish": {
+        "change": "Correct Portuguese singular observation label and its literal browser expectation.",
+        "affectsRobotAlgorithms": false,
+        "requiredVerification": "Complete CI on consolidated commit"
+      },
+      "deploymentIsolation": {
+        "checkedAt": "2026-10-24T16:05:52Z",
+        "commit": "5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da",
+        "automaticVercelDeploymentAttempts": 0,
+        "existingVercelSettingsPreserved": true,
+        "r12r63AlgorithmFilesChanged": 0
+      },
+      "consolidatedCommitRule": "Repeat the complete directed/general/Social/build/PostgreSQL/runtime/browser CI on the consolidated commit. Create the certified backup only after success. The backup Git ref and its matching successful Actions run identify the final commit; reference evidence retains its original source SHA."
+    },
+    "guide": "docs/platform/ROBOT_R64_OPERATIONAL_INTEGRATION.md",
+    "checkpoint": "docs/platform/evidence/ROBOT_R64_OPERATIONAL_INTEGRATION_CHECKPOINT.json",
+    "backupRef": "backup/jenios-robot-r64-operational-integration-certified-20261024",
+    "validatedAt": "2026-10-24T16:07:01Z",
+    "limitations": [
+      "Only SIGNED_QA_REPLAY is accepted. No customer or broker operations were observed.",
+      "Configured-source Ed25519 verification is not independent broker attestation or independent customer-consent evidence.",
+      "Occurrence may precede capture by up to 24 hours for explicit QA replay; this is not prospective live collection.",
+      "A daily snapshot is immutable. Later replay events do not silently rewrite an already completed period.",
+      "Studies aggregate at most 5000 receipts and show an explicitly bounded latest-48 sample to the analyst.",
+      "Paid generation requires both explicit environment activation and a fresh approved database policy with funded internal limits.",
+      "Unknown provider outcomes hold their reservation without retry. Human reconciliation and archival operations are not auto-enabled.",
+      "SQL is a review-only schema; no Supabase deployment, production scheduler or application deployment was performed.",
+      "HTTP authentication and PostgREST integration were exercised using an explicitly simulated Supabase boundary against real disposable PostgreSQL; no real account login or hosted Supabase connection was certified.",
+      "The existing real Platform account session, provider account and deployed-host integration remain unverified.",
+      "R64 hypotheses never promote robot configuration; the separate R63 synthetic approval domain remains unchanged."
+    ]
   }
 }

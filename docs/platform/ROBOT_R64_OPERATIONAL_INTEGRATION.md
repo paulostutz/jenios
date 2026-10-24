@@ -1,8 +1,10 @@
-# R64 — Preparação da integração operacional dos robôs
+# R64 — Integração operacional validada em QA
 
 ## Estado e continuidade
 
-Implementação em pesquisa, aguardando CI completa. Base consultada: backup R63 certificado, commit `a5a42b9e67b56786d1f0aeeddc5cd7f348a2275c`, CI 40106514889 SUCCESS. O R64 acrescenta a integração de observação, persistência, orçamento interno e relatório; preserva os algoritmos e resultados R12–R63.
+**Classificação: QA_OPERATIONAL_INTEGRATION_CERTIFIED.** A CI de referência [40109756044](https://github.com/paulostutz/jenios/actions/runs/40109756044) concluiu com SUCCESS sobre o commit `5c6a82edf6aedc2e2d61fc7fb8d8fc0e891272da`. A certificação abrange integração em QA com replay assinado; não equivale a ativação operacional em produção.
+
+Base consultada: backup R63 certificado, commit `a5a42b9e67b56786d1f0aeeddc5cd7f348a2275c`, CI 40106514889 SUCCESS. O R64 acrescenta observação, persistência, orçamento interno e relatório; os arquivos dos algoritmos R12–R63 permanecem inalterados.
 
 A pré-aprovação do proprietário para melhorias automáticas permanece registrada. Este bloco mantém as restrições de produção, merge, deploy, ordens reais, Paper externo e custos não autorizados.
 
@@ -74,12 +76,64 @@ Nenhuma dessas variáveis foi criada ou alterada em um serviço existente. A con
 
 O comando node scripts/platform/research/r64-operational-worker.mjs --once executa uma tentativa explícita. --watch mantém um processo local que verifica o horário a cada minuto, sem sobreposição. Nenhum cron ou serviço foi registrado nesta sessão.
 
-## Verificação e pontos ainda abertos
+## Verificação observada
 
-Os 77 testes locais novos passaram. A CI deve repetir as baterias R12–R63, os testes R64, Social e build; executar SQL em PostgreSQL descartável com conexões independentes; preservar os 52 casos de navegador e validar o novo caminho HTTP e visual.
+A CI de referência executou todos os gates abaixo em Node 22.23.3. As contagens de direcionados e gerais se sobrepõem; não devem ser somadas como testes distintos.
 
-A fronteira Supabase Auth/PostgREST do ensaio será explicitamente simulada. O banco PostgreSQL usado nas transações será real e descartável, com credenciais de fixture. Isso não equivale a homologar uma conta administrativa real ou um Supabase publicado.
+| Gate | Resultado |
+| --- | --- |
+| Direcionados R12–R64 | 519/519 PASS |
+| Gerais | 2.325/2.325 PASS |
+| Social | 94/94 PASS |
+| PostgreSQL descartável | 32/32 PASS |
+| Navegador R61–R63 preservado | 52/52 PASS |
+| Integração R64 HTTP, banco e navegador | 31/31 PASS |
+| Build | PASS |
+| Páginas estáticas geradas | 76/76 |
 
-Permanecem pendentes a ativação em host autorizado, aplicação revisada do SQL no ambiente dedicado, credenciais e orçamento operacional, coleta autorizada de clientes, reconciliação administrativa de custos incertos e política de retenção/arquivamento. O R64 não comprova rentabilidade.
+Os 77 testes novos também passaram localmente em Node 24.22.1. Os gates acima não tiveram falhas ou casos pulados no run de referência.
 
-O checkpoint e o ledger serão consolidados com os resultados observados. O backup certificado só será criado após uma nova CI completa sobre o commit consolidado. R15 continua sem backfill; métricas reais permanecem nulas e ordens reais/Paper externo permanecem zero.
+### O que o ensaio integrado comprovou
+
+Sete eventos assinados atravessaram a API Next e foram persistidos em PostgreSQL real descartável. O fechamento diário passou pela rota HTTP com relógio real, gravou um único relatório e manteve o resultado em nova tentativa. A API administrativa retornou exatamente o relatório gravado; recarregar a prévia preservou o conteúdo.
+
+O ensaio verificou 401 sem identidade, 403 para membro sem permissão, 401 para usuário anônimo, credencial própria do agendador, assinatura adulterada, origem não configurada, replay idempotente, conflito e indisponibilidade do banco com resposta 503. O retorno do banco recuperou o mesmo relatório, sem fabricá-lo durante a falha.
+
+A fronteira Supabase Auth/PostgREST foi **explicitamente simulada por um gateway HTTPS local**. A CA efêmera foi confiada por NODE_EXTRA_CA_CERTS; a verificação TLS não foi desativada. As funções SQL rodaram em PostgreSQL descartável sob service_role. Isso não certifica login de conta real ou conexão a um Supabase publicado.
+
+As 32 verificações SQL cobriram permissões/RLS, isolamento de escopo, aplicação repetida do schema sem apagar histórico, imutabilidade de snapshots, concorrência entre conexões, despacho único, orçamento mensal, reconciliação e expiração de lease enquanto uma transação aguarda lock. O worker não consegue aprovar a própria política paga.
+
+Na passagem integrada, a geração paga permaneceu desabilitada: zero requisições ao provedor, zero inferências, reserva zero e liquidação zero. O adaptador do provedor e seus resultados de uso/custo foram avaliados por contratos injetados nos testes unitários; nenhuma chamada OpenAI real foi certificada.
+
+Os quatro robôs apareceram na prévia. Playwright 1.56.1 e Chromium 141.0.7390.37 confirmaram os tamanhos 375 e 320 pixels sem overflow horizontal. A captura mobile e os logs de servidor foram revisados. Não houve erro de página ou tentativa de tráfego proibido pelo navegador. Os testes HTTP do servidor exerceram as mutações de fixture previstas; a restrição de rede instrumentada se refere ao navegador.
+
+O relatório de referência exibiu 7 observações, 3 ocorrências e **0 mudanças aplicadas pelo R64**. A avaliação automática sintética R63 foi repetida e preservou o ajuste de 750 para 500 ms, com zero false allows e sem regressão de false blocks nos seis casos sintéticos registrados. Isso demonstra o mecanismo restrito do R63, sem certificar benefício econômico real.
+
+### Evidências e rastreabilidade
+
+- [Checkpoint R64](evidence/ROBOT_R64_OPERATIONAL_INTEGRATION_CHECKPOINT.json).
+- [Aceitação PostgreSQL R64](evidence/ROBOT_R64_POSTGRES_ACCEPTANCE_EVIDENCE.json).
+- [Aceitação HTTP, banco e navegador R64](evidence/ROBOT_R64_RUNTIME_ACCEPTANCE_EVIDENCE.json).
+- [Casos de navegador anteriores repetidos no R64](evidence/ROBOT_R64_PRESERVED_BROWSER_EVIDENCE.json).
+- [Evolução sintética anterior repetida no R64](evidence/ROBOT_R64_PRESERVED_EVOLUTION_EVIDENCE.json).
+- [Ledger consolidado](evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json).
+
+Artefato de referência: ID 12566032946, 860.146 bytes, SHA-256 `873e6ed7f2038f30b9180b46b6150f3acd3f315bd33c0a8c74ded461f8b06849`. O hash do ZIP foi conferido e os arquivos foram extraídos por lista permitida. A retenção temporária do artefato GitHub termina em 07/11/2026; os relatórios JSON estão preservados no repositório com o commit de origem original.
+
+Duas tentativas anteriores foram preservadas no checkpoint: a CI 40109540039 recusou o workflow antes de iniciar jobs, corrigido movendo runner.temp para o ambiente dos steps; a CI 40109611001 passou 519 direcionados e parou na seleção de serviço do cliente psql, corrigida removendo PGSERVICE/PGSERVICEFILE herdados. A CI de referência completa passou depois dessas correções.
+
+A revisão visual identificou apenas a concordância de “1 observação de QA”. O commit consolidado corrige o texto e a expectativa literal do teste de navegador, sem alterar o algoritmo dos robôs.
+
+### Regra do fechamento certificado
+
+A branch de pesquisa é `research/jenios-robot-r64-operational-integration-20261024`. O backup `backup/jenios-robot-r64-operational-integration-certified-20261024` só pode ser criado após outra CI completa com SUCCESS sobre o commit consolidado. O ref do backup e a Actions run bem-sucedida para seu SHA identificam o fechamento final; as evidências de referência mantêm o SHA de origem e não são reatribuídas ao commit posterior.
+
+O ledger recebeu somente a nova seção operationalObservationIntegration; seus 12 campos históricos anteriores foram preservados. As configurações anteriores da Vercel também foram preservadas, com exclusões exatas para as duas branches R64. A consulta do commit de referência retornou zero tentativas de deploy.
+
+## Limites que permanecem
+
+A ativação em host autorizado, aplicação revisada do SQL no ambiente dedicado, credenciais e orçamento operacional, coleta autorizada de clientes, reconciliação administrativa de custos incertos e política de retenção/arquivamento permanecem fora deste bloco. O login real do proprietário e um admin publicado não foram homologados.
+
+A assinatura comprova integridade sob a origem configurada; não é prova independente de corretora ou consentimento de cliente. A janela de replay é explícita e não transforma os eventos em coleta prospectiva. Um ciclo já concluído não é reescrito por eventos tardios.
+
+R15 permanece sem backfill; actualBrokerPnl, actualLossesAvoided e realTradeAccuracy continuam null. Ordens reais, Paper externo, chamadas pagas e débitos em carteira de cliente permanecem zero. Produção, merge e deploy não foram executados. Performance comercial não está certificada.

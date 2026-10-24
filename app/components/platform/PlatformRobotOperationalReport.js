@@ -22,7 +22,7 @@ export default function PlatformRobotOperationalReport({report}){
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:10}}>
       {Object.entries(names).map(([robot,label])=><article key={robot} style={{border:'1px solid #e2e8f0',padding:12,borderRadius:10}}>
-        <strong>{label}</strong><p style={{margin:'8px 0 0',fontSize:13}}>{report.observations.byRobot[robot]} observações de QA</p></article>)}
+        <strong>{label}</strong><p style={{margin:'8px 0 0',fontSize:13}}>{report.observations.byRobot[robot]} {report.observations.byRobot[robot]===1?'observação':'observações'} de QA</p></article>)}
     </div>
     <div style={{background:'#f8fafc',padding:15,borderRadius:12,lineHeight:1.7}}>
       <strong data-testid="r64-provider-status">{providerLabel}</strong>

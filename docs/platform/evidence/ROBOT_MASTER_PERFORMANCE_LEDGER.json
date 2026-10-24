@@ -4515,5 +4515,53 @@
       "actualLossesAvoided": null,
       "realTradeAccuracy": null
     }
+  },
+  "definitiveApplicationPublication": {
+    "schema": "JENIOS_R73_PUBLICATION_LEDGER_ENTRY_V1",
+    "status": "DEFINITIVE_APPLICATION_AND_DATABASE_PUBLISHED_PRIVATE_HOST_PENDING",
+    "codeCommit": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+    "productionBaseCommit": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+    "deploymentId": "dpl_HWFRPaUD3G5JwgxEDpvPBs6zKRa5",
+    "url": "https://www.jenios.com.br/platform/admin/robos",
+    "publishedAtUtc": "2026-10-24T23:04:58.728Z",
+    "reusedCertifiedSourceFiles": 77,
+    "certifiedSourceBytesPreserved": true,
+    "dbSchemaReapplied": false,
+    "localBuild": {
+      "general": {
+        "passed": 1507,
+        "failed": 0,
+        "skipped": 0
+      },
+      "inheritedRelease": {
+        "passed": 94,
+        "failed": 0,
+        "skipped": 0
+      },
+      "newFocusedTestsIncludedInGeneral": 22,
+      "staticPages": 81,
+      "build": "PASS",
+      "finalBuildLogSha256": "45d2ac781b67bd00d8be545fd5c8724c7446a627c74974fdd387c32dffb2d858",
+      "performanceOrMarketTrials": 0
+    },
+    "hostedHttpChecks": 12,
+    "anonymousBrowserChecks": 5,
+    "domainChecks": 4,
+    "hostedDatabaseTablesResponding": 16,
+    "newObservationsCreated": 0,
+    "privateOperationalHostConnected": false,
+    "evolutionSchedulerStarted": false,
+    "customerMonitoringActive": false,
+    "administratorLoginVerified": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "paidRobotProviderCalls": 0,
+    "realOrders": 0,
+    "externalPaper": 0,
+    "mergePerformed": false,
+    "productionApplicationPublished": true,
+    "financialPerformanceCertified": false,
+    "evidence": "docs/platform/evidence/ROBOT_R73_PUBLICATION_EVIDENCE.json"
   }
 }

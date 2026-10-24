@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_R73_DEFINITIVE_APPLICATION_CHECKPOINT_V1",
-  "recordedAtUtc": "2026-10-24T22:59:10.717174+00:00",
-  "status": "APPLICATION_PREPARED_FOR_AUTHORIZED_PUBLICATION",
+  "recordedAtUtc": "2026-10-24T23:10:07.983523+00:00",
+  "status": "DEFINITIVE_APPLICATION_AND_DATABASE_PUBLISHED_PRIVATE_HOST_PENDING",
   "scope": "JENIOS_ROBOTS_ONLY",
   "authorization": {
     "ownerRequestedDefinitivePublication": true,
@@ -345,7 +345,32 @@
     "releaseBoundaryTests": 40,
     "newAdministrationTests": 15,
     "newFinancialPerformanceTests": 0,
-    "hostedVerification": "PENDING"
+    "hostedVerification": {
+      "httpPassed": 12,
+      "browserPassed": 5,
+      "domainPassed": 4,
+      "failed": 0,
+      "databaseTablesResponding": 16,
+      "administratorLoginVerified": false,
+      "newObservationsCreated": 0
+    },
+    "localBuild": {
+      "general": {
+        "passed": 1507,
+        "failed": 0,
+        "skipped": 0
+      },
+      "inheritedRelease": {
+        "passed": 94,
+        "failed": 0,
+        "skipped": 0
+      },
+      "newFocusedTestsIncludedInGeneral": 22,
+      "staticPages": 81,
+      "build": "PASS",
+      "finalBuildLogSha256": "45d2ac781b67bd00d8be545fd5c8724c7446a627c74974fdd387c32dffb2d858",
+      "performanceOrMarketTrials": 0
+    }
   },
   "pending": {
     "privateOperationalHostId": null,
@@ -363,5 +388,23 @@
     "actualBrokerPnl": null,
     "actualLossesAvoided": null,
     "realTradeAccuracy": null
-  }
+  },
+  "publishedCodeCommit": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+  "deployment": {
+    "id": "dpl_HWFRPaUD3G5JwgxEDpvPBs6zKRa5",
+    "url": "jenios-ecossistem-jmbwvi13g-jenios.vercel.app",
+    "state": "READY",
+    "target": "production",
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+    "commitSha": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+    "branch": "release/jenios-robot-r73-definitive-app-20261024",
+    "readyAtUtc": "2026-10-24T23:04:58.728Z"
+  },
+  "definitiveUrl": "https://www.jenios.com.br/platform/admin/robos",
+  "publishedBackupBranch": "backup/jenios-robot-r73-definitive-app-published-20261024",
+  "applicationPublicationComplete": true,
+  "databaseConnectionVerified": true,
+  "wholeOperationalRolloutComplete": false,
+  "closeoutRule": "Published code remains ed8b783b6fcb5419afbfb09b274c78fbed05010b. Documentary consolidation may have a later SHA; verify code files unchanged, release and published backup at the same final documentary commit, and final domain still points to the READY published deployment. Do not redeploy solely to embed this closeout commit."
 }

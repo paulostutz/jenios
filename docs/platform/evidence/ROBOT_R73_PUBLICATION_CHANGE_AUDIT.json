@@ -1,0 +1,514 @@
+{
+  "schema": "JENIOS_R73_PUBLICATION_CHANGE_AUDIT_V1",
+  "codeCommit": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+  "baseProductionCommit": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+  "codeChangeManifest": {
+    "baseCommit": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+    "files": [
+      {
+        "path": "app/api/platform/admin/robot-evolution-cycle/route.js",
+        "sha256": "df4a34a90db0d340af43bb8676868e1e10396ec1ed9778f30aeed133f7bf4767",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/admin/robot-private-evolution/route.js",
+        "sha256": "9b0ad5c9423c4ba9789c667af5eb8e3b5e181c1108df58d665b0cd631fa9912c",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/admin/robot-private-observations/route.js",
+        "sha256": "eb258c13c51f1a80d5f9b7595f90e7e8ab8927209698d62d2a38c1ac88aff41c",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/admin/robots/status/route.js",
+        "sha256": "1440d8e234b44d443ae812f21c7f4b36aa18db29b2fe2544159499fc6238c819",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/api/platform/internal/robot-evolution-cycle/route.js",
+        "sha256": "5053e41c483c6971b0bd85a8459c47e9790036df12cf08ce1ca83e54e062649f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/internal/robot-private-evolution/route.js",
+        "sha256": "202f212b29ec19840609801a06b4f5795438a8cbfadc78f051630fbd79728e5c",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/internal/robots/deployment-status/route.js",
+        "sha256": "4d56e2de754a1af54c4ea8d3f9be540b9217d423cdf6e79f5d6fa293a43b57c8",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/api/platform/robot-evolution-observations/route.js",
+        "sha256": "eb856027ddb283869a8a02fdbec765562ad2d56b065b3d977cdcb5f901f84d51",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/robot-private-evolution-state/route.js",
+        "sha256": "1744d3b7593da9e253c99fb2c31354a198e280fd2a7c168f50a19411e2dad61d",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/robot-private-observations/route.js",
+        "sha256": "12029b000391024897c9fdd1f206120a0d2517c3648d9b4db7e5f42c6548e540",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/robot-private-policy-observations/route.js",
+        "sha256": "e2177d6121eeeb83f385dbc52ef8fa375e73cadc623a4c6b0fc852633c195ff6",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/api/platform/robot-private-target-preflight/route.js",
+        "sha256": "5c94bfc0b3da5066b89058f54913af5fef4b1c7cdfa6229f58f1b56cfaad45b6",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/components/platform/PlatformRobotCycleAdmin.js",
+        "sha256": "e96629164f0954b3ac28f6c7588f2ac5525351b951060319e94330b1ad11384d",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/components/platform/PlatformRobotCycleReport.js",
+        "sha256": "d279eefb2cf94554d3dd1e16e416b8b5a8aeab7bd14629c4173892ba17897b0e",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/components/platform/PlatformRobotDefinitiveAdmin.js",
+        "sha256": "f0c1e30de6942d20b5afea8e1daa9e737bcdd446d3d24305203784b166561dff",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/components/platform/PlatformRobotPrivateEvolutionAdmin.js",
+        "sha256": "555ab7af8a4004033a8fb5ad27043aeb82f857ea6aa9af505ae965a858e16ec7",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/components/platform/PlatformRobotPrivateEvolutionReport.js",
+        "sha256": "1f777e491eeddae78019aeef9ace5ed94d47149f85e98b15604142f16f1a679c",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/platform/admin/page.js",
+        "sha256": "53660e4eb845079b2f7d2a01bfa4b161a4e764a54f4b5930c6d67b9dad9df32c",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/platform/admin/robos/page.js",
+        "sha256": "12013dc71c8e66da48a549cc9284a1f419e27f3ca4ac6b621521931436ea5edc",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/platform/entrar/page.js",
+        "sha256": "acbdf3fdb0a4208d01cd43c5c5a719362861078dbec93aed0d271d80738133d0",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "app/platform/homologacao/robos/ciclo/page.js",
+        "sha256": "80e305db1b8c13c5ba0599cf1cc251fb45f0444f1d51c58a863d0220b05b0c01",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "app/platform/homologacao/robos/privado/page.js",
+        "sha256": "fe149511bfeea046614403025ee84eaf7aef3716ddf03484ee45d09403721a78",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/ROBOT_R72_DEFINITIVE_DATABASE.md",
+        "sha256": "9ced8e9f3d4505edfd911f25b01ae3acbfeaece40361179439dd545c7d71bd76",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/ROBOT_R73_DEFINITIVE_APPLICATION.md",
+        "sha256": "ee2be102155ca2e83ccbcf3b410ad5f94141b11e397382a3ef232412299408ef",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+        "sha256": "91852dc142bb163323198a0ddf11a05f5a364ce79b2046d26ef9b8fc07a5b62d",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/evidence/ROBOT_R71_PRIVATE_EVOLUTION_CHECKPOINT.json",
+        "sha256": "f2f8c177df3623bbbc1312c5e94184266b3b1264f01a9a983ef7dfff26f5022b",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/evidence/ROBOT_R72_DATABASE_INSTALLATION_CHECKPOINT.json",
+        "sha256": "38eee7e91c22dac7057dde9adf9bbd6ffff0c47b449638227dc382ceb06315df",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/evidence/ROBOT_R72_DATABASE_INSTALLATION_EVIDENCE.json",
+        "sha256": "213fd8ca820703d1cfe1b85c5c0bd986ae3f6b31a499baef6504d5123163fd00",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "docs/platform/evidence/ROBOT_R73_DEFINITIVE_APPLICATION_CHECKPOINT.json",
+        "sha256": "1f4f2d240642850416ea2390433f56f573da7ddefd6ede200ea2dbaddd03ac71",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "lib/platform/research/b290-inversion-signal-contract.mjs",
+        "sha256": "6a4db70f38a0d790f6e6e45b2d7b09734611ebcc5a014ec44228803631bb415f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/b297-private-readonly-audit.mjs",
+        "sha256": "ca1442d5da0412551ce2d96fbe958d6f9d442aa0ecea3315c7a09006244691c6",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-private-durable-file.mjs",
+        "sha256": "294946cd53a9ef88f859e5407f38b5459de781b8d4ec4a6db7325e42f5809ab6",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r18-ultrafast-foundation.mjs",
+        "sha256": "c27c0485282f5c9b52b5fbc9e5d98cfe2c50a3cc03e76dc54807f6e7c71b999b",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r19-assisted-refinement.mjs",
+        "sha256": "50c62ae3b181c6b1a0c9bfb4a0d7f458569125edb8f66a2979264ec613aeeff4",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r20-alignment-calibration.mjs",
+        "sha256": "f4e316b8a796137a0487c4f4d9d8139b00171170376386c0cc89a70f1e53397b",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r26-recovery-state.mjs",
+        "sha256": "44bfd50c7a67fb89e45b3c0d5947a39a6472eae949d5387ca187194e4738159e",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r27-dynamic-breakeven.mjs",
+        "sha256": "2f02270dd45ecde2f712852859489344bdc11f4673b1a9251f9c42924e605f3d",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r28-breakeven-recall.mjs",
+        "sha256": "f6bb850a0391e2020ae3c7d0136bbf803384a9474491945eb66eab297d09272f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r30-regime-adaptive-gate.mjs",
+        "sha256": "6322747497661ac628e05fba6aeae2c33204dfd82244fae65272916bb65be095",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r31-recovery-regime-interlock.mjs",
+        "sha256": "ca2c1ab4535f6a7423a8e1cd7d2e790aaed9c3fbd5361a0ff0d269c7ebbf09a8",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r33-hysteresis-session-risk.mjs",
+        "sha256": "d4311b6b23ccebda5164a8008809de19d8cbd405379d346fd9ce9fe118874a50",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r47-marketdata-freshness-fence.mjs",
+        "sha256": "0268ee0c7ccd9957bbdd9890b8c1531377582f87451fbadee3c1c3da1d763639",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r50-economic-shock-cliffs.mjs",
+        "sha256": "a683f09e3f2a96e09ba1efe7175a5155bc548ca29c513cc5fa03d61e7949b616",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r52-market-symbol-lifecycle.mjs",
+        "sha256": "85bcea5c616234775e7c9e038e9661c60f2920327af9be210c2453959c4a19f7",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r53-dynamic-asset-selection.mjs",
+        "sha256": "55994543f67564e0147af4ee352fa6434678c1f5b9520d718b9cb2db4bf35831",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r56-manual-final-advisory.mjs",
+        "sha256": "2c1f40fa3ec64d862f500527855e29d0e552afde9f758ffa45a67e5d9c95ec3f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r57-hybrid-final-alignment.mjs",
+        "sha256": "7fddacb2caf7df3116417d72c837f32e603c5b00b1ee5b747c6f7ef77a0e4dd9",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r58-reverse-final-stress.mjs",
+        "sha256": "df6c00c4d189ebe2af620ae0f3004c1a2c218fd94ea9c40ce79f5efb8dd301ae",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r61-assisted-acceptance.mjs",
+        "sha256": "56f5e7319157f8f20c6d6bf429071249765b5538f46174dbfecbb5df844ccd9f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r61-qa-access.mjs",
+        "sha256": "79ffd62cf3bee001f45d601c8dffb02a5b3848923fc629088fc3af62cf1b818c",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r61-ultrafast-acceptance.mjs",
+        "sha256": "867819a6c42f07aa7b656a1a25e2ca63c3de2e14fdd654f5ceccdb0a16afd60a",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r63-admin-report.mjs",
+        "sha256": "0e64edc8be1c8ed7203e24272329f2a9b142ced3e5284d53afe00075d1fa4a19",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r63-continuous-evolution.mjs",
+        "sha256": "f1d2822bb3049cc5c62f1fcb8fbc863e27fa75cef346cce98399047c5cf40ed4",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r63-generative-analyst.mjs",
+        "sha256": "f701a3bb06146d69bcfab4ef93bd30e74063de5b91913cbcad6310f4aca9e989",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r63-observation-study.mjs",
+        "sha256": "93aa79c15dd8feb3e16b48511e1a3023a09dcfc899a4a74c37eaab741cfaf096",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-access.mjs",
+        "sha256": "5006f2f3aaf1e5eedb325f29ec2683c5e491f82258bd70272977f70e21559136",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-admin-view.mjs",
+        "sha256": "615e811b2188195ef1e044b78ba2ef21727439239387b84347bf3c9e983e9852",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-database-store.mjs",
+        "sha256": "d56989ac30a82e81d2cd1179ecb49aefd2fcae94779ca183f5d38f12c2fd5a8d",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-generative-provider.mjs",
+        "sha256": "5c429f5b073c0f976219155c0ff777e9ea5ff856f08931c457901c822f4792fd",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-operational-worker.mjs",
+        "sha256": "09755fe66780a8bde1e3b753730dbace9171a8826d13025a74b9a692828898e7",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-runtime.mjs",
+        "sha256": "6dd481ac3661fa07ff528b8d27b38f9a2bf0ea4fbbe6c6ea478c54cfa16b4211",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r64-telemetry.mjs",
+        "sha256": "c77febdba421bdf59fd22e770a326f592eaa24d53e2b88ca82a6f0fa5936bdb2",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-active-runtime.mjs",
+        "sha256": "1182234166d0775ef6a1c4913c8f58e895a169764f0f63fd2ee458872e44ba05",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-admin-view.mjs",
+        "sha256": "2de808e1e6c8d581b91b5e84e90abb79561a0d0366a901ac38e5f07dfd31028e",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-cycle-access.mjs",
+        "sha256": "79121a9fcb38ebe8c667b245f2b79c2f51cbac87cae529eb817d8252c28f41b3",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-cycle-worker.mjs",
+        "sha256": "8e8751de168bd835b95fd64ff44ddd68861113f13f2af0298ac49722502735f5",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-database-store.mjs",
+        "sha256": "d1c5e7157fb53942ae1ca1a95de751d912326de0f54f2099ce95d5d1964eebcd",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-evolution-engine.mjs",
+        "sha256": "7cf8af408d544fa76f1a9cb0da3dfbc1e4568a49a5eeed7344ceb28b7a6ce29f",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-http.mjs",
+        "sha256": "def118a501620cf848f79bb407650548801b277f28413d157aa9ed29d8716f31",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-observation-source.mjs",
+        "sha256": "671acb7edfe0aa27fc6219ff591ff78a1627fca1abf46c3bc2b86d15457ea07e",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r65-runtime.mjs",
+        "sha256": "ad5b6670cf7f2323406adb24cc29c7bb6f8ea71bbb8de03967bee8143e3b7626",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r67-access.mjs",
+        "sha256": "c8e278a411f984a24bb5992af0e029b018d72ce18169eb98c1925a88fc87d086",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r67-database-store.mjs",
+        "sha256": "3264a25faff8809b3da7763b45add1b2fde4a633535e185180791fcaa80579d1",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r67-http.mjs",
+        "sha256": "4bf92e70fc68669027e54ea1311d0739475ed44f614cff7bf41bbbdb7b704d9b",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r67-private-protocol.mjs",
+        "sha256": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r67-runtime.mjs",
+        "sha256": "29b3b412253f81c984505e98c3a2d58d757f02f9f7eb3ee9ab0dbcccf90ab477",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r70-preflight-http.mjs",
+        "sha256": "27e203802ba2b1e5095685be51eabaadc3767d40971951ef3a168f9b3e064e11",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r70-preflight-protocol.mjs",
+        "sha256": "d87d66b5c67bb56f33e2fe63aea82b54f7f82a5d5356ff55f4b36f26c3ac60ab",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-access.mjs",
+        "sha256": "428fdef861245de0b106c64503b15b19126f688f2abf8369d2f8f7d83eeae7a9",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-admin-view.mjs",
+        "sha256": "439141bf325271a27036ada91d832cce545433a4f82afe2aa1e6f59a2b51b953",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-cycle-worker.mjs",
+        "sha256": "10373a31d7bac3a50cc0437bb8a61cff026937601cfbde9063c769936e876fa3",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-database-store.mjs",
+        "sha256": "76728ed4f623adce8154abe198585b7bf75a60ee8c906906e5c203a531397e46",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-evolution-engine.mjs",
+        "sha256": "6a3c89ad9cfc3c49de5c3e2a46c590b8fef28748c4a4464340a4b7d411decdbf",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-http.mjs",
+        "sha256": "e41aedce26ca20356962c729e8dedb837d42079fad087a875092c86c9be58143",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-policy.mjs",
+        "sha256": "ebde913b90bcb9bf366f5c75a6dcd11c5671e760d6af3f757931f163f1723c75",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-private-protocol.mjs",
+        "sha256": "68c6afb8c4fbde6d6ac3bbaadb86ab1b85cb768f53fe0b32b4ea1194e81c57ec",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-private-study.mjs",
+        "sha256": "0d83123019b842c16ca2b322bef2c1b671f4940cf3488609ff89378691244036",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r71-runtime.mjs",
+        "sha256": "686e22694c762002edd5f726a285be32455238f2198febc2679b9f80df677935",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/platform/research/robot-r73-definitive-status.mjs",
+        "sha256": "9b68f03946a96f34fa789e50133aab48a8dbd5bc2de7d9ef4b6593e3417effbb",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "lib/platform/ultrafast-entitlement.mjs",
+        "sha256": "f6ac6a83ac58ccbc57076868ebfe8506143906cdf03d13acc9c95da3a79b91ae",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "lib/release/environment-scope.mjs",
+        "sha256": "884127df96adf693afb3d1e265aed57a3d3f41dde7e5b117e5a2329a24113b19",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "scripts/platform/research/r71-cycle-worker.mjs",
+        "sha256": "e418fc64e327c673a4ee5e5aa37f6c16363a6ae0368772b4d64d305785db31bc",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "supabase/migrations/20261024223334_jenios_robot_r72_definitive_store.sql",
+        "sha256": "84408ccac4cd794016069301d97b4149e0afc7becfba6367e00eb40f1fcb75ed",
+        "reusedGitBlob": true
+      },
+      {
+        "path": "tests/platformRobotR73DefinitiveStatus.test.mjs",
+        "sha256": "5d10ca28d636555e337e4c1260fd0a3b5c5b08a951bf794734481a3a1fe97045",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "tests/platformRobotR73ReleaseScope.test.mjs",
+        "sha256": "01fcb24107808406d37c1cca93359cb5dc32301fc1d356320dc514e0a3a293ff",
+        "reusedGitBlob": false
+      },
+      {
+        "path": "vercel.json",
+        "sha256": "4323b17b1223dfe2430c05124e2220befbeffb54aab097569ce499d17e8779e7",
+        "reusedGitBlob": false
+      }
+    ]
+  },
+  "documentaryCloseoutFiles": [
+    {
+      "path": "docs/platform/ROBOT_R73_DEFINITIVE_APPLICATION.md",
+      "sha256": "5839aa7b16325a3ef5e5c79f388f10bdd961c35a4ca1de50aa302c63f9bb5c0b"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R73_DEFINITIVE_APPLICATION_CHECKPOINT.json",
+      "sha256": "8d1c7b68df18ae517e61f2f2378792c8eefeec10651992c57e43e058a9fd4e05"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_R73_PUBLICATION_EVIDENCE.json",
+      "sha256": "2f949e47fee5e18dac177988f40703be469d8b3eccd79519bbdf1dfe564cae62"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "sha256": "81b9d4c72b20b07e33fdb01b4370dba3be48639c9fc62713f693667441267cc3"
+    }
+  ],
+  "priorLedgerFieldsPreserved": 22,
+  "newLedgerFields": 23,
+  "sourceFilesPreserved": 77,
+  "privateCorePublished": false,
+  "newMigrationApplied": false,
+  "wholeOperationalRolloutComplete": false
+}

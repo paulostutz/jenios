@@ -1,0 +1,550 @@
+{
+  "schema": "JENIOS_R73_PUBLICATION_EVIDENCE_V1",
+  "recordedAtUtc": "2026-10-24T23:10:07.201Z",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "codeCommit": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+  "codeTree": "6d4cc095ba2f684858d5a3ee3fd73ca7e9e96e39",
+  "productionBaseCommit": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+  "previousDeploymentId": "dpl_GXrDuoTaA8rdNJrCVNBadorZgXwz",
+  "deployment": {
+    "id": "dpl_HWFRPaUD3G5JwgxEDpvPBs6zKRa5",
+    "url": "jenios-ecossistem-jmbwvi13g-jenios.vercel.app",
+    "state": "READY",
+    "target": "production",
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+    "commitSha": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+    "branch": "release/jenios-robot-r73-definitive-app-20261024",
+    "readyAtUtc": "2026-10-24T23:04:58.728Z"
+  },
+  "domain": {
+    "host": "www.jenios.com.br",
+    "path": "/platform/admin/robos",
+    "apex": "jenios.com.br",
+    "apexRedirectTo": "www.jenios.com.br",
+    "apexStatus": 308
+  },
+  "environmentChanges": {
+    "keys": [
+      "JENIOS_ROBOT_R73_ADMIN_ENABLED",
+      "JENIOS_REAL_EXECUTION_ENABLED",
+      "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+      "JENIOS_PRIVATE_PAPER_EXECUTOR",
+      "JENIOS_ROBOT_ANALYST_PAID_ENABLED",
+      "JENIOS_ROBOT_R73_VERIFY_TOKEN",
+      "JENIOS_ROBOT_R73_VERIFY_ISSUED_AT"
+    ],
+    "target": "production",
+    "allSevenConfirmed": true,
+    "existingCredentialsRead": false,
+    "sourceKeyCreated": false,
+    "probePurpose": "READ_ONLY_DEPLOYMENT_CONNECTIVITY_ONLY",
+    "probeLifetimeMs": 3600000,
+    "probeExpiresAtUtc": "2026-10-25T00:03:24.350Z",
+    "probeSecretPersistedInEvidence": false
+  },
+  "localValidation": {
+    "general": {
+      "passed": 1507,
+      "failed": 0,
+      "skipped": 0
+    },
+    "inheritedRelease": {
+      "passed": 94,
+      "failed": 0,
+      "skipped": 0
+    },
+    "newFocusedTestsIncludedInGeneral": 22,
+    "staticPages": 81,
+    "build": "PASS",
+    "finalBuildLogSha256": "45d2ac781b67bd00d8be545fd5c8724c7446a627c74974fdd387c32dffb2d858",
+    "performanceOrMarketTrials": 0
+  },
+  "vercelBuild": {
+    "status": "READY",
+    "command": "node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build",
+    "scope": "production-robots-r73-integrated",
+    "buildSeconds": 45,
+    "logProjectionLimit": 100,
+    "individualTestTotalsSource": "LOCAL_FINAL_BUILD_OF_SAME_CODE",
+    "observedLines": [
+      {
+        "atUtc": "2026-10-24T23:04:06.776Z",
+        "text": "Running \"npm run build\""
+      },
+      {
+        "atUtc": "2026-10-24T23:04:06.895Z",
+        "text": "> node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build"
+      },
+      {
+        "atUtc": "2026-10-24T23:04:06.935Z",
+        "text": "JENIOS S05 scope: production-robots-r73-integrated"
+      },
+      {
+        "atUtc": "2026-10-24T23:04:50.995Z",
+        "text": "Build Completed in /vercel/output [45s]"
+      }
+    ]
+  },
+  "postPublicationDatabase": {
+    "checked_at": "2026-10-24 23:08:55.632435+00",
+    "qa_observations": 0,
+    "qa_cycles": 0,
+    "private_captures": 0,
+    "private_revisions": 0,
+    "generation_enabled": false,
+    "pricing_approved": false
+  },
+  "browserHarnessHistory": [
+    {
+      "attempt": 1,
+      "outcome": "CHROMIUM_ENVIRONMENT_CA_NOT_TRUSTED",
+      "applicationFailure": false
+    },
+    {
+      "attempt": 2,
+      "outcome": "NODE_REQUEST_CLIENT_NEEDED_CONFIGURED_PROXY",
+      "applicationFailure": false
+    },
+    {
+      "attempt": 3,
+      "outcome": "FIVE_CHECKS_PASSED_HARNESS_CLEANUP_FAILED",
+      "applicationFailure": false
+    },
+    {
+      "attempt": 4,
+      "outcome": "FIVE_CHECKS_PASSED_CLEAN_EXIT",
+      "applicationFailure": false
+    }
+  ],
+  "boundaries": {
+    "noNewDatabaseMigration": true,
+    "noMerge": true,
+    "noCustomerMonitoring": true,
+    "noRealOrders": true,
+    "noExternalPaper": true,
+    "noPaidRobotProviderCalls": true,
+    "privateSourceConnected": false,
+    "evolutionSchedulerStarted": false,
+    "hostedAdministratorLoginVerified": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "http": {
+    "schema": "JENIOS_R73_HOSTED_HTTP_VERIFICATION_V1",
+    "checkedAtUtc": "2026-10-24T23:05:22.932366+00:00",
+    "origin": "https://jenios-ecossistem-jmbwvi13g-jenios.vercel.app",
+    "deploymentId": "dpl_HWFRPaUD3G5JwgxEDpvPBs6zKRa5",
+    "checks": [
+      {
+        "path": "/platform/admin/robos",
+        "method": "GET",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "check": "anonymous_shell_without_administrative_feed",
+        "pass": true
+      },
+      {
+        "path": "/api/platform/admin/robots/status",
+        "method": "GET",
+        "expected": 401,
+        "actual": 401,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/admin/robots/status",
+        "method": "POST",
+        "expected": 405,
+        "actual": 405,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/internal/robots/deployment-status",
+        "method": "GET",
+        "expected": 401,
+        "actual": 401,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/internal/robots/deployment-status",
+        "method": "GET",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "check": "deployed_server_reaches_definitive_database",
+        "pass": true
+      },
+      {
+        "check": "robot_generation_and_pricing_remain_disabled",
+        "pass": true
+      },
+      {
+        "check": "probe_is_not_admin_login_or_operational_certification",
+        "pass": true
+      },
+      {
+        "path": "/api/platform/admin/robot-private-evolution",
+        "method": "GET",
+        "expected": 404,
+        "actual": 404,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/admin/robot-evolution-cycle",
+        "method": "GET",
+        "expected": 404,
+        "actual": 404,
+        "pass": true
+      },
+      {
+        "path": "/platform/homologacao/robos/privado",
+        "method": "GET",
+        "expected": 404,
+        "actual": 404,
+        "pass": true
+      }
+    ],
+    "probe": {
+      "schema": "JENIOS_R73_DEPLOYMENT_PROBE_V1",
+      "checkedAt": "2026-10-24T23:05:22.560Z",
+      "release": {
+        "version": "R73",
+        "environment": "production",
+        "commitSha": "ed8b783b6fcb5419afbfb09b274c78fbed05010b"
+      },
+      "database": {
+        "status": "READY",
+        "projectId": "xaicvhagftzjkqphnbgx",
+        "expectedTables": 16,
+        "availableTables": 16,
+        "generationEnabled": false,
+        "pricingApproved": false
+      },
+      "source": {
+        "configuration": "NOT_CONFIGURED",
+        "connection": "NOT_VERIFIED"
+      },
+      "worker": {
+        "status": "WAITING_FOR_SOURCE",
+        "scheduled": false
+      },
+      "boundaries": {
+        "realOrdersEnabled": false,
+        "externalPaperEnabled": false,
+        "paidRobotProviderEnabled": false,
+        "customerMonitoringActive": false,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null
+      },
+      "hostedAdministratorLoginVerified": false,
+      "verificationOnly": true
+    },
+    "mutatingBusinessRequests": 0,
+    "newObservationsCreated": 0,
+    "providerRequests": 0,
+    "passed": 12,
+    "failed": 0
+  },
+  "browser": {
+    "schema": "JENIOS_R73_HOSTED_BROWSER_VERIFICATION_V1",
+    "checkedAtUtc": "2026-10-24T23:08:20.792Z",
+    "origin": "https://jenios-ecossistem-jmbwvi13g-jenios.vercel.app",
+    "network": "VERIFIED_NODE_TLS_CA_AND_CONFIGURED_PROXY_RELAY_FOR_EXACT_DEPLOYMENT",
+    "identity": "ANONYMOUS_NO_SESSION_INJECTION",
+    "administratorLoginVerified": false,
+    "credentialsEntered": false,
+    "checks": [
+      {
+        "check": "anonymous_browser_requires_platform_session",
+        "pass": true
+      },
+      {
+        "check": "no_report_without_session",
+        "pass": true
+      },
+      {
+        "check": "dedicated_login_link_opens_platform_form",
+        "pass": true
+      },
+      {
+        "check": "social_session_form_not_selected_for_robot_admin",
+        "pass": true
+      },
+      {
+        "check": "browser_page_errors_absent",
+        "pass": true
+      }
+    ],
+    "errors": [],
+    "passed": 5,
+    "failed": 0
+  },
+  "finalDomain": {
+    "schema": "JENIOS_R73_FINAL_DOMAIN_VERIFICATION_V1",
+    "checkedAtUtc": "2026-10-24T23:07:50.184300+00:00",
+    "domain": "www.jenios.com.br",
+    "checks": [
+      {
+        "path": "/platform/admin/robos",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/admin/robots/status",
+        "expected": 401,
+        "actual": 401,
+        "pass": true
+      },
+      {
+        "path": "/api/platform/internal/robots/deployment-status",
+        "expected": 200,
+        "actual": 200,
+        "pass": true,
+        "commitSha": "ed8b783b6fcb5419afbfb09b274c78fbed05010b",
+        "databaseStatus": "READY"
+      },
+      {
+        "check": "apex_redirect_preserved",
+        "expected": 308,
+        "actual": 308,
+        "location": "https://www.jenios.com.br/platform/admin/robos",
+        "pass": true
+      }
+    ],
+    "passed": 4,
+    "failed": 0
+  },
+  "hostDiscovery": {
+    "schema": "JENIOS_R73_PRIVATE_HOST_DISCOVERY_METADATA_V1",
+    "observedAtUtc": "2026-10-24T23:00:30Z",
+    "scope": "JENIOS_ROBOTS_ONLY",
+    "priorEvidence": [
+      "ROBOT_R71_TARGET_INVENTORY.json",
+      "ROBOT_POST_R71_OPERATIONAL_INVENTORY.json"
+    ],
+    "render": {
+      "availableWorkspaceCount": 1,
+      "otherAccessibleWorkspacesFound": false,
+      "selectedWorkspaceInThisSession": false,
+      "servicesRelisted": false,
+      "workspaceContextChanged": false,
+      "limit": "A conexão retornou um único workspace; não há segundo workspace acessível a consultar. A listagem anterior de serviços não foi repetida. Não prova inexistência de host fora desta conexão."
+    },
+    "vercel": {
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "search": "jenios",
+      "projectCount": 6,
+      "paginationNextAbsent": true,
+      "projects": [
+        {
+          "id": "prj_pZ4egweW2Jr6HvXwiBSu3SkJFz7X",
+          "name": "jenios-anxp",
+          "framework": null,
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_295BZXKZVqeNzMgwBJxFkFPtx3gU",
+            "url": "jenios-anxp-l563cnka1-jenios.vercel.app",
+            "target": null,
+            "readyState": "ERROR",
+            "meta": null
+          },
+          "domains": [
+            "jenios-anxp-jenios.vercel.app",
+            "jenios-anxp-git-main-jenios.vercel.app"
+          ]
+        },
+        {
+          "id": "prj_YTFA0rno448OwlABusFOSheDdPF5",
+          "name": "jenios",
+          "framework": null,
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_2hrPjBKLa6QSyFuxWvhVsX2Sx7iq",
+            "url": "jenios-efz90zdkn-jenios.vercel.app",
+            "target": "production",
+            "readyState": "READY",
+            "meta": null
+          },
+          "domains": [
+            "jenios-eta.vercel.app",
+            "jenios-jenios.vercel.app"
+          ]
+        },
+        {
+          "id": "prj_5dNvHuOwKzOTB0yBjWNXBwYeXgdA",
+          "name": "jenios-ecossistema",
+          "framework": "nextjs",
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_HAMpSiah5KStMRz2PGCZK3Tjmn1L",
+            "url": "jenios-ecossistema-j5u1neew3-jenios.vercel.app",
+            "target": null,
+            "readyState": "ERROR",
+            "meta": null
+          },
+          "domains": [
+            "jenios-ecossistema.vercel.app",
+            "jenios-ecossistema-jenios.vercel.app",
+            "jenios-ecossistema-git-main-jenios.vercel.app"
+          ]
+        },
+        {
+          "id": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+          "name": "jenios-ecossistem",
+          "framework": "nextjs",
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_GXrDuoTaA8rdNJrCVNBadorZgXwz",
+            "url": "jenios-ecossistem-i2s5mv3w1-jenios.vercel.app",
+            "target": "production",
+            "readyState": "READY",
+            "meta": null
+          },
+          "domains": [
+            "jenios-ecossistem-jenios.vercel.app",
+            "jenios-ecossistem-git-release-jenios-genios-g44-20261024-jenios.vercel.app"
+          ]
+        },
+        {
+          "id": "prj_LZ3guyZ87Oj9Y9tOb0p8CtNsmDPQ",
+          "name": "jenios-tx8x",
+          "framework": "nextjs",
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_3BA8AauPuWsXBX9wHFSBrGymZEX1",
+            "url": "jenios-tx8x-eu4kzh6i1-jenios.vercel.app",
+            "target": null,
+            "readyState": "ERROR",
+            "meta": null
+          },
+          "domains": [
+            "jenios-tx8x.vercel.app",
+            "jenios-tx8x-jenios.vercel.app",
+            "jenios-tx8x-git-main-jenios.vercel.app"
+          ]
+        },
+        {
+          "id": "prj_9cRnjWFRsLkfTToF4U4xZQBa7Gq9",
+          "name": "jenios-platform-homologacao",
+          "framework": "nextjs",
+          "live": false,
+          "latestDeployment": {
+            "id": "dpl_8LWRwbAmhKBqW1uGYeBThDCMUNh4",
+            "url": "jenios-platform-homologacao-q5phgmzvf-jenios.vercel.app",
+            "target": null,
+            "readyState": "READY",
+            "meta": null
+          },
+          "domains": [
+            "jenios-platform-homologacao.vercel.app",
+            "jenios-platform-homologacao-jenios.vercel.app",
+            "jenios-platform-homologacao-git-fix-jenios-platfo-13508d-jenios.vercel.app"
+          ]
+        }
+      ],
+      "otherProjectLatestDeployments": [
+        {
+          "project": "jenios-anxp",
+          "id": "prj_pZ4egweW2Jr6HvXwiBSu3SkJFz7X",
+          "deployments": [
+            {
+              "id": "dpl_295BZXKZVqeNzMgwBJxFkFPtx3gU",
+              "url": "jenios-anxp-l563cnka1-jenios.vercel.app",
+              "target": null,
+              "state": "ERROR",
+              "meta": {
+                "branch": "release/jenios-genios-g44-20261024",
+                "sha": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+                "repo": "jenios"
+              }
+            }
+          ]
+        },
+        {
+          "project": "jenios",
+          "id": "prj_YTFA0rno448OwlABusFOSheDdPF5",
+          "deployments": [
+            {
+              "id": "dpl_2hrPjBKLa6QSyFuxWvhVsX2Sx7iq",
+              "url": "jenios-efz90zdkn-jenios.vercel.app",
+              "target": "production",
+              "state": "READY",
+              "meta": {}
+            }
+          ]
+        },
+        {
+          "project": "jenios-ecossistema",
+          "id": "prj_5dNvHuOwKzOTB0yBjWNXBwYeXgdA",
+          "deployments": [
+            {
+              "id": "dpl_HAMpSiah5KStMRz2PGCZK3Tjmn1L",
+              "url": "jenios-ecossistema-j5u1neew3-jenios.vercel.app",
+              "target": null,
+              "state": "ERROR",
+              "meta": {
+                "branch": "release/jenios-genios-g44-20261024",
+                "sha": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+                "repo": "jenios"
+              }
+            }
+          ]
+        },
+        {
+          "project": "jenios-tx8x",
+          "id": "prj_LZ3guyZ87Oj9Y9tOb0p8CtNsmDPQ",
+          "deployments": [
+            {
+              "id": "dpl_3BA8AauPuWsXBX9wHFSBrGymZEX1",
+              "url": "jenios-tx8x-eu4kzh6i1-jenios.vercel.app",
+              "target": null,
+              "state": "ERROR",
+              "meta": {
+                "branch": "release/jenios-genios-g44-20261024",
+                "sha": "8d4936e0b02c39bb217ad542d01d330dc6cb71d6",
+                "repo": "jenios"
+              }
+            }
+          ]
+        },
+        {
+          "project": "jenios-platform-homologacao",
+          "id": "prj_9cRnjWFRsLkfTToF4U4xZQBa7Gq9",
+          "deployments": [
+            {
+              "id": "dpl_8LWRwbAmhKBqW1uGYeBThDCMUNh4",
+              "url": "jenios-platform-homologacao-q5phgmzvf-jenios.vercel.app",
+              "target": null,
+              "state": "READY",
+              "meta": {
+                "branch": "fix/jenios-experience-r44-20261024",
+                "sha": "dd2e6ce9d2beeea64bc63e42557da8357f0cce94",
+                "repo": "jenios"
+              }
+            }
+          ]
+        }
+      ],
+      "limit": "Metadados de projetos/deployments não contêm identificação de host persistente, volume ou custódia do core. O projeto jenios tem deployment READY sem metadata Git fornecida; não foi classificado como motor privado."
+    },
+    "conclusion": {
+      "acceptedPrivateHostId": null,
+      "acceptedPersistentVolumeId": null,
+      "newCandidateProven": false,
+      "originalCoreReconstructionRequired": false,
+      "metadataDoesNotExcludeAnotherProviderOrAccount": true
+    },
+    "mutations": 0,
+    "secretEnvironmentQueries": 0,
+    "customerLogQueries": 0,
+    "servicesCreated": 0
+  }
+}

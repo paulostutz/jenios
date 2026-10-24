@@ -1,6 +1,5 @@
 'use client';
 import {PlatformPurpose,PlatformEducationalQuiz,PlatformFAQ} from '../components/PlatformPresentation';
-import {PLATFORM_SLOGAN} from '../../lib/brand/identity.mjs';
 import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
 
 export default function LandingPagePro() {
@@ -143,7 +142,7 @@ export default function LandingPagePro() {
         {/* RODAPÉ */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '30px' }}>
           <div style={{ fontSize: '12px', fontWeight: '900', color: '#a78bfa', letterSpacing: '2px', textTransform: 'uppercase' }}>{PLATFORM_SLOGAN}</div>
-          <div style={{ fontSize: '11px', color: '#64748b' }}>Assinatura de marca que expressa nosso propósito, não uma promessa de resultado. Operações podem gerar perdas, inclusive superiores ao risco inicialmente estimado.</div>
+          <div style={{ fontSize: '11px', color: '#64748b' }}>Estudo e simulação ajudam a revisar decisões, mas não garantem resultado financeiro. Operações reais podem gerar perdas.</div>
           <BrandFooter tone="dark" scope="Platform"/>
         </div>
 

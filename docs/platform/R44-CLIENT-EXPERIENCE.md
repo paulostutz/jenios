@@ -33,3 +33,5 @@ O atendimento guiado e as instruções do modelo usam qualificação por necessi
 A abordagem de perguntas e valor usa como referência metodológica o material público da Huthwaite (https://www.huthwaiteinternational.com/spin-methodology, consulta 24/10/2026). Não representa certificação, reprodução do treinamento ou prova de aumento de conversão nesta aplicação. Não há descontos, depoimentos, escassez, lucro ou franquias inventados.
 
 Validação adicional: conversas de múltiplos turnos exercitam objeções, escolha do menor escopo, Universidade separada, desistência, cancelamento com nome de plano, dificuldade financeira e contratação direta. A certificação final será feita sobre o commit combinado, distinta da CI inicial 40135599914.
+
+A página legada /planos foi encaminhada ao checkout oficial. Removidos seus códigos Pix fixos, alegação de liberação imediata e recursos de execução não homologados; os links antigos de e-mails continuam válidos e passam pelo catálogo e disponibilidade atuais. A copy de encerramento da LP enfatiza estudo e método.

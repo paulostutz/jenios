@@ -1,0 +1,22 @@
+{
+  "baseCommit": "e9926d975a48c72ac3815de6fc6d3bdae717d7c5",
+  "reviewedBlobs": {
+    "app/components/platform/PlatformAuthGuard.js": "70398a3d55366b4dd2de853c10f8f676181f03a7",
+    "app/components/platform/PlatformStrategyLab.js": "df2bcdc56a1b2946cceda4d0ead555afa891970b",
+    "app/components/social-auth-return.mjs": "b015839be153f2dac7b04b090e08b9db01acc024",
+    "app/dashboard/layout.js": "57afb70df0058c13858c6ce158c81f579adc6f57",
+    "app/dashboard/page.js": "f4ec5a0cd52470e9b7c32fa4807244b14d48caf9",
+    "app/diagnostico/layout.js": "8908e9d86b3f81b20438cf2388c3507b20630025",
+    "app/login/page.js": "1eae032f6e021105f5ed88aa0121f055d6b24b79",
+    "app/mesa-operacoes/layout.js": "50f105b149adbf0001a48542b35e4ca1380e3182",
+    "app/mesa-operacoes/page.js": "8eabeec1051700770b70c0c8853ed27a476c0268",
+    "app/platform/aprender/layout.js": "86d7da13f36f5bfb5869bc428ac5a8cd8685a761",
+    "app/platform/assistente/layout.js": "8979787db28d793bea7f657dbd6b03000872137e",
+    "app/platform/entrar/page.js": "07fecc325fe16722edfecfb54c13d7ed6d10f2e9",
+    "docs/platform/R43-CLIENT-READINESS.md": "d0a27b120a07dc8690f38653c66d292c0d286f6b",
+    "lib/platform/asset-symbol.mjs": "6f19a5a3d0c358d9b0f8a593506641c71c787fb2",
+    "lib/platform/simulation-journal.mjs": "41c4fb05703b0cbe4a1c4f3b9518bd8d2e833474",
+    "supabase/migrations/20261024204600_specialist_server_columns_r43.sql": "42d0fc22d4661c2d019e5eb107bc0161296f5645",
+    "tests/platformClientReadinessR43.test.mjs": "61fe2a3f1ec2b7a61a9c425888f878dd0ff4d863"
+  }
+}

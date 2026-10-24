@@ -1224,5 +1224,262 @@
       "newSessionAfterRejectionVerified": true,
       "applicationFixesRequired": false
     }
+  },
+  "continuousImprovement": {
+    "revision": "R63",
+    "status": "SYNTHETIC_CONTINUOUS_IMPROVEMENT_CERTIFIED",
+    "scope": "BOUNDED_SYNTHETIC_RESEARCH_ONLY",
+    "base": {
+      "branch": "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024",
+      "commit": "b1703f5cce578bf13a5c5a29949f427a8247636d",
+      "validationRun": 40099968197
+    },
+    "authorization": {
+      "ownerPreapprovalRecorded": true,
+      "authorizationId": "OWNER_PREAPPROVAL_20261024",
+      "automaticImprovementsApproved": true,
+      "implementationScope": "Bounded synthetic research only; existing no-production/no-deploy/no-live/no-external-Paper constraints preserved.",
+      "customerTechnicalNotifications": false,
+      "operationalDataDisclosureRequired": true
+    },
+    "implemented": {
+      "observationStudy": true,
+      "independentFixtureEvaluation": true,
+      "automaticResearchPromotion": true,
+      "activeVersionUsedBySubsequentR47Evaluation": true,
+      "rollbackWithHistory": true,
+      "durableLocalJournal": true,
+      "wholeWorkerLease": true,
+      "adminReadEndpoint": true,
+      "dedicatedPlatformAdminAuthorization": true,
+      "dailyScheduleContract": true,
+      "localFixtureWorkerEntry": true,
+      "generativeAnalystContract": true,
+      "uiPreview": true
+    },
+    "automaticDomain": {
+      "change": "TIGHTEN_MARKET_FRESHNESS",
+      "fromMaxAgeMs": 750,
+      "toMaxAgeMs": 500,
+      "maxPromotions": 1,
+      "minValidationCases": 6,
+      "minPerClass": 2,
+      "strictFalseAllowImprovement": true,
+      "remainingFalseAllows": 0,
+      "noFalseBlockRegression": true,
+      "evaluation": "Preregistered synthetic cases and virtual clocks; not external prospective attestation.",
+      "arbitraryCodeAllowed": false,
+      "automaticDeploymentAllowed": false
+    },
+    "reportSchedule": {
+      "cadence": "DAILY_09",
+      "timeZone": "America/Sao_Paulo",
+      "period": "previous closed local calendar day",
+      "backfill": false,
+      "productionSchedulerActive": false,
+      "customerMonitoringActive": false,
+      "externalNotificationsSent": 0
+    },
+    "generative": {
+      "providerInjectionImplemented": true,
+      "paidProviderCalls": 0,
+      "liveProviderConnectionVerified": false,
+      "authority": "Hypotheses only; independent engine decides.",
+      "rawProviderResponsesPersisted": false,
+      "budgetRequired": true,
+      "maxCallsPerAnalysis": 1,
+      "requestedMaxOutputTokens": 700,
+      "providerTokenUsageVerified": false
+    },
+    "invariants": {
+      "r12r62CertifiedAlgorithmsChanged": false,
+      "r15ProspectiveBackfill": false,
+      "alignmentGuardThreshold": 0.65,
+      "manualOperatorControlPreserved": true,
+      "hybridAdvisoryOnly": true,
+      "reverseSelective": true,
+      "losseshometroSyntheticOnly": true,
+      "actualBrokerPnl": null,
+      "actualLossesAvoided": null,
+      "realTradeAccuracy": null,
+      "realOrdersSent": 0,
+      "externalPaperOrdersSent": 0,
+      "productionConfigurationChanged": false,
+      "productionDeployPerformed": false,
+      "mergePerformed": false,
+      "commercialPerformanceCertified": false
+    },
+    "validation": {
+      "status": "PASS",
+      "local": {
+        "tests": 135,
+        "passed": 135,
+        "failed": 0,
+        "skipped": 0,
+        "runtime": "v24.22.1"
+      },
+      "plannedBrowserCases": 52,
+      "preservedBrowserCases": 41,
+      "newBrowserCases": 11,
+      "authenticatedRealAdminSessionTested": false,
+      "authContractTestedWithInjectedIdentity": true,
+      "attempts": [
+        {
+          "runId": 40105575123,
+          "commit": "f5feea2bd60ae87ecb8500168561d4c3bf794d21",
+          "stage": "Next.js build",
+          "reason": "Webpack treated directory URL ../../../ as an asset dependency.",
+          "directed": "442/442",
+          "general": "2248/2248",
+          "social": "94/94",
+          "browser": "NOT_RUN",
+          "conclusion": "FAILURE",
+          "resolution": {
+            "commit": "dc54bbddeb9512a12a15f801b4b6d1f6eae6046f",
+            "change": "Resolve repository root with node:path dirname/resolve rather than a static directory asset URL.",
+            "focusedPathProtectionTests": "5/5"
+          }
+        }
+      ],
+      "evidence": {
+        "validationRun": 40105983256,
+        "validatedCommit": "dc54bbddeb9512a12a15f801b4b6d1f6eae6046f",
+        "directed": "442/442",
+        "general": "2248/2248",
+        "social": "94/94",
+        "build": "PASS",
+        "pages": "76/76",
+        "browser": "52/52",
+        "failures": 0,
+        "skipped": 0
+      },
+      "browserAcceptance": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R63_BROWSER_ACCEPTANCE_EVIDENCE.json",
+        "total": 52,
+        "passed": 52,
+        "failed": 0,
+        "notRun": 0,
+        "pageErrors": 0,
+        "renderedZeroOrderChecks": 57,
+        "preservedCases": 41,
+        "newEvolutionCases": 11,
+        "playwright": "1.56.1",
+        "chromium": "141.0.7390.37",
+        "r63ViewportWidths": [
+          375,
+          320
+        ],
+        "horizontalOverflow": false,
+        "attempts": {
+          "externalRequests": 0,
+          "apiRequests": 0,
+          "mutations": 0,
+          "webSockets": 0
+        },
+        "expectedHttp404ConsoleMessages": 9,
+        "serverHttpChecks": [
+          {
+            "scenario": "r63_admin_without_identity",
+            "status": 401,
+            "reportExposed": false
+          }
+        ],
+        "reviewedScreenshots": [
+          "r63-evolution-mobile.png"
+        ],
+        "serverLogsReviewed": true,
+        "humanOwnerAcceptanceCompleted": false
+      },
+      "runtimeEvidence": {
+        "status": "PASS",
+        "reportFile": "docs/platform/evidence/ROBOT_R63_CONTINUOUS_IMPROVEMENT_EVIDENCE.json",
+        "source": "CI fixture execution",
+        "positiveCase": {
+          "status": "AUTO_APPLIED",
+          "baselineFalseAllows": 2,
+          "candidateFalseAllows": 0,
+          "baselineFalseBlocks": 0,
+          "candidateFalseBlocks": 0,
+          "validationCases": 6,
+          "fromMaxAgeMs": 750,
+          "toMaxAgeMs": 500,
+          "subsequent650msCheckChangesFromAllowToBlock": true,
+          "orderAuthorized": false
+        },
+        "regressionStatus": "REJECTED",
+        "insufficientStatus": "NO_CHANGE",
+        "controlViolationStatus": "NO_CHANGE",
+        "entries": 2,
+        "idempotentRetry": "ALREADY_STORED",
+        "nextDayImprovements": 0,
+        "activeMaxAgeMs": 500,
+        "paidProviderCalls": 0,
+        "productionSchedulerStarted": false
+      },
+      "artifact": {
+        "id": 12565090236,
+        "name": "r63-browser-evidence-dc54bbddeb9512a12a15f801b4b6d1f6eae6046f",
+        "sourceRun": 40105983256,
+        "sourceCommit": "dc54bbddeb9512a12a15f801b4b6d1f6eae6046f",
+        "bytes": 727526,
+        "zipSha256": "135130f1a767ac6ebea3c595ed9bf76fbb575a08af12ea5569cfa7585f1e0fb8",
+        "zipHashVerified": true,
+        "expiresAt": "2026-11-07T15:16:40Z",
+        "files": [
+          {
+            "name": "r63-browser-acceptance.json",
+            "bytes": 28269,
+            "sha256": "52ce146b3a5e261eb92086236b7b20973f34c2337b6f643f56bea9168537b277"
+          },
+          {
+            "name": "r63-browser-desktop.png",
+            "bytes": 250243,
+            "sha256": "e94e470a228351aa02cdba6991c3b3f077eeba8695afef5caa60f72f14017930"
+          },
+          {
+            "name": "r63-browser-mobile.png",
+            "bytes": 306712,
+            "sha256": "4f42d39b8c0bad3f31f534795ce0a188098dc6b916bb3df51e20abb27362619e"
+          },
+          {
+            "name": "r63-continuous-improvement-evidence.json",
+            "bytes": 35774,
+            "sha256": "1e612fa5608505990b139477d2bc3123c580dcbebc4176a3b862480fe926823c"
+          },
+          {
+            "name": "r63-evolution-mobile.png",
+            "bytes": 199836,
+            "sha256": "7d1edd5c1e5b868c1fcbcffa86cf0e3a9691986a71118d9e9af67e4e6f49672c"
+          },
+          {
+            "name": "r63-next-servers.log",
+            "bytes": 5055,
+            "sha256": "148cc3ae203f2e59765eb64ff563760fcddb8e325c8287be3359f1fbcf06f081"
+          }
+        ]
+      },
+      "deploymentIsolation": {
+        "checkedAt": "2026-10-24T15:15:04Z",
+        "commit": "dc54bbddeb9512a12a15f801b4b6d1f6eae6046f",
+        "automaticVercelDeploymentAttempts": 0
+      },
+      "consolidatedCommitRule": "Repeat complete directed/general/Social/build/runtime/browser CI on the consolidated commit. Create the certified backup only after success. Backup Git ref and its matching Actions run identify the final commit; reference evidence retains its original source SHA."
+    },
+    "guide": "docs/platform/ROBOT_R63_CONTINUOUS_IMPROVEMENT.md",
+    "checkpoint": "docs/platform/evidence/ROBOT_R63_CONTINUOUS_IMPROVEMENT_CHECKPOINT.json",
+    "backupRef": "backup/jenios-robot-r63-continuous-improvement-certified-20261024",
+    "validatedAt": "2026-10-24T15:18:52Z",
+    "limitations": [
+      "Only SYNTHETIC_FIXTURE events accepted. Operational/customer events are rejected.",
+      "750 to 500 ms is the sole automatic configuration change in this revision; further studies report NO_CHANGE.",
+      "Six fixture cases prove the mechanism, not statistical significance, economic benefit or execution integration.",
+      "Local journal supports 100 records and 8 MiB; full retention blocks writes until a separate archival process is designed.",
+      "Whole-directory rollback to a valid signed old backup requires an external monotonic witness to detect.",
+      "Local worker and report schedule are implemented but no background service or production scheduler was started.",
+      "Admin API reuses existing dedicated Platform permission checks; real login and cross-host durable integration remain unverified.",
+      "Generative contract tested with injected providers only; paid service and persistent provider-response audit remain unverified.",
+      "Manual owner acceptance and production/external execution integration remain outstanding."
+    ]
   }
 }

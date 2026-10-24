@@ -2,7 +2,7 @@
 
 ## Estado e autorização
 
-Implementação em pesquisa, aguardando a CI completa. Base preservada: backup R62, commit `b1703f5cce578bf13a5c5a29949f427a8247636d`, CI `40099968197` SUCCESS.
+Certificação **de melhoria contínua limitada à pesquisa sintética** aprovada na [CI de referência 40105983256](https://github.com/paulostutz/jenios/actions/runs/40105983256), commit `dc54bbddeb9512a12a15f801b4b6d1f6eae6046f`. Base preservada: backup R62, commit `b1703f5cce578bf13a5c5a29949f427a8247636d`, CI `40099968197` SUCCESS. O backup final exige também uma CI completa aprovada sobre o commit consolidado, conforme o checkpoint.
 
 Em 24/10/2026 o proprietário aprovou antecipadamente melhorias automáticas que cumpram os critérios de avaliação, com relatórios periódicos no admin. A política `OWNER_PREAPPROVAL_20261024` registra essa autorização. Este bloco mantém a restrição vigente de não modificar produção, não fazer merge/deploy e não enviar ordens reais ou Paper externo.
 
@@ -66,8 +66,34 @@ O armazenamento tem limite de **100 registros e 8 MiB**; atingi-lo bloqueia a es
 
 ## Verificação e continuidade
 
-Os novos módulos passaram em 135 testes locais. A CI do bloco repete os direcionados preservados, a regressão geral, Social, build e os 41 casos de navegador R61/R62, adicionando 11 casos R63. A bateria de navegador bloqueia saídas externas, APIs e mutações do navegador; suas duas verificações HTTP do admin são leituras loopback sem credenciais. Não se afirma isolamento de rede de todo o host.
+A CI de referência terminou com todos os critérios aprovados. Os 135 testes novos R63 estão incluídos nas baterias abaixo; não são uma amostra de operações financeiras.
 
-O checkpoint registra as contagens observadas da CI e o relatório de evidência. O backup certificado exige uma segunda CI completa no commit consolidado. O ledger recebe apenas uma nova seção R63, preservando a certificação anterior e todos os resultados históricos.
+| Verificação | Resultado observado |
+| --- | --- |
+| Direcionados R12–R63 | 442/442 PASS |
+| Regressão geral | 2.248/2.248 PASS |
+| Social | 94/94 PASS |
+| Build | PASS |
+| Páginas estáticas | 76/76 |
+| Navegador | 52/52 PASS: 41 preservados + 11 R63 |
+| Falhas, testes omitidos e erros de página | 0 |
+| Tentativas externas/API/mutações/WebSocket pelo navegador | 0 |
+
+O navegador verificou promoção, rejeição de regressão, rollback, invalidação de resultados editados, ausência de promoção sem evidência, proteção do controle manual, acesso administrativo negado sem identidade e gates de habilitação. A captura R63 em celular foi revisada; não houve transbordamento em 375 ou 320 pixels. Os nove avisos HTTP 404 correspondem às rotas intencionalmente desabilitadas. As duas verificações HTTP do admin foram leituras loopback sem credenciais; não se afirma isolamento de rede de todo o host.
+
+O ciclo persistido demonstrou duas entradas em períodos distintos: repetição idempotente retornou `ALREADY_STORED`; o dia seguinte preservou 500 ms e registrou zero novas melhorias. A candidata que aumentava falsos bloqueios foi rejeitada. Os cenários sem evidência suficiente ou com violação do controle retornaram `NO_CHANGE`.
+
+A [primeira tentativa, CI 40105575123](https://github.com/paulostutz/jenios/actions/runs/40105575123), passou nos testes mas falhou no build: webpack interpretou uma URL de diretório do journal como dependência de asset. A correção usa resolução de caminho pelo filesystem, preserva as proteções de diretório e passou em cinco verificações específicas e nesta CI completa. O histórico da falha permanece no checkpoint; o navegador daquela tentativa não foi executado.
+
+Evidências preservadas no repositório:
+
+- [Checkpoint R63](evidence/ROBOT_R63_CONTINUOUS_IMPROVEMENT_CHECKPOINT.json).
+- [Ciclo de evolução e persistência](evidence/ROBOT_R63_CONTINUOUS_IMPROVEMENT_EVIDENCE.json).
+- [Aceitação de navegador](evidence/ROBOT_R63_BROWSER_ACCEPTANCE_EVIDENCE.json).
+- [Ledger consolidado](evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json), com uma seção R63 adicionada e os campos históricos intactos.
+
+O artefato `12565090236` foi baixado e seu SHA-256 conferido: `135130f1a767ac6ebea3c595ed9bf76fbb575a08af12ea5569cfa7585f1e0fb8`. As capturas e logs do artefato ficam retidos até 07/11/2026; os dois relatórios JSON são mantidos em git. A consulta da Vercel para o commit de referência retornou zero deployments.
+
+A consolidação mantém o SHA original de cada evidência e repete a CI completa sobre o commit consolidado. Só então é criado `backup/jenios-robot-r63-continuous-improvement-certified-20261024`. O ref desse backup e sua execução correspondente no Actions identificam o commit final, evitando atribuir a evidência de um commit a outro.
 
 Permanecem fora da certificação: operações de clientes, feed/contas/fills externos, identidade real do admin, serviço generativo pago, implantação/monitoramento de produção e desempenho comercial. Os campos `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` permanecem nulos; ordens reais e Paper externo permanecem zero.

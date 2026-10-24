@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import {
  sealR5ProspectiveBatch,reviewR5DualSourceEvidence,
  ROBOT_R5_FROZEN_PROTOCOL
@@ -245,6 +246,15 @@ test('R5 and every preceding private research branch remain blocked from Vercel 
   'fix/jenios-b301-private-durable-cohort-20261021'
  ]){
   assert.equal(vercel.git.deploymentEnabled[b],false);
-  assert.ok(vercel.ignoreCommand.includes(b));
+  // R60 moves the branch policy out of the 256-character command field.
+  // Keep proving the exclusion through the configured command's actual effect.
+  const ignored=spawnSync('sh',['-c',vercel.ignoreCommand],{
+   cwd:new URL('../',import.meta.url),
+   env:{...process.env,VERCEL_GIT_COMMIT_REF:b},encoding:'utf8'
+  });
+  assert.equal(ignored.error,undefined);
+  assert.equal(ignored.status,0,b);
+  assert.match(ignored.stdout,/Build skipped/);
  }
 });
+

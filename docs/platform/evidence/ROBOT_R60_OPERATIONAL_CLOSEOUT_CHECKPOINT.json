@@ -29,7 +29,8 @@
     "ignoreCommandCurrentLength": 39,
     "nativeResearchAndBackupExclusions": true,
     "reverseUiSyntheticProfitRemoved": true,
-    "riskUiFalsePersistenceRemoved": true
+    "riskUiFalsePersistenceRemoved": true,
+    "legacyDeployTestPreservesBehavior": true
   },
   "acceptance": {
     "researchCertification": "RESEARCH_CERTIFIED_FINAL",
@@ -51,7 +52,17 @@
       "researchExitCode": 0,
       "normalBranchExitCode": 1
     },
-    "localGuardSuite": "NOT_VALIDATED_LOCAL_CHILD_PROCESS_EPERM; full suite required in GitHub Actions"
+    "localGuardSuite": "NOT_VALIDATED_LOCAL_CHILD_PROCESS_EPERM; full suite required in GitHub Actions",
+    "priorAttempts": [
+      {
+        "run": 40093896831,
+        "commit": "939d85bdb0b1f66c02ecf47e6d9348b8ba3c8218",
+        "directed": "264/264",
+        "general": "2069/2070",
+        "conclusion": "FAIL",
+        "reason": "Legacy R5 deploy test required inline branch names; replaced with actual configured command execution, preserving exclusions."
+      }
+    ]
   },
   "limitations": [
     "Source-level checks and CI build are not browser end-to-end acceptance.",
@@ -59,4 +70,3 @@
     "Future real execution requires separate evidence and authorization."
   ]
 }
-

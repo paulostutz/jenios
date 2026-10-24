@@ -4,7 +4,7 @@
 
 O bloco parte do backup `backup/jenios-robot-r59-final-research-certified-20261023`, commit `f7dd8f4a0db658dcd3bd957bc403c397d08f7621`, aprovado na CI `39957136366`.
 
-A certificação de pesquisa R12–R59 permanece preservada. R60 não altera os módulos de decisão, os testes anteriores, os dados prospectivos R15 ou os parâmetros certificados. O guard de alinhamento continua em 0,65 e as métricas reais continuam nulas.
+A certificação de pesquisa R12–R59 permanece preservada. R60 não altera os módulos de decisão, os dados prospectivos R15 ou os parâmetros certificados. O guard de alinhamento continua em 0,65 e as métricas reais continuam nulas. O teste legado de bloqueio de deploy R5 foi adaptado para verificar a execução efetiva do comando curto, preservando as mesmas exclusões exigidas anteriormente.
 
 ## Correções deste bloco
 

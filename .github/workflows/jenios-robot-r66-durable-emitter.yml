@@ -34,7 +34,6 @@ jobs:
       JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
       JENIOS_REAL_EXECUTION_ENABLED: 'false'
       JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
-      ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r66-evidence
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with: {persist-credentials: false}
@@ -52,6 +51,8 @@ jobs:
             sudo apt-get install -y postgresql-client
           fi
       - name: Separate processes, exact retransmission, HTTP intake and real disposable PostgreSQL
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r66-evidence
         run: node scripts/platform/research/r66-emitter-acceptance.mjs
       - name: Preserve complete application test and build gates
         run: npm run build

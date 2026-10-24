@@ -99,6 +99,17 @@
         "scope": "Initial local process/socket checks",
         "result": "ENVIRONMENT_BLOCKED",
         "cause": "Default execution sandbox denied subprocesses/listen; permitted isolated execution was used; no product assertion was relaxed."
+      },
+      {
+        "runIds": [
+          40117478963,
+          40117479954
+        ],
+        "commit": "8a31d2f3048bb9f26dea172a4ff049b312a0621a",
+        "conclusion": "FAILURE_BEFORE_JOBS",
+        "jobsStarted": 0,
+        "cause": "Workflow referenced runner.temp in job-level env; moved artifact directory declaration to the acceptance step env.",
+        "productTestsExecuted": false
       }
     ],
     "countsAreOverlapping": true,

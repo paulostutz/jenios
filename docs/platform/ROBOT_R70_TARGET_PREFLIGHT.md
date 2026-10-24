@@ -83,4 +83,36 @@ As evidências de referência mantêm o SHA que as produziu. Após a CI de refer
 - Aceite original privado: **8/8 PASS**, concluído às 20:12:05 UTC. Cinco invocações reais da CLI, um SIGTERM, dez desafios e duas requisições de observação. Três decisões originais sintéticas foram capturadas uma única vez; a retransmissão não executou novas decisões.
 - A recusa antes do flush conservou o registro e a tentativa `UNCERTAIN`; a tentativa seguinte recebeu `ALREADY_STORED` e terminou `ACKNOWLEDGED`, com o mesmo corpo HTTP.
 
-Esses resultados preliminares usam a árvore de trabalho R70 sobre o SHA-base R69 e não substituem a evidência de referência no commit limpo. A primeira tentativa pública falhou na fixture por omissão de `nowMs`; a correção e as demais tentativas de teste estão registradas em `ROBOT_R70_CHANGE_AUDIT.json`. CI de referência, execução privada limpa, consolidação e CI final ainda são exigidas pela regra de fechamento.
+Esses resultados preliminares usam a árvore de trabalho R70 sobre o SHA-base R69 e não substituem a evidência de referência no commit limpo. A primeira tentativa pública falhou na fixture por omissão de `nowMs`; a correção e as demais tentativas de teste estão registradas em `ROBOT_R70_CHANGE_AUDIT.json`. A CI de referência e a execução privada limpa posteriores passaram; seus resultados estão abaixo. A CI final do commit consolidado e o backup no mesmo SHA continuam sendo a regra de fechamento.
+
+## Referência validada e fechamento
+
+Commit de referência: `c7e552b2163b7bd61c52e64ace3246796d81b2e5`.
+
+CI de referência: [40129241284](https://github.com/paulostutz/jenios/actions/runs/40129241284), job `120977202658`, **SUCCESS**, concluída em 24/10/2026 às 20:21:15 UTC. Os logs completos foram examinados para conferir as contagens, os gates, o build e o aceite público.
+
+| Verificação | Resultado observado |
+| --- | ---: |
+| Direcionados R70 | 38/38 PASS |
+| Contratos R65–R69 e guarda R60 preservados | 307/307 PASS |
+| Gerais do build | 2.663/2.663 PASS |
+| Gate herdado da aplicação, sem alterações de outro produto | 94/94 PASS |
+| Aceite público do desafio Next/TLS | 7/7 PASS |
+| Aceite local com CLI e core privado original | 8/8 PASS |
+| Build / páginas estáticas | PASS / 76/76 |
+| Falhas finais / casos omitidos | 0 / 0 |
+
+O build local do commit limpo terminou às 20:20:22 UTC; o aceite original privado terminou às 20:20:41.770 UTC. A CI pública terminou seu aceite às 20:21:07.396 UTC. As duas evidências têm `sourceTreeDirty=false`, o mesmo SHA de origem e 16 digests de implementação conferidos contra os arquivos do commit. A CI pública não executou o core privado.
+
+No privado, dez pré-voos resultaram em oito respostas compatíveis e duas recusas por divergência. Houve cinco invocações da CLI, um SIGTERM, três decisões originais sintéticas e duas requisições de observação. A outbox manteve uma tentativa `UNCERTAIN` quando o pré-voo antes de flush foi recusado; a retomada confirmou a segunda tentativa com `ALREADY_STORED`, transmitindo os mesmos bytes e executando zero decisões novas. O receptor continuou sendo um Map volátil explicitamente identificado, com uma entrada e três capturas; não é recibo de banco.
+
+As evidências foram persistidas sem reserialização ou reatribuição:
+
+- `ROBOT_R70_PUBLIC_PREFLIGHT_ACCEPTANCE_EVIDENCE.json`: 11.152 bytes; SHA-256 `c21712ef8031da2890a1409eabd24f9e9dd9b603d4c52b9fc94d0fb364c98e64`.
+- `ROBOT_R70_PRIVATE_PREFLIGHT_ACCEPTANCE_EVIDENCE.json`: 18.732 bytes; SHA-256 `70016586bf14a2cd59aa345b79f93c1a80593df9d107659dfa1493e89b83822f`.
+
+O ZIP público de Actions, artefato `12574206424`, tinha 4.221 bytes e SHA-256 `6793432b5daff7a6bb67a0e31dc58cff77254c337ed35041e7d01868749ea195`, conferido antes da cópia. Seu prazo de retenção no Actions não afeta os JSONs agora salvos no repositório.
+
+A consulta da Vercel também retornou zero deployments do commit de referência R70. O resultado real anterior para o R69 continua em `ROBOT_R70_CONTROL_PLANE_EVIDENCE.json`; nenhuma dessas consultas escolheu um alvo alternativo ou iniciou captura remota.
+
+Este fechamento consolida somente documentação, checkpoint, auditoria, ledger e os dois JSONs de referência. A implementação é idêntica à do commit de referência. A certificação fica fechada quando a CI final do commit consolidado passar e `research/jenios-robot-r70-target-preflight-20261024` e `backup/jenios-robot-r70-target-preflight-certified-20261024` apontarem para esse mesmo SHA. Não inserir a CI do próprio commit mediante uma nova sequência de commits; os JSONs conservam a origem `c7e552b2163b7bd61c52e64ace3246796d81b2e5`.

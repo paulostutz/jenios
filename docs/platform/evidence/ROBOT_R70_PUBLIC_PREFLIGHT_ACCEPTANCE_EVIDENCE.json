@@ -1,0 +1,262 @@
+{
+  "schema": "JENIOS_R70_PREFLIGHT_ACCEPTANCE_V1",
+  "status": "PASS",
+  "startedAt": "2026-10-24T20:21:04.322Z",
+  "finishedAt": "2026-10-24T20:21:07.396Z",
+  "sourceCommitSha": "c7e552b2163b7bd61c52e64ace3246796d81b2e5",
+  "sourceTreeDirty": false,
+  "githubSha": "c7e552b2163b7bd61c52e64ace3246796d81b2e5",
+  "inputMode": "PUBLIC_PROTOCOL_FIXTURE",
+  "executableEvidence": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+  "runtime": {
+    "node": "v22.23.3"
+  },
+  "publicImplementationDigests": {
+    "scripts/platform/research/r70-preflight-acceptance.mjs": "4633202d43eda529f4c69af4b9fc9cc99e21fdef2c43624bd2ca2ac8a9055a4f",
+    "tests/fixtures/r70-acceptance-client.mjs": "4ade2bb72595f467e7454113670a0076d022e6e8d6f31eabd4be1e74508c6885",
+    "lib/platform/research/robot-r70-preflight-protocol.mjs": "d87d66b5c67bb56f33e2fe63aea82b54f7f82a5d5356ff55f4b36f26c3ac60ab",
+    "lib/platform/research/robot-r70-preflight-http.mjs": "27e203802ba2b1e5095685be51eabaadc3767d40971951ef3a168f9b3e064e11",
+    "lib/platform/research/robot-r70-preflight-client.mjs": "48efb9908368c7351f6f0e29674c64ea3c560861e8bd68bc427a6e9df38a86bf",
+    "app/api/platform/robot-private-target-preflight/route.js": "5c94bfc0b3da5066b89058f54913af5fef4b1c7cdfa6229f58f1b56cfaad45b6",
+    "lib/platform/research/robot-r70-private-host.mjs": "24a4fc52d903f26a4c9a63f1ea7da01df6c1d74ce5cde10ef742688315ec29de",
+    "scripts/platform/research/r70-private-host.mjs": "4857e07a50ceb231ccafe59cac581832abc547126945345fd272ae2548128b11",
+    "lib/platform/research/robot-r68-private-host.mjs": "4c9151e4244331d20e9b82e9e66979c950e85811c211bdd54944d93beba53bed",
+    "lib/platform/research/robot-r69-https-transport.mjs": "30fc80a702206162831ecf52cef986873e837b754456ab27eb099edb3631a1f4",
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "32c27475cbb1d83ac9b887953558a31ed34793a3a5fb74500131b446ae1a99b1",
+    "lib/platform/research/robot-r67-private-source.mjs": "c1e748c85a54a1693ccea90bff6394da659ba65b6ff412738d4dfee36b7e6944",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-r67-private-capture-outbox.mjs": "fcc085e961da2e99c7df0ea045e354d288721a0b22b2f9f386031f9843c5410e",
+    "lib/platform/research/robot-r67-durable-emitter.mjs": "4e9fab4db097eac54735c72cd5af8d31a5b29d0bf7746d0b1c6b23196eb0b606",
+    "tests/fixtures/r67-private-protocol-fixture.mjs": "8363135caff0169bc8c3372afa69823c0026bd935846e37f197758173e9df0ac"
+  },
+  "buildEvidence": {
+    "buildId": "jxKr9_EKMhwW4ddRJolZx",
+    "nextVersion": "15.5.28",
+    "compiledRouteSha256": "98dbf66bc81022663c598b9b470f1300f1571016c68faa902739155988c88ffc",
+    "compiledRoute": ".next/server/app/api/platform/robot-private-target-preflight/route.js",
+    "compiledSourceCommitIndependentlyAttested": false
+  },
+  "scope": {
+    "scopeId": "scope:1ada6ee57cd207cf",
+    "sourceId": "source:c1a60247e9750e37",
+    "sourceKeySha256": "9f8ed6b1aee703cbbe9f19dee8b61e95f40bbdd7f09c4f0bc66d9a5d3d650345",
+    "targetPinsSha256": "ba1b233f42978012bff2008f74a32d0ad7c4c05d5bb4127962ff5e1d2846bc3a",
+    "deploymentMetadata": "EXPLICIT_SIMULATED_VERCEL_METADATA_NOT_A_REAL_DEPLOYMENT",
+    "targetPins": {
+      "schema": "JENIOS_R70_TARGET_PINS_V1",
+      "origin": "https://127.0.0.1:42639",
+      "projectId": "prj_R70FixtureOnly",
+      "deploymentId": "dpl_R70FixtureOnly",
+      "commitSha": "7070707070707070707070707070707070707070",
+      "scopeId": "scope:1ada6ee57cd207cf",
+      "sourceId": "source:c1a60247e9750e37",
+      "sourceKeySha256": "9f8ed6b1aee703cbbe9f19dee8b61e95f40bbdd7f09c4f0bc66d9a5d3d650345"
+    },
+    "preflight": "REAL_NEXT_ROUTE_VIA_LOOPBACK_TLS_PROXY",
+    "observationReceiver": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE",
+    "observationHttpPathReachesNext": false,
+    "postgresExercised": false,
+    "supabaseSdkExercised": false,
+    "databaseAcceptanceRepeated": false,
+    "existingDatabaseCertification": "R69_SEPARATE_CERTIFIED_ACCEPTANCE",
+    "originalPrivateCoreExecuted": false,
+    "localPrivateCustody": "EPHEMERAL_FIXTURE_ONLY",
+    "sourceData": "SYNTHETIC_FIXED_SCENARIOS",
+    "clock": "REAL_UNMODIFIED_NODE_WALL_CLOCK",
+    "tls": "EPHEMERAL_CA_VIA_NODE_EXTRA_CA_CERTS_AT_CHILD_STARTUP",
+    "tlsVerificationDisabled": false,
+    "tlsCertificateSha256": "c47489801711104bc33d2a8f123b258d8e9018b7217ebb7091a513a0a72b0b9b",
+    "allTargetsLoopback": true,
+    "hostWideNetworkIsolationClaimed": false,
+    "controlPlaneQueried": false,
+    "realAdminIdentityTested": false,
+    "hostedDatabaseChanged": false,
+    "deploymentPerformed": false,
+    "servicesRegistered": false,
+    "r64R65PolicyInstantiated": false,
+    "remoteQaDeploymentVerified": false,
+    "independentRuntimeAttestation": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "automaticPromotionAllowed": false,
+    "executionAllowed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false,
+    "independentBrokerAttestation": false,
+    "independentCustomerConsentVerified": false
+  },
+  "barrierEvidence": {
+    "protocolOnlyCaller": true,
+    "privateCoreExecuted": false,
+    "publicFixtureCreatedBeforeRefusal": false,
+    "observationRequests": 0,
+    "nextHttpStatus": 409
+  },
+  "signalEvidence": null,
+  "refusalEvidence": {
+    "protocolOnlyCaller": true,
+    "rejectedBeforeSend": true,
+    "privateHostAttemptBudgetExercised": false
+  },
+  "replayEvidence": {
+    "protocolOnlyCaller": true,
+    "privateCoreExecuted": false,
+    "finalIntakeStatus": "ALREADY_STORED"
+  },
+  "volatileSink": {
+    "classification": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE",
+    "entries": 1,
+    "captureCount": 3,
+    "recordDigest": "8f4366337dd45cc772f145ecf1c63b847230a217d3f6e429ba3bb2deddf1b4a1",
+    "capturedAtMs": 1792873267011,
+    "expiresAtMs": 1792873387011,
+    "databaseReceiptClaimed": false,
+    "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+    "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+    "originalVersion": "jenios-research-r29.1",
+    "policyVersion": "private:r67-v1",
+    "generation": 0
+  },
+  "counts": {
+    "nextProcesses": 2,
+    "privateCliInvocations": 0,
+    "sigterms": 0,
+    "preflightRequests": 5,
+    "compatiblePreflightResponses": 3,
+    "incompatiblePreflightResponses": 2,
+    "observationRequests": 2,
+    "acknowledgementLosses": 1,
+    "volatileSinkEntries": 1,
+    "privateDecisionsExecuted": 0
+  },
+  "preflightEvents": [
+    {
+      "phase": "MISMATCH_ALL",
+      "phaseProbe": 1,
+      "requestDigest": "1a6769c90c1f65ae8b7f7db29ab37cba452dd0f1b65655c426f7ecb9c251abc3",
+      "nonceSha256": "64b8118fef3a487e21ba5c22956a1dcd8720dd00b0c0b7516e77e965229d0bb6",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "WRONG_COMMIT",
+      "httpStatus": 409,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873266893
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "55c1ac8890266802219b45be12b53264b6578533c2ca9d2ba6a8d52bd8ac9239",
+      "nonceSha256": "b5da49db7d18764382d1e68f6c04f9c5384423838d39169ae0ff78aec2f3c975",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873266980
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "7251270453642028863c1a51b35159b2636316aa099e59e7e3b7a3b33945603e",
+      "nonceSha256": "f8d495c8e8b8429e74ffe39ec3ee0e370e236c0afef0280542d5f3c0f955d7ee",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873267093
+    },
+    {
+      "phase": "MISMATCH_ALL",
+      "phaseProbe": 1,
+      "requestDigest": "a8c6d1377b2599075fa70361a0e35f2d49bda40d709e0a4a68dd3c6a5f263681",
+      "nonceSha256": "cb5e1162f5f44f8d2f96856431e3be3102295525ce09134d38423ec47e545b85",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "WRONG_COMMIT",
+      "httpStatus": 409,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873267217
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "da820ce100bfb84c4af0a7e733f400a5115aa6970d2a1a7082014c6f41683a86",
+      "nonceSha256": "d85a807aa45f62d6bf672289c8357b52437a106cba7cd068adebdc27e40cbe59",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873267294
+    }
+  ],
+  "observationEvents": [
+    {
+      "phase": "MATCH",
+      "requestBodySha256": "2c809bd453835034a3395dc1d9bfcf16d89fdf5e15bdbb9a125e33e95edb6eb8",
+      "recordDigest": "8f4366337dd45cc772f145ecf1c63b847230a217d3f6e429ba3bb2deddf1b4a1",
+      "httpStatus": 202,
+      "intakeStatus": "STORED",
+      "observedAtMs": 1792873267134,
+      "sink": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE"
+    },
+    {
+      "phase": "MATCH",
+      "requestBodySha256": "2c809bd453835034a3395dc1d9bfcf16d89fdf5e15bdbb9a125e33e95edb6eb8",
+      "recordDigest": "8f4366337dd45cc772f145ecf1c63b847230a217d3f6e429ba3bb2deddf1b4a1",
+      "httpStatus": 200,
+      "intakeStatus": "ALREADY_STORED",
+      "observedAtMs": 1792873267338,
+      "sink": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE"
+    }
+  ],
+  "fixtureErrors": [],
+  "privateHostSummary": [],
+  "privateHostFailures": [],
+  "cases": [
+    {
+      "name": "real Next preflight route runs behind local TLS with explicitly simulated deployment metadata and no database",
+      "status": "PASS"
+    },
+    {
+      "name": "actual Next commit mismatch blocks the first contact before any private observation",
+      "status": "PASS"
+    },
+    {
+      "name": "a compatible real Next response proves only a fresh signed source configuration match",
+      "status": "PASS"
+    },
+    {
+      "name": "compatible preflight permits unchanged R69 delivery and loss of ACK leaves the outcome unconfirmed",
+      "status": "PASS"
+    },
+    {
+      "name": "a refused preflight prevents retransmission and preserves the existing pending record and attempt budget where exercised",
+      "status": "PASS"
+    },
+    {
+      "name": "a later compatible process retransmits the exact original record without new private decisions",
+      "status": "PASS"
+    },
+    {
+      "name": "all preflight requests exclude observations and reports retain the simulated deployment and non-database boundaries",
+      "status": "PASS"
+    }
+  ],
+  "tests": {
+    "passed": 7,
+    "total": 7,
+    "failed": 0,
+    "notRun": 0
+  },
+  "error": null,
+  "credentialsOrRawCapturesInArtifact": false
+}

@@ -1,0 +1,464 @@
+{
+  "schema": "JENIOS_R70_PREFLIGHT_ACCEPTANCE_V1",
+  "status": "PASS",
+  "startedAt": "2026-10-24T20:20:38.426Z",
+  "finishedAt": "2026-10-24T20:20:41.770Z",
+  "sourceCommitSha": "c7e552b2163b7bd61c52e64ace3246796d81b2e5",
+  "sourceTreeDirty": false,
+  "githubSha": null,
+  "inputMode": "ORIGINAL_PRIVATE_CORE",
+  "executableEvidence": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_EXECUTION",
+  "runtime": {
+    "node": "v24.22.1"
+  },
+  "publicImplementationDigests": {
+    "scripts/platform/research/r70-preflight-acceptance.mjs": "4633202d43eda529f4c69af4b9fc9cc99e21fdef2c43624bd2ca2ac8a9055a4f",
+    "tests/fixtures/r70-acceptance-client.mjs": "4ade2bb72595f467e7454113670a0076d022e6e8d6f31eabd4be1e74508c6885",
+    "lib/platform/research/robot-r70-preflight-protocol.mjs": "d87d66b5c67bb56f33e2fe63aea82b54f7f82a5d5356ff55f4b36f26c3ac60ab",
+    "lib/platform/research/robot-r70-preflight-http.mjs": "27e203802ba2b1e5095685be51eabaadc3767d40971951ef3a168f9b3e064e11",
+    "lib/platform/research/robot-r70-preflight-client.mjs": "48efb9908368c7351f6f0e29674c64ea3c560861e8bd68bc427a6e9df38a86bf",
+    "app/api/platform/robot-private-target-preflight/route.js": "5c94bfc0b3da5066b89058f54913af5fef4b1c7cdfa6229f58f1b56cfaad45b6",
+    "lib/platform/research/robot-r70-private-host.mjs": "24a4fc52d903f26a4c9a63f1ea7da01df6c1d74ce5cde10ef742688315ec29de",
+    "scripts/platform/research/r70-private-host.mjs": "4857e07a50ceb231ccafe59cac581832abc547126945345fd272ae2548128b11",
+    "lib/platform/research/robot-r68-private-host.mjs": "4c9151e4244331d20e9b82e9e66979c950e85811c211bdd54944d93beba53bed",
+    "lib/platform/research/robot-r69-https-transport.mjs": "30fc80a702206162831ecf52cef986873e837b754456ab27eb099edb3631a1f4",
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "32c27475cbb1d83ac9b887953558a31ed34793a3a5fb74500131b446ae1a99b1",
+    "lib/platform/research/robot-r67-private-source.mjs": "c1e748c85a54a1693ccea90bff6394da659ba65b6ff412738d4dfee36b7e6944",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-r67-private-capture-outbox.mjs": "fcc085e961da2e99c7df0ea045e354d288721a0b22b2f9f386031f9843c5410e",
+    "lib/platform/research/robot-r67-durable-emitter.mjs": "4e9fab4db097eac54735c72cd5af8d31a5b29d0bf7746d0b1c6b23196eb0b606",
+    "tests/fixtures/r67-private-protocol-fixture.mjs": "8363135caff0169bc8c3372afa69823c0026bd935846e37f197758173e9df0ac"
+  },
+  "buildEvidence": {
+    "buildId": "UQcnaZyPp0nVGrXFR8GP8",
+    "nextVersion": "15.5.28",
+    "compiledRouteSha256": "e8d857bf6350eed3b1658777f55f1ad02905e60d8ee502f485faf49e154b6ede",
+    "compiledRoute": ".next/server/app/api/platform/robot-private-target-preflight/route.js",
+    "compiledSourceCommitIndependentlyAttested": false
+  },
+  "scope": {
+    "scopeId": "scope:78ef3f5d3dd8ded7",
+    "sourceId": "source:9d2f28361f676d6d",
+    "sourceKeySha256": "bfdce98bbf3e3f6766a652363453a10602e2e4ec315e280944c2d3aa8c103be8",
+    "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+    "deploymentMetadata": "EXPLICIT_SIMULATED_VERCEL_METADATA_NOT_A_REAL_DEPLOYMENT",
+    "targetPins": {
+      "schema": "JENIOS_R70_TARGET_PINS_V1",
+      "origin": "https://127.0.0.1:42943",
+      "projectId": "prj_R70FixtureOnly",
+      "deploymentId": "dpl_R70FixtureOnly",
+      "commitSha": "7070707070707070707070707070707070707070",
+      "scopeId": "scope:78ef3f5d3dd8ded7",
+      "sourceId": "source:9d2f28361f676d6d",
+      "sourceKeySha256": "bfdce98bbf3e3f6766a652363453a10602e2e4ec315e280944c2d3aa8c103be8"
+    },
+    "preflight": "REAL_NEXT_ROUTE_VIA_LOOPBACK_TLS_PROXY",
+    "observationReceiver": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE",
+    "observationHttpPathReachesNext": false,
+    "postgresExercised": false,
+    "supabaseSdkExercised": false,
+    "databaseAcceptanceRepeated": false,
+    "existingDatabaseCertification": "R69_SEPARATE_CERTIFIED_ACCEPTANCE",
+    "originalPrivateCoreExecuted": true,
+    "localPrivateCustody": "EPHEMERAL_FIXTURE_ONLY",
+    "sourceData": "SYNTHETIC_FIXED_SCENARIOS",
+    "clock": "REAL_UNMODIFIED_NODE_WALL_CLOCK",
+    "tls": "EPHEMERAL_CA_VIA_NODE_EXTRA_CA_CERTS_AT_CHILD_STARTUP",
+    "tlsVerificationDisabled": false,
+    "tlsCertificateSha256": "44bcfebd6e5528c5ed53744c59057e695cc204f5d7c06ea35229949310052e22",
+    "allTargetsLoopback": true,
+    "hostWideNetworkIsolationClaimed": false,
+    "controlPlaneQueried": false,
+    "realAdminIdentityTested": false,
+    "hostedDatabaseChanged": false,
+    "deploymentPerformed": false,
+    "servicesRegistered": false,
+    "r64R65PolicyInstantiated": false,
+    "remoteQaDeploymentVerified": false,
+    "independentRuntimeAttestation": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "automaticPromotionAllowed": false,
+    "executionAllowed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false,
+    "independentBrokerAttestation": false,
+    "independentCustomerConsentVerified": false
+  },
+  "barrierEvidence": {
+    "actualCliWithoutExperimentalVmModules": true,
+    "hostStarted": false,
+    "sessionsCreated": 0,
+    "capturesPersisted": 0,
+    "observationRequests": 0,
+    "nextHttpStatus": 409
+  },
+  "signalEvidence": {
+    "actualSigterm": true,
+    "vmFlagAbsent": true,
+    "successfulPreflightDrained": true,
+    "sessionsCreated": 0,
+    "capturesExecuted": 0,
+    "observationRequests": 0,
+    "leaseReleased": true
+  },
+  "refusalEvidence": {
+    "actualPrivateHost": true,
+    "successfulStartupProbe": true,
+    "rejectedBeforeFlush": true,
+    "recordPreserved": true,
+    "attemptsBefore": 1,
+    "attemptsAfter": 1,
+    "newDeliveryAttempts": 0,
+    "priorOutcome": "UNCERTAIN",
+    "retainedOutcome": "UNCERTAIN",
+    "newSessionOnly": true
+  },
+  "replayEvidence": {
+    "actualPrivateHost": true,
+    "newPrivateDecisions": 0,
+    "retainedAttempts": 2,
+    "finalOutcome": "ACKNOWLEDGED"
+  },
+  "volatileSink": {
+    "classification": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE",
+    "entries": 1,
+    "captureCount": 3,
+    "recordDigest": "2effe2a16a2a25c37df2192732f4bdcf1b44e8f4cecfbd7c9b78a268804c1b45",
+    "capturedAtMs": 1792873241219,
+    "expiresAtMs": 1792873361219,
+    "databaseReceiptClaimed": false,
+    "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+    "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+    "originalVersion": "jenios-research-r29.1",
+    "policyVersion": "private:r67-v1",
+    "generation": 0
+  },
+  "counts": {
+    "nextProcesses": 2,
+    "privateCliInvocations": 5,
+    "sigterms": 1,
+    "preflightRequests": 10,
+    "compatiblePreflightResponses": 8,
+    "incompatiblePreflightResponses": 2,
+    "observationRequests": 2,
+    "acknowledgementLosses": 1,
+    "volatileSinkEntries": 1,
+    "privateDecisionsExecuted": 3
+  },
+  "preflightEvents": [
+    {
+      "phase": "MISMATCH_ALL",
+      "phaseProbe": 1,
+      "requestDigest": "05839bd5e6ecf8944a45909fdb421089f52cb92979a2906bab6ae788f9a66060",
+      "nonceSha256": "62f00047892a8d83c3041e63efec3329f3a437f17fefaaa14855a4ae8e965152",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "WRONG_COMMIT",
+      "httpStatus": 409,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873240759
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "7e586f8313a9ee22e6c30fcca6b0a8d19f93dfc2d04bf7861ad3d48a09f1ac45",
+      "nonceSha256": "cbb3883f6add96e7b71654c492be4427e8d6224d8569847f3926e8a3766a6695",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873240847
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "f73c5c0fc59419bcc035d10bfa18c142899a70a5514004a89bddaefd9fc75f1c",
+      "nonceSha256": "a26f4551feba8b6f7d4890878ca14c2aa154baaee255b2270127e005571d5e29",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873240966,
+      "responseHeldForSignal": true
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "ef29953f1f673f19f84263533dead1078ee11a0ab39111d39e97bcdeedddb75d",
+      "nonceSha256": "0d5fef3098ab9980b620af67f6e77b86aa376d66307757354cf3b6c04bd39ce7",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241182
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 2,
+      "requestDigest": "1e41a191d1792d254ef1d0ff322aca1a7ffea79937421ce66994a507413bdf56",
+      "nonceSha256": "43a458d35edec335d52eb02e4a41a69244a1714f3e3fb5d4dc46f913b8d7dd96",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241262
+    },
+    {
+      "phase": "MISMATCH_BEFORE_FLUSH",
+      "phaseProbe": 1,
+      "requestDigest": "87ec01078d65c6cfda3f5c7d69ad65c5a67a8576695d7ac203f5f40133a7366b",
+      "nonceSha256": "2f9b5acfd1c159e2e7dce7845408b91083be3622206a2d2c24024b30e7de45b5",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241422
+    },
+    {
+      "phase": "MISMATCH_BEFORE_FLUSH",
+      "phaseProbe": 2,
+      "requestDigest": "f53e89fbc4dc302cc77a95b2e0c1adb39b8ad25c42fbf8af2e15c1be9c3ac512",
+      "nonceSha256": "928fc1a0a8b5c2a8531ff8a84055d909b8d8743532e7680d638b3ebb510f2584",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "WRONG_COMMIT",
+      "httpStatus": 409,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241491
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 1,
+      "requestDigest": "14a7cc3c489ed720722b4c2523fb52cf099c9aa66fb1aa4e00e56365c8447e76",
+      "nonceSha256": "52b65ddfd5a6830ff4417f79efccdc7bbb9f328c773b4d86fac59651ddfdcd07",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241597
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 2,
+      "requestDigest": "4c992e1be48a35c71ef5d83cb8c4e910154eef733e8278a024a95c5c4574fb77",
+      "nonceSha256": "96f969fda3bb0e7ef4a324343c3e238d1fb327c3f4cb5dd9144d7666b00fce74",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241660
+    },
+    {
+      "phase": "MATCH",
+      "phaseProbe": 3,
+      "requestDigest": "e94ff2524e8b755c6aa1c502ecaaf65348135a223670814aebbdb931ad3f012c",
+      "nonceSha256": "d88f28d234343e078929f611b7247545dccb82ed5991bc88a071170989a0c7d3",
+      "requestBytes": 715,
+      "actualNextHandler": true,
+      "simulatedServerMetadata": "MATCHING_PINS",
+      "httpStatus": 200,
+      "cacheControl": "no-store",
+      "observedAtMs": 1792873241713
+    }
+  ],
+  "observationEvents": [
+    {
+      "phase": "MATCH",
+      "requestBodySha256": "8ff33924b00b503323191a17e9723b5dae1d107e5e7f28f5fa49705fba141720",
+      "recordDigest": "2effe2a16a2a25c37df2192732f4bdcf1b44e8f4cecfbd7c9b78a268804c1b45",
+      "httpStatus": 202,
+      "intakeStatus": "STORED",
+      "observedAtMs": 1792873241293,
+      "sink": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE"
+    },
+    {
+      "phase": "MATCH",
+      "requestBodySha256": "8ff33924b00b503323191a17e9723b5dae1d107e5e7f28f5fa49705fba141720",
+      "recordDigest": "2effe2a16a2a25c37df2192732f4bdcf1b44e8f4cecfbd7c9b78a268804c1b45",
+      "httpStatus": 200,
+      "intakeStatus": "ALREADY_STORED",
+      "observedAtMs": 1792873241685,
+      "sink": "VOLATILE_PROTOCOL_SINK_NOT_DATABASE"
+    }
+  ],
+  "fixtureErrors": [],
+  "privateHostSummary": [
+    {
+      "status": "STOPPED_BEFORE_START",
+      "sessionId": null,
+      "sessionsCreated": 0,
+      "capturesExecuted": 0,
+      "ticks": 0,
+      "lifetimeLeaseReleased": true,
+      "preflight": {
+        "schema": "JENIOS_R70_HOST_PREFLIGHT_SUMMARY_V1",
+        "required": true,
+        "mechanism": "SIGNED_SOURCE_CHALLENGE_OVER_TLS",
+        "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+        "pinsMeaning": "DECLARED_CONFIGURATION_NOT_INDEPENDENT_TARGET_ATTESTATION",
+        "executed": true,
+        "attempted": 1,
+        "succeeded": 1,
+        "lastResult": {
+          "schema": "JENIOS_R70_PREFLIGHT_RESULT_V1",
+          "status": "CONFIGURATION_MATCH",
+          "observedAtMs": 1792873240961,
+          "expiresAtMs": 1792873255944,
+          "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+          "requestDigest": "f73c5c0fc59419bcc035d10bfa18c142899a70a5514004a89bddaefd9fc75f1c",
+          "targetClassification": "LOCAL_TLS_ACCEPTANCE_FIXTURE",
+          "configuredSourceChallengeSigned": true,
+          "remoteQaDeploymentVerified": false,
+          "independentRuntimeAttestation": false,
+          "hostedAuthenticationCertified": false,
+          "operationalReady": false
+        },
+        "remoteQaDeploymentVerified": false,
+        "independentRuntimeAttestation": false,
+        "hostedAuthenticationCertified": false,
+        "operationalReady": false
+      }
+    },
+    {
+      "status": "DELIVERY_UNCONFIRMED",
+      "sessionId": "session:e49a35a043c52b08",
+      "sessionsCreated": 1,
+      "capturesExecuted": 3,
+      "ticks": 1,
+      "lifetimeLeaseReleased": true,
+      "preflight": {
+        "schema": "JENIOS_R70_HOST_PREFLIGHT_SUMMARY_V1",
+        "required": true,
+        "mechanism": "SIGNED_SOURCE_CHALLENGE_OVER_TLS",
+        "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+        "pinsMeaning": "DECLARED_CONFIGURATION_NOT_INDEPENDENT_TARGET_ATTESTATION",
+        "executed": true,
+        "attempted": 2,
+        "succeeded": 2,
+        "lastResult": {
+          "schema": "JENIOS_R70_PREFLIGHT_RESULT_V1",
+          "status": "CONFIGURATION_MATCH",
+          "observedAtMs": 1792873241260,
+          "expiresAtMs": 1792873256249,
+          "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+          "requestDigest": "1e41a191d1792d254ef1d0ff322aca1a7ffea79937421ce66994a507413bdf56",
+          "targetClassification": "LOCAL_TLS_ACCEPTANCE_FIXTURE",
+          "configuredSourceChallengeSigned": true,
+          "remoteQaDeploymentVerified": false,
+          "independentRuntimeAttestation": false,
+          "hostedAuthenticationCertified": false,
+          "operationalReady": false
+        },
+        "remoteQaDeploymentVerified": false,
+        "independentRuntimeAttestation": false,
+        "hostedAuthenticationCertified": false,
+        "operationalReady": false
+      }
+    },
+    {
+      "status": "ONCE_COMPLETE",
+      "sessionId": "session:15d1e4c4d41cc8e8",
+      "sessionsCreated": 1,
+      "capturesExecuted": 0,
+      "ticks": 1,
+      "lifetimeLeaseReleased": true,
+      "preflight": {
+        "schema": "JENIOS_R70_HOST_PREFLIGHT_SUMMARY_V1",
+        "required": true,
+        "mechanism": "SIGNED_SOURCE_CHALLENGE_OVER_TLS",
+        "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+        "pinsMeaning": "DECLARED_CONFIGURATION_NOT_INDEPENDENT_TARGET_ATTESTATION",
+        "executed": true,
+        "attempted": 3,
+        "succeeded": 3,
+        "lastResult": {
+          "schema": "JENIOS_R70_PREFLIGHT_RESULT_V1",
+          "status": "CONFIGURATION_MATCH",
+          "observedAtMs": 1792873241712,
+          "expiresAtMs": 1792873256702,
+          "targetPinsSha256": "d648ea00f3809a3c14a6837c696dfb6b85714cc44bf4369c3bcf555411ce2e00",
+          "requestDigest": "e94ff2524e8b755c6aa1c502ecaaf65348135a223670814aebbdb931ad3f012c",
+          "targetClassification": "LOCAL_TLS_ACCEPTANCE_FIXTURE",
+          "configuredSourceChallengeSigned": true,
+          "remoteQaDeploymentVerified": false,
+          "independentRuntimeAttestation": false,
+          "hostedAuthenticationCertified": false,
+          "operationalReady": false
+        },
+        "remoteQaDeploymentVerified": false,
+        "independentRuntimeAttestation": false,
+        "hostedAuthenticationCertified": false,
+        "operationalReady": false
+      }
+    }
+  ],
+  "privateHostFailures": [
+    {
+      "status": "BLOCKED",
+      "code": "R69_HTTPS_RESPONSE_STATUS",
+      "operationalReady": false
+    },
+    {
+      "status": "BLOCKED",
+      "code": "R69_HTTPS_RESPONSE_STATUS",
+      "operationalReady": false
+    }
+  ],
+  "cases": [
+    {
+      "name": "real Next preflight route runs behind local TLS with explicitly simulated deployment metadata and no database",
+      "status": "PASS"
+    },
+    {
+      "name": "actual Next commit mismatch blocks the first contact before any private observation",
+      "status": "PASS"
+    },
+    {
+      "name": "a compatible real Next response proves only a fresh signed source configuration match",
+      "status": "PASS"
+    },
+    {
+      "name": "SIGTERM during the first successful preflight drains the response before any VM session or capture",
+      "status": "PASS"
+    },
+    {
+      "name": "compatible preflight permits unchanged R69 delivery and loss of ACK leaves the outcome unconfirmed",
+      "status": "PASS"
+    },
+    {
+      "name": "a refused preflight prevents retransmission and preserves the existing pending record and attempt budget where exercised",
+      "status": "PASS"
+    },
+    {
+      "name": "a later compatible process retransmits the exact original record without new private decisions",
+      "status": "PASS"
+    },
+    {
+      "name": "all preflight requests exclude observations and reports retain the simulated deployment and non-database boundaries",
+      "status": "PASS"
+    }
+  ],
+  "tests": {
+    "passed": 8,
+    "total": 8,
+    "failed": 0,
+    "notRun": 0
+  },
+  "error": null,
+  "credentialsOrRawCapturesInArtifact": false
+}

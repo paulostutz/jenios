@@ -25,6 +25,14 @@ const GATE_LABELS={
  JENIOS_RESEND_WEBHOOK_ENABLED:'Webhook Resend'
 };
 const READINESS_STATE={ready:'PRONTO',pending:'PENDENTE',blocker:'BLOQUEADOR'};
+const DB_LABELS={
+ financeOutbox:'Fila financeira',transactionalOutbox:'Fila transacional',dunningOutbox:'Fila de vencimentos',
+ marketingLedger:'Histórico de marketing',marketingPreferences:'Preferências',newsletterEditions:'Edições do Radar',
+ resendEvents:'Eventos de entrega',financeRecipientIndex:'Índice financeiro',transactionalClaim:'Reserva transacional',
+ transactionalComplete:'Confirmação transacional',dunningClaim:'Reserva de vencimentos',marketingPlanner:'Planejamento de marketing',
+ marketingClaim:'Reserva de marketing',marketingSuppress:'Supressão de marketing',resendSuppressionRpc:'Supressão de entrega',
+ universityMilestoneTrigger:'Marcos educacionais',subscriptionLifecycleTrigger:'Ciclo de assinatura'
+};
 const CREDENTIAL_LABELS={
  resendApiKeyConfigured:'API do Resend',
  supabaseServerKeyConfigured:'Acesso server-side ao Supabase',
@@ -41,7 +49,7 @@ function EmailHealth(){
   try{
    const response=await adminFetch('/api/admin/email-health');
    setData(await response.json());
-  }catch(e){setError(e.message||'Não foi possível carregar.');}
+  }catch(e){setData(null);setError(e.message||'Não foi possível carregar.');}
   finally{setBusy(false);}
  }
  useEffect(()=>{void load();},[]);
@@ -87,6 +95,13 @@ function EmailHealth(){
      <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
       <h2 style={{fontSize:18}}>Bounce e complaint</h2>
       {Object.entries({Total:data.webhookEvents.total,'Complaints':data.webhookEvents.complaints,'Hard bounces':data.webhookEvents.hardBounces,'Bounces transitórios':data.webhookEvents.transient,'Usuários não localizados':data.webhookEvents.unknownUsers}).map(([label,value])=><p key={label} style={{display:'flex',justifyContent:'space-between'}}><span>{label}</span><strong>{value}</strong></p>)}
+     </article>
+     <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
+      <h2 style={{fontSize:18}}>Preflight do banco</h2>
+      <strong>{data.databasePreflight?.allRequired?'OBJETOS PRESENTES':'VERIFICAÇÃO INCOMPLETA'}</strong>
+      <p style={{fontSize:12,color:'#64748b'}}>Confirma a presença dos objetos. Não substitui testes com usuários nem autoriza envios.</p>
+      {Object.entries(DB_LABELS).map(([key,label])=><p key={key} style={{display:'flex',justifyContent:'space-between',gap:12,fontSize:13}}>
+       <span>{label}</span><strong>{data.databasePreflight?.[key]===true?'OK':'NÃO CONFIRMADO'}</strong></p>)}
      </article>
      <article style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:18}}>
       <h2 style={{fontSize:18}}>Prontidão de configuração</h2>

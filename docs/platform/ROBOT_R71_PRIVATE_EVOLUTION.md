@@ -19,7 +19,7 @@ Política: `HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED`, `forwardPositionOpen:
 - Painel Platform autenticado separado do ciclo UltraFast R65; HTML anônimo sem dados administrativos.
 - Contrato fechado de hipótese preparado, com alternativa determinística; geração paga desativada.
 
-Os testes unitários iniciais de estudo, estado, worker e trava de deploy passaram. O primeiro ensaio local original confirmou o comportamento da política e rollback com estado explicitamente modelado. A aceitação conjunta PostgreSQL/HTTP/navegador, a CI e o fechamento ainda estão pendentes; esses ensaios iniciais não substituem a certificação final.
+A implementação está concluída para a validação de referência. A bateria geral local passou em 2.741/2.741 casos, incluindo os 78 testes novos do R71; o gate herdado da aplicação passou em 94/94, o PostgreSQL descartável em 21/21 e o percurso público Next/SDK/PostgreSQL/navegador em 14/14. Build e 76 páginas passaram, sem falhas ou omissões. Esses resultados preliminares foram produzidos no checkout de trabalho e não substituem a CI de referência, a aceitação integrada original no commit limpo nem o fechamento final. O primeiro ensaio local original separado confirmou a política e rollback com estado explicitamente modelado.
 
 ## Limites permanentes
 

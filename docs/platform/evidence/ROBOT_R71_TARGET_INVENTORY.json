@@ -1,0 +1,116 @@
+{
+  "schema": "JENIOS_R71_READ_ONLY_TARGET_INVENTORY_V1",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "queryCompletedAtUtc": "2026-10-24 21:20:55 UTC",
+  "acquisition": {
+    "tool": "vercel_list_deployments",
+    "authenticatedConnector": true,
+    "readOnly": true,
+    "request": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "sha": "851804aa45ac8cee2aea4fe9096712a7aeff2048",
+      "limit": 100
+    },
+    "targetOrStateFilterUsed": false,
+    "secretsRequested": false,
+    "envelopePath": "content JSON.result.deployments",
+    "attempts": 2,
+    "firstAttemptNormalizationFailure": true,
+    "sourcePayloadTruncated": false
+  },
+  "observedProviderResult": {
+    "pagination": {
+      "count": 0
+    },
+    "deployments": []
+  },
+  "environmentMetadata": {
+    "projectScope": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "all": {
+      "envs": [
+        {
+          "key": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021",
+          "configurationId": null
+        },
+        {
+          "key": "JENIOS_QA_CANDIDATE_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021",
+          "configurationId": null
+        },
+        {
+          "key": "JENIOS_REAL_EXECUTION_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021",
+          "configurationId": null
+        },
+        {
+          "key": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021",
+          "configurationId": null
+        }
+      ],
+      "pagination": null,
+      "_meta": null,
+      "truncated": true,
+      "truncation": {
+        "arrays": 1,
+        "omittedArrayItems": 100,
+        "objects": 0,
+        "omittedObjectKeys": 0,
+        "strings": 317,
+        "omittedStringChars": 23899,
+        "depth": 0,
+        "budget": 0
+      },
+      "returnedUnfilteredCount": 100,
+      "returnedNamesDoNotProveR71Configuration": true
+    },
+    "r70Branch": {
+      "envs": [],
+      "truncated": false,
+      "truncation": null,
+      "branchSpecificOnly": true,
+      "inheritedVariablesVerified": false
+    },
+    "customEnvironments": [],
+    "completeEnvironmentVerified": false,
+    "secretValuesInspected": false
+  },
+  "productionChanged": false,
+  "deploymentsCreated": 0,
+  "persistentPrivateHost": {
+    "verified": false,
+    "source": "existing robot documentation and deployment examples",
+    "findings": [
+      "R45-B92 describes future runtime",
+      "B295 retains operational NO-GO",
+      "B213/B216/B239 and deploy/private/jenios-paper-observer.service.example refer to a distinct Paper observer, not an accepted private-core host"
+    ],
+    "originalPrivateCoreLocated": true,
+    "originalPrivateCoreReconstructionRequired": false
+  },
+  "remainingHostedGates": [
+    "Exact robot QA deployment identity and SHA",
+    "Complete inherited configuration metadata inventory",
+    "Accepted persistent private host, durable volume, custody and independent rollback witness",
+    "Reviewed migrations and actual administrative identity in separately authorized hosted QA",
+    "Owner acceptance of operational source provenance and monitoring scope"
+  ]
+}

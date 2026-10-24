@@ -195,7 +195,7 @@ BEGIN
   IF FOUND THEN
     IF previous.source_key_sha256<>p_input->>'sourceKeySha256' OR previous.signed_record IS DISTINCT FROM b
       OR (previous.receipt-'admittedAtMs'-'nativeReceipt') IS DISTINCT FROM (r-'admittedAtMs'-'nativeReceipt')
-      OR (previous.receipt->'nativeReceipt'-'admittedAtMs') IS DISTINCT FROM (nr-'admittedAtMs')
+      OR ((previous.receipt->'nativeReceipt')-'admittedAtMs') IS DISTINCT FROM (nr-'admittedAtMs')
       THEN RAISE EXCEPTION 'R71_DATABASE_EVENT_CONFLICT'; END IF;
     result:=public.jenios_robot_r67_ingest_private_capture(jsonb_build_object('scopeId',p_input->>'scopeId',
       'sourceId',p_input->>'sourceId','receipt',previous.receipt->'nativeReceipt','record',nb));
@@ -220,7 +220,7 @@ BEGIN
       OR captured<(plan->>'startsAtMs')::bigint OR captured>=(plan->>'endsAtMs')::bigint
       THEN RAISE EXCEPTION 'R71_DATABASE_VALIDATION_WINDOW'; END IF;
   END IF;
-  FOR e IN SELECT value FROM jsonb_array_elements(a->'entries') LOOP
+  FOR e IN SELECT x FROM jsonb_array_elements(a->'entries') x LOOP
     scenario:=p->'scenarios'->i; native_entry:=p->'capture'->'entries'->i; i:=i+1;
     IF NOT public.jenios_robot_r71_fields(e,ARRAY['scenarioId','positionOpen','caseId','nativeDecision','effectiveDecision',
       'nativeDecisionDigest','effectiveDecisionDigest','nativeRawOutputSha256'])
@@ -271,7 +271,7 @@ BEGIN
   VALUES(p_input->>'scopeId',p_input->>'sourceId',p_input->>'sourceKeySha256',nr->>'eventId',nb->'provenance'->>'operationId',
     (a->>'stateRevision')::integer,captured,expires,now_ms,a->>'purpose',a->>'planId',r->>'recordDigest',r->>'annotationDigest',n,r,b);
   IF a->>'purpose'='VALIDATION' THEN
-    FOR e IN SELECT value FROM jsonb_array_elements(a->'entries') LOOP
+    FOR e IN SELECT x FROM jsonb_array_elements(a->'entries') x LOOP
       value:=jsonb_build_object('planId',a->>'planId','caseId',e->>'caseId','eventId',nr->>'eventId',
         'recordDigest',r->>'recordDigest','capturedAtMs',captured,'admittedAtMs',now_ms,
         'nativeDecision',e->'nativeDecision','effectiveDecision',e->'effectiveDecision');
@@ -551,7 +551,7 @@ BEGIN
       THEN RAISE EXCEPTION 'R71_DATABASE_INITIAL_STATE'; END IF;
   ELSE
     IF s->'createdAtMs' IS DISTINCT FROM old.state->'createdAtMs'
-      OR (s->'journal'-revision_value) IS DISTINCT FROM old.state->'journal'
+      OR ((s->'journal')-revision_value) IS DISTINCT FROM old.state->'journal'
       OR at_ms<(old.state->'journal'->-1->>'atMs')::bigint OR action_name='INITIALIZE'
       THEN RAISE EXCEPTION 'R71_DATABASE_HISTORY'; END IF;
     IF action_name='STUDY' THEN

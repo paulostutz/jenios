@@ -27,11 +27,16 @@ export default function LandingPagePro() {
         {/* HERO SECTION */}
         <div className="lp-hero" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', padding: '10px 0' }}>
           <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#ffffff', margin: 0, lineHeight: '1.2' }}>
-            Antes de tentar vencer o mercado, pare de repetir os mesmos erros. <span style={{ color: '#a78bfa' }}>A JENIOS começa por você.</span>
+            Sua próxima decisão merece mais método e menos impulso. <span style={{ color: '#a78bfa' }}>A JENIOS começa por você.</span>
           </h1>
           <p style={{ fontSize: '14px', color: '#94a3b8', maxWidth: '780px', margin: '0 auto', lineHeight: '1.6' }}>
-            Uma proposta de tecnologia adaptativa que combina o seu histórico de decisões, o contexto do mercado e limites de risco. Não para inverter qualquer operação, mas para testar quando seguir, quando reconsiderar e quando é melhor não operar.
+            Estude o mercado, pratique com saldo fictício e registre suas decisões no mesmo ecossistema. A JENIOS reúne Social, Universidade e Platform para ajudar você a reconhecer padrões, testar hipóteses e construir uma rotina com limites claros.
           </p>
+          <div style={{display:'flex',justifyContent:'center',gap:12,flexWrap:'wrap'}}>
+            <a href="/platform/entrar?next=%2Fdashboard" style={{padding:'13px 20px',borderRadius:10,background:'#7c3aed',color:'#fff',textDecoration:'none',fontWeight:800}}>Começar pelo simulador</a>
+            <a href="#jenios-plans" style={{padding:'13px 20px',borderRadius:10,border:'1px solid #a78bfa',color:'#e9d5ff',textDecoration:'none',fontWeight:700}}>Comparar planos</a>
+          </div>
+          <small style={{color:'#94a3b8'}}>Entre com a mesma conta da Social. O simulador usa valores fictícios.</small>
         </div>
 
         <nav className="lp-section-nav" aria-label="Nesta página"><a href="#jenios-purpose">Propósito</a><a href="#jenios-modes">Os três modos</a><a href="#jenios-quiz">Conheça seu processo</a><a href="#jenios-plans">Planos</a><a href="#jenios-faq">Dúvidas</a></nav>
@@ -50,7 +55,7 @@ export default function LandingPagePro() {
             O mercado não precisa de mais um clique impulsivo. Você precisa de um processo melhor.
           </h2>
           <p style={{ fontSize: '13px', color: '#cbd5e1', margin: 0, lineHeight: '1.6' }}>
-            Uma perda não precisa virar uma tentativa desesperada de recuperar tudo. A JENIOS nasce para transformar decisões em dados, criar espaço para a disciplina e colocar a preservação do capital no centro do processo. Tecnologia também deve saber sugerir uma pausa.
+            Entrar sem um plano, mudar de estratégia a cada movimento e aumentar a exposição depois de uma perda dificultam a avaliação do seu processo. Na JENIOS, você pode praticar decisões, definir limites fictícios e revisar o que registrou antes de assumir risco real.
           </p>
         </div>
 
@@ -59,9 +64,9 @@ export default function LandingPagePro() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#f3e8ff', color: '#7c3aed', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>O DESAFIO</span>
-              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>O gráfico é só parte da decisão</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Entenda o que motivou cada decisão</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
-                Emoções, custos, estratégia e tamanho da posição podem comprometer o resultado. Observar esses fatores juntos é mais útil do que procurar um culpado único.
+                Use gráficos para estudar o contexto e um diário de intenções para revisar suas escolhas. O objetivo é tornar o seu processo visível, sem tratar uma simulação como resultado real.
               </p>
             </div>
           </div>
@@ -69,7 +74,7 @@ export default function LandingPagePro() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#fee2e2', color: '#991b1b', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>O MÉTODO</span>
-              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Não é inverter por inverter</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Teste uma hipótese antes de adotá-la</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
                 O modo reverso é uma hipótese a testar com custos e histórico comparável. Quando a decisão está alinhada a uma tendência consistente, não faz sentido contrariá-la mecanicamente.
               </p>
@@ -79,7 +84,7 @@ export default function LandingPagePro() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <span style={{ fontSize: '10px', backgroundColor: '#d1fae5', color: '#065f46', padding: '4px 8px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', fontFamily: 'monospace' }}>A PROPOSTA JENIOS</span>
-              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Adaptação com limites claros</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: '900', margin: 0 }}>Construa uma rotina com limites claros</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
                 Manual, reverso e híbrido: três formas de estudar a decisão, com contexto, regras de entrada e saída e controle de risco. Recursos em homologação; sem promessa de lucro automático.
               </p>

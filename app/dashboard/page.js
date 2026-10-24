@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import {resolveAssetSymbol} from '../../lib/platform/asset-symbol.mjs';
+import AssetSearch from '../components/platform/AssetSearch';
+import MoneyInput from '../components/platform/MoneyInput';
 import NewTokenRadar from '../components/NewTokenRadar';
 import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
 import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
@@ -69,9 +70,6 @@ export default function DashboardPage() {
   const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
   const [mercadoCategoria, setMercadoCategoria] = useState('b3');
   
-  // Input de busca personalizada
-  const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
-  const [erroBusca,setErroBusca]=useState('');
   
   // Estados de Gestão de Capital e Risco
   const [capitalAlocado, setCapitalAlocado] = useState(10000);
@@ -79,7 +77,6 @@ export default function DashboardPage() {
 
   // Single authoritative hub snapshot; shared cache also feeds the Social and /tendencias.
   const {data:hub,loading:hubLoading,error:hubError,clock:hubClock}=useTrendsData('/api/tendencias');
-  const tokenPanel=dashboardHubModule('tokens',hub,hubClock);
   const megaPanel=dashboardHubModule('megapulse',hub,hubClock);
   const whalePanel=dashboardHubModule('baleias',hub,hubClock);
 
@@ -110,15 +107,7 @@ export default function DashboardPage() {
     setMercadoCategoria(categoria); // navegação de estudo, nunca permissão financeira
   };
 
-  const handleBuscaCustomizada = (e) => {
-    e.preventDefault();
-    const result=resolveAssetSymbol(inputBuscaCustomizada);
-    if(!result.ok){setErroBusca(result.error);return;}
-    setErroBusca('');
-    setAtivoSelecionado(result.symbol);
-    setNomeAtivoExibicao(result.label);
-    setInputBuscaCustomizada('');
-  };
+
 
 
 
@@ -207,11 +196,8 @@ export default function DashboardPage() {
               {tipoConta === 'simulada' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', borderLeft: '1px solid #cbd5e1', paddingLeft: '8px' }}>
                   <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569' }}>Saldo fictício (R$):</span>
-                  <input 
-                    type="number" 
-                    value={saldoSimulado} 
-                    min="0" max="100000000" onChange={(e) => atualizarSaldoSimulado(e.target.value)}
-                    style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', outline: 'none' }}
+                  <MoneyInput aria-label="Saldo fictício em reais" value={saldoSimulado} onValueChange={atualizarSaldoSimulado}
+                    style={{ width: '155px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '6px 8px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', outline: 'none' }}
                   />
                 </div>
               )}
@@ -342,25 +328,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
-                  <span>🔍</span>
-                  <input 
-                    type="text" 
-                    aria-label="Buscar ativo"
-                  aria-describedby="asset-search-message"
-                  aria-invalid={Boolean(erroBusca)}
-                  placeholder="PETR4, BTC/USDT, EUR/USD ou NASDAQ:AAPL"
-                    value={inputBuscaCustomizada}
-                    onChange={(e) => setInputBuscaCustomizada(e.target.value)}
-                    style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
-                  />
-                </div>
-                <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  Buscar Ativo
-                </button>
-              </form>
-              <p id="asset-search-message" role={erroBusca?"alert":undefined} style={{margin:0,fontSize:12,color:erroBusca?"#b91c1c":"#64748b"}}>{erroBusca||"Para outros ativos, informe BOLSA:ATIVO. A disponibilidade é confirmada pelo TradingView."}</p>
+              <AssetSearch onSelect={asset=>{setAtivoSelecionado(asset.symbol);setNomeAtivoExibicao(asset.label);}}/>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
@@ -402,10 +370,7 @@ export default function DashboardPage() {
                 
                 <div>
                   <label style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '6px' }}>Capital Alocado (R$)</label>
-                  <input 
-                    type="number" 
-                    value={capitalAlocado} 
-                    onChange={(e) => setCapitalAlocado(e.target.value)} 
+                  <MoneyInput aria-label="Capital alocado em reais" value={capitalAlocado} onValueChange={setCapitalAlocado}
                     style={{ width: '100%', backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: '8px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} 
                   />
                 </div>
@@ -452,11 +417,11 @@ export default function DashboardPage() {
             {/* Hub único: nunca inferir baleias por volume agregado nem perpetuar cotação antiga. */}
             <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}>
               <span style={{fontSize:10,color:'#7c3aed',fontWeight:800,letterSpacing:1}}>HUB JENIOS · LEITURA COMPARTILHADA</span>
-              <h3 style={{fontSize:17,margin:'8px 0'}}>Tendências de busca e MegaPulse</h3>
+              <h3 style={{fontSize:17,margin:'8px 0'}}>MegaPulse · Mercado em movimento</h3>
               <a href="/tendencias" style={{fontSize:12,color:'#6d28d9'}}>Abrir Hub de Tendências ↗</a>
               {hubError&&<p role="status" style={{fontSize:12,color:'#92400e'}}>Atualização do Hub indisponível. {hubError}</p>}
               {hubLoading&&!hub&&<p role="status">Consultando a mesa do Hub…</p>}
-              {[tokenPanel,megaPanel].map(panel=>(
+              {[megaPanel].map(panel=>(
                 <div key={panel.id} style={{marginTop:16,borderTop:'1px solid #e2e8f0',paddingTop:12,fontSize:12}}>
                   <strong style={{color:'#172033'}}>{panel.label}</strong>
                   {panel.stale&&<p style={{color:'#92400e'}}>Última leitura válida, não confirmada agora.</p>}
@@ -467,7 +432,7 @@ export default function DashboardPage() {
                   </div>):<p role="status" style={{color:'#64748b'}}>{panel.message}</p>}
                 </div>
               ))}
-              <p style={{fontSize:11,color:'#64748b'}}>CoinGecko representa interesse de busca; MegaPulse mostra apenas cotações intradiárias recentes confirmadas. Nenhum deles constitui recomendação de investimento.</p>
+              <p style={{fontSize:11,color:'#64748b'}}>O MegaPulse mostra apenas cotações intradiárias recentes confirmadas. Não constitui recomendação de investimento.</p>
             </section>
 
             <section style={{background:'#fff',border:'1px solid #e2e8f0',borderRadius:16,padding:20}}>

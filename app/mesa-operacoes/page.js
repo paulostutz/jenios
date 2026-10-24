@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import {resolveAssetSymbol} from '../../lib/platform/asset-symbol.mjs';
+import AssetSearch from '../components/platform/AssetSearch';
+import MoneyInput from '../components/platform/MoneyInput';
 import BrokerGuideLinks from '../components/platform/BrokerGuideLinks';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
@@ -78,9 +79,6 @@ export default function MesaOperacoesPage() {
   const [ativoSelecionado, setAtivoSelecionado] = useState('BMFBOVESPA:WIN1!');
   const [nomeAtivoExibicao, setNomeAtivoExibicao] = useState('Mini-Índice (WIN1!)');
   
-  // Input de busca personalizada
-  const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
-  const [erroBusca,setErroBusca]=useState('');
 
   // Gestão de Risco e Alocação (Baseada no Saldo Simulado Sincronizado)
   const [capitalAlocar, setCapitalAlocar] = useState(1000);
@@ -117,15 +115,7 @@ export default function MesaOperacoesPage() {
     }
   };
 
-  const handleBuscaCustomizada = (e) => {
-    e.preventDefault();
-    const result=resolveAssetSymbol(inputBuscaCustomizada);
-    if(!result.ok){setErroBusca(result.error);return;}
-    setErroBusca('');
-    setAtivoSelecionado(result.symbol);
-    setNomeAtivoExibicao(result.label);
-    setInputBuscaCustomizada('');
-  };
+
 
 
 
@@ -190,11 +180,8 @@ export default function MesaOperacoesPage() {
           {tipoConta === 'simulada' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#f8fafc', padding: '4px 10px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
               <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#475569' }}>Saldo Fictício (R$):</span>
-              <input 
-                type="number" 
-                value={saldoSimulado} 
-                min="0" max="100000000" onChange={(e) => atualizarSaldoSimulado(e.target.value)}
-                style={{ width: '110px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 6px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none' }}
+              <MoneyInput aria-label="Saldo fictício em reais" value={saldoSimulado} onValueChange={atualizarSaldoSimulado}
+                    style={{ width: '155px', backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', padding: '4px 6px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', outline: 'none' }}
               />
             </div>
           )}
@@ -238,25 +225,7 @@ export default function MesaOperacoesPage() {
               </div>
             </div>
 
-            <form onSubmit={handleBuscaCustomizada} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 12px', flex: 1, gap: '8px' }}>
-                <span>🔍</span>
-                <input 
-                  type="text" 
-                  aria-label="Buscar ativo"
-                  aria-describedby="asset-search-message"
-                  aria-invalid={Boolean(erroBusca)}
-                  placeholder="PETR4, BTC/USDT, EUR/USD ou NASDAQ:AAPL"
-                  value={inputBuscaCustomizada}
-                  onChange={(e) => setInputBuscaCustomizada(e.target.value)}
-                  style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
-                />
-              </div>
-              <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                Buscar Ativo
-              </button>
-            </form>
-              <p id="asset-search-message" role={erroBusca?"alert":undefined} style={{margin:0,fontSize:12,color:erroBusca?"#b91c1c":"#64748b"}}>{erroBusca||"Para outros ativos, informe BOLSA:ATIVO. A disponibilidade é confirmada pelo TradingView."}</p>
+            <AssetSearch onSelect={asset=>{setAtivoSelecionado(asset.symbol);setNomeAtivoExibicao(asset.label);}}/>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
@@ -319,13 +288,10 @@ export default function MesaOperacoesPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <label style={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155', fontFamily: 'monospace' }}>Capital a Operar (R$)</label>
-              <input 
-                type="number" 
-                value={capitalAlocar} 
-                min="0" max={limiteMaximoRiscoPermitido} onChange={(e) => setCapitalAlocar(e.target.value)} 
-                style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none' }} 
+              <MoneyInput aria-label="Capital alocado em reais" value={capitalAlocar} onValueChange={setCapitalAlocar}
+                    style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none' }}
               />
-              <span style={{ fontSize: '9px', color: '#64748b' }}>Trava de segurança: Máx 5% (R$ {limiteMaximoRiscoPermitido.toFixed(2)})</span>
+              <span style={{ fontSize: '9px', color: '#64748b' }}>Trava de segurança: Máx 5% (R$ {limiteMaximoRiscoPermitido.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})})</span>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -335,7 +301,7 @@ export default function MesaOperacoesPage() {
                 value={contratos} 
                 onChange={(e) => setContratos(Number(e.target.value))} 
                 min="1" 
-                style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none' }} 
+                style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px', fontSize: '12px', color: '#0f172a', fontFamily: 'monospace', outline: 'none' }}
               />
             </div>
 
@@ -389,7 +355,7 @@ export default function MesaOperacoesPage() {
             </div>
 
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido com base no saldo simulado atual: <b>R$ {limiteMaximoRiscoPermitido.toFixed(2)}</b>.</span>
+              <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido com base no saldo simulado atual: <b>R$ {limiteMaximoRiscoPermitido.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b>.</span>
               <span>Esse limite é uma regra do simulador. Ele não configura proteção ou ordens em uma corretora.</span>
             </div>
 

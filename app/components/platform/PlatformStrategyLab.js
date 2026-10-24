@@ -1,4 +1,5 @@
 'use client';
+import MoneyInput from './MoneyInput';
 import {useEffect,useRef,useState} from 'react';
 import {studyHistoricalCandles} from '../../../lib/platform/market-study.mjs';
 import {inspectHistoricalBars} from '../../../lib/platform/historical-quality.mjs';
@@ -238,8 +239,8 @@ export default function PlatformStrategyLab({userId=null,balance=100000,paused:p
    </label>
    <p style={{fontSize:12}}>{plan.playbook}</p>
    <div style={{display:'flex',gap:9,flexWrap:'wrap'}}>
-    <label style={{fontSize:12}}>Alocação fictícia (R$)<input type="number" min="0" value={allocation} onChange={e=>{setAllocation(e.target.value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
-    <label style={{fontSize:12}}>Limite diário fictício (R$)<input type="number" min="0" value={stop} onChange={e=>{setStop(e.target.value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
+    <label style={{fontSize:12}}>Alocação fictícia (R$)<MoneyInput value={allocation} onValueChange={value=>{setAllocation(value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
+    <label style={{fontSize:12}}>Limite diário fictício (R$)<MoneyInput value={stop} onValueChange={value=>{setStop(value);setReplay(null);setRollingEvaluation(null);}} style={{...inputCss,width:145}}/></label>
    </div>
    <p style={{fontSize:12}}>Saldo virtual identificado: R$ {simBalance.toLocaleString('pt-BR')} · Antifúria: {paused?'pausado':'não pausado'}.</p>
    {plan.reasons.length>0&&<ul style={{fontSize:12,lineHeight:1.6,color:'#92400e',paddingLeft:18}}>

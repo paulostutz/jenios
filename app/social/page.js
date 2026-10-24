@@ -127,35 +127,6 @@ function SocialContent() {
   // Ranking Top 10 Semanal Completo
   const rankingOperadores = [];
 
-  const [noticiasMacro] = useState([
-    {
-      id: 1,
-      fonte: 'Bloomberg',
-      cat: 'GLOBAL',
-      titulo:
-        'Bancos centrais avaliam corte agressivo na taxa de juros global',
-      impacto: '🟢 Positivo p/ Risco',
-      hora: 'Há 5 mins',
-    },
-    {
-      id: 2,
-      fonte: 'Reuters',
-      cat: 'COMMODITIES',
-      titulo:
-        'Fluxo institucional estrangeiro dispara na B3 com alta do minério',
-      impacto: '🟢 Alta Liquidez',
-      hora: 'Há 12 mins',
-    },
-    {
-      id: 3,
-      fonte: 'InfoMoney',
-      cat: 'HFT & MERCADO',
-      titulo:
-        'Volatilidade no Mini-Índice atinge pico recorde no trimestre',
-      impacto: '🔴 Alerta Volatilidade',
-      hora: 'Há 25 mins',
-    },
-  ]);
 
   // Shared feed and authentication are loaded by useSocialFeed, never from localStorage.
   useEffect(()=>{if(perfilUrl&&meuPerfil.id&&postsProntos)void visitarPerfil({handle:perfilUrl});},[perfilUrl,meuPerfil.id,postsProntos]);

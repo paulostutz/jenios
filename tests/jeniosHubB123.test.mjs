@@ -5,7 +5,7 @@ import {trendAlertBatches,ALERT_MODULES} from '../lib/trend-alerts.mjs';
 const src=p=>readFileSync(p,'utf8');
 test('B123 removes search-popularity trend module from the Social Hub',()=>{
  const hub=src('app/components/TrendsHub.js');
- assert.match(hub,/TREND_MODULES\.filter\(item => item\.id !== 'tokens'\)/);
+ assert.match(hub,/const MODULES = ACTIVE_TREND_MODULES/);
  assert.match(hub,/useState\('megapulse'\)/);
  assert.doesNotMatch(hub,/Acompanhe tendências de busca|Ativos em alta nas pesquisas/);
  assert.match(hub,/NewTokenRadar/);

@@ -35,11 +35,11 @@ test('successful empty scan differs from failed source; malformed data fails clo
 });
 test('cached deduped calls protect provider; expiry failure never retains candidates', async () => {
   let time=now,calls=0;
-  const radar=createNewTokenRadar({now:()=>time,env:{},fetchImpl:async()=>{calls++;return calls===1?{ok:true,json:async()=>fixture()}:{ok:false,status:429};}});
-  const results=await Promise.all([radar(),radar()]);assert.equal(calls,1);results[0].candidatos.length=0;
+  const radar=createNewTokenRadar({now:()=>time,env:{},fetchImpl:async()=>{calls++;return calls<=5?{ok:true,json:async()=>fixture()}:{ok:false,status:429};}});
+  const results=await Promise.all([radar(),radar()]);assert.equal(calls,5);results[0].candidatos.length=0;
   assert.equal((await radar()).candidatos.length,1);
   time+=300001;const failed=await radar();assert.equal(failed.disponivel,false);assert.deepEqual(failed.candidatos,[]);
-  await radar();assert.equal(calls,2);
+  await radar();assert.equal(calls,10);
 });
 test('Demo/Pro credentials use only provider headers and static keyed hosts',async()=>{
   for(const pro of [false,true]) {

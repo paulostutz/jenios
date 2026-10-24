@@ -30,8 +30,8 @@ test('unknown or malformed symbols cannot silently replace a chart with another 
  }
  for(const page of ['dashboard','mesa-operacoes']){
   const s=read('app/'+page+'/page.js');
-  assert.match(s,/if\(!result.ok\)\{setErroBusca\(result.error\);return;\}/);
-  assert.match(s,/setAtivoSelecionado\(result.symbol\)/);
+  assert.match(s,/<AssetSearch onSelect=/);
+  assert.match(s,/setAtivoSelecionado\(asset.symbol\)/);
   assert.doesNotMatch(s,/simboloFormatado/);
  }
 });

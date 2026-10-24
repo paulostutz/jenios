@@ -1,48 +1,50 @@
-# G45 — franquias aprovadas e continuidade por adicional ou upgrade
+# JENIOS — checkpoint de integração G45 + PR5/PR6 + proteção da Universidade
 
-## Autorização e coordenação
+**Data:** 24/10/2026, horário de Brasília.
 
-Em 24/10/2026, Paulo aprovou explicitamente a recomendação de US$ 2 de custo efetivo de IA por ciclo para Global Crypto e US$ 4 para Internacional Pro. Acrescentou: “E se ele estourar a franquia, ele precisará contratar a parte ou fazer upgrade de plano”. O contador existente desconta 2× o custo do provedor; portanto as franquias internas são 4.000.000.000 e 8.000.000.000 nanoUSD.
+## Fonte integrada
 
-Esta aprovação substitui somente a pendência comercial dos valores de franquia descrita no checkpoint G44. Não aprova silenciosamente um preço de pacote adicional. A operação mensal sem teto mantém sua configuração. Não há autorização de cobranças automáticas por excedente, ordens, reprocessamento de e-mails ou recargas à força.
+- Base publicada anterior: `8d4936e0b02c39bb217ad542d01d330dc6cb71d6`.
+- Fonte G45 certificada: `a82dca08e7847eabe3fb31f79a39de93c4c80a00`.
+- Integração G45 sobre PR5/PR6: `def8a944e86ff7600b103e775239fa08a59ebc08`.
+- Proteção posterior da Universidade: `04feb3a7988da5d280fa11f2fdcfafeab4f1ccb6`.
+- Branch de certificação: `fix/jenios-g45-integrated-pr5-pr6-20261024`.
+- Backup preventivo da produção anterior: `backup/jenios-g44-pr5-pr6-before-g45-20261024`.
 
-Base exata deste bloco: `dd2e6ce9d2beeea64bc63e42557da8357f0cce94`, árvore `296092eede8e9fcaa385cfb3facc690346a5dcb0`, da PR5 `fix/jenios-experience-r44-20261024`, já integrada sobre G44. Seus 1.019 arquivos são preservados fora das alterações específicas revisadas G45. Memória, refinamento comercial R44, áreas de cliente, e-mails, Banco Inter e segredos não devem regredir.
+## Regras aprovadas da G45
 
-Entrega isolada para incorporação pelo Work. A branch G44, a branch da PR5, o banco hospedado, as configurações Vercel e o domínio não são alterados por esta preparação. A promoção final continua única e manual pelo Work, sobre o commit integrado e certificado.
+- Global Crypto: custo efetivo máximo de API de US$ 2 por ciclo; franquia interna equivalente a 4.000.000.000 nanoUSD.
+- Internacional Pro: custo efetivo máximo de API de US$ 4 por ciclo; franquia interna equivalente a 8.000.000.000 nanoUSD.
+- O aviso de 80% inclui consumo e reservas.
+- Uma nova consulta avançada só pode começar se a reserva couber no saldo.
+- Histórico e atendimento básico permanecem acessíveis após o esgotamento.
+- Continuidade somente por adicional confirmado pelo cliente ou upgrade elegível; sem cobrança automática por excedente.
+- Upgrade no mesmo ciclo preserva o uso e amplia o total uma única vez.
+- Preço e tamanho comercial do adicional continuam sem aprovação e não podem ser inventados.
 
-## Regras comerciais e comportamento
+## Proteções preservadas
 
-- Global Crypto: até US$ 2 de custo real por ciclo, equivalente a US$ 4 no saldo interno atual.
-- Internacional Pro: até US$ 4 de custo real por ciclo, equivalente a US$ 8 internos.
-- O aviso de 80% inclui valores reservados, apresentados separadamente do consumo liquidado.
-- A reserva de uma nova consulta precisa caber no saldo. Uma sobra positiva menor que a reserva também exige adicional, upgrade elegível ou renovação.
-- Histórico e atendimento básico permanecem acessíveis quando a franquia acaba.
-- Adicional pago e franquia incluída permanecem em carteiras separadas; o cliente confirma a origem e a consulta. Não há débito adicional automático.
-- As novas compras de adicional exigem plano Pro vigente. Um pedido já existente pode ser conferido pelo próprio titular após o vencimento do plano, preservando conciliação e recuperação de pagamento.
-- Global Crypto pode conhecer o Internacional Pro pelo fluxo de contratação existente. O plano superior não anuncia outro plano inexistente. O simples clique não modifica a assinatura nem concede saldo.
-- O upgrade no mesmo ciclo conserva consumo e reservas e altera o total ao limite superior uma única vez. Uma assinatura sobreposta sem vínculo verificável exige conferência, impedindo franquia duplicada.
+- PR5, experiência do cliente, e-mails, Banco Inter, memória e extrato Pro permanecem preservados.
+- PR6 permanece obrigatória: credenciais bancárias não ativam pagamentos; criação de checkout, pedido ou Pix depende de `JENIOS_PAY_PAYMENTS_ENABLED=true`.
+- O fluxo mensal da Universidade também respeita a pausa global de pagamentos antes de preparar novos pedidos, sem bloquear acesso já pago nem a leitura de pedidos existentes.
+- Geração real de IA permanece desligada por padrão.
+- Esta integração não autoriza pagamento, Pix, e-mail, ordem de negociação, consumo pago de IA ou promoção de domínio.
 
-## Configuração e ativação
+## Migração
 
-A nova migração define as franquias aprovadas e trata a reconciliação dos períodos. Ela não liga geração, pagamentos ou preço. Consumo e reservas não são apagados; incompatibilidades que impedem a aplicação segura devem abortar a transação.
+Migração preparada: `20261024222440_jenios_pro_allowances_g45.sql`.
 
-As rotas de adicional reutilizam o motor B143/B146: autenticação, cotação imutável com câmbio oficial, confirmação do preço/termos, pedido vinculado, confirmação bancária e crédito idempotente. A venda só fica disponível quando as configurações comerciais e bancárias reais já estiverem aprovadas e prontas. Campos antigos de pacotes propostos continuam sem autorização de venda.
+Antes de aplicá-la em banco hospedado, conferir o histórico oficial de migrações e a certificação integral da SHA combinada. A migração define franquias e reconcilia ciclos; não liga geração, pagamentos ou preços.
 
-**Ainda não definido pelo proprietário:** preço e tamanho do pacote adicional. Não apresentar valores de fixtures ou propostas antigas como preços aprovados. Sugestão a decidir: um adicional que permita US$ 2 de custo real, equivalente a US$ 4 internos, vendido pelo equivalente de US$ 4 em reais na cotação oficial vigente. Essa sugestão não foi configurada nem aprovada.
+## Gate de conclusão
 
-OpenAI, tarifas/modelos, assinatura elegível para validação e prontidão bancária continuam exigindo conferência real no ambiente de publicação. Uma CI aprovada não prova que uma credencial existe nem que um pagamento foi confirmado em produção.
+A SHA combinada deve passar por:
 
-## Certificação
+- verificação exata da base PR5, das alterações G45, do gate PR6 e da proteção da Universidade;
+- regressão geral e S05;
+- build Next;
+- PostgreSQL descartável para memória G43, reparo/orçamento G44 e franquias G45;
+- confirmação de que pagamentos e geração continuam desligados;
+- backup certificado da mesma SHA.
 
-O workflow G45 executa os testes gerais e S05, build Next e PostgreSQL 17 descartável. A suíte G45 deve comprovar configuração idempotente, preservação de gastos e reservas, upgrade no mesmo ciclo sem duplicidade, bloqueio de sobreposição ambígua e manutenção dos gates. Os resultados definitivos e a SHA certificada são os da execução da branch isolada; não presumir conclusão antes do retorno da CI.
-
-O arquivo `G45-INTEGRATION-BASELINE.json` fixa a árvore da base combinada, e `G45-REVIEWED-CHANGES.json` enumera os blobs alterados. O backup do workflow contém o arquivo integral da fonte Git e o respectivo SHA256. Não inclui banco de clientes, segredos, e-mails enviados nem transações financeiras.
-
-## Integração posterior pelo Work
-
-1. Conferir o head atual da PR5 e manter todos os avanços posteriores à base acima.
-2. Incorporar este bloco em uma única linha de publicação, resolver manifestos com hashes exatos e preservar proteções.
-3. Executar a CI da SHA combinada; aplicar a migração uma única vez pelo fluxo de migrações após rever seu estado.
-4. Confirmar credenciais e testar memória, geração real e uso Pro com conta legitimamente elegível. Não fabricar saldo ou assinatura.
-5. Definir a oferta adicional antes de habilitar pagamentos; testar seu recebimento apenas com autorização de pagamento apropriada.
-6. Conferir os e-mails e promover manualmente a implantação exata aprovada, mantendo o backup e a referência de reversão.
+Somente depois: conferir/aplicar a migração uma única vez, criar implantação Production sem domínio, testar a implantação exata e promover manualmente a mesma build aprovada.

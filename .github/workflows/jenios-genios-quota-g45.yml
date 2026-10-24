@@ -1,7 +1,7 @@
 name: JENIOS G45 quotas and paid continuation
 on:
   push:
-    branches: [fix/jenios-genios-franquias-g45-20261024]
+    branches: [fix/jenios-genios-franquias-g45-20261024, fix/jenios-g45-integrated-pr5-pr6-20261024]
   workflow_dispatch:
 permissions:
   contents: read

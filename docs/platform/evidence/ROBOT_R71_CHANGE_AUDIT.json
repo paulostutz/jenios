@@ -1,0 +1,422 @@
+{
+  "schema": "JENIOS_ROBOT_R71_CHANGE_AUDIT_V1",
+  "createdAt": "2026-10-24T21:49:25.854010+00:00",
+  "baseCommit": "851804aa45ac8cee2aea4fe9096712a7aeff2048",
+  "referenceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+  "referenceChanges": [
+    {
+      "path": ".github/workflows/jenios-robot-r71-private-evolution.yml",
+      "sha256": "db85e0a398e249646b1a89b78529de60a0efe7e16860c9ef37ce36df6f9f86d2",
+      "bytes": 4138
+    },
+    {
+      "path": "app/api/platform/admin/robot-private-evolution/route.js",
+      "sha256": "9b0ad5c9423c4ba9789c667af5eb8e3b5e181c1108df58d665b0cd631fa9912c",
+      "bytes": 525
+    },
+    {
+      "path": "app/api/platform/internal/robot-private-evolution/route.js",
+      "sha256": "202f212b29ec19840609801a06b4f5795438a8cbfadc78f051630fbd79728e5c",
+      "bytes": 358
+    },
+    {
+      "path": "app/api/platform/robot-private-evolution-state/route.js",
+      "sha256": "1744d3b7593da9e253c99fb2c31354a198e280fd2a7c168f50a19411e2dad61d",
+      "bytes": 517
+    },
+    {
+      "path": "app/api/platform/robot-private-policy-observations/route.js",
+      "sha256": "e2177d6121eeeb83f385dbc52ef8fa375e73cadc623a4c6b0fc852633c195ff6",
+      "bytes": 521
+    },
+    {
+      "path": "app/components/platform/PlatformRobotPrivateEvolutionAdmin.js",
+      "sha256": "555ab7af8a4004033a8fb5ad27043aeb82f857ea6aa9af505ae965a858e16ec7",
+      "bytes": 6602
+    },
+    {
+      "path": "app/components/platform/PlatformRobotPrivateEvolutionReport.js",
+      "sha256": "1f777e491eeddae78019aeef9ace5ed94d47149f85e98b15604142f16f1a679c",
+      "bytes": 8735
+    },
+    {
+      "path": "app/platform/homologacao/robos/privado/page.js",
+      "sha256": "fe149511bfeea046614403025ee84eaf7aef3716ddf03484ee45d09403721a78",
+      "bytes": 1104
+    },
+    {
+      "path": "db/schema/robot-r71-private-evolution-store.sql",
+      "sha256": "8edeee3a14fbce217dc0538bf3aedd56fe32aaafa06bc01994374c922b723b49",
+      "bytes": 57103
+    },
+    {
+      "path": "lib/platform/research/robot-private-durable-file.mjs",
+      "sha256": "294946cd53a9ef88f859e5407f38b5459de781b8d4ec4a6db7325e42f5809ab6",
+      "bytes": 23681
+    },
+    {
+      "path": "lib/platform/research/robot-r67-private-core-loader.mjs",
+      "sha256": "4570bc2605162a4da48b8299ed4d79dc57c2521f6579f727190a984ee610b0ee",
+      "bytes": 18925
+    },
+    {
+      "path": "lib/platform/research/robot-r68-outbox-doctor.mjs",
+      "sha256": "55d90a3c6d572c3c2a1702d0e44fc122ba76c74132246570249d143d507843d4",
+      "bytes": 10417
+    },
+    {
+      "path": "lib/platform/research/robot-r68-private-host.mjs",
+      "sha256": "8df7f9ea29b5cfc4a79b62cf2321fa211c6eef8c95cc568a1219581b8f175b82",
+      "bytes": 26106
+    },
+    {
+      "path": "lib/platform/research/robot-r69-https-transport.mjs",
+      "sha256": "e3b4175f6b8485e1c98a0ada3eabf249d249442181ab38563040f894f11835a1",
+      "bytes": 10107
+    },
+    {
+      "path": "lib/platform/research/robot-r71-access.mjs",
+      "sha256": "428fdef861245de0b106c64503b15b19126f688f2abf8369d2f8f7d83eeae7a9",
+      "bytes": 1915
+    },
+    {
+      "path": "lib/platform/research/robot-r71-admin-view.mjs",
+      "sha256": "439141bf325271a27036ada91d832cce545433a4f82afe2aa1e6f59a2b51b953",
+      "bytes": 13599
+    },
+    {
+      "path": "lib/platform/research/robot-r71-cycle-worker.mjs",
+      "sha256": "10373a31d7bac3a50cc0437bb8a61cff026937601cfbde9063c769936e876fa3",
+      "bytes": 8012
+    },
+    {
+      "path": "lib/platform/research/robot-r71-database-store.mjs",
+      "sha256": "76728ed4f623adce8154abe198585b7bf75a60ee8c906906e5c203a531397e46",
+      "bytes": 11162
+    },
+    {
+      "path": "lib/platform/research/robot-r71-durable-emitter.mjs",
+      "sha256": "75252c811f55edc700346069a944c11e85e910c342eb952d32a08f4dd3aefe8f",
+      "bytes": 9221
+    },
+    {
+      "path": "lib/platform/research/robot-r71-evolution-engine.mjs",
+      "sha256": "6a3c89ad9cfc3c49de5c3e2a46c590b8fef28748c4a4464340a4b7d411decdbf",
+      "bytes": 12448
+    },
+    {
+      "path": "lib/platform/research/robot-r71-http.mjs",
+      "sha256": "e41aedce26ca20356962c729e8dedb837d42079fad087a875092c86c9be58143",
+      "bytes": 11270
+    },
+    {
+      "path": "lib/platform/research/robot-r71-https-transport.mjs",
+      "sha256": "f6b14652edae5cde105a7cf48aa9ddaf82f73693d9e8c1d958424ea8a0eabf35",
+      "bytes": 2668
+    },
+    {
+      "path": "lib/platform/research/robot-r71-hypothesis-contract.mjs",
+      "sha256": "8723f387d478a91ea6313cc0f164cbc73489c0c516b83fadefd3494f13064496",
+      "bytes": 2715
+    },
+    {
+      "path": "lib/platform/research/robot-r71-policy.mjs",
+      "sha256": "ebde913b90bcb9bf366f5c75a6dcd11c5671e760d6af3f757931f163f1723c75",
+      "bytes": 7458
+    },
+    {
+      "path": "lib/platform/research/robot-r71-private-capture-outbox.mjs",
+      "sha256": "7586c9e53fcd9f15f159ec5264b2f74b9b4cac9e98c3d685897cd13b6dc64a09",
+      "bytes": 18085
+    },
+    {
+      "path": "lib/platform/research/robot-r71-private-host.mjs",
+      "sha256": "a114a25c64c382eda5a12df7bc323e2ab020e7cc6027da4bd5a08ce5cc6d714a",
+      "bytes": 266
+    },
+    {
+      "path": "lib/platform/research/robot-r71-private-protocol.mjs",
+      "sha256": "68c6afb8c4fbde6d6ac3bbaadb86ab1b85cb768f53fe0b32b4ea1194e81c57ec",
+      "bytes": 16466
+    },
+    {
+      "path": "lib/platform/research/robot-r71-private-source.mjs",
+      "sha256": "41172690b3143be0a7695bfdedc4a8a811bdcd5294935a78c00b51feaa9aad2c",
+      "bytes": 8644
+    },
+    {
+      "path": "lib/platform/research/robot-r71-private-study.mjs",
+      "sha256": "0d83123019b842c16ca2b322bef2c1b671f4940cf3488609ff89378691244036",
+      "bytes": 13119
+    },
+    {
+      "path": "lib/platform/research/robot-r71-runtime.mjs",
+      "sha256": "686e22694c762002edd5f726a285be32455238f2198febc2679b9f80df677935",
+      "bytes": 2216
+    },
+    {
+      "path": "scripts/platform/research/r71-cycle-worker.mjs",
+      "sha256": "e418fc64e327c673a4ee5e5aa37f6c16363a6ae0368772b4d64d305785db31bc",
+      "bytes": 384
+    },
+    {
+      "path": "scripts/platform/research/r71-postgres-acceptance.mjs",
+      "sha256": "a8ec220e0b4adca4786590eff0f0b1416fa16c83121ddf679ed53618cb163952",
+      "bytes": 27557
+    },
+    {
+      "path": "scripts/platform/research/r71-private-evolution-acceptance.mjs",
+      "sha256": "3fb75670f5859e87b00d1acab56801199d046b020868ea9e0b56d2b743cc1a08",
+      "bytes": 50332
+    },
+    {
+      "path": "scripts/platform/research/r71-private-host.mjs",
+      "sha256": "851d51e897fb6f5864f5e1ae89b3e80ec6b73a0efdf5c701c2c7a2a0845ad50d",
+      "bytes": 1809
+    },
+    {
+      "path": "tests/fixtures/r71-evolution-client.mjs",
+      "sha256": "b4479ea94210240f0cdfa57651660edf09ff8a3f1be19e7e55a8425bc628b3d5",
+      "bytes": 10190
+    },
+    {
+      "path": "tests/fixtures/r71-private-protocol-fixture.mjs",
+      "sha256": "45490766288cab9602796b549a3179c33686f4f133b5f0fe3f4b286b741b66bd",
+      "bytes": 5915
+    },
+    {
+      "path": "tests/fixtures/r71-study-fixture.mjs",
+      "sha256": "e0957717b3d3553ce0290ed0cf3c5a86fcd0493a44fbd0914c27d987dbce084d",
+      "bytes": 4327
+    },
+    {
+      "path": "tests/platformRobotR71Access.test.mjs",
+      "sha256": "b680f82a172631466a397a4d791935c8f360eb9f79f95a6d9f0c916acfe3e323",
+      "bytes": 4301
+    },
+    {
+      "path": "tests/platformRobotR71AdminView.test.mjs",
+      "sha256": "59e787c0810cff3717be49705fefbc7a00642e31aef7a4de55c439c1cf02cae9",
+      "bytes": 3180
+    },
+    {
+      "path": "tests/platformRobotR71CycleWorker.test.mjs",
+      "sha256": "5f8c584c673681ce910cc9a34aed946d1a735da6f05cd9cf918a15882af2bf9e",
+      "bytes": 7123
+    },
+    {
+      "path": "tests/platformRobotR71DatabaseStore.test.mjs",
+      "sha256": "9cae0072ee2e6deacc5c6646bd10e12bc35ef4d9c98843d46c3ee094461aec37",
+      "bytes": 9376
+    },
+    {
+      "path": "tests/platformRobotR71EvolutionEngine.test.mjs",
+      "sha256": "22b60425a55ba141dbb820850f1677944b3d20b74ba1b8f971c9d091a7ad1db1",
+      "bytes": 7117
+    },
+    {
+      "path": "tests/platformRobotR71Http.test.mjs",
+      "sha256": "c09844e732aeb52bd5040d2d573058044ee1dbf8e762e723ff01cfae4f1dbf34",
+      "bytes": 14046
+    },
+    {
+      "path": "tests/platformRobotR71HttpsTransport.test.mjs",
+      "sha256": "365752af3201de9df8de496e08fe8d149ea8ca3118ce4f4979a61c049770c146",
+      "bytes": 8601
+    },
+    {
+      "path": "tests/platformRobotR71NoDeployGuard.test.mjs",
+      "sha256": "a4f15c553a341640d62347ba3f0a39e94f09633d04358680629335a969914367",
+      "bytes": 929
+    },
+    {
+      "path": "tests/platformRobotR71PrivateHost.test.mjs",
+      "sha256": "f67f3b33d43fc9ba933563b5d8b10579ce5fb5e31bdd9489c6842ac7139af391",
+      "bytes": 10944
+    },
+    {
+      "path": "tests/platformRobotR71PrivateOutbox.test.mjs",
+      "sha256": "9b5c2cd59f4c0ee0d49355c8a0d72122bf746df7e0a4650b64493c7b63a7220a",
+      "bytes": 7952
+    },
+    {
+      "path": "tests/platformRobotR71PrivateProtocol.test.mjs",
+      "sha256": "6817274970ca7a9ca2c46d41989c7f2867ede48d7a5c8c855c51343d4cb5afa4",
+      "bytes": 8103
+    },
+    {
+      "path": "tests/platformRobotR71Study.test.mjs",
+      "sha256": "189f4ce3d39e4f03020ea6e5d53645a22027f60e960f5b0b00ab08bac58b6b93",
+      "bytes": 6457
+    },
+    {
+      "path": "vercel.json",
+      "sha256": "e858bd5ef9c5d0efe053b8d8816f17c04bbbe5f1d4b8fd54a63036734d72dd4e",
+      "bytes": 5272
+    }
+  ],
+  "referenceImplementationFiles": 50,
+  "preservation": {
+    "priorLedgerSections": 19,
+    "canonicalization": "JSON sorted keys, compact separators, UTF-8, ensure_ascii=false",
+    "priorLedgerSectionSha256": {
+      "schema": "c92b3a7ae0210e42dacb22534924179aa4b0f2fa034379ef6e7c4c61a3c27d7f",
+      "generatedAt": "3418a19e34e692f17e1342fa85080565c74df48bdb5bb7c0200e8fcd8d5251b2",
+      "scope": "dad88f09c1dd2a5a03f4e0fdb2cfa9189f9c95bec5a8d436f05844331696b847",
+      "globalRules": "db6b86aaad48721132db87b8d5ddd547be16a95977d42eaacdd8bf4ac58e5ffa",
+      "robots": "6831e2fdb52d4841f14998dd27c04a0a701ee676b78be13e1314d54377dcf405",
+      "certifiedBlocks": "ec74b8ce03722652444057c89dab222d692ac70990a0068bace02927c2e45315",
+      "nextObjectives": "7690357c096c3666c38c794343dbe04c3685ff69b34b5d99ceca073dcf6e06a5",
+      "finalCertification": "3f3af4f9c66df44f2a0e034d8703de2c76ffc3ebad9c7e0d72b292ad7a6f5afe",
+      "operationalCloseout": "783ee177b28a40b9ee2fa3f5a3d876a2e37ef828c1c1fde23026bcb53dcb1313",
+      "qaPolicyIntegration": "03773010cc69456657be6b15892ec26198888a63a225dbf97e75c64ec88c5f12",
+      "qaBoundaryCloseout": "030ce172ab7aa01e473a427099f02b7eb14bc849d9fd996eb66b5114bc8d491a",
+      "continuousImprovement": "db51f3c177ccce4d2ae1f4dec62b447d538f8488ac541f4788069852a74eb359",
+      "operationalObservationIntegration": "74119e3004e95278d6992904ab1c179739be61b27ade0503dae152fa51b1bf51",
+      "durableEvolutionCycle": "f95f8af2e3f80fd2772cf8e000a25b57ee2f8ab068a42df74830b4bcb7972998",
+      "durableEmitterIntegration": "c7d7509b69161f6d10481cf202055200416ddc4d35532703ce856b660c22aaaa",
+      "privateSourceBridge": "f512fc1fa52b67e712f830c27ae0a466603a2c2c17bbfef699548068a90ded5f",
+      "privateHostReadiness": "3efb381dc21bedd54dc1646a9db0cf7c55b6d302e93c617d266b1774a731aca3",
+      "httpsPrivateHostIntegration": "9fa4afe5f630e2e3fd8922178520c911b03a179b76d16d1faec73452d4a34580",
+      "targetPreflightIntegration": "66b750fcccfd15344215f50b53f62af5885d518bfef1fc06c0619b6d73f84537"
+    },
+    "priorEvidenceShaAttributionUnchanged": true,
+    "originalPrivateBytesChanged": false,
+    "originalPrivateBytesCommitted": false,
+    "r64r65r67ExistingSchemaFilesChanged": 0,
+    "r12r65AlgorithmFilesChanged": 0,
+    "unrelatedProductCodeChanged": false,
+    "priorBlocksRebuilt": false,
+    "priorBlocksFinancialRecertificationClaimed": false,
+    "sharedExtensions": {
+      "robot-private-durable-file.mjs": "Closed R71 profile and existing lifetime lock recognition",
+      "robot-r67-private-core-loader.mjs": "New branded helper calling original service and chooseMode; original capture stays unmodified",
+      "robot-r68-outbox-doctor.mjs": "Closed R71 profile only",
+      "robot-r68-private-host.mjs": "Closed R71 host profile over preserved lifecycle",
+      "robot-r69-https-transport.mjs": "Fixed R71 intake/query paths over preserved TLS engine"
+    }
+  },
+  "evidenceFiles": [
+    {
+      "file": "docs/platform/evidence/ROBOT_R71_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+      "bytes": 5192,
+      "sha256": "5a5a5a23a4c964b2b3240e2d61205d8772559b4d3768517a5f34a431de8d5416",
+      "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+      "publicCiExecution": true
+    },
+    {
+      "file": "docs/platform/evidence/ROBOT_R71_PUBLIC_EVOLUTION_ACCEPTANCE_EVIDENCE.json",
+      "bytes": 49592,
+      "sha256": "25faa7dcd539aa0c86b61b5c3ff6b4f9984f407b2d5f3e682a8d23c48d03c581",
+      "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+      "publicCiExecution": true
+    },
+    {
+      "file": "docs/platform/evidence/ROBOT_R71_PRIVATE_EVOLUTION_ACCEPTANCE_EVIDENCE.json",
+      "bytes": 49639,
+      "sha256": "0692687bbae6d7cc54123d2a96f54e4075b5bd6e4d527cef5b6a3b5381e2e113",
+      "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "evidenceKind": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+      "publicCiExecution": false
+    }
+  ],
+  "localCleanBuild": {
+    "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+    "sourceTreeDirtyAtBuildStart": false,
+    "startedAt": "2026-10-24T21:42:40.251072+00:00",
+    "finishedAt": "2026-10-24T21:43:15.799261+00:00",
+    "exitCode": 0,
+    "logSha256": "a65bbc5a865c2c6e3b2cbad950a4f20c4e65cd0033868cb9ddaf6603b2378e34",
+    "node": "v24.22.1",
+    "general": "2741/2741",
+    "inheritedApplicationGate": "94/94",
+    "build": "PASS",
+    "staticPages": "76/76",
+    "failed": 0,
+    "skipped": 0
+  },
+  "referenceCi": {
+    "runId": 40135386515,
+    "jobId": 120995700981,
+    "commit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+    "conclusion": "SUCCESS",
+    "completedAt": "2026-10-24T21:46:58Z",
+    "url": "https://github.com/paulostutz/jenios/actions/runs/40135386515",
+    "counts": {
+      "r71": 78,
+      "preserved": 345,
+      "general": 2741,
+      "inheritedGate": 94,
+      "postgres": 21,
+      "publicIntegrated": 14,
+      "privateIntegrated": 14,
+      "staticPages": 76,
+      "failed": 0,
+      "skipped": 0,
+      "countsAreOverlapping": true
+    },
+    "logsInspected": true
+  },
+  "artifact": {
+    "id": 12575814524,
+    "name": "r71-public-evolution-evidence-5b32d99812eb61a37b4058951d15d531260edfe9",
+    "bytes": 255948,
+    "zipSha256": "52d56299669db56d14dfce131c3d10500a7fac22d0c1f2c4208a37942daf9695",
+    "sourceRun": 40135386515,
+    "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+    "expiresAt": "2026-11-07T21:46:30Z",
+    "zipHashVerified": true,
+    "jsonsCopiedByteForByte": true
+  },
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "crossReviews": {
+    "engineReviewedByDurable": "no blocking finding",
+    "sqlAndAdapterReviewedByOperational": "no blocking finding",
+    "httpUiAndAcceptanceReviewedByEngine": "failure report execution label corrected before reference",
+    "studyStateAndWorkerReviewedByEngine": "no blocking finding"
+  },
+  "engineeringCorrectionsBeforeReference": [
+    "PL/pgSQL ambiguous jsonb_array_elements alias corrected",
+    "JSONB retry and journal prefix operator precedence corrected",
+    "originalPrivateCoreExecuted in failure reports derives from observed native analyses"
+  ],
+  "integratedAcceptanceAttempts": {
+    "publicPreliminary": 1,
+    "originalPrivateReference": 1,
+    "functionalFailures": 0
+  },
+  "boundaries": {
+    "manualOperatorControlPreserved": true,
+    "certifiedR61AlignmentGuardPreserved": 0.65,
+    "alignmentGuardReattributedToOriginalPrivateCore": false,
+    "losseshometroSyntheticOnly": true,
+    "r15ProspectiveBackfill": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "paidGenerationEnabled": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "internalCoreRetuning": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false,
+    "operationalReady": false,
+    "independentRuntimeAttestation": false,
+    "hostedAuthenticationCertified": false
+  },
+  "localDisposableServicesStopped": {
+    "localDisposablePostgresStopped": true,
+    "nextAndSourceProcessesCleanedByAcceptance": true,
+    "port": 56471,
+    "otherDatabasesTouched": false
+  },
+  "finalizationRule": "Reference JSONs keep producing SHA 5b32d99812eb61a37b4058951d15d531260edfe9. After this documentation consolidation, require full successful final CI and matching research/certified refs on the consolidated SHA. Their match closes this checkpoint without a recursive own-CI documentation commit."
+}

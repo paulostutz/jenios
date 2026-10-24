@@ -1,0 +1,1512 @@
+{
+  "schema": "JENIOS_R71_PRIVATE_EVOLUTION_ACCEPTANCE_V1",
+  "inputMode": "ORIGINAL_PRIVATE_CORE",
+  "evidenceKind": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+  "startedAt": "2026-10-24T21:43:41.372Z",
+  "finishedAt": "2026-10-24T21:44:16.258Z",
+  "sourceCommitSha": "5b32d99812eb61a37b4058951d15d531260edfe9",
+  "sourceTreeDirty": false,
+  "nodeVersion": "v24.22.1",
+  "sourceFiles": {
+    "scripts/platform/research/r71-private-evolution-acceptance.mjs": "3fb75670f5859e87b00d1acab56801199d046b020868ea9e0b56d2b743cc1a08",
+    "tests/fixtures/r71-evolution-client.mjs": "b4479ea94210240f0cdfa57651660edf09ff8a3f1be19e7e55a8425bc628b3d5",
+    "tests/fixtures/r71-private-protocol-fixture.mjs": "45490766288cab9602796b549a3179c33686f4f133b5f0fe3f4b286b741b66bd",
+    "lib/platform/research/robot-r71-policy.mjs": "ebde913b90bcb9bf366f5c75a6dcd11c5671e760d6af3f757931f163f1723c75",
+    "lib/platform/research/robot-r71-private-protocol.mjs": "68c6afb8c4fbde6d6ac3bbaadb86ab1b85cb768f53fe0b32b4ea1194e81c57ec",
+    "lib/platform/research/robot-r71-private-source.mjs": "41172690b3143be0a7695bfdedc4a8a811bdcd5294935a78c00b51feaa9aad2c",
+    "lib/platform/research/robot-r71-private-capture-outbox.mjs": "7586c9e53fcd9f15f159ec5264b2f74b9b4cac9e98c3d685897cd13b6dc64a09",
+    "lib/platform/research/robot-r71-durable-emitter.mjs": "75252c811f55edc700346069a944c11e85e910c342eb952d32a08f4dd3aefe8f",
+    "lib/platform/research/robot-r71-https-transport.mjs": "f6b14652edae5cde105a7cf48aa9ddaf82f73693d9e8c1d958424ea8a0eabf35",
+    "lib/platform/research/robot-r71-private-study.mjs": "0d83123019b842c16ca2b322bef2c1b671f4940cf3488609ff89378691244036",
+    "lib/platform/research/robot-r71-evolution-engine.mjs": "6a3c89ad9cfc3c49de5c3e2a46c590b8fef28748c4a4464340a4b7d411decdbf",
+    "lib/platform/research/robot-r71-cycle-worker.mjs": "10373a31d7bac3a50cc0437bb8a61cff026937601cfbde9063c769936e876fa3",
+    "lib/platform/research/robot-r71-hypothesis-contract.mjs": "8723f387d478a91ea6313cc0f164cbc73489c0c516b83fadefd3494f13064496",
+    "lib/platform/research/robot-r71-database-store.mjs": "76728ed4f623adce8154abe198585b7bf75a60ee8c906906e5c203a531397e46",
+    "lib/platform/research/robot-r71-access.mjs": "428fdef861245de0b106c64503b15b19126f688f2abf8369d2f8f7d83eeae7a9",
+    "lib/platform/research/robot-r71-http.mjs": "e41aedce26ca20356962c729e8dedb837d42079fad087a875092c86c9be58143",
+    "lib/platform/research/robot-r71-runtime.mjs": "686e22694c762002edd5f726a285be32455238f2198febc2679b9f80df677935",
+    "lib/platform/research/robot-r71-admin-view.mjs": "439141bf325271a27036ada91d832cce545433a4f82afe2aa1e6f59a2b51b953",
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "4570bc2605162a4da48b8299ed4d79dc57c2521f6579f727190a984ee610b0ee",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-private-durable-file.mjs": "294946cd53a9ef88f859e5407f38b5459de781b8d4ec4a6db7325e42f5809ab6",
+    "lib/platform/admin-db.mjs": "bb24df658f814809b533db91305cd1dafdbdf961a4963c29c85afdd50738ebd0",
+    "lib/platform/admin-permissions.mjs": "7382052bfce3274670b6e1993483849ebfe044f22777999d4f23d132a4534539",
+    "app/api/platform/robot-private-policy-observations/route.js": "e2177d6121eeeb83f385dbc52ef8fa375e73cadc623a4c6b0fc852633c195ff6",
+    "app/api/platform/robot-private-evolution-state/route.js": "1744d3b7593da9e253c99fb2c31354a198e280fd2a7c168f50a19411e2dad61d",
+    "app/api/platform/admin/robot-private-evolution/route.js": "9b0ad5c9423c4ba9789c667af5eb8e3b5e181c1108df58d665b0cd631fa9912c",
+    "app/api/platform/internal/robot-private-evolution/route.js": "202f212b29ec19840609801a06b4f5795438a8cbfadc78f051630fbd79728e5c",
+    "app/components/platform/PlatformRobotPrivateEvolutionAdmin.js": "555ab7af8a4004033a8fb5ad27043aeb82f857ea6aa9af505ae965a858e16ec7",
+    "app/components/platform/PlatformRobotPrivateEvolutionReport.js": "1f777e491eeddae78019aeef9ace5ed94d47149f85e98b15604142f16f1a679c",
+    "app/platform/homologacao/robos/privado/page.js": "fe149511bfeea046614403025ee84eaf7aef3716ddf03484ee45d09403721a78",
+    "db/schema/robot-r71-private-evolution-store.sql": "8edeee3a14fbce217dc0538bf3aedd56fe32aaafa06bc01994374c922b723b49"
+  },
+  "buildEvidence": {
+    "buildId": "ziSBZVueEEqZj74wCsM7D",
+    "nextVersion": "15.5.28",
+    "supabaseSdkVersion": "2.117.3",
+    "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+    "compiledSourceCommitIndependentlyAttested": false,
+    "compiledRouteSha256": {
+      ".next/server/app/api/platform/robot-private-policy-observations/route.js": "f375fae1abcc732fa647372f6662f2745cef6cea3a43af4cce4994545fe66abe",
+      ".next/server/app/api/platform/robot-private-evolution-state/route.js": "a5d00ce4262b1384ed7736b48bbf21ffa0d88ab36986a92f45a09c0ee9228c3a",
+      ".next/server/app/api/platform/admin/robot-private-evolution/route.js": "f8e9f45632ad374be26e331e2818d3087ab2e9a950f5ed1fd1d293b4637b8cab",
+      ".next/server/app/api/platform/internal/robot-private-evolution/route.js": "164c96512e887839cb069b600af2f2085d41379409a03b3173b18da57c5980f8",
+      ".next/server/app/platform/homologacao/robos/privado/page.js": "899e05f6ffe6bee351fb99eda12ef01da3f249244597544a363931659c7f99ce"
+    }
+  },
+  "database": {
+    "serverVersion": "16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+    "disposable": true,
+    "hosted": false,
+    "clockEvidence": {
+      "nodeBeforeMs": 1792878221621,
+      "databaseNowMs": 1792878221649,
+      "nodeAfterMs": 1792878221650,
+      "manipulatedClock": false
+    }
+  },
+  "transport": {
+    "originClass": "LITERAL_LOOPBACK_HTTPS",
+    "ephemeralCa": true,
+    "certificateAndHostnameVerificationEnabled": true,
+    "tlsVerificationDisabled": false,
+    "tlsCertificateSha256": "af7e50d19d8508ddee84b27d8263d42ab4819df1a20d8229167480d793fa30c1",
+    "realNextRoutes": true,
+    "realSupabaseSdk": true,
+    "authGateway": "EXPLICIT_LOCAL_IDENTITY_SIMULATION",
+    "postgrestGateway": "LOCAL_RPC_ADAPTER_TO_REAL_POSTGRESQL",
+    "deploymentMetadata": "EXPLICIT_LOCAL_FIXTURE_NOT_VERCEL_DEPLOYMENT",
+    "actualHostedAuthentication": false
+  },
+  "source": {
+    "originalPrivateCoreExecuted": true,
+    "privateHostCliExercised": false,
+    "originalCoreBinding": {
+      "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+      "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+      "originalVersion": "jenios-research-r29.1",
+      "policyVersion": "private:r67-v1",
+      "generation": 0
+    },
+    "originalPrivateBytesCommitted": false,
+    "driver": "ACTUAL_BRANDED_SOURCE_AND_DURABLE_EMITTER_IN_PERSISTENT_FIXTURE_PROCESS",
+    "nativeAnalysesCompleted": 40,
+    "publicModeledCaptures": 0,
+    "sourceProcesses": 3,
+    "sameInstanceConsumedApplyAndRollback": true
+  },
+  "counts": {
+    "nextProcesses": 3,
+    "sourceProcesses": 3,
+    "observationHttpRequests": 7,
+    "acknowledgementLosses": 1,
+    "actualSqlRpcCalls": 75,
+    "snapshots": 4,
+    "nativeBatches": 5,
+    "validationCases": 8,
+    "historyRevisions": 9,
+    "contextualBatches": 5,
+    "contextualDecisions": 40
+  },
+  "validationEvidence": {
+    "planId": "plan:407b029a4379c92f",
+    "registeredAtMs": 1792878225421,
+    "startsAtMs": 1792878226421,
+    "endsAtMs": 1792878236421,
+    "cases": [
+      {
+        "caseId": "case:07075b924febfc50",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:37559cf5bb0fbe9b",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:39bfe4fc8eb304e3",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:57713495e5f98e43",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:619538f5ff0d3cc3",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:782170cf9618b492",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:985dbd40bb0e3eb5",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      },
+      {
+        "caseId": "case:c1f8f882839fa6d3",
+        "admittedAtMs": 1792878226814,
+        "capturedAtMs": 1792878226610
+      }
+    ],
+    "casesOutsideWindow": 0
+  },
+  "appliedAdminFeed": {
+    "schema": "JENIOS_R71_PRIVATE_EVOLUTION_ADMIN_FEED_V1",
+    "adminOnly": true,
+    "scopeId": "scope:9d386c5f67c818e2",
+    "sourceId": "source:56fd2e1f9a20b67c",
+    "sourceKeySha256": "24ed0d4f426d1bee51f7d2c96876e6a9a4f3272179d6803f14f5fd18be1bd6b1",
+    "generatedAtMs": 1792878236968,
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+    "positionContextEvidence": "SYNTHETIC_FIXTURE_ONLY",
+    "originalCoreVersion": "jenios-research-r29.1",
+    "originalPolicyVersion": "private:r67-v1",
+    "originalGeneration": 0,
+    "policyKind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+    "currentPrivateHostIndependentlyObserved": false,
+    "hostedAuthenticationCertified": false,
+    "state": {
+      "revision": 3,
+      "stateDigest": "c9075c560d9d83d9e6d32828abeebac189932d247a150a119bbe7670c3041015",
+      "activeVersion": {
+        "activationGeneration": 1,
+        "forwardPositionOpen": true,
+        "versionId": "private:r71-position-context-v1"
+      },
+      "promotions": 1,
+      "candidateRetired": false,
+      "latestStudy": {
+        "snapshot": {
+          "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+          "period": {
+            "startMs": 1792791825188,
+            "endMs": 1792878225188
+          },
+          "frozenAtMs": 1792878225221,
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "membershipDigest": "21002f34886dacc231bff1da2d1b74d653bf1efe76e0f2cbb378ca1b477311cc"
+        },
+        "generatedAtMs": 1792878225221,
+        "studyDigest": "fc2c28b2bec8d637ddbd0d847fd8e59f92cf889f8a0c10725060036c09cf9632",
+        "metrics": {
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "observationRecords": 1,
+          "observationEntries": 8,
+          "validationRecords": 0,
+          "validationEntries": 0,
+          "baselineMissedExistingPositionRouting": 3,
+          "protectedCaseChanges": 0
+        },
+        "findings": [
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "hybrid",
+            "count": 1
+          },
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "reverse",
+            "count": 2
+          }
+        ],
+        "hypothesis": {
+          "source": "BOUNDED_DETERMINISTIC_POLICY",
+          "kind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+          "eligibleGenerations": [
+            0
+          ],
+          "providerEnabled": false,
+          "paidProviderCalls": 0
+        }
+      },
+      "pendingEvaluation": null,
+      "lastEvaluation": {
+        "planId": "plan:407b029a4379c92f",
+        "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+        "studyDigest": "fc2c28b2bec8d637ddbd0d847fd8e59f92cf889f8a0c10725060036c09cf9632",
+        "completedAtMs": 1792878236686,
+        "status": "APPLIED",
+        "summary": {
+          "expectedCases": 8,
+          "observedCases": 8,
+          "baselineMissedExistingPositionRouting": 3,
+          "candidateMissedExistingPositionRouting": 0,
+          "protectedCaseChanges": 0,
+          "unsupportedCandidateOutcomes": 0
+        }
+      },
+      "history": [
+        {
+          "action": "REGISTERED",
+          "atMs": 1792878225421,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-reference-v1",
+          "reason": null
+        },
+        {
+          "action": "APPLIED",
+          "atMs": 1792878236686,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-position-context-v1",
+          "reason": null
+        }
+      ],
+      "maturity": "QA_APPLIED"
+    },
+    "snapshots": [
+      {
+        "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+        "period": {
+          "startMs": 1792791825188,
+          "endMs": 1792878225188
+        },
+        "frozenAtMs": 1792878225221,
+        "totalRecords": 1,
+        "totalEntries": 8,
+        "membershipDigest": "21002f34886dacc231bff1da2d1b74d653bf1efe76e0f2cbb378ca1b477311cc"
+      },
+      {
+        "snapshotId": "649b69b5-b474-4079-9c19-7239a08465d5",
+        "period": {
+          "startMs": 1792791823946,
+          "endMs": 1792878223946
+        },
+        "frozenAtMs": 1792878223976,
+        "totalRecords": 0,
+        "totalEntries": 0,
+        "membershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    ],
+    "operations": [
+      {
+        "operationId": "op:bff6a0f2847a3af3c4d569b145697d93",
+        "revision": 3,
+        "action": "EVALUATE",
+        "stateDigest": "c9075c560d9d83d9e6d32828abeebac189932d247a150a119bbe7670c3041015",
+        "storedAtMs": 1792878236738
+      },
+      {
+        "operationId": "op:4e27456b8b1c81cc11058975d70b0b96",
+        "revision": 2,
+        "action": "REGISTER",
+        "stateDigest": "c134d96e29c86b40ef32ede33d5477fae71feca6aadf8cbf1e4af79376b77bed",
+        "storedAtMs": 1792878225467
+      },
+      {
+        "operationId": "op:5bb691f2ff1cfa88c99d2e5b9cdcc4ae",
+        "revision": 1,
+        "action": "STUDY",
+        "stateDigest": "c32011038fbe0ad49b38f21ea2e7a75b739167f373478a1902c5dc463ef34e43",
+        "storedAtMs": 1792878225341
+      },
+      {
+        "operationId": "op:53c6bff1aeba0576f46fb4020a50e8d3",
+        "revision": 0,
+        "action": "INITIALIZE",
+        "stateDigest": "11d973a73a32825002f24dfe671c4c0cc0eaaeb87349747ca44055ded15ceb9a",
+        "storedAtMs": 1792878223883
+      }
+    ],
+    "operationalReady": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "internalCoreRetuning": false,
+    "independentRuntimeAttestation": false,
+    "commercialPerformanceCertified": false,
+    "productionChanged": false,
+    "paidGenerationEnabled": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "manualOperatorControlPreserved": true
+  },
+  "finalAdminFeed": {
+    "schema": "JENIOS_R71_PRIVATE_EVOLUTION_ADMIN_FEED_V1",
+    "adminOnly": true,
+    "scopeId": "scope:9d386c5f67c818e2",
+    "sourceId": "source:56fd2e1f9a20b67c",
+    "sourceKeySha256": "24ed0d4f426d1bee51f7d2c96876e6a9a4f3272179d6803f14f5fd18be1bd6b1",
+    "generatedAtMs": 1792878240018,
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+    "positionContextEvidence": "SYNTHETIC_FIXTURE_ONLY",
+    "originalCoreVersion": "jenios-research-r29.1",
+    "originalPolicyVersion": "private:r67-v1",
+    "originalGeneration": 0,
+    "policyKind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+    "currentPrivateHostIndependentlyObserved": false,
+    "hostedAuthenticationCertified": false,
+    "state": {
+      "revision": 4,
+      "stateDigest": "f32602aa1bb38c4df9965efec2c411a642c4072066d45250f4dbc13f9ef80dcb",
+      "activeVersion": {
+        "activationGeneration": 2,
+        "forwardPositionOpen": false,
+        "versionId": "private:r71-reference-v1"
+      },
+      "promotions": 1,
+      "candidateRetired": true,
+      "latestStudy": {
+        "snapshot": {
+          "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+          "period": {
+            "startMs": 1792791825188,
+            "endMs": 1792878225188
+          },
+          "frozenAtMs": 1792878225221,
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "membershipDigest": "21002f34886dacc231bff1da2d1b74d653bf1efe76e0f2cbb378ca1b477311cc"
+        },
+        "generatedAtMs": 1792878225221,
+        "studyDigest": "fc2c28b2bec8d637ddbd0d847fd8e59f92cf889f8a0c10725060036c09cf9632",
+        "metrics": {
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "observationRecords": 1,
+          "observationEntries": 8,
+          "validationRecords": 0,
+          "validationEntries": 0,
+          "baselineMissedExistingPositionRouting": 3,
+          "protectedCaseChanges": 0
+        },
+        "findings": [
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "hybrid",
+            "count": 1
+          },
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "reverse",
+            "count": 2
+          }
+        ],
+        "hypothesis": {
+          "source": "BOUNDED_DETERMINISTIC_POLICY",
+          "kind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+          "eligibleGenerations": [
+            0
+          ],
+          "providerEnabled": false,
+          "paidProviderCalls": 0
+        }
+      },
+      "pendingEvaluation": null,
+      "lastEvaluation": {
+        "planId": "plan:407b029a4379c92f",
+        "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+        "studyDigest": "fc2c28b2bec8d637ddbd0d847fd8e59f92cf889f8a0c10725060036c09cf9632",
+        "completedAtMs": 1792878236686,
+        "status": "APPLIED",
+        "summary": {
+          "expectedCases": 8,
+          "observedCases": 8,
+          "baselineMissedExistingPositionRouting": 3,
+          "candidateMissedExistingPositionRouting": 0,
+          "protectedCaseChanges": 0,
+          "unsupportedCandidateOutcomes": 0
+        }
+      },
+      "history": [
+        {
+          "action": "REGISTERED",
+          "atMs": 1792878225421,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-reference-v1",
+          "reason": null
+        },
+        {
+          "action": "APPLIED",
+          "atMs": 1792878236686,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-position-context-v1",
+          "reason": null
+        },
+        {
+          "action": "ROLLED_BACK",
+          "atMs": 1792878239514,
+          "fromVersionId": "private:r71-position-context-v1",
+          "toVersionId": "private:r71-reference-v1",
+          "reason": "OWNER_REQUEST"
+        }
+      ],
+      "maturity": "QA_ROLLED_BACK"
+    },
+    "snapshots": [
+      {
+        "snapshotId": "f6cae29b-2bd9-4b50-a502-774a0b0c270b",
+        "period": {
+          "startMs": 1792791825188,
+          "endMs": 1792878225188
+        },
+        "frozenAtMs": 1792878225221,
+        "totalRecords": 1,
+        "totalEntries": 8,
+        "membershipDigest": "21002f34886dacc231bff1da2d1b74d653bf1efe76e0f2cbb378ca1b477311cc"
+      },
+      {
+        "snapshotId": "649b69b5-b474-4079-9c19-7239a08465d5",
+        "period": {
+          "startMs": 1792791823946,
+          "endMs": 1792878223946
+        },
+        "frozenAtMs": 1792878223976,
+        "totalRecords": 0,
+        "totalEntries": 0,
+        "membershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    ],
+    "operations": [
+      {
+        "operationId": "op:667301143afb4c08be1df770d78e7d07",
+        "revision": 4,
+        "action": "ROLLBACK",
+        "stateDigest": "f32602aa1bb38c4df9965efec2c411a642c4072066d45250f4dbc13f9ef80dcb",
+        "storedAtMs": 1792878239575
+      },
+      {
+        "operationId": "op:bff6a0f2847a3af3c4d569b145697d93",
+        "revision": 3,
+        "action": "EVALUATE",
+        "stateDigest": "c9075c560d9d83d9e6d32828abeebac189932d247a150a119bbe7670c3041015",
+        "storedAtMs": 1792878236738
+      },
+      {
+        "operationId": "op:4e27456b8b1c81cc11058975d70b0b96",
+        "revision": 2,
+        "action": "REGISTER",
+        "stateDigest": "c134d96e29c86b40ef32ede33d5477fae71feca6aadf8cbf1e4af79376b77bed",
+        "storedAtMs": 1792878225467
+      },
+      {
+        "operationId": "op:5bb691f2ff1cfa88c99d2e5b9cdcc4ae",
+        "revision": 1,
+        "action": "STUDY",
+        "stateDigest": "c32011038fbe0ad49b38f21ea2e7a75b739167f373478a1902c5dc463ef34e43",
+        "storedAtMs": 1792878225341
+      },
+      {
+        "operationId": "op:53c6bff1aeba0576f46fb4020a50e8d3",
+        "revision": 0,
+        "action": "INITIALIZE",
+        "stateDigest": "11d973a73a32825002f24dfe671c4c0cc0eaaeb87349747ca44055ded15ceb9a",
+        "storedAtMs": 1792878223883
+      }
+    ],
+    "operationalReady": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "internalCoreRetuning": false,
+    "independentRuntimeAttestation": false,
+    "commercialPerformanceCertified": false,
+    "productionChanged": false,
+    "paidGenerationEnabled": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "manualOperatorControlPreserved": true
+  },
+  "missedWindowAdminFeed": {
+    "schema": "JENIOS_R71_PRIVATE_EVOLUTION_ADMIN_FEED_V1",
+    "adminOnly": true,
+    "scopeId": "scope:f31cd3d8d3801b49",
+    "sourceId": "source:002915d731e3dd3c",
+    "sourceKeySha256": "139c5e3430b78cf9f9546c4bab2b8ffd4d5c258dac6b9185602aa389cbcc8b61",
+    "generatedAtMs": 1792878254575,
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+    "positionContextEvidence": "SYNTHETIC_FIXTURE_ONLY",
+    "originalCoreVersion": "jenios-research-r29.1",
+    "originalPolicyVersion": "private:r67-v1",
+    "originalGeneration": 0,
+    "policyKind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+    "currentPrivateHostIndependentlyObserved": false,
+    "hostedAuthenticationCertified": false,
+    "state": {
+      "revision": 3,
+      "stateDigest": "0b1b5a6bafb1b343191e5a50a892a7fd26843a17681a2aaef635b77df2d48f0c",
+      "activeVersion": {
+        "activationGeneration": 0,
+        "forwardPositionOpen": false,
+        "versionId": "private:r71-reference-v1"
+      },
+      "promotions": 0,
+      "candidateRetired": true,
+      "latestStudy": {
+        "snapshot": {
+          "snapshotId": "2593e530-b9c0-4810-b646-fc125244e3bf",
+          "period": {
+            "startMs": 1792791842797,
+            "endMs": 1792878242797
+          },
+          "frozenAtMs": 1792878242831,
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "membershipDigest": "8b2f7df57f9959ce596b28661caf235d5ac92c276343edcafedeb5fdff2ee67c"
+        },
+        "generatedAtMs": 1792878242831,
+        "studyDigest": "4cb55edfea028093921a28bc746ac6355dfe3808fee6c0a62011ae62318ae975",
+        "metrics": {
+          "totalRecords": 1,
+          "totalEntries": 8,
+          "observationRecords": 1,
+          "observationEntries": 8,
+          "validationRecords": 0,
+          "validationEntries": 0,
+          "baselineMissedExistingPositionRouting": 3,
+          "protectedCaseChanges": 0
+        },
+        "findings": [
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "hybrid",
+            "count": 1
+          },
+          {
+            "code": "MISSING_EXISTING_POSITION_CONTEXT",
+            "mode": "reverse",
+            "count": 2
+          }
+        ],
+        "hypothesis": {
+          "source": "BOUNDED_DETERMINISTIC_POLICY",
+          "kind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+          "eligibleGenerations": [
+            0
+          ],
+          "providerEnabled": false,
+          "paidProviderCalls": 0
+        }
+      },
+      "pendingEvaluation": null,
+      "lastEvaluation": {
+        "planId": "plan:90aafefccdf88d88",
+        "snapshotId": "2593e530-b9c0-4810-b646-fc125244e3bf",
+        "studyDigest": "4cb55edfea028093921a28bc746ac6355dfe3808fee6c0a62011ae62318ae975",
+        "completedAtMs": 1792878254307,
+        "status": "REJECTED_INCOMPLETE",
+        "summary": {
+          "expectedCases": 8,
+          "observedCases": 0,
+          "baselineMissedExistingPositionRouting": null,
+          "candidateMissedExistingPositionRouting": null,
+          "protectedCaseChanges": null,
+          "unsupportedCandidateOutcomes": null
+        }
+      },
+      "history": [
+        {
+          "action": "REGISTERED",
+          "atMs": 1792878243035,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-reference-v1",
+          "reason": null
+        },
+        {
+          "action": "REJECTED_INCOMPLETE",
+          "atMs": 1792878254307,
+          "fromVersionId": "private:r71-reference-v1",
+          "toVersionId": "private:r71-reference-v1",
+          "reason": null
+        }
+      ],
+      "maturity": "QA_REJECTED"
+    },
+    "snapshots": [
+      {
+        "snapshotId": "2593e530-b9c0-4810-b646-fc125244e3bf",
+        "period": {
+          "startMs": 1792791842797,
+          "endMs": 1792878242797
+        },
+        "frozenAtMs": 1792878242831,
+        "totalRecords": 1,
+        "totalEntries": 8,
+        "membershipDigest": "8b2f7df57f9959ce596b28661caf235d5ac92c276343edcafedeb5fdff2ee67c"
+      },
+      {
+        "snapshotId": "f4d9bbd8-1dd8-4a53-9821-9bf92c879002",
+        "period": {
+          "startMs": 1792791842169,
+          "endMs": 1792878242169
+        },
+        "frozenAtMs": 1792878242199,
+        "totalRecords": 0,
+        "totalEntries": 0,
+        "membershipDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    ],
+    "operations": [
+      {
+        "operationId": "op:3ca5df4c0b307a40cc9e0319033bae0c",
+        "revision": 3,
+        "action": "EVALUATE",
+        "stateDigest": "0b1b5a6bafb1b343191e5a50a892a7fd26843a17681a2aaef635b77df2d48f0c",
+        "storedAtMs": 1792878254358
+      },
+      {
+        "operationId": "op:165dfc1f52b40e26637335607bef470d",
+        "revision": 2,
+        "action": "REGISTER",
+        "stateDigest": "a51603628f81d45662ce29fe1c914cb8a3e061ca905f25d521e310ae856a185c",
+        "storedAtMs": 1792878243078
+      },
+      {
+        "operationId": "op:715367cfd2492a30e27412d051c7859f",
+        "revision": 1,
+        "action": "STUDY",
+        "stateDigest": "1edbcdeac4e95fdfbc4f4d56e508025d797d96ef34c5ab2b718986b975d07442",
+        "storedAtMs": 1792878242958
+      },
+      {
+        "operationId": "op:04e2ffac89099e59cc61e6782c88dc2f",
+        "revision": 0,
+        "action": "INITIALIZE",
+        "stateDigest": "37c1666a0a425a701558a61d42c1d8a08a5e60e5275dfb3c03f3e54126a3e70b",
+        "storedAtMs": 1792878242103
+      }
+    ],
+    "operationalReady": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "internalCoreRetuning": false,
+    "independentRuntimeAttestation": false,
+    "commercialPerformanceCertified": false,
+    "productionChanged": false,
+    "paidGenerationEnabled": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "manualOperatorControlPreserved": true
+  },
+  "browser": {
+    "identity": "EXPLICIT_LOCAL_AUTH_SESSION_FIXTURE",
+    "realIdentityVerified": false,
+    "adminFeedInjected": false,
+    "browserOriginTransport": "HTTP_LITERAL_LOOPBACK",
+    "backendGatewayTlsVerified": true,
+    "playwright": "1.56.1",
+    "chromium": "141.0.7390.37",
+    "adminReads": 2,
+    "adminMutations": 1,
+    "blockedRequests": 0,
+    "webSockets": 0,
+    "pageErrors": [],
+    "consoleErrors": [],
+    "mobile": {
+      "width": 320,
+      "document": 320,
+      "body": 320
+    },
+    "rollbackViaActualEndpoint": true
+  },
+  "gatewayCalls": [
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/rest/v1/jenios_platform_admin_permissions",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 401,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_freeze_study",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_freeze_study"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_study_page",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_study_page"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_freeze_study",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_freeze_study"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_study_page",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_study_page"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_validation_cases",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_validation_cases"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_validation_cases",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_validation_cases"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_freeze_study",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_freeze_study"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_study_page",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_study_page"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_ingest_private_observation",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_ingest_private_observation"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_freeze_study",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_freeze_study"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_study_page",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_study_page"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_validation_cases",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_validation_cases"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_validation_cases",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_validation_cases"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_now",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_now"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_append_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_append_state"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_state",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_state"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r71_read_overview",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r71_read_overview"
+    }
+  ],
+  "intakeEvents": [
+    {
+      "requestBodySha256": "d508f9d6faa6ad47988982c1daa4b908d147f59e7dc45038ef8c507b3d215953",
+      "bytes": 13100,
+      "httpStatus": 202,
+      "status": "STORED",
+      "recordDigest": "d38e1d91aa9e97fa4ae8e0c90cd007db2af65f361fbb02ae515afdeb69064560",
+      "observedAtMs": 1792878224586
+    },
+    {
+      "requestBodySha256": "d508f9d6faa6ad47988982c1daa4b908d147f59e7dc45038ef8c507b3d215953",
+      "bytes": 13100,
+      "httpStatus": 200,
+      "status": "ALREADY_STORED",
+      "recordDigest": "d38e1d91aa9e97fa4ae8e0c90cd007db2af65f361fbb02ae515afdeb69064560",
+      "observedAtMs": 1792878224979
+    },
+    {
+      "requestBodySha256": "bf108fbf59a791daeccff690a348296b6eb373d0a335cf3bf363f1822d961e7e",
+      "bytes": 13277,
+      "httpStatus": 202,
+      "status": "STORED",
+      "recordDigest": "bb5f87cb42411419224ef3d02a91073fb4c9085350302568560cb3b0895abb18",
+      "observedAtMs": 1792878226836
+    },
+    {
+      "requestBodySha256": "47c8e34b4240bc625875f3ccf12e6dbda4a9f66e48d7fdc680f4f30ae44b4161",
+      "bytes": 13107,
+      "httpStatus": 202,
+      "status": "STORED",
+      "recordDigest": "5dca2df0a9f66d2b0deff1ff175c4ab8465a638f0660ac708a535d3e4b2627cd",
+      "observedAtMs": 1792878237369
+    },
+    {
+      "requestBodySha256": "b19955e9ce39628fc48e418b292ba2f21727dbc7fdfc11e2d2472952e4112f13",
+      "bytes": 13100,
+      "httpStatus": 202,
+      "status": "STORED",
+      "recordDigest": "00a30109bba16ea211959b03f5bde9ba0aba4b7e0732d3a595785f3f3ba8f77c",
+      "observedAtMs": 1792878240463
+    },
+    {
+      "requestBodySha256": "4a23dd9cdcd23ef0468d8f19790b46641c0e7fb3cd2724a6306f17ea1da1bd14",
+      "bytes": 13100,
+      "httpStatus": 202,
+      "status": "STORED",
+      "recordDigest": "cb7d051512c44b3ba70247287afb38e2946be4ba17e46c43e8ab848fa9534a88",
+      "observedAtMs": 1792878242615
+    },
+    {
+      "requestBodySha256": "995eb936c8abb257055f5388344ff653a681bb83d8e2c6d822966e545e3eed4e",
+      "bytes": 13100,
+      "httpStatus": 404,
+      "status": null,
+      "recordDigest": null,
+      "observedAtMs": 1792878255852
+    }
+  ],
+  "cases": [
+    {
+      "name": "isolated PostgreSQL and an actual R71 Next build are selected with ephemeral TLS",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous and nonadministrative identities cannot read or initialize the private cycle",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit administrative tick initializes state while source queries remain separately signed and scoped",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline contextual capture reaches Next SDK and commits before its HTTPS acknowledgement is lost",
+      "status": "PASS"
+    },
+    {
+      "name": "a restarted source retransmits the same signed record without new private decisions",
+      "status": "PASS"
+    },
+    {
+      "name": "the complete contextual study freezes membership and registers eight cases before their real window",
+      "status": "PASS"
+    },
+    {
+      "name": "the actual source produces eight signed validation cases inside the PostgreSQL clock window",
+      "status": "PASS"
+    },
+    {
+      "name": "the worker durably applies the bounded candidate after complete measured improvement",
+      "status": "PASS"
+    },
+    {
+      "name": "the same source instance consumes generation one and changes only assisted open position routing",
+      "status": "PASS"
+    },
+    {
+      "name": "stale administrative CAS is refused and the real browser shell exposes no anonymous feed",
+      "status": "PASS"
+    },
+    {
+      "name": "the authenticated browser reads actual Next state and performs a durable administrative rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "the same source consumes rollback generation two and cannot reapply the retired candidate",
+      "status": "PASS"
+    },
+    {
+      "name": "a separate history that misses the registered window is rejected without invented cases",
+      "status": "PASS"
+    },
+    {
+      "name": "disabled routes perform no Auth or SQL and original records plus inactive boundaries remain intact",
+      "status": "PASS"
+    }
+  ],
+  "pass": 14,
+  "fail": 0,
+  "notRun": 0,
+  "failure": null,
+  "independentHostOrIdentityAttestation": false,
+  "hostedMigrationsApplied": 0,
+  "mergePerformed": false,
+  "deployPerformed": false,
+  "operationalReady": false,
+  "customerMonitoringActive": false,
+  "privateOperationalSourceActive": false,
+  "internalCoreRetuning": false,
+  "independentRuntimeAttestation": false,
+  "commercialPerformanceCertified": false,
+  "productionChanged": false,
+  "paidGenerationEnabled": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "paidProviderCalls": 0,
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "manualOperatorControlPreserved": true
+}

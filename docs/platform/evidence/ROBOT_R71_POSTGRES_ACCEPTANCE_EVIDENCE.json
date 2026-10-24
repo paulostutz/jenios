@@ -1,0 +1,139 @@
+{
+  "schema": "JENIOS_R71_POSTGRES_ACCEPTANCE_V1",
+  "status": "PASS",
+  "commit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+  "capturedAt": "2026-10-24T21:44:09.858Z",
+  "database": "DISPOSABLE_LOCAL_POSTGRESQL",
+  "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+  "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+  "originalPrivateExecutableLoaded": false,
+  "originalPrivateExecutableExecuted": false,
+  "realConcurrentConnections": true,
+  "clock": "POSTGRESQL_CLOCK_TIMESTAMP_AFTER_LOCKS",
+  "snapshotCut": "SINGLE_INSERT_SELECT_MVCC",
+  "membershipDigestAlgorithm": "SHA256_POSTGRESQL_JSONB_TEXT_UTF8_V1",
+  "signatureAuthenticationLayer": "APPLICATION_VERIFIER",
+  "sqlCryptographicSignatureVerification": false,
+  "serviceRoleBypassesRls": true,
+  "scopeIsolation": "EXPLICIT_RPC_AND_SERVER_STORE_BINDING",
+  "snapshotRecords": 33,
+  "snapshotPages": 4,
+  "lateCommitRecordsInNextSnapshot": 34,
+  "validationCases": 8,
+  "incompleteValidationCases": 3,
+  "syntheticRoutingBaselineMisses": 3,
+  "syntheticRoutingCandidateMisses": 0,
+  "finalWrapperGeneration": 2,
+  "capTestRetainedPairs": 257,
+  "counts": {
+    "total": 21,
+    "passed": 21,
+    "failed": 0,
+    "notRun": 0
+  },
+  "checks": [
+    {
+      "name": "isolated R71 extension applies twice without replacing R64/R65/R67 functions or deleting history",
+      "status": "PASS"
+    },
+    {
+      "name": "all R71 tables use RLS; anon/authenticated lack table/RPC access and service_role lacks update/delete",
+      "status": "PASS"
+    },
+    {
+      "name": "initial state and exact operation retry are durable; conflicting operation/key are rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "native R67 and contextual R71 pair admit atomically with matching DB-owned times and exact retry",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL rejects null/type/decision sidecar inconsistencies before leaving any native or contextual row",
+      "status": "PASS"
+    },
+    {
+      "name": "a preexisting bare R67 record cannot be enriched retrospectively into R71",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent bare R67 winner prevents sidecar enrichment after lock acquisition",
+      "status": "PASS"
+    },
+    {
+      "name": "one MVCC membership cut freezes 33 records while an uncommitted contextual pair appears only in the next snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "four immutable pages cover all records beyond read30 and JS membership digest equals actual PostgreSQL JSONB digest",
+      "status": "PASS"
+    },
+    {
+      "name": "snapshot operation conflicts, future periods, oversized pages and foreign source access fail closed",
+      "status": "PASS"
+    },
+    {
+      "name": "real concurrent CAS connections admit one next revision and reject the stale loser",
+      "status": "PASS"
+    },
+    {
+      "name": "eight immutable cases register before the real DB window; admission before the window leaves no rows",
+      "status": "PASS"
+    },
+    {
+      "name": "validation cases are derived atomically from signed batches during the real clock window, including an explicit incomplete batch",
+      "status": "PASS"
+    },
+    {
+      "name": "a second batch cannot replace registered cases or leave an orphan native R67 admission",
+      "status": "PASS"
+    },
+    {
+      "name": "DB clock is re-read after native locks: a capture that waits across window end is rejected without native/contextual rows",
+      "status": "PASS"
+    },
+    {
+      "name": "complete measured 3-to-0 routing comparison with zero protected changes promotes only the bounded wrapper generation1",
+      "status": "PASS"
+    },
+    {
+      "name": "incomplete registered evidence cannot be promoted by forged derived state; rejection permanently retires that candidate history",
+      "status": "PASS"
+    },
+    {
+      "name": "authenticated-actor rollback preserves history, restores reference generation2 and prevents a system-actor rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "overview and frozen study remain readable after apply/rollback with immutable version operation history",
+      "status": "PASS"
+    },
+    {
+      "name": "257 valid signed contextual pairs exceed the ceiling: snapshot rejects atomically instead of truncating or leaving orphan members",
+      "status": "PASS"
+    },
+    {
+      "name": "existing R64/R65 table contents and the bare R67 original remain unchanged through the complete cycle",
+      "status": "PASS"
+    }
+  ],
+  "operationalReady": false,
+  "customerMonitoringActive": false,
+  "privateOperationalSourceActive": false,
+  "internalCoreRetuning": false,
+  "independentRuntimeAttestation": false,
+  "commercialPerformanceCertified": false,
+  "productionChanged": false,
+  "paidGenerationEnabled": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "paidProviderCalls": 0,
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "manualOperatorControlPreserved": true,
+  "productionDatabaseAccessed": false,
+  "migrationAppliedToSupabase": false,
+  "productionConfigurationChanged": false,
+  "actualHostIdentityVerified": false
+}

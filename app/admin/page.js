@@ -35,6 +35,7 @@ const LINKS={
  ],
  sistemas:[
   ['E-mails institucionais','Entregas, preferências e edições do Radar de Mercado','/admin/emails','✉'],
+  ['Gênio e Gênia','Avaliações autorizadas e assuntos para revisão','/admin/assistentes','◉'],
   ['Dashboard','Visão geral da negociação educacional','/dashboard','▧'],
   ['Mesa e gráficos','Estudos, TradingView e controles','/mesa-operacoes','▥'],
   ['Hub','Cotações e observações atuais','/tendencias','↗']

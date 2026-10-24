@@ -1,3 +1,3 @@
-import AssistantRoom from '../../components/assistant/AssistantRoom';
-export const metadata={title:'Gênio e Gênia · Atendimento | JENIOS',description:'Ajuda da Platform e consultas informativas com identificação de fonte e limites.'};
-export default function Page(){return <AssistantRoom/>;}
+import FreeAssistantRoom from '../../components/assistant/FreeAssistantRoom';
+export const metadata={title:'Gênio e Gênia · Atendimento | JENIOS',description:'Atendimento, planos e suporte com continuidade de conversa.'};
+export default function Page(){return <main style={{minHeight:'100vh',background:'#edf2f7',padding:'30px 15px',color:'#172033'}}><div style={{maxWidth:850,margin:'auto'}}><a href="/dashboard-logado">← Voltar à Platform</a><h1>Gênio e Gênia · Atendimento JENIOS</h1><p>Converse sobre os planos, os serviços e como usar a plataforma. Os dois personagens compartilham os mesmos critérios de atendimento.</p><FreeAssistantRoom standalone/><nav style={{display:'flex',gap:16,flexWrap:'wrap',padding:'20px 0'}} aria-label="Outros atendimentos"><a href="/platform/assistente/consultas">Hub, BankScore e Validador: consultas protegidas →</a><a href="/genios-pro">Atendimento avançado do seu plano →</a><a href="/checkout">Conhecer os planos →</a></nav></div></main>;}

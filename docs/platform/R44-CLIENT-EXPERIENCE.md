@@ -20,8 +20,16 @@ Consulta pública em 24/10/2026 21:43 UTC: 82 pools únicos, 23 na faixa etária
 ## Limites e trabalhos simultâneos
 Produção Inter: certificado válido e correspondente; chave Pix ausente e provedor não selecionado na leitura administrativa. Proprietário está cadastrando INTER_PIX_KEY diretamente na Vercel Production. Nenhuma cobrança ou pagamento foi criado. A conexão efetiva e a emissão bancária ainda não estão certificadas.
 
-Gênio/Gênia G43/G44 está em ativação no chat “Retomar desenvolvimento Jenios”. Esta revisão não substitui seus arquivos nem reaplica suas migrações. A revisão comercial deve partir do checkpoint final desse trabalho, antes do fechamento global.
+Integração coordenada com G44 publicada (9eb3a528120149abe2e09acc6f2d5c740c2f451d). Preserva memória contextual, migrações já aplicadas, isolamento, limites e configurações. O outro chat confirmou a pausa de novas publicações enquanto a PR5 é integrada. O verificador R44 usa os 1.008 arquivos dessa versão publicada como base e hashes exatos para cada alteração revisada; nenhum motor financeiro/e-mail/corretora ou migração está liberado para alteração.
 
 A liberação R44 em Preview é restrita à branch exata fix/jenios-experience-r44-20261024, projeto jenios-platform-homologacao, Supabase Social staging e Platform dedicado. Geração paga, cobranças e disparos externos ficam bloqueados nesse ambiente. Nenhuma proteção de produção foi removida.
 
 Fonte técnica da ampliação por rede: https://www.coingecko.com/learn/how-to-track-new-tokens-onchain (consulta em 24/10/2026).
+
+## Atendimento comercial
+
+O atendimento guiado e as instruções do modelo usam qualificação por necessidade, benefícios verificáveis, resposta direta a objeções de preço, tempo, complexidade e confiança, e um próximo passo claro. Referências curtas como “B3” após uma comparação preservam o contexto; recusa encerra ofertas e sugestões comerciais; cancelamento e login continuam sendo suporte. Relato de dificuldade financeira ou tentativa de recuperar perdas interrompe a venda. Preços, memória, orçamento, franquias e gates de geração permanecem os da G44; a falta de chave OpenAI não é mascarada como geração ativa.
+
+A abordagem de perguntas e valor usa como referência metodológica o material público da Huthwaite (https://www.huthwaiteinternational.com/spin-methodology, consulta 24/10/2026). Não representa certificação, reprodução do treinamento ou prova de aumento de conversão nesta aplicação. Não há descontos, depoimentos, escassez, lucro ou franquias inventados.
+
+Validação adicional: conversas de múltiplos turnos exercitam objeções, escolha do menor escopo, Universidade separada, desistência, cancelamento com nome de plano, dificuldade financeira e contratação direta. A certificação final será feita sobre o commit combinado, distinta da CI inicial 40135599914.

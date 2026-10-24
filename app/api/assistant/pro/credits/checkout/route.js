@@ -1,13 +1,8 @@
-import {getJeniosPayAdmin} from '../../../../../../lib/jenios-pay-admin';
-import {requirePayToken} from '../../../../../../lib/pay/auth.mjs';
-import {assertProTopupEnvironment,handleProTopups,PRO_TOPUP_HEADERS} from '../../../../../../lib/assistant/pro-topups.mjs';
-export const dynamic='force-dynamic';
-export const runtime='nodejs';
-export async function POST(request){
- try{
-  requirePayToken(request);assertProTopupEnvironment();
-  return await handleProTopups(request,{action:'checkout',db:getJeniosPayAdmin()});
- }catch(error){
-  return Response.json({ok:false,state:'not_started',credited:false,code:error.code||'PRO_TOPUP_UNAVAILABLE',error:error.status?error.message:'A compra de créditos Pro está temporariamente indisponível.'},{status:error.status||503,headers:PRO_TOPUP_HEADERS});
- }
+/** B282: no more prepaid AI credits; existing historical settlements remain read-only internally. */
+export const dynamic='force-dynamic';export const runtime='nodejs';
+const headers={'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'};
+export async function POST(){
+ return Response.json({ok:false,code:'AI_CREDITS_SALES_DISABLED',
+  error:'O suporte avançado está incluído exclusivamente nos planos de R$ 149,90 e R$ 199,90. Não há pacotes avulsos.'},
+ {status:410,headers});
 }

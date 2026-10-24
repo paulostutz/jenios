@@ -1,7 +1,8 @@
 import {getJeniosPayAdmin} from '../../../../lib/jenios-pay-admin';
 import {requirePayToken} from '../../../../lib/pay/auth.mjs';
 import {handleAssistant} from '../../../../lib/assistant/service.mjs';
-// Grátis é sempre offline/local: este endpoint nunca utiliza uma API generativa paga.
+// Support remains free to the user. Optional generative support has its own
+// server budget; legacy unbudgeted model configuration remains disabled.
 import {ASSISTANT_HEADERS} from '../../../../lib/assistant/contracts.mjs';
 import {GET as trends} from '../../tendencias/route';
 import {GET as bankscoreSearch} from '../../bankscore/instituicoes/route';
@@ -11,5 +12,5 @@ import {POST as cryptoBasic} from '../../crypto-validator/route';
 import {POST as cryptoFull} from '../../crypto-validator/detailed/route';
 export const runtime='nodejs';export const dynamic='force-dynamic';export const maxDuration=60;
 const handlers={trends,bankscoreSearch,bankscoreBasic,bankscoreFull,cryptoBasic,cryptoFull};
-async function handle(request){try{requirePayToken(request);return await handleAssistant(request,{db:getJeniosPayAdmin(),handlers,env:{...process.env,OPENAI_API_KEY:'',JENIOS_ASSISTANT_MODEL:''}});}catch(e){return Response.json({ok:false,error:e.status?e.message:'Atendimento não configurado.',executionEnabled:false},{status:e.status||503,headers:ASSISTANT_HEADERS});}}
+async function handle(request){try{requirePayToken(request);const env=process.env.JENIOS_SALES_GENERATIVE_ENABLED==='true'?{...process.env,JENIOS_ASSISTANT_MODEL:''}:{...process.env,OPENAI_API_KEY:'',JENIOS_ASSISTANT_MODEL:''};return await handleAssistant(request,{db:getJeniosPayAdmin(),handlers,env});}catch(e){return Response.json({ok:false,error:e.status?e.message:'Atendimento não configurado.',executionEnabled:false},{status:e.status||503,headers:ASSISTANT_HEADERS});}}
 export const GET=handle;export const POST=handle;

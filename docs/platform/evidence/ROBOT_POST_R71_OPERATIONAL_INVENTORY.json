@@ -1,0 +1,253 @@
+{
+  "schema": "JENIOS_POST_R71_OPERATIONAL_INVENTORY_V1",
+  "recordedAtUtc": "2026-10-24T22:17:43.826367+00:00",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "classification": "READ_ONLY_METADATA_AND_STATIC_CODE_REVIEW",
+  "certifiedBase": {
+    "sha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "backupRef": "refs/heads/backup/jenios-robot-r71-private-evolution-certified-20261024",
+    "backupSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "researchRef": "refs/heads/research/jenios-robot-r71-private-evolution-20261024",
+    "researchSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "ci": {
+      "id": 40135970938,
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+      "url": "https://github.com/paulostutz/jenios/actions/runs/40135970938",
+      "updatedAtUtc": "2026-10-24T21:54:52Z"
+    },
+    "allReferencesMatch": true,
+    "checkpointAndLedgerReadBeforeChanges": true
+  },
+  "vercel": {
+    "request": {
+      "tool": "vercel_list_deployments",
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "sha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+      "limit": 100
+    },
+    "authenticatedReadOnly": true,
+    "inspectedAtUtc": "2026-10-24 22:08:21 UTC",
+    "targetOrStateFilterUsed": false,
+    "response": {
+      "pagination": {
+        "count": 0
+      },
+      "deployments": []
+    },
+    "environmentMetadataCompleteness": false,
+    "secretsRequested": false,
+    "configurationChanged": false
+  },
+  "environmentMetadata": {
+    "plan": "docs/platform/evidence/ROBOT_POST_R71_VERCEL_METADATA_QUERY_PLAN.json",
+    "completeEnvironmentVerified": false,
+    "truncatedQueryRepeated": false,
+    "decryptedValueEndpointsUsed": false,
+    "cliInstalled": false,
+    "credentialsInspected": false,
+    "browserUsed": false,
+    "metadataPlanStatus": "BLOCKED_CURRENT_CONNECTOR_CANNOT_COMPLETE_INHERITED_METADATA"
+  },
+  "supabase": {
+    "target": {
+      "projectId": "xaicvhagftzjkqphnbgx",
+      "projectName": "jenios-platform-homologacao",
+      "region": "sa-east-1",
+      "organizationId": "koojywpbydrsxrkpbxab",
+      "status": "ACTIVE_HEALTHY",
+      "postgresVersion": "17.11.0.003",
+      "postgresMajor": "17",
+      "releaseChannel": "ga",
+      "metadataCallsReturned": [
+        "supabase_get_project",
+        "supabase_list_branches"
+      ],
+      "branchesReturned": [],
+      "metadataObservedAtUtc": null,
+      "timestampQualification": "The metadata responses returned before the catalog attempt; their exact acquisition timestamp was not recorded. preparedAtUtc is the report preparation time, not their acquisition time.",
+      "historicalReferences": [
+        "docs/platform/R45-B72-PUBLICACAO-CONTROLADA.md",
+        "docs/platform/CP70-ACEITE-AUTENTICADO.md",
+        "docs/platform/evidence/ROBOT_R69_TARGET_INVENTORY.json"
+      ],
+      "platformIdentityEstablishedForMetadataInspection": true,
+      "dedicatedRobotQaIsolationIndependentlyVerified": false,
+      "approvedDeploymentBindingVerified": false,
+      "safeForCurrentReadOnlyCatalogInspection": true,
+      "authorizedForHostedWriteOrMigration": false,
+      "socialOrOtherProjectQueried": false
+    },
+    "detailedCatalog": {
+      "status": "INTERRUPTED_WITHOUT_RESULT",
+      "tool": "supabase_execute_sql",
+      "projectId": "xaicvhagftzjkqphnbgx",
+      "attempts": 1,
+      "queryReturned": false,
+      "providerErrorReturned": false,
+      "toolOutcome": "aborted by user after 483.7s",
+      "observedDurationSeconds": 483.7,
+      "startedAtUtc": null,
+      "completedAtUtc": null,
+      "queryType": "One WITH ... SELECT over pg_catalog plus builtin metadata/privilege functions",
+      "expectedRobotTables": 16,
+      "expectedRobotFunctions": 39,
+      "querySha256": "b818812fc78470d65f2ddf2bc6a99a04911a7a1b75d5703005ca55c8c81396be",
+      "queriesAgainstCustomerOrAuthRows": 0,
+      "mutatingRpcCalls": 0,
+      "serverCompletionKnown": false,
+      "interpretation": "No detailed SQL catalogue result is available from this attempt. The separate compact-table fallback below did return; functions, definitions and grants remain unverified. The SQL query was not retried.",
+      "interruptedBy": "ASSISTANT_INTERRUPTED_SUBAGENT_AFTER_NO_RESULT",
+      "toolOutcomeQualification": "The tool used the wording aborted by user; the supervising assistant interrupted the waiting subagent. This was not a new user instruction or an automatic approval rejection."
+    },
+    "compactTables": {
+      "schema": "JENIOS_POST_R71_COMPACT_TABLE_INVENTORY_V1",
+      "tool": "supabase_list_tables",
+      "request": {
+        "project_id": "xaicvhagftzjkqphnbgx",
+        "schemas": [
+          "public"
+        ],
+        "verbose": false
+      },
+      "authenticatedReadOnly": true,
+      "receivedBeforeUtc": "2026-10-24 22:14:54 UTC",
+      "durationSeconds": 1.5,
+      "responseShape": "{tables:[...]}",
+      "publicTablesReturned": 6,
+      "returnedTruncationOrPaginationMarker": false,
+      "expectedRobotTables": [
+        "jenios_robot_events_r64",
+        "jenios_robot_config_r64",
+        "jenios_robot_budgets_r64",
+        "jenios_robot_cycles_r64",
+        "jenios_robot_observation_provenance_r65",
+        "jenios_robot_reconciliations_r65",
+        "jenios_robot_archives_r65",
+        "jenios_robot_archive_items_r65",
+        "jenios_robot_evolution_r65",
+        "jenios_robot_validation_cases_r65",
+        "jenios_robot_private_captures_r67",
+        "jenios_robot_private_evolution_r71",
+        "jenios_robot_private_observations_r71",
+        "jenios_robot_private_studies_r71",
+        "jenios_robot_private_study_members_r71",
+        "jenios_robot_private_validation_cases_r71"
+      ],
+      "matchedRobotTables": [],
+      "robotTablesNotReturned": [
+        "jenios_robot_events_r64",
+        "jenios_robot_config_r64",
+        "jenios_robot_budgets_r64",
+        "jenios_robot_cycles_r64",
+        "jenios_robot_observation_provenance_r65",
+        "jenios_robot_reconciliations_r65",
+        "jenios_robot_archives_r65",
+        "jenios_robot_archive_items_r65",
+        "jenios_robot_evolution_r65",
+        "jenios_robot_validation_cases_r65",
+        "jenios_robot_private_captures_r67",
+        "jenios_robot_private_evolution_r71",
+        "jenios_robot_private_observations_r71",
+        "jenios_robot_private_studies_r71",
+        "jenios_robot_private_study_members_r71",
+        "jenios_robot_private_validation_cases_r71"
+      ],
+      "unrelatedNamesPersisted": false,
+      "rowCountsPersisted": false,
+      "commentsPersisted": false,
+      "columnsRequested": false,
+      "customerRowsQueried": false,
+      "functionCatalogVerified": false,
+      "grantsVerified": false,
+      "completeHostedSchemaAccepted": false,
+      "interpretation": "The authenticated compact public table listing returned six tables and none of the sixteen expected robot tables. This is a table-list observation only; the detailed SQL/function/privilege query did not return. No installation or schema acceptance is certified."
+    },
+    "schemaPlan": "docs/platform/evidence/ROBOT_POST_R71_HOSTED_DATABASE_PLAN.json",
+    "minimumPrivateOrder": [
+      "db/schema/robot-r67-private-capture-store.sql",
+      "db/schema/robot-r71-private-evolution-store.sql"
+    ],
+    "separateR65Order": [
+      "db/schema/robot-r64-operational-store.sql",
+      "db/schema/robot-r65-lifecycle-store.sql"
+    ],
+    "hostedSchemaAccepted": false
+  },
+  "privateHost": {
+    "originalCoreLocatedAndExecutedInCertifiedQa": true,
+    "coreReconstructionRequired": false,
+    "acceptedHostResourceId": null,
+    "acceptedVolumeResourceId": null,
+    "realCustodyVerified": false,
+    "externalFenceVerified": false,
+    "independentWitnessVerified": false,
+    "plan": "docs/platform/ROBOT_POST_R71_HOST_ACCEPTANCE_PLAN.md",
+    "otherHostsExcludedBySearch": false
+  },
+  "scheduler": {
+    "explicitCliExists": "scripts/platform/research/r71-cycle-worker.mjs",
+    "endpointExists": "/api/platform/internal/robot-private-evolution",
+    "continuousR71SupervisorInCheckout": false,
+    "hostedSchedulerAccepted": false,
+    "r68SupervisorTargets": "R65_ONLY"
+  },
+  "remainingDependencies": [
+    {
+      "id": "ACCEPTED_PERSISTENT_PRIVATE_HOST",
+      "status": "IDENTITY_AND_CUSTODY_PENDING",
+      "required": "Existing host and volume immutable IDs, owner, process controller, custody, external writer fence and independent rollback witness."
+    },
+    {
+      "id": "EXACT_QA_DEPLOYMENT",
+      "status": "ZERO_DEPLOYMENTS_FOR_CERTIFIED_R71_SHA",
+      "required": "Explicitly accepted QA deployment with team/project/repository/SHA/deployment/origin binding; deployment is prohibited in the current scope."
+    },
+    {
+      "id": "COMPLETE_ENVIRONMENT_METADATA",
+      "status": "CURRENT_CONNECTOR_CAPABILITY_INSUFFICIENT",
+      "required": "Complete applicable project and shared metadata without exposing values. Empty branch overrides are not inherited configuration evidence."
+    },
+    {
+      "id": "ACCEPTED_HOSTED_DATABASE",
+      "status": "EXPECTED_TABLES_NOT_RETURNED_DETAILED_CATALOG_UNVERIFIED",
+      "required": "Accept isolated QA target, complete exact catalog review and explicitly authorize the pinned schema preparation. No hosted migration is authorized now."
+    },
+    {
+      "id": "REAL_ADMINISTRATIVE_IDENTITY",
+      "status": "NOT_EXERCISED_ON_HOSTED_TARGET",
+      "required": "Actual Platform administrator/member/reports-only identities and the documented endpoint/origin matrix in accepted QA."
+    },
+    {
+      "id": "R71_SCHEDULER_AND_SOURCE",
+      "status": "COMPONENTS_EXIST_HOST_BINDING_PENDING",
+      "required": "Use the existing R71 tick/CLI/endpoint with an identified controller and observe the source within the registered prospective window."
+    },
+    {
+      "id": "OPERATIONAL_SOURCE_CONTRACT",
+      "status": "SEPARATE_FUTURE_SCOPE_NOT_QA_ACTIVATION",
+      "required": "Identify and accept the operational decision/data hook and its provenance. Existing B297 synthetic inputs do not authorize customer data."
+    }
+  ],
+  "boundaries": {
+    "productionChanged": false,
+    "mergePerformed": false,
+    "deploymentsCreated": 0,
+    "hostedMigrationsApplied": 0,
+    "hostedMutatingRpcCalls": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerRowsRead": 0,
+    "authRowsRead": 0,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  }
+}

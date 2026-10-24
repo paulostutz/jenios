@@ -1,0 +1,272 @@
+{
+  "schema": "JENIOS_POST_R71_VERCEL_METADATA_QUERY_PLAN_V1",
+  "preparedAtUtc": "2026-10-24 22:06:38 UTC",
+  "purpose": "JENIOS_ROBOTS_ONLY_READ_ONLY_METADATA_INVENTORY",
+  "baseCommit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+  "target": {
+    "projectName": "jenios-ecossistem",
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+    "researchBranch": "research/jenios-robot-r71-private-evolution-20261024"
+  },
+  "status": "BLOCKED_CURRENT_CONNECTOR_CANNOT_COMPLETE_INHERITED_METADATA",
+  "completedThisInvestigation": {
+    "repositoryReadOnly": true,
+    "connectorCapabilitiesInspected": true,
+    "authenticatedAccountQueriesExecuted": 0,
+    "repeatedTruncatedEnvironmentQuery": false,
+    "publicOfficialDocumentationRead": true,
+    "cliExecutableAvailableOnPath": false,
+    "cliInstalled": false,
+    "cliCredentialFilesRead": false,
+    "cliAuthenticationState": "NOT_INSPECTED",
+    "browserUsed": false,
+    "repositoryFilesChanged": 0,
+    "remoteChanges": 0
+  },
+  "priorObservation": {
+    "artifact": "docs/platform/evidence/ROBOT_R71_TARGET_INVENTORY.json",
+    "completeEnvironmentVerified": false,
+    "returnedUnfilteredItems": 100,
+    "omittedArrayItems": 100,
+    "truncated": true,
+    "branchSpecificQueryEmptyDoesNotIncludeInheritedRows": true,
+    "customEnvironmentsPreviouslyReturned": 0,
+    "priorInventoryIsNotARefreshedObservation": true
+  },
+  "connectorLimitations": [
+    {
+      "tool": "vercel_filter_project_envs",
+      "supportedQueryFields": [
+        "idOrName",
+        "teamId",
+        "slug",
+        "decrypt",
+        "gitBranch",
+        "customEnvironmentId",
+        "customEnvironmentSlug",
+        "source"
+      ],
+      "absentQueryFields": [
+        "limit",
+        "cursor",
+        "next",
+        "from",
+        "until",
+        "search",
+        "key",
+        "keys",
+        "target",
+        "fields"
+      ],
+      "reason": "No advertised route to split global preview rows or project only metadata before provider truncation. source denotes request source, not a documented metadata or pagination option."
+    },
+    {
+      "tool": "vercel_get_project_env",
+      "excluded": true,
+      "reason": "Explicitly returns decrypted value; no decrypt=false parameter."
+    },
+    {
+      "tool": "vercel_get_shared_env_var",
+      "excluded": true,
+      "reason": "Explicitly returns decrypted shared variable value."
+    },
+    {
+      "capability": "GET /v1/env scoped shared-variable list",
+      "availableInCurrentToolRegistry": false,
+      "reason": "Public API exists, but no callable list-shared-env wrapper or generic authenticated REST wrapper was found."
+    },
+    {
+      "tools": [
+        "vercel_get_project",
+        "vercel_get_deployment"
+      ],
+      "reason": "No advertised fields projection. Project/deployment metadata can establish identity but does not certify complete effective environment inheritance. Do not probe env or buildEnv values."
+    }
+  ],
+  "conditionalNextPath": {
+    "name": "AUTHORIZED_EXISTING_CLI_SESSION_WITH_TRUSTED_METADATA_PROJECTION",
+    "executed": false,
+    "feasibleInPrinciple": true,
+    "readyInCurrentWorkspace": false,
+    "requiredBeforeExecution": [
+      "A usable Vercel CLI in an explicitly authorized already authenticated context; credentials handled only by the CLI, never opened, copied, printed or passed in command arguments.",
+      "Inspect pinned CLI api --help / endpoint discovery without accessing project values. Do not auto-login, link, pull, switch workspaces or create token/share links.",
+      "A trusted streaming or in-memory projection must retain only the metadata allowlist before any tool output or saved file. Raw API response must not be printed, logged, persisted, included in error messages or hashed as purported metadata evidence.",
+      "Explicit decrypt=false for project list. Decrypted response markers reject the capture.",
+      "If the requirement means no value bytes may even transit a trusted process, this path remains blocked: the documented response schema includes value and has no server-side fields exclusion."
+    ],
+    "projectRequest": {
+      "method": "GET",
+      "path": "/v10/projects/prj_44ipBY3R9sHlQDAXY7NUn1zDguw4/env",
+      "query": {
+        "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+        "decrypt": "false"
+      },
+      "gitBranchFilter": null,
+      "rationale": "Full raw project list outside connector presentation truncation is needed to include rows with no gitBranch. No documented pagination or fields filter exists for this route.",
+      "commandTemplateNotExecuted": {
+        "binary": "vercel",
+        "args": [
+          "api",
+          "/v10/projects/prj_44ipBY3R9sHlQDAXY7NUn1zDguw4/env?teamId=team_yDZgXm0NnWvHwT6xUijH3xn0&decrypt=false",
+          "--method",
+          "GET",
+          "--scope",
+          "team_yDZgXm0NnWvHwT6xUijH3xn0",
+          "--raw",
+          "--non-interactive"
+        ],
+        "stdout": "TRUSTED_METADATA_PROJECTOR_ONLY",
+        "stderr": "SANITIZED_STATUS_ONLY"
+      }
+    },
+    "sharedRequest": {
+      "method": "GET",
+      "path": "/v1/env",
+      "query": {
+        "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+        "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0"
+      },
+      "documentedFilters": [
+        "projectId",
+        "search",
+        "ids",
+        "exclude_ids",
+        "exclude-ids",
+        "exclude_projectId",
+        "exclude-projectId",
+        "teamId",
+        "slug"
+      ],
+      "documentedResponseIncludesPagination": true,
+      "paginationCursorQueryNotDocumentedOnEndpointPage": true,
+      "commandTemplateNotExecuted": {
+        "binary": "vercel",
+        "args": [
+          "api",
+          "/v1/env?projectId=prj_44ipBY3R9sHlQDAXY7NUn1zDguw4&teamId=team_yDZgXm0NnWvHwT6xUijH3xn0",
+          "--method",
+          "GET",
+          "--scope",
+          "team_yDZgXm0NnWvHwT6xUijH3xn0",
+          "--raw",
+          "--paginate",
+          "--non-interactive"
+        ],
+        "condition": "Use only after CLI help/implementation establishes supported pagination. Require terminal pagination evidence; do not invent until/from cursor parameters."
+      },
+      "rationale": "Only shared variables explicitly linked to this project are in scope. Search can narrow a known required-name set but cannot prove complete inheritance for unknown names."
+    }
+  },
+  "sanitizedCapture": {
+    "allowedRowFields": [
+      "id",
+      "key",
+      "type",
+      "visibility",
+      "target",
+      "gitBranch",
+      "customEnvironmentIds",
+      "applyToAllCustomEnvironments",
+      "createdAt",
+      "updatedAt",
+      "configurationId"
+    ],
+    "derivedSafeFields": [
+      "linkedToRequestedProject",
+      "sourceLayer"
+    ],
+    "discardedWithoutInspection": [
+      "value",
+      "values",
+      "env",
+      "buildEnv",
+      "comment",
+      "contentHint",
+      "createdBy",
+      "updatedBy",
+      "lastEditedByDisplayName",
+      "lastEditedByPrincipal",
+      "otherProjectIds",
+      "tokens",
+      "cookies",
+      "authorization"
+    ],
+    "robotNameSelection": {
+      "prefixes": [
+        "JENIOS_ROBOT_"
+      ],
+      "explicitNames": [
+        "JENIOS_QA_CANDIDATE_ENABLED",
+        "JENIOS_REAL_EXECUTION_ENABLED",
+        "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+        "JENIOS_PRIVATE_PAPER_EXECUTOR",
+        "PLATFORM_SUPABASE_URL",
+        "PLATFORM_SUPABASE_SERVICE_ROLE_KEY",
+        "PLATFORM_ADMIN_USER_IDS",
+        "NEXT_PUBLIC_PLATFORM_SUPABASE_URL",
+        "NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY"
+      ],
+      "unrelatedProjectMetadata": "Do not request. For rows of this same project outside the robot name set, preserve only aggregate counts, not names/details."
+    },
+    "provenanceFields": [
+      "acquiredAtUtc",
+      "requestedProjectId",
+      "requestedTeamId",
+      "requestPath",
+      "requestMethod",
+      "requestedDecryptFalse",
+      "httpStatus",
+      "sourceLayer",
+      "pageOrdinal",
+      "pagination",
+      "providerTruncationMarkers",
+      "rawResponseNotPersisted",
+      "sanitizedMetadataSha256"
+    ],
+    "flagsAlwaysFalse": [
+      "secretValuesInspected",
+      "secretValuesPersisted",
+      "credentialsReadByAssistant",
+      "operationalReady",
+      "hostedIdentityVerified",
+      "customerMonitoringActive"
+    ]
+  },
+  "completenessRules": [
+    "Require successful documented response shape, complete HTTP body and no provider truncation/incompleteness markers.",
+    "For any paginated source, every page must retain the exact project/team filter; detect repeated cursors/duplicate IDs and require a terminal next cursor.",
+    "Project rows with no gitBranch plus rows for the intended branch must be accounted for; an empty branch-only response does not establish absence of inherited rows.",
+    "Account for shared variables linked to this exact project and applicable target/custom environment; missing shared-layer evidence leaves completeness false.",
+    "Do not infer flag values, source binding, QA isolation or operational readiness from key names, visibility, count or complete metadata.",
+    "Metadata completeness is separate from the independent control-plane deployment/SHA proof. A zero-deployment result is still a blocker even with complete metadata."
+  ],
+  "rejectedWorkarounds": [
+    "Repeat the same truncated filter_project_envs query.",
+    "Treat source parameter as undocumented pagination or metadata projection.",
+    "Invent unsupported key/target/limit/cursor arguments.",
+    "Use single-variable decrypt endpoints.",
+    "Use env pull, env run, login, link, switch, debug output or raw env ls JSON.",
+    "Read auth files, environment token values, service keys or another project's environment settings.",
+    "Use Browser, protected-URL share link creation, deployment logs or runtime dumps to obtain environment values."
+  ],
+  "officialSources": [
+    {
+      "url": "https://vercel.com/docs/rest-api/projects/retrieve-the-environment-variables-of-a-project-by-id-or-name",
+      "supports": "GET v10 project environment filters, decrypt option and value-bearing response without fields/pagination query."
+    },
+    {
+      "url": "https://vercel.com/docs/rest-api/environment/lists-all-shared-environment-variables-for-a-team",
+      "supports": "GET v1 shared list projectId/search/ids filtering and pagination response."
+    },
+    {
+      "url": "https://vercel.com/docs/cli/api",
+      "supports": "Automatic CLI-session authentication, --raw and --paginate."
+    },
+    {
+      "url": "https://vercel.com/docs/cli/env",
+      "supports": "Environment and branch listing do not by themselves prove all inherited metadata."
+    }
+  ]
+}

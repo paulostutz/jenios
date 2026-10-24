@@ -1,0 +1,119 @@
+{
+  "schema": "JENIOS_POST_R71_OPERATIONAL_CHECKPOINT_V1",
+  "preparedAtUtc": "2026-10-24T22:17:43.826367+00:00",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "status": "PREPARED_HOSTED_EXECUTION_BLOCKED",
+  "preparationComplete": true,
+  "newRobotCertification": false,
+  "certifiedCodeRemains": {
+    "sha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "backupRef": "refs/heads/backup/jenios-robot-r71-private-evolution-certified-20261024",
+    "backupSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "researchRef": "refs/heads/research/jenios-robot-r71-private-evolution-20261024",
+    "researchSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "ci": {
+      "id": 40135970938,
+      "status": "completed",
+      "conclusion": "success",
+      "headSha": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+      "url": "https://github.com/paulostutz/jenios/actions/runs/40135970938",
+      "updatedAtUtc": "2026-10-24T21:54:52Z"
+    },
+    "allReferencesMatch": true,
+    "checkpointAndLedgerReadBeforeChanges": true
+  },
+  "researchBranch": "research/jenios-robot-operational-handoff-20261024",
+  "preparedBackupBranch": "backup/jenios-robot-operational-handoff-prepared-20261024",
+  "backupClassification": "DOCUMENTARY_PREPARATION_NOT_HOSTED_CERTIFICATION",
+  "artifacts": [
+    "docs/platform/ROBOT_POST_R71_OPERATIONAL_HANDOFF.md",
+    "docs/platform/ROBOT_POST_R71_HOST_ACCEPTANCE_PLAN.md",
+    "docs/platform/ROBOT_POST_R71_ENVIRONMENT_CONTRACT.md",
+    "docs/platform/evidence/ROBOT_POST_R71_VERCEL_METADATA_QUERY_PLAN.json",
+    "docs/platform/evidence/ROBOT_POST_R71_HOSTED_DATABASE_PLAN.json",
+    "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_INVENTORY.json",
+    "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_POST_R71_CHANGE_AUDIT.json",
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json"
+  ],
+  "completed": [
+    "Certified R71 backup/research/SHA/checkpoint/ledger/final CI checked before editing.",
+    "Current zero-deployment R71 SHA lookup and connected Platform project metadata recorded.",
+    "Detailed SQL catalog interruption recorded without invented results; compact table metadata fallback acquired separately.",
+    "Four schema file hashes and all 39 expected function body hashes verified statically.",
+    "Minimum R67-to-R71 and separate R64-to-R65 dependencies documented.",
+    "Existing host, outbox, doctor, pins, preflight, explicit R71 worker and administrative identity contract mapped.",
+    "Cross-review clarified Origin semantics, tick CLI existence, VM flag and R65-only supervisor.",
+    "Complete inherited environment inventory remains explicitly unverified; no decrypted values retrieved."
+  ],
+  "validation": {
+    "kind": "DOCUMENT_AND_MANIFEST_CHECKS_ONLY",
+    "newSyntheticTestsRun": 0,
+    "newBuildsRun": 0,
+    "newCertificationCiRequested": false,
+    "reusedCertificationCi": 40135970938,
+    "previousLedgerFieldsPreserved": 20,
+    "sourceCodeChanged": false,
+    "sqlSchemasChanged": false,
+    "workflowsChanged": false,
+    "existingEvidenceReattributed": false
+  },
+  "nextAction": "Identify/accept actual host and isolated QA target, then obtain explicit scope for QA deployment and hosted schema preparation before executing this handoff.",
+  "remainingDependencies": [
+    {
+      "id": "ACCEPTED_PERSISTENT_PRIVATE_HOST",
+      "status": "IDENTITY_AND_CUSTODY_PENDING",
+      "required": "Existing host and volume immutable IDs, owner, process controller, custody, external writer fence and independent rollback witness."
+    },
+    {
+      "id": "EXACT_QA_DEPLOYMENT",
+      "status": "ZERO_DEPLOYMENTS_FOR_CERTIFIED_R71_SHA",
+      "required": "Explicitly accepted QA deployment with team/project/repository/SHA/deployment/origin binding; deployment is prohibited in the current scope."
+    },
+    {
+      "id": "COMPLETE_ENVIRONMENT_METADATA",
+      "status": "CURRENT_CONNECTOR_CAPABILITY_INSUFFICIENT",
+      "required": "Complete applicable project and shared metadata without exposing values. Empty branch overrides are not inherited configuration evidence."
+    },
+    {
+      "id": "ACCEPTED_HOSTED_DATABASE",
+      "status": "EXPECTED_TABLES_NOT_RETURNED_DETAILED_CATALOG_UNVERIFIED",
+      "required": "Accept isolated QA target, complete exact catalog review and explicitly authorize the pinned schema preparation. No hosted migration is authorized now."
+    },
+    {
+      "id": "REAL_ADMINISTRATIVE_IDENTITY",
+      "status": "NOT_EXERCISED_ON_HOSTED_TARGET",
+      "required": "Actual Platform administrator/member/reports-only identities and the documented endpoint/origin matrix in accepted QA."
+    },
+    {
+      "id": "R71_SCHEDULER_AND_SOURCE",
+      "status": "COMPONENTS_EXIST_HOST_BINDING_PENDING",
+      "required": "Use the existing R71 tick/CLI/endpoint with an identified controller and observe the source within the registered prospective window."
+    },
+    {
+      "id": "OPERATIONAL_SOURCE_CONTRACT",
+      "status": "SEPARATE_FUTURE_SCOPE_NOT_QA_ACTIVATION",
+      "required": "Identify and accept the operational decision/data hook and its provenance. Existing B297 synthetic inputs do not authorize customer data."
+    }
+  ],
+  "boundaries": {
+    "productionChanged": false,
+    "mergePerformed": false,
+    "deploymentsCreated": 0,
+    "hostedMigrationsApplied": 0,
+    "hostedMutatingRpcCalls": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerRowsRead": 0,
+    "authRowsRead": 0,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "saveVerificationRule": "Research and prepared backup must resolve to the same new documentary commit; R71 certified ref stays at its original SHA. Verify local clean tree and zero deployments by the new SHA after saving. Do not create a recursive commit merely to include its own SHA or CI."
+}

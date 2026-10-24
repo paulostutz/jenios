@@ -1,0 +1,229 @@
+{
+  "schema": "JENIOS_POST_R71_CHANGE_AUDIT_V1",
+  "preparedAtUtc": "2026-10-24T22:17:43.826367+00:00",
+  "baseCommit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+  "status": "DOCUMENTATION_ONLY_REVIEWED",
+  "expectedChangedFiles": [
+    "docs/platform/ROBOT_POST_R71_OPERATIONAL_HANDOFF.md",
+    "docs/platform/ROBOT_POST_R71_HOST_ACCEPTANCE_PLAN.md",
+    "docs/platform/ROBOT_POST_R71_ENVIRONMENT_CONTRACT.md",
+    "docs/platform/evidence/ROBOT_POST_R71_VERCEL_METADATA_QUERY_PLAN.json",
+    "docs/platform/evidence/ROBOT_POST_R71_HOSTED_DATABASE_PLAN.json",
+    "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_INVENTORY.json",
+    "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_POST_R71_CHANGE_AUDIT.json",
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json"
+  ],
+  "contentHashesExcludingAuditSelf": [
+    {
+      "path": "docs/platform/ROBOT_POST_R71_OPERATIONAL_HANDOFF.md",
+      "bytes": 17819,
+      "sha256": "d57c241245a8458a565615dca9a3ae2a62deb6b5bde925f93de4d27f2a0e9e1a"
+    },
+    {
+      "path": "docs/platform/ROBOT_POST_R71_HOST_ACCEPTANCE_PLAN.md",
+      "bytes": 21997,
+      "sha256": "1c3f4a784cf9c6325583ebdf240a14f21e50204c1750023c65443f55376a6d54"
+    },
+    {
+      "path": "docs/platform/ROBOT_POST_R71_ENVIRONMENT_CONTRACT.md",
+      "bytes": 12945,
+      "sha256": "23ad78033870245c09181ef612842675b7e0b75dd777ca57c33e8956f1da5726"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_POST_R71_VERCEL_METADATA_QUERY_PLAN.json",
+      "bytes": 10742,
+      "sha256": "7e702070462189ce8031125bd826f32801cebf6e1e1826caf238ab3c8a8fbe1e"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_POST_R71_HOSTED_DATABASE_PLAN.json",
+      "bytes": 40344,
+      "sha256": "b525aa59baa45176c12dd71325cbf8993205ddbf3adc47cb01a89a2251299052"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_INVENTORY.json",
+      "bytes": 10735,
+      "sha256": "151be8957c1bbf758b7e69700148c64dc9e8acdca2c8e894a7e0f176e0150d84"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_POST_R71_OPERATIONAL_CHECKPOINT.json",
+      "bytes": 6071,
+      "sha256": "6e60dcc5bdbae697c74a0cfd3c53bbd3d2354cfca8c60d8b7633ac8dba32e45d"
+    },
+    {
+      "path": "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+      "bytes": 187865,
+      "sha256": "d760449e3d4a65e1b6b3cb41dcfed2fec56d07638527535fca409b5dcdb5cc23"
+    }
+  ],
+  "previousLedgerFields": [
+    {
+      "name": "schema",
+      "canonicalJsonSha256": "c92b3a7ae0210e42dacb22534924179aa4b0f2fa034379ef6e7c4c61a3c27d7f",
+      "preserved": true
+    },
+    {
+      "name": "generatedAt",
+      "canonicalJsonSha256": "3418a19e34e692f17e1342fa85080565c74df48bdb5bb7c0200e8fcd8d5251b2",
+      "preserved": true
+    },
+    {
+      "name": "scope",
+      "canonicalJsonSha256": "dad88f09c1dd2a5a03f4e0fdb2cfa9189f9c95bec5a8d436f05844331696b847",
+      "preserved": true
+    },
+    {
+      "name": "globalRules",
+      "canonicalJsonSha256": "db6b86aaad48721132db87b8d5ddd547be16a95977d42eaacdd8bf4ac58e5ffa",
+      "preserved": true
+    },
+    {
+      "name": "robots",
+      "canonicalJsonSha256": "6831e2fdb52d4841f14998dd27c04a0a701ee676b78be13e1314d54377dcf405",
+      "preserved": true
+    },
+    {
+      "name": "certifiedBlocks",
+      "canonicalJsonSha256": "ec74b8ce03722652444057c89dab222d692ac70990a0068bace02927c2e45315",
+      "preserved": true
+    },
+    {
+      "name": "nextObjectives",
+      "canonicalJsonSha256": "7690357c096c3666c38c794343dbe04c3685ff69b34b5d99ceca073dcf6e06a5",
+      "preserved": true
+    },
+    {
+      "name": "finalCertification",
+      "canonicalJsonSha256": "3f3af4f9c66df44f2a0e034d8703de2c76ffc3ebad9c7e0d72b292ad7a6f5afe",
+      "preserved": true
+    },
+    {
+      "name": "operationalCloseout",
+      "canonicalJsonSha256": "783ee177b28a40b9ee2fa3f5a3d876a2e37ef828c1c1fde23026bcb53dcb1313",
+      "preserved": true
+    },
+    {
+      "name": "qaPolicyIntegration",
+      "canonicalJsonSha256": "03773010cc69456657be6b15892ec26198888a63a225dbf97e75c64ec88c5f12",
+      "preserved": true
+    },
+    {
+      "name": "qaBoundaryCloseout",
+      "canonicalJsonSha256": "030ce172ab7aa01e473a427099f02b7eb14bc849d9fd996eb66b5114bc8d491a",
+      "preserved": true
+    },
+    {
+      "name": "continuousImprovement",
+      "canonicalJsonSha256": "db51f3c177ccce4d2ae1f4dec62b447d538f8488ac541f4788069852a74eb359",
+      "preserved": true
+    },
+    {
+      "name": "operationalObservationIntegration",
+      "canonicalJsonSha256": "74119e3004e95278d6992904ab1c179739be61b27ade0503dae152fa51b1bf51",
+      "preserved": true
+    },
+    {
+      "name": "durableEvolutionCycle",
+      "canonicalJsonSha256": "f95f8af2e3f80fd2772cf8e000a25b57ee2f8ab068a42df74830b4bcb7972998",
+      "preserved": true
+    },
+    {
+      "name": "durableEmitterIntegration",
+      "canonicalJsonSha256": "c7d7509b69161f6d10481cf202055200416ddc4d35532703ce856b660c22aaaa",
+      "preserved": true
+    },
+    {
+      "name": "privateSourceBridge",
+      "canonicalJsonSha256": "f512fc1fa52b67e712f830c27ae0a466603a2c2c17bbfef699548068a90ded5f",
+      "preserved": true
+    },
+    {
+      "name": "privateHostReadiness",
+      "canonicalJsonSha256": "3efb381dc21bedd54dc1646a9db0cf7c55b6d302e93c617d266b1774a731aca3",
+      "preserved": true
+    },
+    {
+      "name": "httpsPrivateHostIntegration",
+      "canonicalJsonSha256": "9fa4afe5f630e2e3fd8922178520c911b03a179b76d16d1faec73452d4a34580",
+      "preserved": true
+    },
+    {
+      "name": "targetPreflightIntegration",
+      "canonicalJsonSha256": "66b750fcccfd15344215f50b53f62af5885d518bfef1fc06c0619b6d73f84537",
+      "preserved": true
+    },
+    {
+      "name": "privateEvolutionIntegration",
+      "canonicalJsonSha256": "daf06bf0000ba68df6c83115994e6669ce3fa6cf8ca5ad84695ba8bef8e72b9d",
+      "preserved": true
+    }
+  ],
+  "newLedgerField": "operationalHandoffPreparation",
+  "staticSchemaManifest": {
+    "filesVerified": 4,
+    "functionBodyHashesVerified": 39,
+    "newDatabaseExecutions": 0,
+    "files": [
+      {
+        "path": "db/schema/robot-r64-operational-store.sql",
+        "fileHashVerified": true,
+        "functionBodiesVerified": 8
+      },
+      {
+        "path": "db/schema/robot-r65-lifecycle-store.sql",
+        "fileHashVerified": true,
+        "functionBodiesVerified": 15
+      },
+      {
+        "path": "db/schema/robot-r67-private-capture-store.sql",
+        "fileHashVerified": true,
+        "functionBodiesVerified": 2
+      },
+      {
+        "path": "db/schema/robot-r71-private-evolution-store.sql",
+        "fileHashVerified": true,
+        "functionBodiesVerified": 14
+      }
+    ]
+  },
+  "workflowAndDeploymentExclusionReview": {
+    "inspected": 118,
+    "newResearchBranch": "research/jenios-robot-operational-handoff-20261024",
+    "newBackupBranch": "backup/jenios-robot-operational-handoff-prepared-20261024",
+    "matchingPushWorkflows": [],
+    "researchDeploymentExclusionsPresent": true,
+    "noWorkflowModified": true
+  },
+  "reviewCorrections": [
+    "R71 explicit tick CLI exists; only continuous supervisor and registered cron are absent from this checkout.",
+    "The source authenticates by Ed25519 signatures; its identity is not the scheduler bearer token.",
+    "Expected revision/digest are administrative ROLLBACK input fields, not required TICK body fields.",
+    "Bearer POST without Origin is accepted with a configured canonical origin; present wrong Origin is rejected.",
+    "Private core execution examples require Node VM modules; offline check does not execute the VM.",
+    "Detailed SQL query interruption belongs to the supervising assistant, not a new instruction from the user.",
+    "Compact table-list fallback is independent of the interrupted detailed SQL query and does not verify functions/grants."
+  ],
+  "codeChanged": false,
+  "databaseSchemaFilesChanged": false,
+  "previousCertificationEvidenceChanged": false,
+  "newSyntheticTestsOrBuilds": 0,
+  "boundaries": {
+    "productionChanged": false,
+    "mergePerformed": false,
+    "deploymentsCreated": 0,
+    "hostedMigrationsApplied": 0,
+    "hostedMutatingRpcCalls": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerRowsRead": 0,
+    "authRowsRead": 0,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  }
+}

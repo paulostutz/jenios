@@ -1,0 +1,792 @@
+{
+  "schema": "JENIOS_R71_HOSTED_DATABASE_READ_ONLY_PLAN_V1",
+  "classification": "PARTIAL_READ_ONLY_PREPARATION_NOT_HOSTED_ACCEPTANCE",
+  "preparedAtUtc": "2026-10-24T22:14:57.146806+00:00",
+  "baseCommit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+  "repository": "paulostutz/jenios",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "repositoryChangedByThisTask": false,
+  "target": {
+    "projectId": "xaicvhagftzjkqphnbgx",
+    "projectName": "jenios-platform-homologacao",
+    "region": "sa-east-1",
+    "organizationId": "koojywpbydrsxrkpbxab",
+    "status": "ACTIVE_HEALTHY",
+    "postgresVersion": "17.11.0.003",
+    "postgresMajor": "17",
+    "releaseChannel": "ga",
+    "metadataCallsReturned": [
+      "supabase_get_project",
+      "supabase_list_branches"
+    ],
+    "branchesReturned": [],
+    "metadataObservedAtUtc": null,
+    "timestampQualification": "The metadata responses returned before the catalog attempt; their exact acquisition timestamp was not recorded. preparedAtUtc is the report preparation time, not their acquisition time.",
+    "historicalReferences": [
+      "docs/platform/R45-B72-PUBLICACAO-CONTROLADA.md",
+      "docs/platform/CP70-ACEITE-AUTENTICADO.md",
+      "docs/platform/evidence/ROBOT_R69_TARGET_INVENTORY.json"
+    ],
+    "platformIdentityEstablishedForMetadataInspection": true,
+    "dedicatedRobotQaIsolationIndependentlyVerified": false,
+    "approvedDeploymentBindingVerified": false,
+    "safeForCurrentReadOnlyCatalogInspection": true,
+    "authorizedForHostedWriteOrMigration": false,
+    "socialOrOtherProjectQueried": false
+  },
+  "currentCatalogAttempt": {
+    "status": "INTERRUPTED_WITHOUT_RESULT",
+    "tool": "supabase_execute_sql",
+    "projectId": "xaicvhagftzjkqphnbgx",
+    "attempts": 1,
+    "queryReturned": false,
+    "providerErrorReturned": false,
+    "toolOutcome": "aborted by user after 483.7s",
+    "observedDurationSeconds": 483.7,
+    "startedAtUtc": null,
+    "completedAtUtc": null,
+    "queryType": "One WITH ... SELECT over pg_catalog plus builtin metadata/privilege functions",
+    "expectedRobotTables": 16,
+    "expectedRobotFunctions": 39,
+    "querySha256": "b818812fc78470d65f2ddf2bc6a99a04911a7a1b75d5703005ca55c8c81396be",
+    "queryText": "WITH expected_relations(name) AS (VALUES\n  ('jenios_robot_events_r64'),\n  ('jenios_robot_config_r64'),\n  ('jenios_robot_budgets_r64'),\n  ('jenios_robot_cycles_r64'),\n  ('jenios_robot_observation_provenance_r65'),\n  ('jenios_robot_reconciliations_r65'),\n  ('jenios_robot_archives_r65'),\n  ('jenios_robot_archive_items_r65'),\n  ('jenios_robot_evolution_r65'),\n  ('jenios_robot_validation_cases_r65'),\n  ('jenios_robot_private_captures_r67'),\n  ('jenios_robot_private_evolution_r71'),\n  ('jenios_robot_private_observations_r71'),\n  ('jenios_robot_private_studies_r71'),\n  ('jenios_robot_private_study_members_r71'),\n  ('jenios_robot_private_validation_cases_r71')\n), expected_functions(signature) AS (VALUES\n  ('public.jenios_robot_r64_ingest(jsonb)'),\n  ('public.jenios_robot_r64_read_receipts(jsonb)'),\n  ('public.jenios_robot_r64_claim_cycle(jsonb)'),\n  ('public.jenios_robot_r64_read_cycle(jsonb)'),\n  ('public.jenios_robot_r64_analyst_policy(jsonb)'),\n  ('public.jenios_robot_r64_reserve_dispatch(jsonb)'),\n  ('public.jenios_robot_r64_complete_cycle(jsonb)'),\n  ('public.jenios_robot_r64_read_reports(jsonb)'),\n  ('public.jenios_robot_r65_digest(jsonb)'),\n  ('public.jenios_robot_r65_ingest_observation(jsonb)'),\n  ('public.jenios_robot_r65_guard_archive()'),\n  ('public.jenios_robot_r65_disable_only()'),\n  ('public.jenios_robot_r65_guard_cycle()'),\n  ('public.jenios_robot_r65_reconcile_cost(jsonb)'),\n  ('public.jenios_robot_r65_read_evolution(jsonb)'),\n  ('public.jenios_robot_r65_append_evolution(jsonb)'),\n  ('public.jenios_robot_r65_read_cycle_hypothesis(jsonb)'),\n  ('public.jenios_robot_r65_record_validation_case(jsonb)'),\n  ('public.jenios_robot_r65_read_validation_cases(jsonb)'),\n  ('public.jenios_robot_r65_archive_preview(jsonb)'),\n  ('public.jenios_robot_r65_archive_commit(jsonb)'),\n  ('public.jenios_robot_r65_read_archive(jsonb)'),\n  ('public.jenios_robot_r65_read_overview(jsonb)'),\n  ('public.jenios_robot_r67_ingest_private_capture(jsonb)'),\n  ('public.jenios_robot_r67_read_private_captures(jsonb)'),\n  ('public.jenios_robot_r71_digest(jsonb)'),\n  ('public.jenios_robot_r71_fields(jsonb,text[])'),\n  ('public.jenios_robot_r71_integer(jsonb,bigint,bigint)'),\n  ('public.jenios_robot_r71_version(jsonb)'),\n  ('public.jenios_robot_r71_scope(jsonb)'),\n  ('public.jenios_robot_r71_now(jsonb)'),\n  ('public.jenios_robot_r71_ingest_private_observation(jsonb)'),\n  ('public.jenios_robot_r71_freeze_study(jsonb)'),\n  ('public.jenios_robot_r71_read_study_page(jsonb)'),\n  ('public.jenios_robot_r71_read_state(jsonb)'),\n  ('public.jenios_robot_r71_read_validation_cases(jsonb)'),\n  ('public.jenios_robot_r71_read_overview(jsonb)'),\n  ('public.jenios_robot_r71_plan(jsonb)'),\n  ('public.jenios_robot_r71_append_state(jsonb)')\n), relations AS (\n  SELECT e.name,c.oid,c.relkind,c.relrowsecurity\n  FROM expected_relations e LEFT JOIN pg_catalog.pg_class c\n    ON c.oid=pg_catalog.to_regclass('public.'||e.name)\n), functions AS (\n  SELECT e.signature,p.oid,p.prosecdef\n  FROM expected_functions e LEFT JOIN pg_catalog.pg_proc p\n    ON p.oid=pg_catalog.to_regprocedure(e.signature)\n)\nSELECT jsonb_build_object(\n  'observedAtUtc',to_char(clock_timestamp() AT TIME ZONE 'UTC','YYYY-MM-DD HH24:MI:SS')||' UTC',\n  'serverVersion',current_setting('server_version'),\n  'robotRelationsExpected',(SELECT count(*) FROM relations),\n  'robotRelationsPresent',(SELECT count(*) FROM relations WHERE oid IS NOT NULL),\n  'missingRobotRelations',(SELECT coalesce(jsonb_agg(name ORDER BY name),'[]'::jsonb) FROM relations WHERE oid IS NULL),\n  'unexpectedRelationKinds',(SELECT coalesce(jsonb_agg(name ORDER BY name),'[]'::jsonb) FROM relations WHERE oid IS NOT NULL AND relkind NOT IN('r','p')),\n  'relationsWithoutRls',(SELECT coalesce(jsonb_agg(name ORDER BY name),'[]'::jsonb) FROM relations WHERE oid IS NOT NULL AND NOT relrowsecurity),\n  'robotFunctionsExpected',(SELECT count(*) FROM functions),\n  'robotFunctionsPresent',(SELECT count(*) FROM functions WHERE oid IS NOT NULL),\n  'missingRobotFunctions',(SELECT coalesce(jsonb_agg(signature ORDER BY signature),'[]'::jsonb) FROM functions WHERE oid IS NULL),\n  'securityDefinerFunctions',(SELECT coalesce(jsonb_agg(signature ORDER BY signature),'[]'::jsonb) FROM functions WHERE oid IS NOT NULL AND prosecdef),\n  'requiredRoles',(SELECT coalesce(jsonb_agg(jsonb_build_object('name',rolname,'bypassRls',rolbypassrls) ORDER BY rolname),'[]'::jsonb)\n    FROM pg_catalog.pg_roles WHERE rolname IN('anon','authenticated','service_role')),\n  'platformAdminPermissionTable',(SELECT jsonb_build_object('present',c.oid IS NOT NULL,'rls',c.relrowsecurity,\n    'anonSelect',CASE WHEN c.oid IS NOT NULL THEN has_table_privilege('anon',c.oid,'SELECT') ELSE NULL END,\n    'authenticatedSelect',CASE WHEN c.oid IS NOT NULL THEN has_table_privilege('authenticated',c.oid,'SELECT') ELSE NULL END,\n    'serviceRoleSelect',CASE WHEN c.oid IS NOT NULL THEN has_table_privilege('service_role',c.oid,'SELECT') ELSE NULL END)\n    FROM (SELECT pg_catalog.to_regclass('public.jenios_platform_admin_permissions') AS oid) x\n    LEFT JOIN pg_catalog.pg_class c ON c.oid=x.oid)\n) AS catalog_inventory;\n",
+    "queriesAgainstCustomerOrAuthRows": 0,
+    "mutatingRpcCalls": 0,
+    "serverCompletionKnown": false,
+    "interpretation": "No detailed SQL catalogue result is available from this attempt. The separate compact-table fallback below did return; functions, definitions and grants remain unverified. The SQL query was not retried.",
+    "interruptedBy": "ASSISTANT_INTERRUPTED_SUBAGENT_AFTER_NO_RESULT",
+    "toolOutcomeQualification": "The tool used the wording aborted by user; the supervising assistant interrupted the waiting subagent. This was not a new user instruction or an automatic approval rejection."
+  },
+  "priorCatalogEvidence": {
+    "file": "docs/platform/evidence/ROBOT_R69_TARGET_INVENTORY.json",
+    "recordedAt": "2026-10-24 19:33:47 UTC",
+    "coveredRevisions": [
+      "R64",
+      "R65",
+      "R67"
+    ],
+    "robotRelationsObserved": [],
+    "robotFunctionsObserved": [],
+    "coversR71": false,
+    "interpretation": "Historical R69 observation only; it must not be restated as a current R71 catalog result."
+  },
+  "schemaPlan": {
+    "files": [
+      {
+        "path": "db/schema/robot-r64-operational-store.sql",
+        "sha256": "5a377a85f86ec3f7044409050eeb35e2ae0a67e7d1050b6b8bf35c13731e4d3c",
+        "bytes": 28294,
+        "tables": [
+          "jenios_robot_events_r64",
+          "jenios_robot_config_r64",
+          "jenios_robot_budgets_r64",
+          "jenios_robot_cycles_r64"
+        ],
+        "functions": [
+          {
+            "name": "jenios_robot_r64_ingest",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_ingest(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "2cf5fbb2cba6e0ca67693a3331d79c5ad3501328dbf8e854cab556b2d6a35bcc",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_read_receipts",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_read_receipts(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "7279e5de2dbe609fadfe50e9d2a6c7295421c461300792b2f18d86672ae4a41d",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_claim_cycle",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_claim_cycle(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "f0203b07d0d89ee5e57cc1581197e06fecdaf8f0687f32854651a19f238515f6",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_read_cycle",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_read_cycle(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "4e994e0b67909f10c453785959728063d31d78e4b0e2ce6190943f2c235490f4",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_analyst_policy",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_analyst_policy(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "8898af50f62a97036bdda47150a3b5ffe0ae4c157e55935e7a4487e6f2f1b16e",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_reserve_dispatch",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_reserve_dispatch(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "e71233d5d67b27b4a3041ffe1a6fb0167dbf07f4dee48aee6f4bd74fa1eeb3a9",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_complete_cycle",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_complete_cycle(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "669fcb0541dd6ee4776e74b383f0b22118382ab409b023a0a71d7139f593115a",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r64_read_reports",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r64_read_reports(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "0f92840034ac51c4c74b7c9c28c70d180251fab66f31ce73cc42da8cac476ad6",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          }
+        ],
+        "tableCount": 4,
+        "functionCount": 8,
+        "fullRobotBundleOrder": 1,
+        "dependencies": [],
+        "sha256Scope": "Exact UTF-8 file bytes at the certified repository SHA; not a database installation attestation"
+      },
+      {
+        "path": "db/schema/robot-r65-lifecycle-store.sql",
+        "sha256": "0c9234f8b6f7d8d23725971663be82b4c69592224027760d895c505074d54887",
+        "bytes": 48610,
+        "tables": [
+          "jenios_robot_observation_provenance_r65",
+          "jenios_robot_reconciliations_r65",
+          "jenios_robot_archives_r65",
+          "jenios_robot_archive_items_r65",
+          "jenios_robot_evolution_r65",
+          "jenios_robot_validation_cases_r65"
+        ],
+        "functions": [
+          {
+            "name": "jenios_robot_r65_digest",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_digest(jsonb)",
+            "expectedReturnType": "text",
+            "expectedBodySha256": "a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_ingest_observation",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_ingest_observation(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "87341020c03e3cc8708f2c23a95df7d70accbe9c3740a5c282bacc7364bd6dc0",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_guard_archive",
+            "argumentTypes": [],
+            "signature": "public.jenios_robot_r65_guard_archive()",
+            "expectedReturnType": "trigger",
+            "expectedBodySha256": "15c0a2c9b29ed3a1031162c0c641928949e90fc0599bb3ef546bb39d03415acf",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_disable_only",
+            "argumentTypes": [],
+            "signature": "public.jenios_robot_r65_disable_only()",
+            "expectedReturnType": "trigger",
+            "expectedBodySha256": "1c2e66ff7426a15f705f56321697582b54f2ad921e5dfe10aa0c4a9c5f70a560",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_guard_cycle",
+            "argumentTypes": [],
+            "signature": "public.jenios_robot_r65_guard_cycle()",
+            "expectedReturnType": "trigger",
+            "expectedBodySha256": "e50b43555b583a901eeb6e58777a9c17567a998ba47f5dd6ed4f663766f205a1",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_reconcile_cost",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_reconcile_cost(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "e99cbe7c4b9bc5cb8b9d65695a4e9e75d4a2405ff8fed087791aa1b88ec6eafd",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_read_evolution",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_read_evolution(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "c6b2cd9409891d6016f3b2ec5313a09db567f09f8ca7ec7e63319e7351e2a49b",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_append_evolution",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_append_evolution(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "4f1b97e6edcb93c19ee05d1e3904b09c69b0d30a382426c964d09fe4236ccf68",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_read_cycle_hypothesis",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_read_cycle_hypothesis(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "0df9022a5a6f34433fd49bbeb276e5be4e5953e22681ee2632befdbea0ed1b62",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_record_validation_case",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_record_validation_case(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "78222d261ba42aa156d55e410d6c4d7cf9f86b34d09fc023396da67c4e0d1bee",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_read_validation_cases",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_read_validation_cases(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "1a72bb7bf8e98779393794814e90de0d3edf447d45c28447bc88a2dfdcc30f66",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_archive_preview",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_archive_preview(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "988734da7b56f2f830cc86d8f5a58f44a857651fd1dbbc565dad0cf0d6a9baa9",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_archive_commit",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_archive_commit(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "dae24264396ea334f9e4706cd6ffbcb8ad267d952a2cba6dc4749d732c06328c",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_read_archive",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_read_archive(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "4e8d9bb030b8df75f541387adbb3b2123ee08576f31be21793697aaf9677d0c7",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r65_read_overview",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r65_read_overview(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "a47c8dcfcddf597062b36536f00f3ac0b9f4b8de9cf5ee04973d8e909875faf0",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          }
+        ],
+        "tableCount": 6,
+        "functionCount": 15,
+        "fullRobotBundleOrder": 2,
+        "dependencies": [
+          "db/schema/robot-r64-operational-store.sql"
+        ],
+        "sha256Scope": "Exact UTF-8 file bytes at the certified repository SHA; not a database installation attestation"
+      },
+      {
+        "path": "db/schema/robot-r67-private-capture-store.sql",
+        "sha256": "5172c89d6f94cbfa50ae789fd2df09e9843c63a81d663a798971833ae7dec58b",
+        "bytes": 20774,
+        "tables": [
+          "jenios_robot_private_captures_r67"
+        ],
+        "functions": [
+          {
+            "name": "jenios_robot_r67_ingest_private_capture",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r67_ingest_private_capture(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "8cda57ef996770e6cafad99bb5fd6b06ea37a12246081e4ff74fc49a54881e03",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r67_read_private_captures",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r67_read_private_captures(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "c935f72e2de63b8ffc12d8d34c8e267a3399cf11798c57577503f9b8f9827869",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          }
+        ],
+        "tableCount": 1,
+        "functionCount": 2,
+        "fullRobotBundleOrder": 3,
+        "dependencies": [],
+        "sha256Scope": "Exact UTF-8 file bytes at the certified repository SHA; not a database installation attestation"
+      },
+      {
+        "path": "db/schema/robot-r71-private-evolution-store.sql",
+        "sha256": "8edeee3a14fbce217dc0538bf3aedd56fe32aaafa06bc01994374c922b723b49",
+        "bytes": 57103,
+        "tables": [
+          "jenios_robot_private_evolution_r71",
+          "jenios_robot_private_observations_r71",
+          "jenios_robot_private_studies_r71",
+          "jenios_robot_private_study_members_r71",
+          "jenios_robot_private_validation_cases_r71"
+        ],
+        "functions": [
+          {
+            "name": "jenios_robot_r71_digest",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_digest(jsonb)",
+            "expectedReturnType": "text",
+            "expectedBodySha256": "a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_fields",
+            "argumentTypes": [
+              "jsonb",
+              "text[]"
+            ],
+            "signature": "public.jenios_robot_r71_fields(jsonb,text[])",
+            "expectedReturnType": "boolean",
+            "expectedBodySha256": "b81c110bc9018f193fed894f4f3a41a60a4e725c735c01d5bba30604da2c14ed",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_integer",
+            "argumentTypes": [
+              "jsonb",
+              "bigint",
+              "bigint"
+            ],
+            "signature": "public.jenios_robot_r71_integer(jsonb,bigint,bigint)",
+            "expectedReturnType": "boolean",
+            "expectedBodySha256": "13237bfa140323743eba75ecca8f6cbc119138e2eb1b7d9243d6346717e7cf6e",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_version",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_version(jsonb)",
+            "expectedReturnType": "boolean",
+            "expectedBodySha256": "90a5be04b1c68e7f76db07efb158b04d767200a671421e20f178677842b95122",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_scope",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_scope(jsonb)",
+            "expectedReturnType": "boolean",
+            "expectedBodySha256": "256693979129bb88493d39a27af4a048f899a21483c9eed1fd9e6aa46f773b61",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_now",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_now(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "f15aebd90dff5816867ec10b6041f2948e01913544388c60983cf16bf0bc5abd",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_ingest_private_observation",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_ingest_private_observation(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "9ad6654b560227d975cbb16eac01fc95e8eb8eaebea1e0160638b42b51ea84d4",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_freeze_study",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_freeze_study(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "466f77d7ad985389c7491c2a12cf066098b90b6634063411129a11d0d1f7cf5e",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_read_study_page",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_read_study_page(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "efff17232141b6c3ba13bced23b6ec6833a66ef3f44224a54a6740751124c918",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_read_state",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_read_state(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "951936f1ea9e1dbd48f5bc41de7708d93993637be3431fdc51792e99b417f447",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_read_validation_cases",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_read_validation_cases(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "49d1a9b851602057254287b0df49a87e4bcfe3aa830b87131cf8e00beb9e5d45",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_read_overview",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_read_overview(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "c7376520e04a47f61a3f577245e1573ceed7c9a6f9a8c123eed362e083ad8124",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_plan",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_plan(jsonb)",
+            "expectedReturnType": "boolean",
+            "expectedBodySha256": "8907bdcff640f14a14310dd723e5df3558c3958a7958433b73ea3e79dee397bc",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          },
+          {
+            "name": "jenios_robot_r71_append_state",
+            "argumentTypes": [
+              "jsonb"
+            ],
+            "signature": "public.jenios_robot_r71_append_state(jsonb)",
+            "expectedReturnType": "jsonb",
+            "expectedBodySha256": "5a7099a2b4840f032560661b04e111a5fd22918e4f8eb6f5d66767ec05575597",
+            "securityDefiner": false,
+            "bodyHashAlgorithm": "SHA256_PROSRC_UTF8_V1"
+          }
+        ],
+        "tableCount": 5,
+        "functionCount": 14,
+        "fullRobotBundleOrder": 4,
+        "dependencies": [
+          "db/schema/robot-r67-private-capture-store.sql"
+        ],
+        "sha256Scope": "Exact UTF-8 file bytes at the certified repository SHA; not a database installation attestation"
+      }
+    ],
+    "fullRobotBundleOrder": [
+      "db/schema/robot-r64-operational-store.sql",
+      "db/schema/robot-r65-lifecycle-store.sql",
+      "db/schema/robot-r67-private-capture-store.sql",
+      "db/schema/robot-r71-private-evolution-store.sql"
+    ],
+    "minimumPrivateR71Order": [
+      "db/schema/robot-r67-private-capture-store.sql",
+      "db/schema/robot-r71-private-evolution-store.sql"
+    ],
+    "separateR65Order": [
+      "db/schema/robot-r64-operational-store.sql",
+      "db/schema/robot-r65-lifecycle-store.sql"
+    ],
+    "explanation": "R65 extends R64 by foreign keys, nested ingest and guards. R67 is independent of R64/R65. R71 references and invokes R67 and has its own state/snapshots/cases. R68-R70 add host/transport/preflight code; no additional robot SQL schema is required by those revisions.",
+    "requiredExistingManagedRoles": [
+      "anon",
+      "authenticated",
+      "service_role"
+    ],
+    "privileges": "Robot tables have RLS enabled and deny public/anon/authenticated direct access. service_role is trusted and bypasses RLS; source/scope isolation relies on explicit server and RPC checks. R64/R65 grant only the additional writes required by their certified contracts; R67/R71 are append-only to service_role.",
+    "transactionAndCaution": "Each reviewed robot file has its own transaction. R64 seeds its disabled configuration singleton; R65 also installs/replaces named triggers. These files are not read-only inventory commands and have not been executed remotely. IF NOT EXISTS does not certify an existing table matches the reviewed definition.",
+    "staticManifestVerification": {
+      "filesVerified": 4,
+      "functionBodyHashesVerified": 39,
+      "newDatabaseExecutions": 0,
+      "files": [
+        {
+          "path": "db/schema/robot-r64-operational-store.sql",
+          "fileHashVerified": true,
+          "functionBodiesVerified": 8
+        },
+        {
+          "path": "db/schema/robot-r65-lifecycle-store.sql",
+          "fileHashVerified": true,
+          "functionBodiesVerified": 15
+        },
+        {
+          "path": "db/schema/robot-r67-private-capture-store.sql",
+          "fileHashVerified": true,
+          "functionBodiesVerified": 2
+        },
+        {
+          "path": "db/schema/robot-r71-private-evolution-store.sql",
+          "fileHashVerified": true,
+          "functionBodiesVerified": 14
+        }
+      ]
+    }
+  },
+  "identityReadiness": {
+    "existingCode": [
+      "lib/platform/admin-db.mjs",
+      "lib/platform/admin-permissions.mjs",
+      "lib/platform/supabase-client.js",
+      "lib/platform/research/robot-r68-declared-handoff.mjs",
+      "lib/platform/research/robot-r71-http.mjs"
+    ],
+    "existingMigration": {
+      "path": "supabase/migrations/20261019113500_platform_dedicated_admin_roles_cp67r1.sql",
+      "sha256": "1fd9e1cb0352fd97722d9f6e0b99c3764dcce422ad911ddbed6d14122f1cbef9",
+      "bytes": 2030,
+      "dependencies": [
+        "managed auth.users",
+        "public.jenios_platform_diagnostics",
+        "public.jenios_platform_risk_events"
+      ],
+      "reapplyRequired": false,
+      "currentCatalogVerified": false
+    },
+    "historicalProof": "CP70 documents real Platform Auth QA on 2026-10-19 and prior CP63/CP66/CP67r1 migrations; it does not certify the new R71 deployment or current administrative identity.",
+    "browserServerSeparation": "Browser uses only NEXT_PUBLIC_PLATFORM_SUPABASE_URL/PUBLISHABLE_KEY and its own storage key. Backend uses PLATFORM_SUPABASE_URL/SERVICE_ROLE_KEY; no Social fallback.",
+    "currentAdminRule": "requirePlatformAdmin calls db.auth.getUser(token), rejects anonymous users, then requires platform.admin. Admin comes from configured PLATFORM_ADMIN_USER_IDS or app_metadata.platform_role=admin. The permissions table supplies only platform.reports in the current code; inserting a platform.admin row alone does not grant administrator access.",
+    "existingAcceptanceMatrix": "Reuse the seven cases in R68_ADMIN_ACCEPTANCE_MATRIX with the current R71 admin endpoint and canonical Origin; real admin, common user, reports-only user, anonymous, invalid/expired token, incorrect Origin, authorized audited action.",
+    "realR71IdentityAcceptance": "NOT_EXECUTED",
+    "noAuthRowsRead": true,
+    "noUsersCreatedOrDeleted": true,
+    "noTokensOrKeysRetrieved": true,
+    "authRunnerCaution": "scripts/platform/cp69-authenticated-e2e.mjs creates/deletes QA users and writes diagnostics. It is historical reusable pattern, not a read-only runner and was not executed."
+  },
+  "existingAcceptanceToReuse": [
+    {
+      "file": "docs/platform/evidence/ROBOT_R71_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+      "script": "scripts/platform/research/r71-postgres-acceptance.mjs",
+      "status": "PASS",
+      "counts": {
+        "passed": 21,
+        "total": 21
+      },
+      "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+      "evidenceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "classification": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+      "hostedProof": false
+    },
+    {
+      "files": [
+        "docs/platform/evidence/ROBOT_R71_PUBLIC_EVOLUTION_ACCEPTANCE_EVIDENCE.json",
+        "docs/platform/evidence/ROBOT_R71_PRIVATE_EVOLUTION_ACCEPTANCE_EVIDENCE.json"
+      ],
+      "script": "scripts/platform/research/r71-private-evolution-acceptance.mjs",
+      "classification": "Disposable PostgreSQL plus real local Next/SDK through explicitly simulated Auth/PostgREST gateway. Private mode executes the pinned core; administrative identities remain local fixtures.",
+      "hostedProof": false
+    },
+    {
+      "scripts": [
+        "scripts/platform/research/r68-declared-handoff.mjs",
+        "scripts/platform/research/r71-private-host.mjs"
+      ],
+      "classification": "Existing offline declared configuration/host inspection; no self-issued operational approval."
+    }
+  ],
+  "minimumFutureCatalogVerification": [
+    "Run the saved exact-name presence SELECT once on an explicitly accepted target; inspect counts, RLS, required roles and permissions-table metadata only.",
+    "If objects exist, compare each pg_proc.prosrc SHA256 and return type/signature/security mode/search_path with the included per-function manifest; file SHA256 is not interchangeable with prosrc SHA256.",
+    "For existing exact robot tables, compare pg_attribute column types/not-null/defaults, pg_constraint checks/FK/PK/unique definitions, pg_index and named R65 pg_trigger metadata with the reviewed files. These are catalogue SELECTs, not reads of customer rows.",
+    "Check effective table/function grants with has_table_privilege/has_column_privilege/has_function_privilege for anon/authenticated/service_role; require SECURITY INVOKER and the reviewed fixed search_path. Do not execute ingest/freeze/append/claim/archive/reconcile RPCs as an installation probe."
+  ],
+  "remainingRealDependencies": [
+    "The compact public-table list did not return any of the sixteen expected robot tables. Detailed function, definition, role and grant verification remains outstanding; this is not hosted schema acceptance.",
+    "Accept the isolated robot QA scope and exact deployment identity/configuration; historical Platform ownership does not establish exclusive robot isolation.",
+    "If schemas are absent, apply only the pinned reviewed dependencies after explicit hosted authorization in a later scope; no migration is authorized by this report.",
+    "Exercise the existing administrative identity matrix on actual accepted QA identities and target; current R71 fixtures do not provide hosted identity evidence.",
+    "Bind the already prepared R71 private host, durable volume, custody/recovery, preflight pins and scheduler to that accepted target without enabling customers, orders or paid providers."
+  ],
+  "authorization": {
+    "readOnly": true,
+    "hostedMutations": 0,
+    "hostedMigrationsApplied": 0,
+    "customerRowsRead": 0,
+    "authRowsRead": 0,
+    "mutatingRpcCalls": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "productionChanged": false,
+    "customerMonitoringActive": false
+  },
+  "primaryDocumentation": [
+    {
+      "url": "https://supabase.com/changelog",
+      "consulted": true,
+      "relevance": "Recent TLS/API changes reviewed; no implementation or credentials changed."
+    },
+    {
+      "url": "https://supabase.com/docs/guides/api/securing-your-api",
+      "consulted": true,
+      "relevance": "Catalog plan checks grants separately from RLS; service_role remains trusted."
+    }
+  ],
+  "compactTableFallback": {
+    "schema": "JENIOS_POST_R71_COMPACT_TABLE_INVENTORY_V1",
+    "tool": "supabase_list_tables",
+    "request": {
+      "project_id": "xaicvhagftzjkqphnbgx",
+      "schemas": [
+        "public"
+      ],
+      "verbose": false
+    },
+    "authenticatedReadOnly": true,
+    "receivedBeforeUtc": "2026-10-24 22:14:54 UTC",
+    "durationSeconds": 1.5,
+    "responseShape": "{tables:[...]}",
+    "publicTablesReturned": 6,
+    "returnedTruncationOrPaginationMarker": false,
+    "expectedRobotTables": [
+      "jenios_robot_events_r64",
+      "jenios_robot_config_r64",
+      "jenios_robot_budgets_r64",
+      "jenios_robot_cycles_r64",
+      "jenios_robot_observation_provenance_r65",
+      "jenios_robot_reconciliations_r65",
+      "jenios_robot_archives_r65",
+      "jenios_robot_archive_items_r65",
+      "jenios_robot_evolution_r65",
+      "jenios_robot_validation_cases_r65",
+      "jenios_robot_private_captures_r67",
+      "jenios_robot_private_evolution_r71",
+      "jenios_robot_private_observations_r71",
+      "jenios_robot_private_studies_r71",
+      "jenios_robot_private_study_members_r71",
+      "jenios_robot_private_validation_cases_r71"
+    ],
+    "matchedRobotTables": [],
+    "robotTablesNotReturned": [
+      "jenios_robot_events_r64",
+      "jenios_robot_config_r64",
+      "jenios_robot_budgets_r64",
+      "jenios_robot_cycles_r64",
+      "jenios_robot_observation_provenance_r65",
+      "jenios_robot_reconciliations_r65",
+      "jenios_robot_archives_r65",
+      "jenios_robot_archive_items_r65",
+      "jenios_robot_evolution_r65",
+      "jenios_robot_validation_cases_r65",
+      "jenios_robot_private_captures_r67",
+      "jenios_robot_private_evolution_r71",
+      "jenios_robot_private_observations_r71",
+      "jenios_robot_private_studies_r71",
+      "jenios_robot_private_study_members_r71",
+      "jenios_robot_private_validation_cases_r71"
+    ],
+    "unrelatedNamesPersisted": false,
+    "rowCountsPersisted": false,
+    "commentsPersisted": false,
+    "columnsRequested": false,
+    "customerRowsQueried": false,
+    "functionCatalogVerified": false,
+    "grantsVerified": false,
+    "completeHostedSchemaAccepted": false,
+    "interpretation": "The authenticated compact public table listing returned six tables and none of the sixteen expected robot tables. This is a table-list observation only; the detailed SQL/function/privilege query did not return. No installation or schema acceptance is certified."
+  }
+}

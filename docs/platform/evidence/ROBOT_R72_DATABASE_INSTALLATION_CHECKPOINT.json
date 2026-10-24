@@ -1,0 +1,170 @@
+{
+  "schema": "JENIOS_R72_DEFINITIVE_DATABASE_CHECKPOINT_V1",
+  "recordedAtUtc": "2026-10-24T22:41:29.282344+00:00",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "status": "DATABASE_APPLIED_AND_VERIFIED_APPLICATION_PENDING",
+  "databaseInstallationComplete": true,
+  "wholeOperationalRolloutComplete": false,
+  "baseHandoffCommit": "766fa78746f3dcd096063ad90dca292edaea82b5",
+  "baseCertifiedCodeCommit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+  "baseCertifiedCodeCi": 40135970938,
+  "authorization": {
+    "ownerInstructions": [
+      "Publique já no banco final",
+      "Vamos logo para o definitivo"
+    ],
+    "hostedDatabasePreparationExplicitlyAuthorized": true,
+    "previousHostedMigrationProhibitionSupersededForThisInstallation": true,
+    "realOrdersAuthorized": false,
+    "externalPaperAuthorized": false,
+    "paidProviderCallsAuthorized": false
+  },
+  "target": {
+    "projectId": "xaicvhagftzjkqphnbgx",
+    "projectName": "jenios-platform-homologacao",
+    "region": "sa-east-1",
+    "historicalNameDoesNotMeanDisposable": true,
+    "actualServerVersion": "17.11",
+    "finalPlatformBinding": {
+      "productionDeployment": {
+        "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+        "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+        "id": "dpl_2V4cExgpq2cCuPfyGf4Shc6NgNeV",
+        "url": "jenios-ecossistem-daqttszot-jenios.vercel.app",
+        "state": "READY",
+        "target": "production",
+        "commitSha": "81a0cd8f3ce1205f4d5db456388a4fe32964b4b8",
+        "branch": "release/jenios-genios-g44-20261024"
+      },
+      "requiredPlatformUrl": "https://xaicvhagftzjkqphnbgx.supabase.co",
+      "productionBuildGuardSource": "https://github.com/paulostutz/jenios/blob/81a0cd8f3ce1205f4d5db456388a4fe32964b4b8/lib/release/environment-scope.mjs",
+      "privateEnvironmentValuesRead": false
+    }
+  },
+  "migration": {
+    "version": "20261024223334",
+    "name": "jenios_robot_r72_definitive_store",
+    "path": "supabase/migrations/20261024223334_jenios_robot_r72_definitive_store.sql",
+    "sqlSha256": "84408ccac4cd794016069301d97b4149e0afc7becfba6367e00eb40f1fcb75ed",
+    "completedAtUtc": "2026-10-24 22:33:35 UTC",
+    "appliedExactlyOnce": true,
+    "freshInstallOnlyDoNotReapply": true
+  },
+  "researchBranch": "research/jenios-robot-r72-definitive-database-20261024",
+  "installedBackupBranch": "backup/jenios-robot-r72-definitive-database-installed-20261024",
+  "artifacts": [
+    "supabase/migrations/20261024223334_jenios_robot_r72_definitive_store.sql",
+    "docs/platform/ROBOT_R72_DEFINITIVE_DATABASE.md",
+    "docs/platform/evidence/ROBOT_R72_DATABASE_INSTALLATION_EVIDENCE.json",
+    "docs/platform/evidence/ROBOT_R72_DATABASE_INSTALLATION_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_R72_DATABASE_CHANGE_AUDIT.json",
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json"
+  ],
+  "verification": {
+    "tablesPresent": 16,
+    "tablesWithRls": 16,
+    "functionsPresent": 39,
+    "functionBodiesMatchCertified": 39,
+    "securityInvokerFunctions": 39,
+    "emptySearchPathFunctions": 39,
+    "explicitIndexesValid": 8,
+    "triggersPresent": 3,
+    "anonAndAuthenticatedTableAndFunctionAccessAbsent": true,
+    "existingRelationsPreserved": 6,
+    "existingFunctionsPreserved": 3,
+    "relationCatalogSha256Unchanged": true,
+    "functionCatalogSha256Unchanged": true,
+    "configurationSeedRows": 1,
+    "configurationGenerationEnabled": false,
+    "configurationPricingApproved": false,
+    "configuredPaidLimitNanoUsd": 0,
+    "budgetRows": 0,
+    "observationRows": 0,
+    "evolutionRows": 0,
+    "privateTablesAppendOnlyToServiceRole": true,
+    "sourceSqlFilesUnchanged": true,
+    "newSyntheticTestsRun": 0,
+    "newBuildsRun": 0
+  },
+  "existingSchemaPreservation": {
+    "before": {
+      "observed_at": "2026-10-24 22:30:12.675836+00",
+      "preserved_relations": 6,
+      "relation_catalog_sha256": "55ebc310f6ce9670f9074c1466f5e7533ba9cfa249dea50a1ecaab7594466443",
+      "preserved_functions": 3,
+      "function_catalog_sha256": "3dd4e9fa64542e3a855d24f6ee69ed4c1b4396de051a2f096453286e4eb67271",
+      "managed_roles": [
+        {
+          "name": "anon",
+          "bypass_rls": false
+        },
+        {
+          "name": "authenticated",
+          "bypass_rls": false
+        },
+        {
+          "name": "service_role",
+          "bypass_rls": true
+        }
+      ]
+    },
+    "after": {
+      "observed_at": "2026-10-24 22:34:07.216576+00",
+      "preserved_relations": 6,
+      "relation_catalog_sha256": "55ebc310f6ce9670f9074c1466f5e7533ba9cfa249dea50a1ecaab7594466443",
+      "preserved_functions": 3,
+      "function_catalog_sha256": "3dd4e9fa64542e3a855d24f6ee69ed4c1b4396de051a2f096453286e4eb67271",
+      "managed_roles": [
+        {
+          "name": "anon",
+          "bypass_rls": false
+        },
+        {
+          "name": "authenticated",
+          "bypass_rls": false
+        },
+        {
+          "name": "service_role",
+          "bypass_rls": true
+        }
+      ]
+    }
+  },
+  "remainingOperationalDependencies": [
+    {
+      "id": "PRODUCTION_APPLICATION_COMPONENTS",
+      "status": "ABSENT_FROM_OBSERVED_PRODUCTION_SHA",
+      "observedSha": "81a0cd8f3ce1205f4d5db456388a4fe32964b4b8",
+      "next": "Integrate the already certified robot routes/admin modules on the current application release while preserving G44. Do not deploy the old research application over the current site."
+    },
+    {
+      "id": "PRIVATE_HOST_AND_SCHEDULER",
+      "status": "NOT_CONNECTED_OR_STARTED",
+      "next": "Bind actual private host, persistent outbox, custody, recovery and scheduler to the installed receiver. Existing components are reusable; no host identity is invented."
+    },
+    {
+      "id": "OPERATIONAL_SOURCE_PROVENANCE",
+      "status": "NOT_CERTIFIED",
+      "next": "Connect the actual decision/data hook under its proper evidence domain. R71 remains a bounded synthetic-QA policy, not a customer monitoring certificate."
+    }
+  ],
+  "boundaries": {
+    "productionDatabaseSchemaChanged": true,
+    "productionWebsiteDeploymentChanged": false,
+    "productionWebsiteCodeChanged": false,
+    "sourceKeysOrSecretsRead": false,
+    "newHostingResourcesCreated": 0,
+    "newCustomerDataRead": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "hostedSchedulerStarted": false,
+    "privateHostStarted": false,
+    "customerMonitoringActive": false,
+    "operationalRuntimeCertified": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "closeoutRule": "Verify research and installed backup resolve to the same documentary/migration commit, local checkout is clean and certified R71 remains unchanged. Do not create recursive commits to insert their own SHA. No new synthetic certification CI is required for an unchanged application; actual hosted installation evidence is authoritative for this scope."
+}

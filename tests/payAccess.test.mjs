@@ -57,7 +57,7 @@ test('return URL comes from server config and keeps Platform separate', async ()
   for (const scope of ['social', 'platform']) {
     let sent;
     await createGatewayCheckout({ orderId: id, amount_cents: 990, scope, returnUrl: 'https://evil.test' }, {
-      env: { JENIOS_PAY_CHECKOUT_URL: 'https://pay.test/checkout', JENIOS_PAY_API_TOKEN: 'test', JENIOS_APP_ORIGIN: 'https://social.test' },
+      env: { JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PAY_CHECKOUT_URL: 'https://pay.test/checkout', JENIOS_PAY_API_TOKEN: 'test', JENIOS_APP_ORIGIN: 'https://social.test' },
       fetchImpl: async (_url, options) => { sent = JSON.parse(options.body); return { ok: true, json: async () => ({ orderId: id, amount_cents: 990, currency: 'BRL', checkoutUrl: 'https://pay.test/order' }) }; },
     });
     assert.equal(sent.returnUrl, 'https://social.test' + (scope === 'platform' ? '/checkout' : '/social/cobrancas'));

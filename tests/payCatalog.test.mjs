@@ -49,13 +49,13 @@ test('API administrativa exige sessão e autorização verificadas', async () =>
   await assert.rejects(()=>requirePayUser(new Request('https://local',{headers:{authorization:'Bearer jwt'}}),db,true),e=>e.status===403);
 });
 test('adapter PAY conserva idempotência e valida resposta', async () => {
-  const env={JENIOS_PAY_CHECKOUT_URL:'https://pay.example/checkout',JENIOS_PAY_API_TOKEN:'private'};
+  const env={JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PAY_CHECKOUT_URL:'https://pay.example/checkout',JENIOS_PAY_API_TOKEN:'private'};
   let observed;
   const result=await createGatewayCheckout({orderId:'o1',amount_cents:990,currency:'BRL'},{env,fetchImpl:async(_url,opts)=>{observed=opts;return {ok:true,json:async()=>({orderId:'o1',amount_cents:990,currency:'BRL',checkoutUrl:'https://pay.example/pay/1'})}}});
   assert.equal(result.checkoutUrl,'https://pay.example/pay/1'); assert.equal(observed.headers['idempotency-key'],'o1');
 });
 test('adapter rejeita valor divergente e redirecionamento não autorizado', async () => {
-  const env={JENIOS_PAY_CHECKOUT_URL:'https://pay.example/checkout',JENIOS_PAY_API_TOKEN:'private'};
+  const env={JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PAY_CHECKOUT_URL:'https://pay.example/checkout',JENIOS_PAY_API_TOKEN:'private'};
   await assert.rejects(()=>createGatewayCheckout({orderId:'o1',amount_cents:990},{env,fetchImpl:async()=>({ok:true,json:async()=>({orderId:'o1',amount_cents:1,currency:'BRL'})})}));
   assert.throws(()=>safeCheckoutUrl('https://evil.example/','https://pay.example/checkout',{}));
   assert.throws(()=>safeCheckoutUrl('javascript:alert(1)','https://pay.example/checkout',{}));

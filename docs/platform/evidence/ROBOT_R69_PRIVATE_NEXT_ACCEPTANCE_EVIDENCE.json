@@ -1,0 +1,334 @@
+{
+  "schema": "JENIOS_R69_NEXT_ACCEPTANCE_V1",
+  "status": "PASS",
+  "startedAt": "2026-10-24T19:46:45.709Z",
+  "finishedAt": "2026-10-24T19:46:50.395Z",
+  "sourceCommitSha": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+  "sourceTreeDirty": false,
+  "githubSha": null,
+  "inputMode": "ORIGINAL_PRIVATE_CORE",
+  "executableEvidence": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_EXECUTION",
+  "runtime": {
+    "node": "v24.22.1",
+    "postgres": "16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)"
+  },
+  "buildEvidence": {
+    "buildId": "J-8UuEb2xQo6fXcU19P9a",
+    "nextVersion": "15.5.28",
+    "supabaseSdkVersion": "2.117.3",
+    "compiledRouteSha256": {
+      ".next/server/app/api/platform/robot-private-observations/route.js": "d7213ca142d20bd41522f77d619fa4e95ce93ce8c281c95816d263c78dcdbc78",
+      ".next/server/app/api/platform/admin/robot-private-observations/route.js": "3b152b8bd32ecb76471c7c66e1e6885728b2a9b4fd65428b0c26d025eb2c664c"
+    },
+    "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+    "compiledSourceCommitIndependentlyAttested": false
+  },
+  "publicImplementationDigests": {
+    "scripts/platform/research/r69-next-acceptance.mjs": "0e2eb5f0e49ba51e48ec71c26732e0780192fb8e4f44b52313c0607bd290b3ae",
+    "tests/fixtures/r69-next-client.mjs": "f072d4ec447b9600929323e936c8f81dff703f38c126b1755f52baae9831de89",
+    "tests/fixtures/r67-private-protocol-fixture.mjs": "8363135caff0169bc8c3372afa69823c0026bd935846e37f197758173e9df0ac",
+    "lib/platform/research/robot-r69-https-transport.mjs": "0a648fc62b970d5c56e48b4b0e5fc8bc0aa1858a2e4274ff9083b5d373d21ded",
+    "lib/platform/research/robot-r69-private-host.mjs": "602841bd467f1e01efd1438b513e0a68d3fe8925846454680beb8cf087d8ac8f",
+    "scripts/platform/research/r69-private-host.mjs": "d3342c695c813670f29bbb93b735db48eb8a5e3a8f8bbd83d81c89d56ef187fc",
+    "lib/platform/research/robot-r68-private-host.mjs": "dd7880dcd480f36940fc6bdb3be3cd8cc58aa8d89e5c5fa5ea302e67cb849a93",
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "32c27475cbb1d83ac9b887953558a31ed34793a3a5fb74500131b446ae1a99b1",
+    "lib/platform/research/robot-r67-private-source.mjs": "c1e748c85a54a1693ccea90bff6394da659ba65b6ff412738d4dfee36b7e6944",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-r67-private-capture-outbox.mjs": "fcc085e961da2e99c7df0ea045e354d288721a0b22b2f9f386031f9843c5410e",
+    "lib/platform/research/robot-r67-durable-emitter.mjs": "4e9fab4db097eac54735c72cd5af8d31a5b29d0bf7746d0b1c6b23196eb0b606",
+    "lib/platform/research/robot-r67-http.mjs": "4bf92e70fc68669027e54ea1311d0739475ed44f614cff7bf41bbbdb7b704d9b",
+    "lib/platform/research/robot-r67-runtime.mjs": "29b3b412253f81c984505e98c3a2d58d757f02f9f7eb3ee9ab0dbcccf90ab477",
+    "lib/platform/research/robot-r67-database-store.mjs": "3264a25faff8809b3da7763b45add1b2fde4a633535e185180791fcaa80579d1",
+    "lib/platform/admin-db.mjs": "bb24df658f814809b533db91305cd1dafdbdf961a4963c29c85afdd50738ebd0",
+    "lib/platform/admin-permissions.mjs": "7382052bfce3274670b6e1993483849ebfe044f22777999d4f23d132a4534539",
+    "app/api/platform/robot-private-observations/route.js": "12029b000391024897c9fdd1f206120a0d2517c3648d9b4db7e5f42c6548e540",
+    "app/api/platform/admin/robot-private-observations/route.js": "eb258c13c51f1a80d5f9b7595f90e7e8ab8927209698d62d2a38c1ac88aff41c",
+    "db/schema/robot-r67-private-capture-store.sql": "5172c89d6f94cbfa50ae789fd2df09e9843c63a81d663a798971833ae7dec58b"
+  },
+  "scope": {
+    "scopeId": "scope:d86a72dbeb3042ee",
+    "sourceId": "source:c1f161840a485b02",
+    "sourceKeySha256": "0423520493cb2ec3177f78dcc0e394c3ec2643ca0d9d68f3e07562930d66d53f",
+    "transportEvidence": "SIGNED_PRIVATE_QA_CAPTURE",
+    "recordOriginClaim": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+    "originalPrivateCoreExecuted": true,
+    "configuredSourceSignatureIsIndependentRuntimeAttestation": false,
+    "inputData": "SYNTHETIC_FIXED_SCENARIOS",
+    "next": "REAL_NEXT_START_EXISTING_BUILD",
+    "nextFactory": "EXISTING_CREATE_R67_RUNTIME_AND_PLATFORM_SUPABASE_SDK",
+    "auth": "EXPLICIT_LOCAL_AUTH_GATEWAY_FIXTURE_USERS_NOT_REAL_SUPABASE_IDENTITIES",
+    "postgrest": "EXPLICIT_LOOPBACK_HTTPS_RPC_GATEWAY_TO_REAL_DISPOSABLE_POSTGRESQL",
+    "databaseName": "jenios_r69_next_qa",
+    "databaseRole": "service_role",
+    "scopeIsolation": "EXPLICIT_SERVER_CONFIG_NOT_SERVICE_ROLE_RLS",
+    "networkTargets": "LOOPBACK_ONLY_NO_HOST_WIDE_NETWORK_SANDBOX_ASSERTION",
+    "tls": "EPHEMERAL_CA_VIA_NODE_EXTRA_CA_CERTS_AT_CHILD_STARTUP",
+    "tlsVerificationDisabled": false,
+    "tlsCertificateSha256": "62eb3e42e0f5ca85a3e0e9e589e2f323d86a564722496da1e4fa992f6b447d56",
+    "nextOrigin": "http://127.0.0.1:45935",
+    "intakeOrigin": "https://127.0.0.1:34713",
+    "gatewayOrigin": "https://127.0.0.1:34297",
+    "clock": "REAL_NODE_DATE_NOW_AND_UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+    "clockEvidence": {
+      "nodeBeforeMs": 1792871205904,
+      "databaseNowMs": 1792871205929,
+      "nodeAfterMs": 1792871205930,
+      "manipulatedClock": false
+    },
+    "deployedCommitVerified": false,
+    "productionDeploymentTested": false,
+    "realAdminIdentityTested": false,
+    "realProviderConnectionTested": false,
+    "hostedDatabaseChanged": false,
+    "servicesRegistered": false,
+    "r64R65PolicyInstantiated": false,
+    "automaticUltraPolicyChanged": false,
+    "automaticPromotionAllowed": false,
+    "executionAllowed": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false,
+    "independentRuntimeAttestation": false,
+    "independentBrokerAttestation": false,
+    "independentCustomerConsentVerified": false
+  },
+  "admitted": {
+    "batches": 1,
+    "captures": 3,
+    "counts": {
+      "hybrid": 1,
+      "manual": 1,
+      "reverse": 1
+    },
+    "capturedAtMs": 1792871207580,
+    "admittedAtMs": 1792871207655,
+    "expiresAtMs": 1792871327580,
+    "eventId": "evt:53883f6820adbf8b",
+    "sessionId": "session:f465bb75dd54731e",
+    "recordDigest": "8f102ae30e7eb568bd1ee261c01200a3c5872f77b43512e8c20844463278f13e",
+    "payloadDigest": "29349ecad4f8300624b21cf30ec00f1284cfd5dedd86b8a1ba02c65646cac4cf",
+    "provenanceDigest": "4b999b2fca653ddb67be603be9ca838e373df1a873f73c49d9a4c00458e45fde",
+    "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+    "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+    "originalVersion": "jenios-research-r29.1",
+    "policyVersion": "private:r67-v1",
+    "generation": 0
+  },
+  "counts": {
+    "nextStarts": 2,
+    "privateHostInvocations": 2,
+    "acknowledgementLosses": 1,
+    "observedTlsRejections": 1,
+    "realSqlCalls": 3,
+    "originalPrivateDecisionsExecuted": 3,
+    "batchesStored": 1,
+    "exactSuccessfulRetries": 1
+  },
+  "adminSummary": {
+    "returnedBatches": 1,
+    "returnedCaptures": 3,
+    "adminOnly": true,
+    "configuredSourceSignaturesCheckedAtIntake": true,
+    "currentPrivateHostIndependentlyObserved": false,
+    "fixtureAuthOnly": true
+  },
+  "gatewayCalls": [
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r67_ingest_private_capture",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r67_ingest_private_capture"
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r67_ingest_private_capture",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r67_ingest_private_capture"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "POST",
+      "path": "/rest/v1/rpc/jenios_robot_r67_read_private_captures",
+      "status": 200,
+      "realSqlExecuted": true,
+      "rpc": "jenios_robot_r67_read_private_captures"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/rest/v1/jenios_platform_admin_permissions",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 200,
+      "realSqlExecuted": false
+    },
+    {
+      "method": "GET",
+      "path": "/auth/v1/user",
+      "status": 401,
+      "realSqlExecuted": false
+    }
+  ],
+  "intakeEvents": [
+    {
+      "requestBodySha256": "57c33f520e22baf0c6f82abff0ec083a58a7f9ecd24f57e6cf5e1e83c6bed079",
+      "bytes": 4605,
+      "httpStatus": 202,
+      "intakeStatus": "STORED",
+      "recordDigest": "8f102ae30e7eb568bd1ee261c01200a3c5872f77b43512e8c20844463278f13e",
+      "observedAtMs": 1792871207730
+    },
+    {
+      "requestBodySha256": "57c33f520e22baf0c6f82abff0ec083a58a7f9ecd24f57e6cf5e1e83c6bed079",
+      "bytes": 4605,
+      "httpStatus": 200,
+      "intakeStatus": "ALREADY_STORED",
+      "recordDigest": "8f102ae30e7eb568bd1ee261c01200a3c5872f77b43512e8c20844463278f13e",
+      "observedAtMs": 1792871207984
+    },
+    {
+      "requestBodySha256": "062dfb0c59370a10c6dbd28b6e1cdc3dce183acfaed0cb478bc23e0fdcb56f82",
+      "bytes": 4605,
+      "httpStatus": 400,
+      "intakeStatus": null,
+      "recordDigest": null,
+      "observedAtMs": 1792871208770
+    },
+    {
+      "requestBodySha256": "57c33f520e22baf0c6f82abff0ec083a58a7f9ecd24f57e6cf5e1e83c6bed079",
+      "bytes": 4605,
+      "httpStatus": 415,
+      "intakeStatus": null,
+      "recordDigest": null,
+      "observedAtMs": 1792871208876
+    },
+    {
+      "requestBodySha256": "57c33f520e22baf0c6f82abff0ec083a58a7f9ecd24f57e6cf5e1e83c6bed079",
+      "bytes": 4605,
+      "httpStatus": 404,
+      "intakeStatus": null,
+      "recordDigest": null,
+      "observedAtMs": 1792871210174
+    }
+  ],
+  "privateHostSummary": [
+    {
+      "status": "DELIVERY_UNCONFIRMED",
+      "sessionId": "session:f465bb75dd54731e",
+      "capturesExecuted": 3,
+      "sessionsCreated": 1,
+      "ticks": 1,
+      "lifetimeLeaseReleased": true,
+      "transport": {
+        "profile": "R69_FIXED_HTTPS",
+        "target": "DECLARED_CONFIG_ORIGIN",
+        "targetOriginSha256": "c2a2a2ff114d3dc4ad6ab759ffd7435934962f3b3866f9fb862f5f1cb68d2ddc",
+        "endpoint": "/api/platform/robot-private-observations",
+        "tlsRequired": true,
+        "certificateAndHostnameVerificationRequired": true,
+        "tlsCheckedByOfflineInspection": false,
+        "remoteQaDeploymentVerified": false,
+        "hostedAuthenticationCertified": false
+      }
+    },
+    {
+      "status": "ONCE_COMPLETE",
+      "sessionId": "session:90a773649e4ef7cf",
+      "capturesExecuted": 0,
+      "sessionsCreated": 1,
+      "ticks": 1,
+      "lifetimeLeaseReleased": true,
+      "transport": {
+        "profile": "R69_FIXED_HTTPS",
+        "target": "DECLARED_CONFIG_ORIGIN",
+        "targetOriginSha256": "c2a2a2ff114d3dc4ad6ab759ffd7435934962f3b3866f9fb862f5f1cb68d2ddc",
+        "endpoint": "/api/platform/robot-private-observations",
+        "tlsRequired": true,
+        "certificateAndHostnameVerificationRequired": true,
+        "tlsCheckedByOfflineInspection": false,
+        "remoteQaDeploymentVerified": false,
+        "hostedAuthenticationCertified": false
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "isolated disposable database and real Next build are selected before intake",
+      "status": "PASS"
+    },
+    {
+      "name": "untrusted ephemeral TLS certificate is refused before any Next request or RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous real Next admin GET exposes no feed and performs no database call",
+      "status": "PASS"
+    },
+    {
+      "name": "first signed batch reaches actual Next factory SDK and commits before its HTTPS acknowledgement is lost",
+      "status": "PASS"
+    },
+    {
+      "name": "a new client process retransmits identical signed bytes and receives ALREADY_STORED without another batch",
+      "status": "PASS"
+    },
+    {
+      "name": "stored signatures binding and database-clock admission preserve the complete original batch",
+      "status": "PASS"
+    },
+    {
+      "name": "admin GET traverses actual SDK Auth and read RPC with an explicitly simulated identity",
+      "status": "PASS"
+    },
+    {
+      "name": "member anonymous invalid and caller-selected scopes are denied without a feed RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "bad signature and non-JSON intake are rejected by actual Next before any database RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "disabled R67 gate rejects both real Next endpoints without Auth or RPC calls",
+      "status": "PASS"
+    },
+    {
+      "name": "R67 storage stays isolated and no R64 R65 study or automatic policy is instantiated",
+      "status": "PASS"
+    },
+    {
+      "name": "mode-specific evidence remains sanitized and every operational and financial invariant stays inactive",
+      "status": "PASS"
+    }
+  ],
+  "tests": {
+    "passed": 12,
+    "total": 12,
+    "failed": 0,
+    "notRun": 0
+  },
+  "error": null,
+  "credentialsOrRawFeedPersisted": false
+}

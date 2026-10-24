@@ -66,6 +66,27 @@ As contagens se sobrepõem. Os direcionados pertencem à suíte geral; os dois m
 
 O fechamento usa os arquivos `ROBOT_R69_HTTPS_INTEGRATION_CHECKPOINT.json`, `ROBOT_R69_CHANGE_AUDIT.json`, `ROBOT_R69_TARGET_INVENTORY.json` e as evidências de referência pública/privada, todos em `docs/platform/evidence/`. O ledger recebe apenas `httpsPrivateHostIntegration`; os 17 campos/seções existentes são preservados e seus hashes canônicos registrados.
 
+## Referência persistida e fechamento
+
+Referência de código: `8fa19d5898427402fa6cac480d5afb3fa2aea267`. [CI de referência 40126737021](https://github.com/paulostutz/jenios/actions/runs/40126737021), job `120969682036`, SUCCESS em 24/10/2026 às 19:46:56 UTC. Os logs foram inspecionados; as contagens abaixo são observadas.
+
+| Bateria | Resultado |
+|---|---:|
+| R69 direcionados | 22/22 |
+| R65–R68 e guard R60 preservados | 285/285 |
+| Gerais | 2.625/2.625 |
+| Verificação herdada da aplicação | 94/94 |
+| Público HTTPS/Next/SDK/SQL na CI | 12/12 |
+| Core original privado HTTPS/Next/SDK/SQL local | 12/12 |
+| Build e páginas estáticas | PASS; 76/76 |
+| Falhas finais / casos omitidos | 0 / 0 |
+
+O aceite privado foi executado sobre o checkout limpo de referência após seu build completo. Terminou às 19:46:50.395 UTC; foram verificadas 20 correspondências de digest da implementação. Duas invocações reais da CLI executaram três decisões originais sintéticas ao todo, zero na segunda invocação. A resposta foi perdida depois do commit; o novo processo retransmitiu o registro original e recebeu `ALREADY_STORED`. O banco terminou com um lote e três capturas; as três chamadas SQL foram duas admissões e uma leitura administrativa de fixture. Não foram criadas tabelas R64/R65.
+
+A referência pública terminou às 19:46:49.113 UTC na CI. Foi copiada byte a byte do artefato `12572773207`, cujo ZIP teve SHA-256 conferido. Ela executou zero decisões do core privado. O JSON privado também foi preservado byte a byte; seus hashes estão no checkpoint e no audit. Local: Node 24.22.1/PostgreSQL 16.15. CI: Node 22.23.3/PostgreSQL 17.6.
+
+A Vercel confirmou zero deployments do SHA de referência e o PostgreSQL descartável foi encerrado. A revisão independente conferiu as 17 seções anteriores do ledger e seus hashes; todas permanecem idênticas. A CI final sobre a consolidação documental e o backup certificado no mesmo SHA completam o fechamento, conforme a regra abaixo. Os JSONs de referência não são reatribuídos ao SHA da consolidação.
+
 ## Descoberta dos ambientes e integração histórica
 
 O projeto Supabase histórico da Platform foi localizado. A consulta somente ao catálogo público não encontrou as relações nem funções R64/R65/R67 previstas. Nenhuma migração foi aplicada. O nome do projeto e sua origem histórica não comprovam isolamento exclusivo para os robôs nem vinculam um deployment aprovado.

@@ -19,7 +19,10 @@
   "reviewFindingsClosed": [
     "HTTPS and host implementations cross-reviewed independently; no blocker.",
     "Next acceptance independently reviewed for real handler SDK SQL chain and post-commit ACK loss; no blocker.",
-    "Build provenance explicitly records selected build and does not claim independent source attestation."
+    "Build provenance explicitly records selected build and does not claim independent source attestation.",
+    "Guide corrected to ten actual manifest fields.",
+    "Gate timing described precisely: start/tick/send; signal and lease ownership before captures and sends.",
+    "Reference private acceptance preceded by full successful build on the clean producing commit; build is identified without claiming independent compiled-source attestation."
   ],
   "attemptHistory": [
     {
@@ -37,10 +40,21 @@
       "sourceTreeDirty": true,
       "referenceEvidence": false,
       "changeBetweenRuns": "Add BUILD_ID, compiled-route hashes and Next/SDK versions to evidence metadata before private preliminary run; no failed acceptance attempt."
+    },
+    {
+      "phase": "Reference public CI and clean original-private acceptance",
+      "outcome": "Both 12/12 PASS, zero failed or omitted",
+      "sourceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "sourceTreeDirty": false,
+      "publicRun": 40126737021,
+      "privatePublicCiExecution": false,
+      "referenceJsonBytesPreserved": true,
+      "codeChangedAfterReference": false,
+      "financialOrHostedEffect": false
     }
   ],
   "verification": {
-    "status": "PRELIMINARY_PASS_REFERENCE_AND_FINAL_CI_REQUIRED",
+    "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
     "countsAreOverlapping": true,
     "localFocused": {
       "total": 307,
@@ -99,9 +113,293 @@
       "referenceEvidence": false,
       "build": "Existing R68 build; preliminary only"
     },
-    "referenceCi": "PENDING",
-    "cleanPrivateReference": "PENDING",
-    "finalConsolidatedRun": "Required before certified backup"
+    "referenceCi": {
+      "runId": 40126737021,
+      "jobId": 120969682036,
+      "commit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T19:46:56Z",
+      "focusedR69": "22/22",
+      "preservedR65R68AndR60Guard": "285/285",
+      "general": "2625/2625",
+      "inheritedApplicationGate": "94/94",
+      "publicNextHttpsPostgres": "12/12",
+      "originalPrivateNextHttpsPostgres": "12/12 local, not public CI",
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0,
+      "countsAreOverlapping": true,
+      "logsInspected": true,
+      "unrelatedProductCodeChanged": false,
+      "priorR59R68RecertificationClaimed": false
+    },
+    "finalConsolidatedRun": "Required before certified backup",
+    "localBuild": {
+      "sourceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "sourceTreeDirtyAtBuildStart": false,
+      "general": "2625/2625",
+      "inheritedApplicationGate": "94/94",
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0,
+      "node": "v24.22.1",
+      "logSha256": "841556659f878cfa51c79639a8950b7d8304399d697be7c2baa838a7ec65dfed",
+      "unrelatedProductCodeChanged": false
+    },
+    "publicNext": {
+      "file": "docs/platform/evidence/ROBOT_R69_PUBLIC_NEXT_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "8fa359e731eca97dc6ed6790f899c9d0a8183f5c2dbe18c97b5e14ad1a31a2b5",
+      "bytes": 11931,
+      "sourceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "sourceTreeDirty": false,
+      "finishedAt": "2026-10-24T19:46:49.113Z",
+      "inputMode": "PUBLIC_PROTOCOL_FIXTURE",
+      "publicCiExecution": true,
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "runtime": {
+        "node": "v22.23.3",
+        "postgres": "17.6 (Debian 17.6-2.pgdg13+1)"
+      },
+      "scope": {
+        "scopeId": "scope:704fba5a3b45ad46",
+        "sourceId": "source:37f74b2d0b6293d9",
+        "sourceKeySha256": "e26d09bc60f511355b2cbe6ff8f03eb171633386211923cf173ef6639491d811",
+        "transportEvidence": "SIGNED_PRIVATE_QA_CAPTURE",
+        "recordOriginClaim": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "originalPrivateCoreExecuted": false,
+        "configuredSourceSignatureIsIndependentRuntimeAttestation": false,
+        "inputData": "SYNTHETIC_FIXED_SCENARIOS",
+        "next": "REAL_NEXT_START_EXISTING_BUILD",
+        "nextFactory": "EXISTING_CREATE_R67_RUNTIME_AND_PLATFORM_SUPABASE_SDK",
+        "auth": "EXPLICIT_LOCAL_AUTH_GATEWAY_FIXTURE_USERS_NOT_REAL_SUPABASE_IDENTITIES",
+        "postgrest": "EXPLICIT_LOOPBACK_HTTPS_RPC_GATEWAY_TO_REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r69_next_qa",
+        "databaseRole": "service_role",
+        "scopeIsolation": "EXPLICIT_SERVER_CONFIG_NOT_SERVICE_ROLE_RLS",
+        "networkTargets": "LOOPBACK_ONLY_NO_HOST_WIDE_NETWORK_SANDBOX_ASSERTION",
+        "tls": "EPHEMERAL_CA_VIA_NODE_EXTRA_CA_CERTS_AT_CHILD_STARTUP",
+        "tlsVerificationDisabled": false,
+        "tlsCertificateSha256": "c9ffe0744d725642b524cefb73470cd230e3c4fc218aa8354b7ebb139fe7ba9b",
+        "nextOrigin": "http://127.0.0.1:43843",
+        "intakeOrigin": "https://127.0.0.1:34803",
+        "gatewayOrigin": "https://127.0.0.1:44751",
+        "clock": "REAL_NODE_DATE_NOW_AND_UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+        "clockEvidence": {
+          "nodeBeforeMs": 1792871206182,
+          "databaseNowMs": 1792871206207,
+          "nodeAfterMs": 1792871206208,
+          "manipulatedClock": false
+        },
+        "deployedCommitVerified": false,
+        "productionDeploymentTested": false,
+        "realAdminIdentityTested": false,
+        "realProviderConnectionTested": false,
+        "hostedDatabaseChanged": false,
+        "servicesRegistered": false,
+        "r64R65PolicyInstantiated": false,
+        "automaticUltraPolicyChanged": false,
+        "automaticPromotionAllowed": false,
+        "executionAllowed": false,
+        "customerMonitoringActive": false,
+        "privateOperationalSourceActive": false,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "paidProviderCalls": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "commercialPerformanceCertified": false,
+        "independentRuntimeAttestation": false,
+        "independentBrokerAttestation": false,
+        "independentCustomerConsentVerified": false
+      },
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 0,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 0,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "admitted": {
+        "batches": 1,
+        "captures": 3,
+        "counts": {
+          "hybrid": 1,
+          "manual": 1,
+          "reverse": 1
+        },
+        "capturedAtMs": 1792871207289,
+        "admittedAtMs": 1792871207339,
+        "expiresAtMs": 1792871327289,
+        "eventId": "evt:6a77113ae62c05bf",
+        "sessionId": "session:c21e7c5fedf7f17b",
+        "recordDigest": "30289d372a7d816b1054e354284d15bb2151c8cc75c6c61f8990ca12bd43fd02",
+        "payloadDigest": "086c39d3e4a628d687f5fd7d43a80e35af5d0cd5434677650942dd8f1a82820f",
+        "provenanceDigest": "9be5e0d2780526b8df28e5d0028e7612b7cb74607641abaee17ef6c8c7196b65",
+        "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+        "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+        "originalVersion": "jenios-research-r29.1",
+        "policyVersion": "private:r67-v1",
+        "generation": 0
+      },
+      "implementationDigestsVerified": 20,
+      "buildEvidence": {
+        "buildId": "d0u7K_8cc-klgRhpDtxm1",
+        "nextVersion": "15.5.28",
+        "supabaseSdkVersion": "2.117.3",
+        "compiledRouteSha256": {
+          ".next/server/app/api/platform/robot-private-observations/route.js": "3d5e3987865c01d8809a80b92b7c8c7c90e2b343a1357bd1227cf6a7faeb9d0a",
+          ".next/server/app/api/platform/admin/robot-private-observations/route.js": "d0f7e619823e163b0f6e8e5183cbe490a1667da5914cfd92388f1ae75d1c2015"
+        },
+        "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+        "compiledSourceCommitIndependentlyAttested": false
+      }
+    },
+    "localOriginalNext": {
+      "file": "docs/platform/evidence/ROBOT_R69_PRIVATE_NEXT_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "0bf97c042b00b3777df024fa9d163a4d8ce4082795d745a891b2d522d2aba992",
+      "bytes": 13318,
+      "sourceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "sourceTreeDirty": false,
+      "finishedAt": "2026-10-24T19:46:50.395Z",
+      "inputMode": "ORIGINAL_PRIVATE_CORE",
+      "publicCiExecution": false,
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "runtime": {
+        "node": "v24.22.1",
+        "postgres": "16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)"
+      },
+      "scope": {
+        "scopeId": "scope:d86a72dbeb3042ee",
+        "sourceId": "source:c1f161840a485b02",
+        "sourceKeySha256": "0423520493cb2ec3177f78dcc0e394c3ec2643ca0d9d68f3e07562930d66d53f",
+        "transportEvidence": "SIGNED_PRIVATE_QA_CAPTURE",
+        "recordOriginClaim": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "originalPrivateCoreExecuted": true,
+        "configuredSourceSignatureIsIndependentRuntimeAttestation": false,
+        "inputData": "SYNTHETIC_FIXED_SCENARIOS",
+        "next": "REAL_NEXT_START_EXISTING_BUILD",
+        "nextFactory": "EXISTING_CREATE_R67_RUNTIME_AND_PLATFORM_SUPABASE_SDK",
+        "auth": "EXPLICIT_LOCAL_AUTH_GATEWAY_FIXTURE_USERS_NOT_REAL_SUPABASE_IDENTITIES",
+        "postgrest": "EXPLICIT_LOOPBACK_HTTPS_RPC_GATEWAY_TO_REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r69_next_qa",
+        "databaseRole": "service_role",
+        "scopeIsolation": "EXPLICIT_SERVER_CONFIG_NOT_SERVICE_ROLE_RLS",
+        "networkTargets": "LOOPBACK_ONLY_NO_HOST_WIDE_NETWORK_SANDBOX_ASSERTION",
+        "tls": "EPHEMERAL_CA_VIA_NODE_EXTRA_CA_CERTS_AT_CHILD_STARTUP",
+        "tlsVerificationDisabled": false,
+        "tlsCertificateSha256": "62eb3e42e0f5ca85a3e0e9e589e2f323d86a564722496da1e4fa992f6b447d56",
+        "nextOrigin": "http://127.0.0.1:45935",
+        "intakeOrigin": "https://127.0.0.1:34713",
+        "gatewayOrigin": "https://127.0.0.1:34297",
+        "clock": "REAL_NODE_DATE_NOW_AND_UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+        "clockEvidence": {
+          "nodeBeforeMs": 1792871205904,
+          "databaseNowMs": 1792871205929,
+          "nodeAfterMs": 1792871205930,
+          "manipulatedClock": false
+        },
+        "deployedCommitVerified": false,
+        "productionDeploymentTested": false,
+        "realAdminIdentityTested": false,
+        "realProviderConnectionTested": false,
+        "hostedDatabaseChanged": false,
+        "servicesRegistered": false,
+        "r64R65PolicyInstantiated": false,
+        "automaticUltraPolicyChanged": false,
+        "automaticPromotionAllowed": false,
+        "executionAllowed": false,
+        "customerMonitoringActive": false,
+        "privateOperationalSourceActive": false,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "paidProviderCalls": 0,
+        "actualBrokerPnl": null,
+        "actualLossesAvoided": null,
+        "realTradeAccuracy": null,
+        "commercialPerformanceCertified": false,
+        "independentRuntimeAttestation": false,
+        "independentBrokerAttestation": false,
+        "independentCustomerConsentVerified": false
+      },
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 2,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 3,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "admitted": {
+        "batches": 1,
+        "captures": 3,
+        "counts": {
+          "hybrid": 1,
+          "manual": 1,
+          "reverse": 1
+        },
+        "capturedAtMs": 1792871207580,
+        "admittedAtMs": 1792871207655,
+        "expiresAtMs": 1792871327580,
+        "eventId": "evt:53883f6820adbf8b",
+        "sessionId": "session:f465bb75dd54731e",
+        "recordDigest": "8f102ae30e7eb568bd1ee261c01200a3c5872f77b43512e8c20844463278f13e",
+        "payloadDigest": "29349ecad4f8300624b21cf30ec00f1284cfd5dedd86b8a1ba02c65646cac4cf",
+        "provenanceDigest": "4b999b2fca653ddb67be603be9ca838e373df1a873f73c49d9a4c00458e45fde",
+        "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+        "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+        "originalVersion": "jenios-research-r29.1",
+        "policyVersion": "private:r67-v1",
+        "generation": 0
+      },
+      "implementationDigestsVerified": 20,
+      "buildEvidence": {
+        "buildId": "J-8UuEb2xQo6fXcU19P9a",
+        "nextVersion": "15.5.28",
+        "supabaseSdkVersion": "2.117.3",
+        "compiledRouteSha256": {
+          ".next/server/app/api/platform/robot-private-observations/route.js": "d7213ca142d20bd41522f77d619fa4e95ce93ce8c281c95816d263c78dcdbc78",
+          ".next/server/app/api/platform/admin/robot-private-observations/route.js": "3b152b8bd32ecb76471c7c66e1e6885728b2a9b4fd65428b0c26d025eb2c664c"
+        },
+        "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+        "compiledSourceCommitIndependentlyAttested": false
+      }
+    },
+    "artifact": {
+      "id": 12572773207,
+      "name": "r69-public-next-evidence-8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "sourceRun": 40126737021,
+      "sourceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "bytes": 4535,
+      "zipSha256": "fecb7d94e6e588c09573673c1026ed0483fa3551fa3e31705272c59f29244f7d",
+      "zipHashVerified": true,
+      "expiresAt": "2026-11-07T19:46:49Z",
+      "referenceJsonCopiedByteForByte": true
+    },
+    "referenceNoDeploy": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "projectName": "jenios-ecossistem",
+      "verifiedCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+      "deploymentCount": 0
+    },
+    "localDisposablePostgresStopped": true
   },
   "preserved": {
     "priorLedgerSections": 17,
@@ -133,6 +431,25 @@
     "deployPerformed": false,
     "commercialPerformanceCertified": false
   },
-  "evidenceFiles": [],
-  "publicCiIncludesPrivateExecution": false
+  "evidenceFiles": [
+    {
+      "file": "docs/platform/evidence/ROBOT_R69_PUBLIC_NEXT_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "8fa359e731eca97dc6ed6790f899c9d0a8183f5c2dbe18c97b5e14ad1a31a2b5",
+      "bytes": 11931
+    },
+    {
+      "file": "docs/platform/evidence/ROBOT_R69_PRIVATE_NEXT_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "0bf97c042b00b3777df024fa9d163a4d8ce4082795d745a891b2d522d2aba992",
+      "bytes": 13318
+    }
+  ],
+  "publicCiIncludesPrivateExecution": false,
+  "referenceCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+  "referenceNoDeploy": {
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "projectName": "jenios-ecossistem",
+    "verifiedCommit": "8fa19d5898427402fa6cac480d5afb3fa2aea267",
+    "deploymentCount": 0
+  },
+  "localDisposablePostgresStopped": true
 }

@@ -6,7 +6,7 @@ import {isPrelaunchReport,prelaunchReportHref} from '../../../../lib/reports/pre
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+// Maximum duration is scoped to this route in vercel.json.
 export async function POST(request) {
   try {
     const body = await readCheckoutBody(request);

@@ -20,7 +20,7 @@ O catálogo inferia prontidão apenas das credenciais do gateway. As duas rotas 
 
 ## Testes
 
-22 testes locais de regras, catálogo e corpos dos handlers HTTP passaram. Os handlers são exercitados com dependências locais injetadas; o build Next.js verifica suas importações reais. Os serviços comerciais existentes recebem também 11 cenários para execução na CI, com banco em memória e transporte falso: preço do catálogo, titularidade, escopo, produto inativo, idempotência, conservação de preço, pedido pago, encerrado, acesso pago e recurso vinculado.
+23 testes locais de regras, catálogo e corpos dos handlers HTTP passaram. Os handlers são exercitados com dependências locais injetadas; o build Next.js verifica suas importações reais. Os serviços comerciais existentes recebem também 11 cenários para execução na CI, com banco em memória e transporte falso: preço do catálogo, titularidade, escopo, produto inativo, idempotência, conservação de preço, pedido pago, encerrado, acesso pago e recurso vinculado.
 
 O workflow mantém todos os gates de operação desligados, executa os cenários A/B explicitamente e inclui os arquivos R36/R37 e o TAP no artefato. A aprovação final deve ser conferida no run e no Preview do SHA exato; a existência deste documento não é aprovação de CI nem de produção.
 
@@ -33,3 +33,7 @@ O Bloco A ainda requer login legítimo, recuperação de senha autorizada, persi
 ## Preservações
 
 Consulta ao Social QA somente leitura: usuários, pedidos, pagamentos, assinaturas, acessos, progresso e filas continuam zerados; objetos do preflight presentes. Não houve migração, credencial alterada, abertura de gate, envio, cobrança, chamada paga ou promoção a produção. Nenhuma lógica de robô foi modificada.
+
+## Correção de compatibilidade do build
+
+O primeiro candidato `522b447b4d9c6b1e1f621ac72dd71728651ee53c` passou nos testes, mas o build recusou a exportação `maxDuration` da rota Social. O limite preexistente de 60 segundos foi movido para a entrada específica `app/api/jenios-pay/checkout/route.js` em `vercel.json`. Os crons, os gates e as demais rotas não foram alterados. Não foi desativada nenhuma checagem de tipos. A configuração externa é exercitada no Preview; o teste local preserva o contrato e a CI repete o build.

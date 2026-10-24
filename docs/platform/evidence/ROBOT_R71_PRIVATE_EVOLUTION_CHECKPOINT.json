@@ -1,0 +1,25 @@
+{
+  "schema": "JENIOS_ROBOT_R71_PRIVATE_EVOLUTION_CHECKPOINT_V1",
+  "status": "IN_PROGRESS_NOT_CERTIFIED",
+  "baseRevision": "R70",
+  "baseCommit": "851804aa45ac8cee2aea4fe9096712a7aeff2048",
+  "baseFinalCiRunId": 40129546998,
+  "baseBackup": "backup/jenios-robot-r70-target-preflight-certified-20261024",
+  "researchBranch": "research/jenios-robot-r71-private-evolution-20261024",
+  "progressBackup": "backup/jenios-robot-r71-private-evolution-progress-20261024",
+  "policy": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+  "pending": ["complete integrated acceptance", "reference CI and original-private acceptance", "evidence consolidation", "final CI and certified backup"],
+  "boundaries": {
+    "productionChanged": false,
+    "mergePerformed": false,
+    "deploymentPerformed": false,
+    "hostedMigrationsApplied": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  }
+}

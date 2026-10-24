@@ -1,0 +1,80 @@
+name: JENIOS ROBOT R71 private evolution (no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r71-private-evolution-20261024]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_DB: jenios_r71_qa
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: r71-test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JENIOS_R71_TEST_DATABASE_URL: 'postgresql://postgres:r71-test-only@127.0.0.1:5432/jenios_r71_qa'
+      JENIOS_R71_EVOLUTION_TEST_DATABASE_URL: 'postgresql://postgres:r71-test-only@127.0.0.1:5432/jenios_r71_evolution_qa'
+      JENIOS_R71_DISPOSABLE_DB: 'true'
+      JENIOS_R71_INPUT_MODE: PUBLIC_PROTOCOL_FIXTURE
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://r71-fixture.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_r71_fixture_only'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R71 bounded private study policy, durable source and administrative boundary
+        run: node --test tests/platformRobotR71*.test.mjs
+      - name: Preserve R65 through R70 and research no-deploy contracts
+        run: node --test tests/platformRobotR65*.test.mjs tests/platformRobotR66*.test.mjs tests/platformRobotR67*.test.mjs tests/platformRobotR68*.test.mjs tests/platformRobotR69*.test.mjs tests/platformRobotR70*.test.mjs tests/platformRobotR60NoDeployGuard.test.mjs
+      - name: Ensure disposable PostgreSQL client and local TLS fixture tool
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+          command -v openssl
+      - name: R71 actual PostgreSQL admission, immutable snapshot, concurrency and window gates
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r71-evidence
+        run: node scripts/platform/research/r71-postgres-acceptance.mjs
+      - name: Create separate disposable HTTP integration database
+        run: psql "$JENIOS_R71_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE jenios_r71_evolution_qa'
+      - name: Preserve complete application test and build gates
+        run: npm run build
+      - name: Install pinned browser acceptance runner outside application dependencies
+        run: |
+          npm install --prefix "$RUNNER_TEMP/jenios-r71-browser" --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1
+          "$RUNNER_TEMP/jenios-r71-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: R71 real Next SDK PostgreSQL and browser with explicit public protocol fixtures
+        env:
+          JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE: ${{ runner.temp }}/jenios-r71-browser/node_modules/@playwright/test/index.mjs
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r71-evidence
+        run: node scripts/platform/research/r71-private-evolution-acceptance.mjs
+      - name: Retain sanitized public R71 integration evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r71-public-evolution-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/jenios-r71-evidence
+          if-no-files-found: warn
+          retention-days: 14

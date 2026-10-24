@@ -4,7 +4,7 @@ import {createPortal} from 'react-dom';
 import dynamic from 'next/dynamic';
 import {supabase} from '../../../lib/supabase';
 import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
-import {validPersona,personaPreferenceKey,readPersonaPreference,savePersonaPreference} from '../../../lib/assistant/persona-preference.mjs';
+import {validPersona,personaPreferenceKey,readPersonaPreference,savePersonaPreference,PERSONA_PREFERENCE_EVENT} from '../../../lib/assistant/persona-preference.mjs';
 import s from './AssistantEntry.module.css';
 const FreeAssistantRoom=dynamic(()=>import('./FreeAssistantRoom'),{ssr:false});
 export default function SocialFreeLauncher({guideQuestion=null}){
@@ -32,7 +32,9 @@ export default function SocialFreeLauncher({guideQuestion=null}){
   });
   const storage=e=>{if(e.key===personaPreferenceKey(owner.current)){const value=validPersona(e.newValue);setPersona(value);setChoosing(!value);}};
   window.addEventListener('storage',storage);
-  return()=>{live=false;epoch.current++;sub?.data?.subscription?.unsubscribe();window.removeEventListener('storage',storage);};
+  const preference=event=>{if(event.detail?.owner===owner.current&&validPersona(event.detail.persona))setPersona(event.detail.persona);};
+  window.addEventListener(PERSONA_PREFERENCE_EVENT,preference);
+  return()=>{live=false;epoch.current++;sub?.data?.subscription?.unsubscribe();window.removeEventListener('storage',storage);window.removeEventListener(PERSONA_PREFERENCE_EVENT,preference);};
  },[]);
  useEffect(()=>{if(!open)return;const escape=e=>{if(e.key==='Escape')setOpen(false);};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[open]);
  async function selectPersona(value){
@@ -40,6 +42,7 @@ export default function SocialFreeLauncher({guideQuestion=null}){
   const selected=++choice.current,stamp=epoch.current,currentOwner=owner.current;
   setPersona(value);setChoosing(false);setSaveNotice('');
   const local=savePersonaPreference(window.localStorage,currentOwner,value);
+  window.dispatchEvent(new CustomEvent(PERSONA_PREFERENCE_EVENT,{detail:{owner:currentOwner,persona:value}}));
   if(currentOwner==='visitor'){if(!local)setSaveNotice('A escolha vale nesta visita; o navegador não permitiu salvá-la.');return;}
   try{
    const session=await supabase.auth.getSession();
@@ -58,11 +61,11 @@ export default function SocialFreeLauncher({guideQuestion=null}){
     <button type="button" aria-label={expanded?'Restaurar janela':'Expandir janela'} onClick={()=>setExpanded(x=>!x)}>{expanded?'▣':'⛶'}</button>
     <button type="button" aria-label="Minimizar atendimento" onClick={()=>setOpen(false)}>−</button>
    </div></header>
-   <div className={s.body}>{!character||choosing?<section aria-label="Escolha Gênio ou Gênia" style={{padding:20,color:'#172033'}}>
+   <div className={s.body}>{!character?<section aria-label="Escolha Gênio ou Gênia" style={{padding:20,color:'#172033'}}>
     <h2 style={{fontSize:20}}>Com quem deseja conversar?</h2><p>Escolha Gênio ou Gênia. Você pode mudar quando quiser.</p>
     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>{PERSONAS.map(p=><button type="button" key={p.id} aria-pressed={p.id===persona} onClick={()=>void selectPersona(p.id)} style={{border:'1px solid #c4b5fd',borderRadius:14,background:'#faf5ff',color:'#4c1d95',padding:16,cursor:'pointer',display:'grid',justifyItems:'center',gap:10,fontWeight:800}}><img src={p.image} alt="" width="78" height="78" style={{borderRadius:'50%',objectFit:'cover'}}/>Conversar com {p.name}</button>)}</div>
     <p style={{fontSize:12}}>Sem cobrança. A preferência é salva na sua conta quando você está conectado; visitantes usam este navegador.</p>
-   </section>:<><button type="button" onClick={()=>setChoosing(true)} style={{margin:'10px 12px 0',padding:'8px 12px',background:'#f5f3ff',border:'1px solid #ddd6fe',borderRadius:8,color:'#5b21b6',cursor:'pointer'}}>Trocar assistente</button><FreeAssistantRoom key={scope+':'+persona} initialPersona={persona} onPersonaChange={selectPersona} guideQuestion={guideQuestion}/></>}
+   </section>:<><button type="button" onClick={()=>document.querySelector('#jenios-social-assistant [aria-label="Escolha quem vai conversar com você"] button')?.focus()} style={{margin:'10px 12px 0',padding:'8px 12px',background:'#f5f3ff',border:'1px solid #ddd6fe',borderRadius:8,color:'#5b21b6',cursor:'pointer'}}>Trocar assistente</button><FreeAssistantRoom key={scope} initialPersona={persona} onPersonaChange={setPersona} guideQuestion={guideQuestion}/></>}
    {saveNotice&&<p role="status" style={{padding:12,fontSize:12,color:'#92400e'}}>{saveNotice}</p>}</div>
   </section>
   <button type="button" className={s.launcher} aria-controls="jenios-social-assistant" aria-expanded={open} aria-label={open?'Minimizar atendimento gratuito':character?'Abrir '+character.name+' gratuito':'Abrir Gênio e Gênia gratuitos'} onClick={()=>setOpen(v=>!v)}>

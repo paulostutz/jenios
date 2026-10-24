@@ -8,14 +8,14 @@ import {platformSupabase} from '../../../lib/platform/supabase-client';
 import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import s from './AssistantEntry.module.css';
 
-const AssistantRoom=dynamic(()=>import('./AssistantRoom'),{ssr:false,loading:()=> <p role="status" className={s.loading}>Abrindo atendimento…</p>});
+const FreeAssistantRoom=dynamic(()=>import('./FreeAssistantRoom'),{ssr:false,loading:()=> <p role="status" className={s.loading}>Abrindo atendimento…</p>});
 const PAGES=new Set(['/dashboard-logado','/dashboard','/mesa-operacoes']);
 const signed=session=>Boolean(session?.access_token&&session.user?.id&&!session.user.is_anonymous);
 
 export default function AssistantEntry(){
  const path=usePathname();
  const [mounted,setMounted]=useState(false),[access,setAccess]=useState({source:'none',id:null});
- const [open,setOpen]=useState(false),[everOpened,setEverOpened]=useState(false),[expanded,setExpanded]=useState(false),[persona,setPersona]=useState('genio');
+ const [open,setOpen]=useState(false),[everOpened,setEverOpened]=useState(false),[expanded,setExpanded]=useState(false),[persona,setPersona]=useState(null);
  useEffect(()=>{setMounted(true);},[]);
  useEffect(()=>{
   let live=true,version=0;
@@ -49,7 +49,7 @@ export default function AssistantEntry(){
    className={s.panel+' '+(expanded?s.expanded:'')+' '+(!open?s.collapsed:'')}>
    <header className={s.bar}>
     <div className={s.identity}><img src={choice.image} alt="" width="44" height="44"/>
-     <div><strong>{access.source==='platform'?'Gênio / Gênia':choice.name}</strong><small>Assistente JENIOS</small></div></div>
+     <div><strong>{choice.name}</strong><small>Assistente JENIOS</small></div></div>
     <div className={s.controls}>
      <button type="button" onClick={()=>setExpanded(v=>!v)} title={expanded?'Restaurar tamanho':'Expandir atendimento'}
        aria-label={expanded?'Restaurar janela':'Expandir janela'}>{expanded?'▣':'⛶'}</button>
@@ -58,15 +58,11 @@ export default function AssistantEntry(){
    </header>
    <nav className={s.shortcuts} aria-label="Acessos do assistente">
     <a href="/platform/aprender">🎓 Universidade JENIOS</a>
-    <a href="/platform/assistente">↗ Ver atendimento completo</a>
+    <a href="/platform/assistente">↗ Ver atendimento completo</a><a href="/platform/assistente/consultas">Consultas protegidas</a>
     <a href="/genios-pro">✦ Gênio/Gênia Pro</a>
    </nav>
    <div className={s.body}>
-    {access.source==='platform'?<section className={s.connect}>
-      <strong>Conecte sua conta da JENIOS Social</strong>
-      <p>Seu login exclusivo da Platform não substitui a autorização dos módulos conectados à Social. Entre na conta da Social para conversar e salvar as preferências do atendimento.</p>
-      <a href="/login?next=/dashboard-logado">Entrar na JENIOS Social →</a>
-     </section>:everOpened&&<AssistantRoom key={access.id} embedded onPersonaChange={setPersona}/>}
+    {everOpened&&<FreeAssistantRoom key={access.id} initialPersona={persona} onPersonaChange={setPersona}/>}
    </div>
   </section>
   <button type="button" className={s.launcher} onClick={open?()=>setOpen(false):launch}

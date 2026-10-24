@@ -6,7 +6,7 @@ test('B128 minimizes the assistant by default and mounts only on authorized Plat
  const code=read('app/components/assistant/AssistantEntry.js');
  assert.match(code,/PAGES=new Set\(\['\/dashboard-logado','\/dashboard','\/mesa-operacoes'\]\)/);
  assert.match(code,/createPortal/);
- assert.match(code,/everOpened&&<AssistantRoom/);
+ assert.match(code,/everOpened&&<FreeAssistantRoom/);
  assert.match(code,/aria-expanded=\{open\}/);
  assert.match(code,/Minimizar atendimento/);
  assert.match(code,/Expandir janela/);
@@ -19,9 +19,11 @@ test('B128 route layouts preserve the original PlatformAuthGuard and do not chan
  assert.doesNotMatch(read('app/layout.js'),/AssistantEntry|AssistantRoom/);
  assert.doesNotMatch(read('app/social/page.js'),/AssistantEntry|AssistantRoom/);
 });
-test('B128 widget reuses the original Gênio/Gênia consent, preference and tools',()=>{
+test('B128 protected consultations retain the original Gênio/Gênia consent, preference and tools',()=>{
  const room=read('app/components/assistant/AssistantRoom.js');
  const support=read('lib/assistant/service.mjs');
+ assert.match(read('app/platform/assistente/consultas/page.js'),/<AssistantRoom/);
+ assert.match(read('app/components/assistant/AssistantEntry.js'),/href="\/platform\/assistente\/consultas"/);
  assert.match(room,/PERSONAS\.map/);
  assert.match(room,/onPersonaChange\(a\.persona\)/);
  assert.match(room,/function AssistantRoom\(\{embedded=false,onPersonaChange=null\}\)/);
@@ -41,9 +43,15 @@ test('B128 dock uses responsive scrollable layout and retains University',()=>{
 });
 test('B128 never confuses Social login with a Platform entitlement or activates cost',()=>{
  const dock=read('app/components/assistant/AssistantEntry.js');
- assert.match(dock,/access\.source==='platform'/);
- assert.match(dock,/Conecte sua conta da JENIOS Social/);
+ assert.match(dock,/if\(signed\(a\)\)setAccess\(\{source:'social'/);
+ assert.match(dock,/else if\(signed\(b\)\)setAccess\(\{source:'platform'/);
+ assert.match(dock,/access\.source==='none'\)return null/);
+ assert.match(dock,/<FreeAssistantRoom/);
+ assert.match(read('app/api/platform/assistant/route.js'),/requirePayToken\(request\)/);
+ assert.match(read('lib/assistant/service.mjs'),/authorize=requirePayUser/);
+ assert.match(read('lib/assistant/service.mjs'),/!user\?\.id\|\|user\.is_anonymous/);
  assert.match(read('app/api/platform/assistant/route.js'),/OPENAI_API_KEY:''/);
+ assert.match(read('app/api/platform/assistant/route.js'),/JENIOS_SALES_GENERATIVE_ENABLED==='true'/);
  assert.match(read('app/api/platform/learning/route.js'),/OPENAI_API_KEY:''/);
 });
 

@@ -3,6 +3,9 @@ import {useEffect,useRef,useState} from 'react';
 import {supabase} from '../../../lib/supabase';
 import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import s from './AssistantRoom.module.css';
+import useAssistantConversation from './useAssistantConversation';
+import ConversationControls from './ConversationControls';
+import {mergeConsultationRows} from './conversation-client.mjs';
 const quick=['Como começar na plataforma?','Como funcionam as trilhas de aprendizado?','Qual a diferença entre day e swing trade?','O modo reverso garante lucro?'];
 const networks=['ethereum','bitcoin','bsc','tron','solana','polygon','arbitrum','base','avalanche'];
 function ResultCard({r,onChooseBank,onAsk}){
@@ -25,6 +28,8 @@ function ResultCard({r,onChooseBank,onAsk}){
  </article>;
 }
 export default function AssistantRoom({embedded=false,onPersonaChange=null}){
+ const memory=useAssistantConversation('support');
+ const sendAbort=useRef(null),conversationRef=useRef(null),chatRef=useRef(null);
  const [account,setAccount]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(true),[refresh,setRefresh]=useState(0);
  const [message,setMessage]=useState(''),[chat,setChat]=useState([]),[tab,setTab]=useState('help');
  const [bank,setBank]=useState({codigo:'',periodo:''}),[bankName,setBankName]=useState(''),[query,setQuery]=useState('');
@@ -45,59 +50,83 @@ export default function AssistantRoom({embedded=false,onPersonaChange=null}){
   void load();
   const sub=supabase?.auth.onAuthStateChange((event,session)=>{
    if(event==='INITIAL_SESSION'||session?.user?.id===owner.current&&['SIGNED_IN','TOKEN_REFRESHED','USER_UPDATED'].includes(event))return;
-   epoch.current++;controller.current?.abort();acceptAccount(null);setChat([]);setMessage('');setBank({codigo:'',periodo:''});setBankName('');setQuery('');setCryptoTarget({network:'ethereum',type:'token',identifier:''});owner.current=null;
+   epoch.current++;controller.current?.abort();sendAbort.current?.abort();acceptAccount(null);setChat([]);setMessage('');setBank({codigo:'',periodo:''});setBankName('');setQuery('');setCryptoTarget({network:'ethereum',type:'token',identifier:''});owner.current=null;
    setTimeout(()=>{if(live)setRefresh(x=>x+1);},0);
   });
-  return()=>{live=false;epoch.current++;controller.current?.abort();sub?.data?.subscription?.unsubscribe();};
+  return()=>{live=false;epoch.current++;controller.current?.abort();sendAbort.current?.abort();sub?.data?.subscription?.unsubscribe();};
  },[refresh]);
  async function send(input){
   if(inflight.current||!accountRef.current)return;inflight.current=true;setBusy(true);setError('');const ticket=epoch.current,expectedOwner=owner.current;
+  const turnId=crypto.randomUUID(),isQuestion=input.action==='ask',isTool=input.action==='tool';let submitted=false,timer;
+  sendAbort.current=new AbortController();
+  if(isQuestion){setMessage('');setChat(old=>[...old.slice(-36),{id:turnId+':question',question:input.message},{id:turnId,result:{mode:'pending',title:'Preparando sua resposta…',explanation:'Consultando o contexto e o material disponível.'}}]);}
+  if(isTool)setChat(old=>[...old.slice(-37),{id:turnId,result:{mode:'pending',title:'Consultando o serviço…',explanation:'Aguardando informações da fonte autorizada.'}}]);
   try{
    const sessionResult=await supabase.auth.getSession(),session=sessionResult.data?.session;
    if(ticket!==epoch.current||!accountRef.current)return;
    if(sessionResult.error||!session?.access_token||session.user.id!==expectedOwner)throw Error('Sua sessão mudou. Atualize o atendimento.');
-   const response=await fetch('/api/platform/assistant',{method:'POST',cache:'no-store',signal:controller.current?.signal,headers:{authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:JSON.stringify({...input,revision:accountRef.current.revision})});
+   const conversation=(isQuestion||isTool)?await memory.ensure():null;
+   if(ticket!==epoch.current||sendAbort.current.signal.aborted)throw new DOMException('Espera interrompida.','AbortError');
+   timer=setTimeout(()=>sendAbort.current?.abort(new DOMException('Tempo de espera esgotado.','TimeoutError')),65000);submitted=true;
+   const response=await fetch('/api/platform/assistant',{method:'POST',cache:'no-store',signal:sendAbort.current.signal,headers:{authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:JSON.stringify({...input,revision:accountRef.current.revision,
+    ...(conversation?{conversationId:conversation.id,conversationRevision:conversation.revision,turnId}:{})})});
    if(ticket!==epoch.current)return;
    if(response.ok&&(response.headers.get('content-type')||'').includes('application/pdf')){
     const blob=await response.blob();if(ticket!==epoch.current)return;
     const rawRevision=response.headers.get('x-jenios-revision'),revision=Number(rawRevision);if(rawRevision!==null&&Number.isSafeInteger(revision)&&revision>accountRef.current.revision)acceptAccount({...accountRef.current,revision});
     const href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download=input.tool==='bankscore_full'?'jenios-bankscore-completo.pdf':'jenios-cripto-completo.pdf';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),1500);
-    setChat(old=>[...old.slice(-19),{id:crypto.randomUUID(),result:{mode:'tool',title:'PDF emitido',explanation:'O relatório foi gerado pelo serviço original. Um novo download pode refletir uma nova leitura da fonte.'}}]);return;
+    setChat(old=>old.map(row=>row.id===turnId?{id:turnId,result:{mode:'tool',title:'PDF emitido',explanation:'O relatório foi gerado pelo serviço original. Um novo download pode refletir uma nova leitura da fonte.'}}:row));
+    if(conversation)await memory.reload();return;
    }
    const body=await response.json();if(ticket!==epoch.current)return;
    if(Number.isSafeInteger(body.revision))acceptAccount({...accountRef.current,revision:body.revision});
-   if(!response.ok){if(response.status===409){acceptAccount(null);}throw Error(body.error||'Consulta indisponível.');}
+   if(body.conversation)memory.adopt(body.conversation);
+   if(!response.ok){if(response.status===409&&!body.conversation)acceptAccount(null);throw Error(body.error||'Consulta indisponível.');}
    acceptAccount(body.assistant);
-   if(input.action==='ask'){setMessage('');setChat(old=>[...old.slice(-18),{id:crypto.randomUUID(),question:input.message},{id:crypto.randomUUID(),result:body.result}]);}
-   else if(body.result)setChat(old=>[...old.slice(-19),{id:crypto.randomUUID(),result:body.result}]);
-  }catch(e){if(ticket===epoch.current&&e.name!=='AbortError')setError(e.message);}
-  finally{if(ticket===epoch.current){inflight.current=false;setBusy(false);}}
+   if(body.result)setChat(old=>(isQuestion||isTool)?old.map(row=>row.id===turnId?{id:turnId,result:body.result}:row):[...old.slice(-37),{id:turnId,result:body.result}]);
+  }catch(e){if(ticket===epoch.current){
+   const interrupted=e.name==='AbortError'||e.name==='TimeoutError';
+   const message=interrupted?(submitted?'A espera foi interrompida. O serviço pode concluir a solicitação; confira a conversa antes de repetir.':'Preparação interrompida. Nenhuma consulta foi enviada.'):e.message;
+   setError(message);setChat(old=>old.map(row=>row.id===turnId?{id:turnId,result:{mode:'pending',title:'Resposta em conferência',explanation:message}}:row));
+  }}finally{clearTimeout(timer);if(ticket===epoch.current){inflight.current=false;setBusy(false);}}
  }
+ useEffect(()=>{
+  const id=memory.conversation?.id||null,previous=conversationRef.current;
+  if(previous&&previous!==id){setChat(mergeConsultationRows(memory.conversation));setMessage('');}
+  else if(memory.conversation?.turns.length)setChat(old=>mergeConsultationRows(memory.conversation,old));
+  conversationRef.current=id;
+ },[memory.conversation]);
+ useEffect(()=>{if(chat.length)chatRef.current?.scrollTo({top:chatRef.current.scrollHeight,behavior:'smooth'});},[chat.length,busy]);
+ useEffect(()=>{if(account&&memory.status!=='loading'&&account.persona!==memory.persona&&!busy)void send({action:'preferences',persona:memory.persona,aiConsent:account.aiConsent});},[account?.persona,memory.persona,memory.status,busy]);
+ async function choosePersona(value){if(busy)return;if(await memory.choosePersona(value))await send({action:'preferences',persona:value,aiConsent:accountRef.current.aiConsent});}
+
  const persona=PERSONAS.find(x=>x.id===account?.persona)||PERSONAS[0];
  const run=(tool,input={},format='json')=>send({action:'tool',tool,input,format,confirmed:true});
  const Shell=embedded?'div':'main';
  return <Shell className={s.shell+(embedded?' '+s.embedded:'')}><div className={s.wrap}>
-  {!embedded&&<header className={s.header}><div><div className={s.brand}>JENIOS · ATENDIMENTO INTELIGENTE</div><h1>Clareza para o seu próximo passo.</h1><p>Tire dúvidas, consulte as informações disponíveis e entenda os recursos da Platform.</p></div><a className={s.back} href="/dashboard-logado">← Voltar à gestão</a></header>}
+  {!embedded&&<header className={s.header}><div><div className={s.brand}>JENIOS · ATENDIMENTO INTELIGENTE</div><h1>Clareza para o seu próximo passo.</h1><p>Tire dúvidas, consulte as informações disponíveis e entenda os recursos da Platform.</p></div><a className={s.back} href="/platform/assistente">← Voltar ao atendimento</a></header>}
   {!account?<section className={s.card}><h2>Gênio e Gênia</h2><p role="status">{busy?'Verificando sua conta…':error||'Atualize para continuar.'}</p><div className={s.actions}><a href="/login" className={s.primary}>Entrar</a><button className={s.secondary} disabled={busy} onClick={()=>setRefresh(x=>x+1)}>Tentar novamente</button></div></section>:<>
    {!embedded&&<div className={s.banner}>Atendimento informativo. Consulte módulos e aulas diretamente. Este atendimento não envia ordens reais nem avisos por WhatsApp.</div>}
    <div className={s.layout}>
-    <aside className={s.sidebar}><h2>Quem vai te atender?</h2><div className={s.personas}>{PERSONAS.map(p=><button disabled={busy} type="button" key={p.id} className={s.persona} aria-pressed={account.persona===p.id} onClick={()=>send({action:'preferences',persona:p.id,aiConsent:account.aiConsent})}><img src={p.image} alt={p.name} width="76" height="76"/><span>{p.name}</span></button>)}</div><p className={s.small}>Mesmas informações e critérios. A escolha muda o personagem, não a qualidade do atendimento.</p>
-     <label className={s.consent}><input type="checkbox" disabled={busy} checked={account.aiConsent} onChange={e=>send({action:'preferences',persona:account.persona,aiConsent:e.target.checked})}/>Autorizar envio das minhas perguntas de suporte à OpenAI, quando configurada.</label><p className={s.small}>{account.aiConfigured?'Provedor configurado; disponível somente com consentimento.':'IA externa ainda não configurada. O modo guiado permanece disponível.'} Os formulários de consulta não enviam seus resultados ao modelo. Não escreva dados sensíveis nas perguntas.</p>
+    <aside className={s.sidebar}><h2>Quem vai te atender?</h2><div className={s.personas}>{PERSONAS.map(p=><button disabled={busy} type="button" key={p.id} className={s.persona} aria-pressed={account.persona===p.id} onClick={()=>void choosePersona(p.id)}><img src={p.image} alt={p.name} width="76" height="76"/><span>{p.name}</span></button>)}</div><p className={s.small}>Mesmas informações e critérios. A escolha muda o personagem, não a qualidade do atendimento.</p>
+     <label className={s.consent}><input type="checkbox" disabled={busy} checked={account.aiConsent} onChange={e=>send({action:'preferences',persona:account.persona,aiConsent:e.target.checked})}/>Autorizar envio das minhas perguntas de suporte à OpenAI, quando configurada.</label><p className={s.small}>{account.aiConfigured?'Provedor configurado; disponível somente com consentimento.':'IA externa ainda não configurada. O modo guiado permanece disponível.'} Resumos verificados e datados das consultas autorizadas podem apoiar perguntas seguintes, com seu consentimento para IA. Dados de acesso e relatórios completos não são incluídos. Não escreva dados sensíveis nas perguntas.</p>
      <nav aria-label="Consultas do atendimento">{[['help','Dúvidas da plataforma'],['trends','Hub de Tendências'],['bankscore','BankScore'],['crypto','Validador Cripto']].map(([id,label])=><button disabled={busy} type="button" className={s.nav} aria-current={tab===id?'page':undefined} key={id} onClick={()=>setTab(id)}>{label}</button>)}</nav>
      <a className={s.school} href="/notifications">Acompanhar alertas na Central de Notificações →</a><a className={s.school} href="/platform/aprender">Universidade JENIOS · Estudo diário →</a><a className={s.school} href="/dashboard">Abrir laboratório de leitura →</a>
     </aside>
     <section className={s.column}>
      <div className={s.card}>
       <div className={s.heading}><img src={persona.image} alt="" width="54" height="54"/><div><div className={s.tag}>SEU ATENDENTE</div><h2>{persona.name}</h2></div></div>
-      {tab==='help'&&<><p>Como posso ajudar você a usar a JENIOS?</p><div className={s.quick}>{quick.map(q=><button disabled={busy} type="button" key={q} onClick={()=>send({action:'ask',message:q})}>{q}</button>)}</div><form onSubmit={e=>{e.preventDefault();send({action:'ask',message});}}><label htmlFor="assistant-question">Sua dúvida<textarea id="assistant-question" rows={3} maxLength={1800} value={message} disabled={busy} onChange={e=>setMessage(e.target.value)} placeholder="Ex.: como funciona o diagnóstico?"/></label><button disabled={busy||!message.trim()} className={s.primary}>{busy?'Consultando…':'Enviar pergunta'}</button></form><p className={s.small}>Não informe senhas, tokens de acesso ou frase-semente. Esta conversa fica apenas nesta aba e é apagada ao recarregar ou sair.</p></>}
+      {tab==='help'&&<><p>Como posso ajudar você a usar a JENIOS?</p><div className={s.quick}>{quick.map(q=><button disabled={busy} type="button" key={q} onClick={()=>send({action:'ask',message:q})}>{q}</button>)}</div><form onSubmit={e=>{e.preventDefault();send({action:'ask',message});}}><label htmlFor="assistant-question">Sua dúvida<textarea id="assistant-question" rows={3} maxLength={1800} value={message} disabled={busy} onChange={e=>setMessage(e.target.value)} placeholder="Ex.: como funciona o diagnóstico?"/></label><button disabled={busy||!message.trim()} className={s.primary}>{busy?'Consultando…':'Enviar pergunta'}</button></form><p className={s.small}>Não informe senhas, tokens de acesso ou frase-semente. Confira a duração e as opções de exclusão em Memória da conversa.</p></>}
       {tab==='trends'&&<><h3>Uma consulta, a mesma base do Hub.</h3><p>Veja o que o serviço de tendências retorna agora, distinguindo a data da consulta do horário de cada registro.</p><button className={s.primary} disabled={busy} onClick={()=>run('trends')}>Consultar Hub</button><p className={s.small}>Este botão consulta uma vez. Não inicia monitoramento contínuo nem envia WhatsApp.</p></>}
       {tab==='bankscore'&&<><h3>Indicadores e laudos de instituições</h3><form onSubmit={e=>{e.preventDefault();run('bankscore_search',{query});}}><label htmlFor="bank-query">Buscar instituição<input id="bank-query" value={query} maxLength={80} disabled={busy} onChange={e=>setQuery(e.target.value)} placeholder="Digite parte do nome"/></label><button disabled={busy||query.trim().length<2} className={s.secondary}>Buscar no cadastro</button></form><p className={s.small}>Selecione um resultado abaixo ou informe o código da instituição.</p><div className={s.fields}><label>Código<input value={bank.codigo} disabled={busy} onChange={e=>{setBank({...bank,codigo:e.target.value});setBankName('');}} maxLength={13}/></label><label>Referência AAAAMM<input value={bank.periodo} disabled={busy} onChange={e=>setBank({...bank,periodo:e.target.value})} maxLength={6}/></label></div>{bankName&&<p>{bankName}</p>}<div className={s.actions}><button disabled={busy||!bank.codigo} className={s.secondary} onClick={()=>run('bankscore_basic',bank)}>Consulta básica</button><button disabled={busy||!bank.codigo} className={s.primary} onClick={()=>run('bankscore_full',bank)}>Laudo completo</button><button disabled={busy||!bank.codigo} className={s.secondary} onClick={()=>run('bankscore_full',bank,'pdf')}>Baixar PDF completo</button></div><p className={s.small}>A consulta usa a mesma autorização do BankScore. O atendimento não concede acesso adicional nem cria cobrança.</p></>}
-      {tab==='crypto'&&<><h3>Consultar rede, carteira ou token</h3><div className={s.fields}><label>Rede<select value={cryptoTarget.network} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,network:e.target.value})}>{networks.map(n=><option key={n}>{n}</option>)}</select></label><label>Tipo<select value={cryptoTarget.type} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,type:e.target.value})}><option value="token">Token / contrato</option><option value="wallet">Carteira</option><option value="transaction">Transação / hash</option></select></label></div><label>Identificador público<textarea rows={3} value={cryptoTarget.identifier} maxLength={180} spellCheck={false} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,identifier:e.target.value})}/></label><div className={s.actions}><button disabled={busy||!cryptoTarget.identifier} className={s.secondary} onClick={()=>run('crypto_basic',cryptoTarget)}>Verificação básica</button><button disabled={busy||!cryptoTarget.identifier} className={s.primary} onClick={()=>run('crypto_full',cryptoTarget)}>Consulta completa</button><button disabled={busy||!cryptoTarget.identifier} className={s.secondary} onClick={()=>run('crypto_full',cryptoTarget,'pdf')}>Baixar PDF</button></div><p className={s.small}>Use somente dados públicos. O identificador consultado não é enviado à IA generativa.</p></>}
+      {tab==='crypto'&&<><h3>Consultar rede, carteira ou token</h3><div className={s.fields}><label>Rede<select value={cryptoTarget.network} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,network:e.target.value})}>{networks.map(n=><option key={n}>{n}</option>)}</select></label><label>Tipo<select value={cryptoTarget.type} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,type:e.target.value})}><option value="token">Token / contrato</option><option value="wallet">Carteira</option><option value="transaction">Transação / hash</option></select></label></div><label>Identificador público<textarea rows={3} value={cryptoTarget.identifier} maxLength={180} spellCheck={false} disabled={busy} onChange={e=>setCryptoTarget({...cryptoTarget,identifier:e.target.value})}/></label><div className={s.actions}><button disabled={busy||!cryptoTarget.identifier} className={s.secondary} onClick={()=>run('crypto_basic',cryptoTarget)}>Verificação básica</button><button disabled={busy||!cryptoTarget.identifier} className={s.primary} onClick={()=>run('crypto_full',cryptoTarget)}>Consulta completa</button><button disabled={busy||!cryptoTarget.identifier} className={s.secondary} onClick={()=>run('crypto_full',cryptoTarget,'pdf')}>Baixar PDF</button></div><p className={s.small}>Use somente dados públicos. O atendimento pode usar um resumo verificado desta consulta nas perguntas seguintes, conforme suas permissões e consentimento.</p></>}
      </div>
+     <ConversationControls memory={memory} disabled={busy}/>
+     {busy&&<button type="button" className={s.secondary} onClick={()=>sendAbort.current?.abort(new DOMException('Espera interrompida.','AbortError'))}>Parar espera</button>}
      {error&&<div className={s.error} role="alert">{error} <button disabled={busy} onClick={()=>setRefresh(x=>x+1)}>Atualizar atendimento</button></div>}
      {busy&&<p className={s.status} role="status">Aguarde a confirmação do serviço…</p>}
-     <div aria-live="polite" className={s.chat}>{chat.map(item=>item.question?<p className={s.question} key={item.id}>{item.question}</p>:<ResultCard key={item.id} r={item.result} onAsk={q=>send({action:'ask',message:q})} onChooseBank={(i,periodo)=>{setBank({codigo:i.codigo,periodo:String(periodo||'')});setBankName(i.nome);setTab('bankscore');}}/>)}</div>
-     {chat.length>0&&<button className={s.clear} disabled={busy} onClick={()=>setChat([])}>Limpar conversa desta aba</button>}
+     <div ref={chatRef} aria-live="polite" className={s.chat}>{chat.map(item=>item.question?<p className={s.question} key={item.id}>{item.question}</p>:<ResultCard key={item.id} r={item.result} onAsk={q=>send({action:'ask',message:q})} onChooseBank={(i,periodo)=>{setBank({codigo:i.codigo,periodo:String(periodo||'')});setBankName(i.nome);setTab('bankscore');}}/>)}</div>
+     {chat.length>0&&<button className={s.clear} disabled={busy} onClick={()=>{memory.startNew();setChat([]);}}>Iniciar nova conversa</button>}
     </section>
    </div>
   </>}

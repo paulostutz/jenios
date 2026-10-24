@@ -1,0 +1,53 @@
+{
+  "schema": "JENIOS_ROBOT_R66_CHANGE_AUDIT_V1",
+  "baseCommit": "02ccf75c09702f9378a496ffb0d9cd323e21d2fc",
+  "scope": "ROBOTS_ONLY_ADDITIVE_QA_EMITTER_AND_OPERATIONAL_PREPARATION",
+  "trackedModificationsBeforeConsolidation": [
+    "vercel.json"
+  ],
+  "r12r65AlgorithmFilesChanged": 0,
+  "dbSchemaFilesChanged": 0,
+  "appOrSocialOrPaymentsFilesChanged": 0,
+  "privateCoreSourceCommitted": false,
+  "allowedExistingModifications": [
+    "vercel.json",
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json"
+  ],
+  "newFiles": [
+    ".github/workflows/jenios-robot-r66-durable-emitter.yml",
+    "docs/platform/ROBOT_R66_DURABLE_EMITTER.md",
+    "docs/platform/ROBOT_R66_HOSTED_ACCEPTANCE_PLAN.md",
+    "docs/platform/evidence/ROBOT_R66_DURABLE_EMITTER_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_R66_PRIVATE_ENGINE_DISCOVERY.json",
+    "lib/platform/research/robot-r66-durable-emitter.mjs",
+    "lib/platform/research/robot-r66-loopback-transport.mjs",
+    "lib/platform/research/robot-r66-observation-outbox.mjs",
+    "lib/platform/research/robot-r66-operational-readiness.mjs",
+    "scripts/platform/research/r66-emitter-acceptance.mjs",
+    "scripts/platform/research/r66-operational-preflight.mjs",
+    "tests/fixtures/r66-emitter-process.mjs",
+    "tests/platformRobotR66DurableEmitter.test.mjs",
+    "tests/platformRobotR66LoopbackTransport.test.mjs",
+    "tests/platformRobotR66OperationalReadiness.test.mjs",
+    "tests/platformRobotR66Outbox.test.mjs"
+  ],
+  "newFileSha256": {
+    ".github/workflows/jenios-robot-r66-durable-emitter.yml": "dfe70feec9084c953ce6393620d7788e564d00a1ae5a02039554e67556f5aca5",
+    "docs/platform/ROBOT_R66_DURABLE_EMITTER.md": "f19006422aad61e257d150c11b63310ff715aedf86c8000613fd9a0f3a4caba4",
+    "docs/platform/ROBOT_R66_HOSTED_ACCEPTANCE_PLAN.md": "61cbcbfedb6c10467e1b4284af08036b35b5c351d98b05699b066e5a5d2ee2d4",
+    "docs/platform/evidence/ROBOT_R66_PRIVATE_ENGINE_DISCOVERY.json": "6c58218ec58aac9bf4d91ad42d6d8b27b7d0d6640316ad8dd9b72c802b9a33d8",
+    "lib/platform/research/robot-r66-durable-emitter.mjs": "f77febd33ddb28c17129d752da6018625923c7be5a7ff687a93d0c9805c74ec5",
+    "lib/platform/research/robot-r66-loopback-transport.mjs": "2fd23b4d87581fdc09d516b6aba8b465eb1d0b2b81c73d15a3a9f0ebc4979006",
+    "lib/platform/research/robot-r66-observation-outbox.mjs": "fd635a6e51571a06465ec39cb5f868d67e69f4186aa2bce9f58347bae395a267",
+    "lib/platform/research/robot-r66-operational-readiness.mjs": "1fa9e9b12f1ed901a35defad0c78315a0f79e89e993bfec04d29c7191a9c850a",
+    "scripts/platform/research/r66-emitter-acceptance.mjs": "21ffe2fd14550d3b5b671e7f172a28089f4f8c4a3aa95679642ecc672fddcafd",
+    "scripts/platform/research/r66-operational-preflight.mjs": "58d995abfa6a285f1db7d26d534f8e848fe341ebe68535b287c105aa9d7b30ab",
+    "tests/fixtures/r66-emitter-process.mjs": "a736f5b04ef58df21e1a925aab0ef045857fe8ea54da16f4b1134a06299a4c0f",
+    "tests/platformRobotR66DurableEmitter.test.mjs": "bd2ad647450c0212dd0d65ee675810a781a00d812bb4a84b84f4668d2b5f3ab8",
+    "tests/platformRobotR66LoopbackTransport.test.mjs": "a8dfca425379ec33100d97973e701cd38cae7eebf23484d676b5cf02696a4a6d",
+    "tests/platformRobotR66OperationalReadiness.test.mjs": "c247b335632daf7a3a03278adf73c2d1bc367154e5a1a8a8d3e26e99e5c755a8",
+    "tests/platformRobotR66Outbox.test.mjs": "ff3551fc4400c5dca6816c87baa462c3a9af99484c6b2dcdfc4c1f2f6b35e932"
+  },
+  "ciBoundary": "New branch-only workflow with disposable PostgreSQL, no deployment job",
+  "preservationRule": "R65 reference evidence unchanged; every original root ledger section is deep-equal before appending R66."
+}

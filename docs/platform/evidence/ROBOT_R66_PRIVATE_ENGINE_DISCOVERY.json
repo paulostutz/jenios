@@ -1,0 +1,340 @@
+{
+  "schema": "JENIOS_ROBOT_R66_PRIVATE_ENGINE_DISCOVERY_V1",
+  "createdAt": "2026-10-24T17:35:39.715181+00:00",
+  "classification": "ORIGINAL_PRIVATE_BYTES_VERIFIED_SYNTHETIC_LOCAL_CAPTURE_ONLY",
+  "base": {
+    "repository": "paulostutz/jenios",
+    "commit": "02ccf75c09702f9378a496ffb0d9cd323e21d2fc",
+    "certifiedBackup": "backup/jenios-robot-r65-evolution-cycle-certified-20261024",
+    "validationRun": 40115691899
+  },
+  "origin": {
+    "libraryPath": "/JENIOS-PLATFORM-R45-B47-B52-20261017/JENIOS-Platform-R45-B52-CONSOLIDADO-PRIVADO.zip",
+    "libraryFileId": "libfile_78cf32a27d048191842ffeb56986c10e",
+    "archiveBytes": 202424362,
+    "archiveSha256": "7827fd7059e9ccb92eddb6e562beeaf63c53a40d44471d60a0d13daabcc3b267",
+    "archiveEntryCount": 2835,
+    "archiveHashMatchesOriginalManifest": true,
+    "manifestLibraryFileId": "libfile_fd2d422c535081918ad82e1c005bedcc",
+    "historicalReports": [
+      {
+        "revision": "B296",
+        "libraryFileId": "libfile_4f7e6acb78a48191bdf9094cbef6c3a8"
+      },
+      {
+        "revision": "B297",
+        "libraryFileId": "libfile_237fe09ed11c81919a2067a96a1a6975"
+      },
+      {
+        "revision": "B297_CI",
+        "libraryFileId": "libfile_2daf34459a18819183e5547bc8500e96"
+      }
+    ]
+  },
+  "executableIdentity": {
+    "engine": {
+      "archivePath": "JENIOS-Platform-R45/nucleo-privado/engine.mjs",
+      "bytes": 21792,
+      "sha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+      "hashMatchesPinnedB297": true
+    },
+    "service": {
+      "archivePath": "JENIOS-Platform-R45/nucleo-privado/service.mjs",
+      "bytes": 6830,
+      "sha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+      "hashMatchesPinnedB297": true
+    },
+    "version": "jenios-research-r29.1",
+    "verifiedLocally": true,
+    "independentRemoteRuntimeAttestation": false,
+    "privateSourceCommitted": false
+  },
+  "connection": {
+    "reusedAdapter": "lib/platform/research/b297-private-readonly-audit.mjs",
+    "adapterSha256": "ca1442d5da0412551ce2d96fbe958d6f9d442aa0ecea3315c7a09006244691c6",
+    "reusedRunner": "scripts/platform/research/b297-capture-private-readonly.mjs",
+    "runnerSha256": "cf0f82cdae3ac240ceba0059cddf8bbd3d1ca12d0c224fe4cd3ac54827481ab9",
+    "hook": "captureB297OriginalDecisions({analyzeRequest,scenarios,nowMs})",
+    "originalExportsExercised": [
+      "service.analyzeRequest",
+      "engine.chooseMode",
+      "engine.assertNoLiveExecution"
+    ],
+    "sourceMode": "synthetic",
+    "commercialModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "ultrafastProvidedByThisPrivateCore": false,
+    "ultrafastRuntime": "R61/R65 certified adapters, separate implementation and evidence origin",
+    "r65ExternalContract": "PREPARED_INACTIVE",
+    "r65ObservationOriginUnchanged": "R61_SYNTHETIC_RUNTIME",
+    "privateOutputReclassifiedAsR61": false,
+    "privateCoreOperationallyConnectedToR65": false
+  },
+  "isolation": {
+    "networkFetchBlockedByExistingB297Runner": true,
+    "networkFetcherInjectedAsRejectingFunction": true,
+    "nodePermissionEnabled": true,
+    "filesystemReadRestrictedToCheckoutAndPrivateTemporaryDirectory": true,
+    "nodeFilesystemWriteAllowed": false,
+    "childProcessWorkerAndAddonPermissionAllowed": false,
+    "environmentCredentialsInherited": false,
+    "networkIsolationDescription": "Default restricted execution sandbox plus existing B297 global and injected fetch rejection. Node filesystem permission is not claimed as a general network firewall.",
+    "privateModulesExtractedOutsideRepository": true,
+    "originalFilesModified": false
+  },
+  "validation": {
+    "kind": "ORIGINAL_PRIVATE_FUNCTIONS_WITH_SYNTHETIC_INPUTS",
+    "command": "node [restricted read permissions] scripts/platform/research/b297-capture-private-readonly.mjs",
+    "exitCode": 0,
+    "stderrEmpty": true,
+    "captureEvidenceSha256": "9caae5a5aaeab868b53f372959ee3e7074af077a8d95419cf70dd7addc81b77e",
+    "captureEvidence": {
+      "schema": "JENIOS_B297_PRIVATE_LAB_REPORT_V1",
+      "createdAtMs": 1792863308827,
+      "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+      "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+      "checkedOriginalFileBytes": true,
+      "loadedOriginalFunctions": true,
+      "independentRuntimeAttestation": false,
+      "closedSyntheticSourceOnly": true,
+      "analysisCount": 12,
+      "analysisCounts": {
+        "manual": 4,
+        "hybrid": 4,
+        "reverse": 4
+      },
+      "decisionActions": [
+        {
+          "id": "B297-day-manual-buy",
+          "mode": "manual",
+          "intent": "buy",
+          "action": "manual_preview",
+          "side": "buy",
+          "hash": "cdefd028f05c2320fb47ca2ac04309bbb16ee896a4c1f8f954a0f69af566ea2a"
+        },
+        {
+          "id": "B297-day-manual-sell",
+          "mode": "manual",
+          "intent": "sell",
+          "action": "manual_preview",
+          "side": "sell",
+          "hash": "196b38ecced6748a9c44e20f8d7ec759dd56a3321586990456d5be7d8e938d1c"
+        },
+        {
+          "id": "B297-day-hybrid-buy",
+          "mode": "hybrid",
+          "intent": "buy",
+          "action": "wait_for_confluence",
+          "side": null,
+          "hash": "20185a6713958db83bb92c2776ac13fd39b9311b7d025fdc2a59bcbc9532defd"
+        },
+        {
+          "id": "B297-day-hybrid-sell",
+          "mode": "hybrid",
+          "intent": "sell",
+          "action": "wait_for_confluence",
+          "side": null,
+          "hash": "20185a6713958db83bb92c2776ac13fd39b9311b7d025fdc2a59bcbc9532defd"
+        },
+        {
+          "id": "B297-day-reverse-buy",
+          "mode": "reverse",
+          "intent": "buy",
+          "action": "reverse_not_calibrated",
+          "side": null,
+          "hash": "ee1f5321d29ff36b2e9049d23f8225a06df601045e6b65ed8b36331c19049b16"
+        },
+        {
+          "id": "B297-day-reverse-sell",
+          "mode": "reverse",
+          "intent": "sell",
+          "action": "reverse_not_calibrated",
+          "side": null,
+          "hash": "ee1f5321d29ff36b2e9049d23f8225a06df601045e6b65ed8b36331c19049b16"
+        },
+        {
+          "id": "B297-swing-manual-buy",
+          "mode": "manual",
+          "intent": "buy",
+          "action": "manual_preview",
+          "side": "buy",
+          "hash": "d91e0b9f6ee0d53175aa4bf11e241fa6be2c8d66971cc42b83c1543bf5bb4505"
+        },
+        {
+          "id": "B297-swing-manual-sell",
+          "mode": "manual",
+          "intent": "sell",
+          "action": "manual_preview",
+          "side": "sell",
+          "hash": "d4eaa1ad059290f9afb873baf0487e0e0feeec83fcc7a4749360b4303ae51fc5"
+        },
+        {
+          "id": "B297-swing-hybrid-buy",
+          "mode": "hybrid",
+          "intent": "buy",
+          "action": "wait_for_confluence",
+          "side": null,
+          "hash": "2f861a7be90345784d145b07f6ac10b24148eef059906ffbbda97f8a96e7c9dc"
+        },
+        {
+          "id": "B297-swing-hybrid-sell",
+          "mode": "hybrid",
+          "intent": "sell",
+          "action": "wait_for_confluence",
+          "side": null,
+          "hash": "2f861a7be90345784d145b07f6ac10b24148eef059906ffbbda97f8a96e7c9dc"
+        },
+        {
+          "id": "B297-swing-reverse-buy",
+          "mode": "reverse",
+          "intent": "buy",
+          "action": "preserve_trend_aligned_intent",
+          "side": "buy",
+          "hash": "6b0e727b5f4ee2bf853dfbae068ac278603c7d6548f16d44935b586039be92f2"
+        },
+        {
+          "id": "B297-swing-reverse-sell",
+          "mode": "reverse",
+          "intent": "sell",
+          "action": "suggest_trend_aligned_preview",
+          "side": "buy",
+          "hash": "ceb0d4809318c5debf9e95162ff82bd606647732d9090024f9c2e377714f2c8c"
+        }
+      ],
+      "chainFinalSha256": "f5aaa21dd661501641d140ade322d8da1f3773860d79bee68858b958f16403f2",
+      "chainVerified": true,
+      "originalChooseModeChecks": [
+        {
+          "id": "reverse-buy-to-sell",
+          "mode": "reverse",
+          "intent": "buy",
+          "action": "reverse_preview",
+          "side": "sell",
+          "decisionSha256": "7a06efa4478556afb724f989cd048674464f87b146e286a4fd272578b2d81042"
+        },
+        {
+          "id": "reverse-sell-to-buy",
+          "mode": "reverse",
+          "intent": "sell",
+          "action": "reverse_preview",
+          "side": "buy",
+          "decisionSha256": "65baf1459e038b0d7a74290437a0cdec6ec5941b24b277820ff2ce32d0a1cdd8"
+        },
+        {
+          "id": "reverse-unverified-calibration",
+          "mode": "reverse",
+          "intent": "buy",
+          "action": "reverse_not_calibrated",
+          "side": null,
+          "decisionSha256": "3da4cd5be0554c288c446e5a66334bc84b168921ee97ee0f4f049b581f8aba6f"
+        },
+        {
+          "id": "mega-trend-preserve",
+          "mode": "reverse",
+          "intent": "buy",
+          "action": "preserve_trend_aligned_intent",
+          "side": "buy",
+          "decisionSha256": "57bc570cd43382ca6a05d31bbb7d4af646e73cb865864856db070c95f8a253cc"
+        },
+        {
+          "id": "mega-trend-veto",
+          "mode": "reverse",
+          "intent": "sell",
+          "action": "suggest_trend_aligned_preview",
+          "side": "buy",
+          "decisionSha256": "1962b7c5719c59606e832a1ff91c4f29085cb653e2060e3b6c2170ddaa275f77"
+        },
+        {
+          "id": "manual-original",
+          "mode": "manual",
+          "intent": "buy",
+          "action": "manual_preview",
+          "side": "buy",
+          "decisionSha256": "601d82143e884d88d048ba5a17ab6ea20c1f6ea18b5c7afbbfb6fa609be985e2"
+        },
+        {
+          "id": "hybrid-original",
+          "mode": "hybrid",
+          "intent": "sell",
+          "action": "hybrid_preview",
+          "side": "buy",
+          "decisionSha256": "8425003f5886d1e336f9a6e2c2e2ce5910e27181b7c80ded4f69a267a13a0654"
+        }
+      ],
+      "pausedAndPositionGuardsVerified": true,
+      "syntheticLifecycleCount": 6,
+      "lifecycleCancelClosePassThrough": true,
+      "b152AcceptedArithmetic": {
+        "riskUnits": "53000000",
+        "notionalUnits": "1000000000",
+        "settlement": "USD"
+      },
+      "b152RejectedCases": [
+        {
+          "id": "spot-short",
+          "rejected": true,
+          "reason": "SPOT_SHORT_UNSUPPORTED"
+        },
+        {
+          "id": "invalid-protective-stop",
+          "rejected": true,
+          "reason": "INVALID_PROTECTIVE_PRICES"
+        },
+        {
+          "id": "quantity-off-step",
+          "rejected": true,
+          "reason": "QUANTITY_OFF_STEP_OR_BOUNDS"
+        },
+        {
+          "id": "metadata-stale",
+          "rejected": true,
+          "reason": "STALE_INSTRUMENT_METADATA"
+        },
+        {
+          "id": "fee-overlimit",
+          "rejected": true,
+          "reason": "INVALID_INTEGER"
+        }
+      ],
+      "liveExecutionGuardVerified": true,
+      "operatorFeedConnected": false,
+      "operatorConsentObserved": false,
+      "deliveryProviderAcknowledged": false,
+      "realPositionReconciled": false,
+      "independentMarketData": false,
+      "profitabilityVerified": false,
+      "lossometerActuallyAvoided": null,
+      "ordersSent": 0,
+      "paperOrdersSent": 0,
+      "paymentsCreated": 0,
+      "deploymentsCreated": 0,
+      "caution": "Execucao genuina do core original com inputs sinteticos e isolamento local; sem corretoras, sinais externos ou transacoes."
+    }
+  },
+  "limitations": [
+    "No operational engine host or independent executable attestation is certified.",
+    "The original service fixes calibration through compareShadowStrategies([]); reversal remains blocked without calibration where applicable.",
+    "Direct chooseMode reverse checks inject synthetic calibrated contexts and do not prove real calibration.",
+    "No callback from the private core is connected to the R65 emitter, durable outbox or hosted worker by this discovery.",
+    "Original private core covers Manual, Hybrid and Reverse only; UltraFast remains the separate certified research adapter.",
+    "R65 automatic policy remains UltraFast maxAgeMs 750 -> 500 only, once per history.",
+    "No customer feed, broker read, paid generative provider, real admin identity, hosted database or remote scheduler was exercised.",
+    "12 original analyses are a concrete dependency check, not 12 trades and not financial performance."
+  ],
+  "invariants": {
+    "customerMonitoringActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "hostedDatabaseMigrationsApplied": 0,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  }
+}

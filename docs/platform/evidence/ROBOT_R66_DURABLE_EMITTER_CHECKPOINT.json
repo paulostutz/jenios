@@ -1,0 +1,181 @@
+{
+  "schema": "JENIOS_ROBOT_R66_DURABLE_EMITTER_CHECKPOINT_V1",
+  "revision": "R66",
+  "classification": "QA_DURABLE_EMITTER_PENDING_REFERENCE_CI",
+  "createdAt": "2026-10-24T17:42:57.345901+00:00",
+  "base": {
+    "commit": "02ccf75c09702f9378a496ffb0d9cd323e21d2fc",
+    "branch": "backup/jenios-robot-r65-evolution-cycle-certified-20261024",
+    "researchBranch": "research/jenios-robot-r65-evolution-cycle-20261024",
+    "validationRun": 40115691899,
+    "jobId": 120936376996,
+    "finishedAt": "2026-10-24T17:25:39Z",
+    "researchAndCertifiedRefsMatched": true,
+    "vercelDeploymentsOfBaseSha": 0
+  },
+  "branch": "research/jenios-robot-r66-durable-emitter-20261024",
+  "backup": {
+    "progress": "backup/jenios-robot-r66-durable-emitter-progress-20261024",
+    "certified": "backup/jenios-robot-r66-durable-emitter-certified-20261024",
+    "creationRule": "Certified backup only after complete CI on consolidated commit succeeds; ref and Actions run identify final SHA."
+  },
+  "implemented": {
+    "originalPrivateArchiveAndExecutableHashesVerified": true,
+    "originalPrivateSourceReconstructed": false,
+    "privateCoreSyntheticLocalCapture": true,
+    "privateSourceCommitted": false,
+    "existingR65EmitterReused": true,
+    "durableLocalOutbox": true,
+    "exactSignedRetransmission": true,
+    "newSessionOnRestart": true,
+    "runtimeHistoryRestored": false,
+    "freshConfirmationsOnRestart": 2,
+    "fifoAndStrictAcknowledgement": true,
+    "uncertainAndExpiredRecordsRetained": true,
+    "orphanLockAutomaticRecovery": false,
+    "loopbackOnlyTransport": true,
+    "offlineOperationalPreflight": true,
+    "hostedAcceptancePlanPrepared": true
+  },
+  "evidenceDomains": {
+    "currentEmitterOrigin": "R61_SYNTHETIC_RUNTIME",
+    "transport": "SIGNED_QA_REPLAY",
+    "evaluation": "SYNTHETIC_FIXTURE",
+    "privateDependencyCheck": "ORIGINAL_PRIVATE_FUNCTIONS_WITH_SYNTHETIC_INPUTS",
+    "privateOperationalEngineConnected": false,
+    "customerMonitoringActive": false
+  },
+  "automaticPolicy": {
+    "robot": "ultrafast",
+    "parameter": "maxAgeMs",
+    "from": 750,
+    "to": 500,
+    "maximumApplicationsPerHistory": 1,
+    "freshConfirmationsAfterGenerationChange": 2,
+    "falseAllowsCandidate": 0,
+    "strictFalseAllowReductionRequired": true,
+    "noFalseBlockRegressionRequired": true,
+    "arbitraryGeneratedCodeExecution": false
+  },
+  "validation": {
+    "status": "LOCAL_PASS_REFERENCE_CI_PENDING",
+    "focusedLocal": {
+      "total": 42,
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0,
+      "node": "v24.22.1"
+    },
+    "localIntegratedReference": {
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "notRun": 0,
+      "sha256": "bf0172248def8817690388b1f4cb94a1063c8ab8187de8eca30768f3370bc1c3",
+      "scope": "Separate processes + loopback HTTP + disposable PostgreSQL, synthetic inputs",
+      "emitterProcesses": 6,
+      "realSigkillAfterCapture": 1,
+      "httpRequests": 8,
+      "responsesLostAfterDatabaseCommit": 1,
+      "receipts": 7,
+      "provenances": 7,
+      "robots": 4,
+      "sessions": 2,
+      "note": "Harness reporting/assertions refined after local reference; CI must exercise consolidated harness."
+    },
+    "privateDependency": {
+      "analysisCount": 12,
+      "counts": {
+        "manual": 4,
+        "hybrid": 4,
+        "reverse": 4
+      },
+      "originalChooseModeChecks": 7,
+      "originalBytesVerified": true,
+      "evidenceFile": "docs/platform/evidence/ROBOT_R66_PRIVATE_ENGINE_DISCOVERY.json"
+    },
+    "attempts": [
+      {
+        "scope": "Initial local process/socket checks",
+        "result": "ENVIRONMENT_BLOCKED",
+        "cause": "Default execution sandbox denied subprocesses/listen; permitted isolated execution was used; no product assertion was relaxed."
+      }
+    ],
+    "countsAreOverlapping": true,
+    "finalConsolidatedRun": "Required before certified backup creation",
+    "localBuild": {
+      "status": "PASS",
+      "general": 2493,
+      "generalPassed": 2493,
+      "socialGate": 94,
+      "socialGatePassed": 94,
+      "pages": 76,
+      "failed": 0,
+      "skipped": 0,
+      "socialProductCodeChanged": false
+    }
+  },
+  "preservation": {
+    "priorLedgerSections": 14,
+    "priorLedgerSectionSha256": {
+      "schema": "c92b3a7ae0210e42dacb22534924179aa4b0f2fa034379ef6e7c4c61a3c27d7f",
+      "generatedAt": "3418a19e34e692f17e1342fa85080565c74df48bdb5bb7c0200e8fcd8d5251b2",
+      "scope": "dad88f09c1dd2a5a03f4e0fdb2cfa9189f9c95bec5a8d436f05844331696b847",
+      "globalRules": "db6b86aaad48721132db87b8d5ddd547be16a95977d42eaacdd8bf4ac58e5ffa",
+      "robots": "6831e2fdb52d4841f14998dd27c04a0a701ee676b78be13e1314d54377dcf405",
+      "certifiedBlocks": "ec74b8ce03722652444057c89dab222d692ac70990a0068bace02927c2e45315",
+      "nextObjectives": "7690357c096c3666c38c794343dbe04c3685ff69b34b5d99ceca073dcf6e06a5",
+      "finalCertification": "3f3af4f9c66df44f2a0e034d8703de2c76ffc3ebad9c7e0d72b292ad7a6f5afe",
+      "operationalCloseout": "783ee177b28a40b9ee2fa3f5a3d876a2e37ef828c1c1fde23026bcb53dcb1313",
+      "qaPolicyIntegration": "03773010cc69456657be6b15892ec26198888a63a225dbf97e75c64ec88c5f12",
+      "qaBoundaryCloseout": "030ce172ab7aa01e473a427099f02b7eb14bc849d9fd996eb66b5114bc8d491a",
+      "continuousImprovement": "db51f3c177ccce4d2ae1f4dec62b447d538f8488ac541f4788069852a74eb359",
+      "operationalObservationIntegration": "74119e3004e95278d6992904ab1c179739be61b27ade0503dae152fa51b1bf51",
+      "durableEvolutionCycle": "f95f8af2e3f80fd2772cf8e000a25b57ee2f8ab068a42df74830b4bcb7972998"
+    },
+    "r12r65AlgorithmFilesChanged": 0,
+    "r64r65SchemaFilesChanged": 0,
+    "previousEvidenceShaAttributionUnchanged": true,
+    "previousBrowserAndCycleCertificationRebuilt": false
+  },
+  "limits": {
+    "admissionLifetimeMs": 120000,
+    "maxRetainedRecords": 5000,
+    "maxSessions": 1024,
+    "maxAttemptsPerRecord": 100,
+    "maxBytes": 33554432,
+    "storage": "LOCAL_PRIVATE_HMAC_ATOMIC_SNAPSHOT",
+    "physicalPurgePerformed": false,
+    "oldBackupRollbackDetectedWithoutExternalWitness": false,
+    "hostedHighThroughputCertified": false,
+    "orphanLockRecovery": "EXPLICIT_HOST_RECOVERY",
+    "genericSenderMustBoundRequestAndBody": true
+  },
+  "invariants": {
+    "manualOperatorControlPreserved": true,
+    "alignmentGuardThreshold": 0.65,
+    "losseshometroSyntheticOnly": true,
+    "r15ProspectiveBackfill": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "remainingOperationalWork": [
+    "Distinct verified private-executable source contract and connection to the evolution intake, without relabelling R61",
+    "Persistent host sizing, key custody, recovery and bounded backlog/expiry acceptance",
+    "Authorized isolated hosted Platform QA database and real administrative identity acceptance",
+    "Host worker scheduling through nextAtMs and actual database-clock windows",
+    "Operational data provenance and owner acceptance before customer monitoring",
+    "JENIOS-specific provider authorization only if paid generation is desired"
+  ],
+  "certificationRule": "Preserve the source SHA of reference evidence. After consolidation run CI again; create matching certified backup only after success. Do not recursively amend the commit to name its own CI."
+}

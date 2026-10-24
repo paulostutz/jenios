@@ -1,0 +1,213 @@
+{
+  "schema": "JENIOS_ROBOT_R66_EMITTER_ACCEPTANCE_V1",
+  "startedAt": "2026-10-24T17:46:31.518Z",
+  "finishedAt": "2026-10-24T17:46:33.199Z",
+  "classification": "REAL_PROCESS_RESTART_LOOPBACK_HTTP_DISPOSABLE_POSTGRES_SYNTHETIC_QA",
+  "scope": {
+    "observationEvidenceKind": "SIGNED_QA_REPLAY",
+    "runtimeOrigin": "R61_SYNTHETIC_RUNTIME",
+    "validationEvidenceKind": "SYNTHETIC_FIXTURE",
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseName": "jenios_r66_qa",
+    "databaseHost": "127.0.0.1",
+    "databasePort": 5432,
+    "handler": "createR65ObservationHandler",
+    "databaseAdapter": "createR65DatabaseStore",
+    "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+    "transport": "ACTUAL_LOOPBACK_HTTP",
+    "sourceClock": "REAL_WALL_CLOCK",
+    "expirationClock": "EXPLICIT_ADVANCED_SYNTHETIC_CLOCK_ONLY_FOR_LOCAL_EXPIRATION_CASES",
+    "authentication": "SOURCE_SIGNATURE_ONLY_ADMIN_AUTH_NOT_TESTED",
+    "browserTested": false,
+    "nextServerTested": false,
+    "hostedSupabaseTested": false,
+    "privateEngineConnected": false,
+    "customerMonitoringActive": false
+  },
+  "execution": {
+    "node": "v22.23.3",
+    "emitterProcesses": 6,
+    "deliberateSigkillsAfterCapture": 1,
+    "httpRequests": 8,
+    "responsesLostAfterDatabaseCommit": 1,
+    "databaseSummary": {
+      "rows": 7,
+      "robots": 4,
+      "sessions": 2
+    },
+    "finalQueue": {
+      "total": 7,
+      "pending": 0,
+      "acknowledged": 7,
+      "unconfirmed": 0,
+      "expiredUnconfirmed": 0
+    },
+    "signedRecordDigests": [
+      "ac404da14671c1ed8f63b495b4559d477ebe22962421cd47f14f0671aeebdaa9",
+      "2780c66daa781cb6667c5c66cf4beca0ac6159a22728b11918cc5727c709118a",
+      "8267a7897dec1dd1cdd83674398f4b721671f5b237d3c050e8d9186276046edd",
+      "2ee7c0b38cce4cdd4eca94e60718031face0c6d82245702a01f3485f9d3dbcd0",
+      "0bda5249b3725fef10a0aed0963e682ab78fcd939ce215e1106f5705ee0bf866"
+    ],
+    "httpEvents": [
+      {
+        "eventId": "evt:4919609be93d43e0",
+        "bodySha256": "ac404da14671c1ed8f63b495b4559d477ebe22962421cd47f14f0671aeebdaa9",
+        "capturedAtMs": 1792863991938,
+        "expiresAtMs": 1792864111938,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:4919609be93d43e0",
+        "bodySha256": "ac404da14671c1ed8f63b495b4559d477ebe22962421cd47f14f0671aeebdaa9",
+        "capturedAtMs": 1792863991938,
+        "expiresAtMs": 1792864111938,
+        "httpStatus": 200,
+        "intakeStatus": "ALREADY_STORED"
+      },
+      {
+        "eventId": "evt:061c94495579a6b8",
+        "bodySha256": "2780c66daa781cb6667c5c66cf4beca0ac6159a22728b11918cc5727c709118a",
+        "capturedAtMs": 1792863991946,
+        "expiresAtMs": 1792864111946,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:ffe8e16426e53d21",
+        "bodySha256": "8267a7897dec1dd1cdd83674398f4b721671f5b237d3c050e8d9186276046edd",
+        "capturedAtMs": 1792863991952,
+        "expiresAtMs": 1792864111952,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:5313109104b1b4bd",
+        "bodySha256": "2ee7c0b38cce4cdd4eca94e60718031face0c6d82245702a01f3485f9d3dbcd0",
+        "capturedAtMs": 1792863991959,
+        "expiresAtMs": 1792864111959,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:2593018c3a11fc0c",
+        "bodySha256": "0bda5249b3725fef10a0aed0963e682ab78fcd939ce215e1106f5705ee0bf866",
+        "capturedAtMs": 1792863991982,
+        "expiresAtMs": 1792864111982,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:1a004345975dd6ad",
+        "bodySha256": "e23f1935bc396cc80fc47a8b4bfdb905113ea6ceeec9f7358fc9ebfb4e9dcda4",
+        "capturedAtMs": 1792863992124,
+        "expiresAtMs": 1792864112124,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:ca100cc97861141d",
+        "bodySha256": "7f5f901b924bc7fd906345aed666e6f5e9dc83a85c96fafec25ea209e4bfb38e",
+        "capturedAtMs": 1792863992134,
+        "expiresAtMs": 1792864112134,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      }
+    ]
+  },
+  "total": 16,
+  "passed": 16,
+  "failed": 0,
+  "notRun": 0,
+  "status": "PASS",
+  "error": null,
+  "cases": [
+    {
+      "name": "fresh disposable database and unchanged R64/R65 schemas",
+      "status": "PASS"
+    },
+    {
+      "name": "four robot records are durable before any HTTP transmission",
+      "status": "PASS"
+    },
+    {
+      "name": "SIGKILL after successful capture leaves committed records available",
+      "status": "PASS"
+    },
+    {
+      "name": "different process opens a new session and recovers the pending records",
+      "status": "PASS"
+    },
+    {
+      "name": "retry after restart retains exact record, event and both signatures",
+      "status": "PASS"
+    },
+    {
+      "name": "new runtime requires two new fresh confirmations after restart",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP response loss after database commit remains unconfirmed locally",
+      "status": "PASS"
+    },
+    {
+      "name": "retry receives ALREADY_STORED and stores each observation only once",
+      "status": "PASS"
+    },
+    {
+      "name": "actual HTTP retransmission preserves the complete signed request bytes",
+      "status": "PASS"
+    },
+    {
+      "name": "database preserves the first receipt and separately signed provenance",
+      "status": "PASS"
+    },
+    {
+      "name": "database contains all four robots and both emitter sessions",
+      "status": "PASS"
+    },
+    {
+      "name": "acknowledgements survive another process restart without resending",
+      "status": "PASS"
+    },
+    {
+      "name": "expired envelopes are retained without invoking the sender",
+      "status": "PASS"
+    },
+    {
+      "name": "expired retry survives restart without new timestamps or signatures",
+      "status": "PASS"
+    },
+    {
+      "name": "persisted scope binding rejects another process with a different scope",
+      "status": "PASS"
+    },
+    {
+      "name": "paid generation and every external execution surface remain inactive",
+      "status": "PASS"
+    }
+  ],
+  "invariants": {
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "hostedDatabaseMigrationsApplied": 0,
+    "customerMonitoringActive": false,
+    "privateEngineConnected": false,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false
+  },
+  "limitations": [
+    "Source input and trading decisions are synthetic, not financial performance.",
+    "Process death is injected after committed capture and after the persistence lock is released.",
+    "Machine power loss, filesystem loss and distributed worker recovery are not certified.",
+    "Expired records are retained; no expiry extension or automatic re-signing is allowed.",
+    "No administrative identity, hosted database, external motor connection or production scheduler was tested."
+  ]
+}

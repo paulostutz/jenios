@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_R66_DURABLE_EMITTER_CHECKPOINT_V1",
   "revision": "R66",
-  "classification": "QA_DURABLE_EMITTER_PENDING_REFERENCE_CI",
+  "classification": "QA_DURABLE_EMITTER_CERTIFIED",
   "createdAt": "2026-10-24T17:42:57.345901+00:00",
   "base": {
     "commit": "02ccf75c09702f9378a496ffb0d9cd323e21d2fc",
@@ -58,7 +58,7 @@
     "arbitraryGeneratedCodeExecution": false
   },
   "validation": {
-    "status": "LOCAL_PASS_REFERENCE_CI_PENDING",
+    "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
     "focusedLocal": {
       "total": 42,
       "passed": 42,
@@ -124,7 +124,94 @@
       "failed": 0,
       "skipped": 0,
       "socialProductCodeChanged": false
-    }
+    },
+    "reference": {
+      "runId": 40117603673,
+      "jobId": 120942063291,
+      "commit": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T17:47:26Z",
+      "focusedR66": "42/42",
+      "preservedContractSubset": "249/249",
+      "general": "2493/2493",
+      "socialGate": "94/94",
+      "integratedEmitter": "16/16",
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0,
+      "countsAreOverlapping": true,
+      "noPriorBrowserOrEvolutionRecertificationClaim": true
+    },
+    "integratedEmitter": {
+      "file": "docs/platform/evidence/ROBOT_R66_EMITTER_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "421dc707c36967eabaccfdfd967dc5ff121c0ce7ec1ab65707ac2b6fad6c7b41",
+      "bytes": 7263,
+      "sourceRun": 40117603673,
+      "sourceCommit": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+      "scope": {
+        "observationEvidenceKind": "SIGNED_QA_REPLAY",
+        "runtimeOrigin": "R61_SYNTHETIC_RUNTIME",
+        "validationEvidenceKind": "SYNTHETIC_FIXTURE",
+        "database": "REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r66_qa",
+        "databaseHost": "127.0.0.1",
+        "databasePort": 5432,
+        "handler": "createR65ObservationHandler",
+        "databaseAdapter": "createR65DatabaseStore",
+        "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+        "transport": "ACTUAL_LOOPBACK_HTTP",
+        "sourceClock": "REAL_WALL_CLOCK",
+        "expirationClock": "EXPLICIT_ADVANCED_SYNTHETIC_CLOCK_ONLY_FOR_LOCAL_EXPIRATION_CASES",
+        "authentication": "SOURCE_SIGNATURE_ONLY_ADMIN_AUTH_NOT_TESTED",
+        "browserTested": false,
+        "nextServerTested": false,
+        "hostedSupabaseTested": false,
+        "privateEngineConnected": false,
+        "customerMonitoringActive": false
+      },
+      "execution": {
+        "node": "v22.23.3",
+        "emitterProcesses": 6,
+        "deliberateSigkillsAfterCapture": 1,
+        "httpRequests": 8,
+        "responsesLostAfterDatabaseCommit": 1,
+        "databaseSummary": {
+          "rows": 7,
+          "robots": 4,
+          "sessions": 2
+        },
+        "finalQueue": {
+          "total": 7,
+          "pending": 0,
+          "acknowledged": 7,
+          "unconfirmed": 0,
+          "expiredUnconfirmed": 0
+        }
+      },
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "notRun": 0
+    },
+    "artifact": {
+      "id": 12570161981,
+      "name": "r66-emitter-evidence-1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+      "sourceRun": 40117603673,
+      "sourceCommit": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+      "bytes": 2577,
+      "zipSha256": "61a4e0e4f662fd5e767b228975825ed638d82c9e7fb4bcb1feff30697c2c9348",
+      "zipHashVerified": true,
+      "expiresAt": "2026-11-07T17:47:19Z",
+      "referenceJsonCopiedByteForByte": true
+    },
+    "referenceNoDeploy": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "projectName": "jenios-ecossistem",
+      "verifiedCommit": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+      "deploymentCount": 0
+    },
+    "localDisposablePostgresStopped": true
   },
   "preservation": {
     "priorLedgerSections": 14,

@@ -81,3 +81,24 @@ Regra de fechamento: uma CI bem-sucedida no commit de referência gera a evidên
 Monitoramento de clientes e motor operacional conectado permanecem inativos. Política automática continua limitada ao UltraFast, `maxAgeMs` de 750 para 500, uma vez por histórico, comparação registrada e rollback auditável. Manual conserva controle integral; Híbrido/Reverso mantêm guard `0.65`; Reverso preserva seletividade e exceção de megatendência. Losseshômetro permanece hipotético. R15 sem backfill.
 
 `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` permanecem `null`. Ordens reais, Paper externo e chamadas pagas: zero. Sem migração hospedada, merge, deploy ou mudança de produção. Não há certificação de rentabilidade ou ativação operacional neste bloco.
+
+## Resultados de referência conferidos
+
+CI [40117603673](https://github.com/paulostutz/jenios/actions/runs/40117603673) — **SUCCESS**, commit de origem `1b7b3a7d660e30f29e54c46157d5a00aa1998232`, job `120942063291`, concluída em 24/10/2026 às 17:47:26 UTC (14:47:26 em São Paulo).
+
+| Verificação | Resultado |
+|---|---:|
+| Novos testes R66 | 42/42 |
+| Subconjunto direcionado de contratos preservados | 249/249 |
+| Testes gerais | 2.493/2.493 |
+| Gate Social herdado, sem alteração do produto | 94/94 |
+| Reinício/processos/HTTP/PostgreSQL R66 | 16/16 |
+| Build | PASS |
+| Páginas estáticas | 76/76 |
+| Falhas e omitidos | 0 |
+
+O ensaio integrado abriu seis processos do emissor, confirmou um `SIGKILL` após captura durável e realizou oito POSTs loopback. O banco terminou com sete recibos e sete proveniências, quatro robôs e duas sessões. A primeira resposta foi perdida depois do commit; o retry usou os mesmos bytes e recebeu `ALREADY_STORED`. A fila principal terminou com sete confirmações persistidas, sem pendências. A expiração foi ensaiada separadamente, com avanço explícito de relógio sintético e sem chamada do sender.
+
+O ZIP de evidência foi baixado e seu SHA-256 conferido contra a Actions. O JSON foi copiado byte a byte para `evidence/ROBOT_R66_EMITTER_ACCEPTANCE_EVIDENCE.json`, preservando a origem acima. As 14 seções prévias do ledger foram mantidas e a nova seção `durableEmitterIntegration` foi acrescentada. Os testes específicos estão incluídos nos gerais; não somar as baterias como operações de mercado.
+
+A primeira publicação do workflow foi recusada antes de iniciar jobs, por uso de `runner.temp` no escopo de ambiente do job. A variável foi movida para a etapa de aceitação; as tentativas `40117478963` e `40117479954` permanecem documentadas como falhas de configuração, sem testes executados. A CI de referência corrigida passou integralmente. O fechamento final ainda exige CI no commit consolidado e backup certificado correspondente, conforme a regra acima.

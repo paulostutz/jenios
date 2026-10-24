@@ -2,22 +2,19 @@
   "schema": "JENIOS_ROBOT_R66_CHANGE_AUDIT_V1",
   "baseCommit": "02ccf75c09702f9378a496ffb0d9cd323e21d2fc",
   "scope": "ROBOTS_ONLY_ADDITIVE_QA_EMITTER_AND_OPERATIONAL_PREPARATION",
-  "trackedModificationsBeforeConsolidation": [
-    "vercel.json"
-  ],
-  "r12r65AlgorithmFilesChanged": 0,
-  "dbSchemaFilesChanged": 0,
-  "appOrSocialOrPaymentsFilesChanged": 0,
-  "privateCoreSourceCommitted": false,
+  "referenceCommit": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+  "referenceCi": 40117603673,
   "allowedExistingModifications": [
-    "vercel.json",
-    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json"
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+    "vercel.json"
   ],
   "newFiles": [
     ".github/workflows/jenios-robot-r66-durable-emitter.yml",
     "docs/platform/ROBOT_R66_DURABLE_EMITTER.md",
     "docs/platform/ROBOT_R66_HOSTED_ACCEPTANCE_PLAN.md",
+    "docs/platform/evidence/ROBOT_R66_CHANGE_AUDIT.json",
     "docs/platform/evidence/ROBOT_R66_DURABLE_EMITTER_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_R66_EMITTER_ACCEPTANCE_EVIDENCE.json",
     "docs/platform/evidence/ROBOT_R66_PRIVATE_ENGINE_DISCOVERY.json",
     "lib/platform/research/robot-r66-durable-emitter.mjs",
     "lib/platform/research/robot-r66-loopback-transport.mjs",
@@ -33,8 +30,9 @@
   ],
   "newFileSha256": {
     ".github/workflows/jenios-robot-r66-durable-emitter.yml": "88a7d6f2fdfcc30ef94182cc86bd62ceaab86f3b7d43b5c7417d04a5cf22d8c4",
-    "docs/platform/ROBOT_R66_DURABLE_EMITTER.md": "f19006422aad61e257d150c11b63310ff715aedf86c8000613fd9a0f3a4caba4",
+    "docs/platform/ROBOT_R66_DURABLE_EMITTER.md": "f76c9dcd260f44e03f2fccc828a5b1f5ce4932e417aedd8b25a64869320cce4f",
     "docs/platform/ROBOT_R66_HOSTED_ACCEPTANCE_PLAN.md": "61cbcbfedb6c10467e1b4284af08036b35b5c351d98b05699b066e5a5d2ee2d4",
+    "docs/platform/evidence/ROBOT_R66_EMITTER_ACCEPTANCE_EVIDENCE.json": "421dc707c36967eabaccfdfd967dc5ff121c0ce7ec1ab65707ac2b6fad6c7b41",
     "docs/platform/evidence/ROBOT_R66_PRIVATE_ENGINE_DISCOVERY.json": "6c58218ec58aac9bf4d91ad42d6d8b27b7d0d6640316ad8dd9b72c802b9a33d8",
     "lib/platform/research/robot-r66-durable-emitter.mjs": "f77febd33ddb28c17129d752da6018625923c7be5a7ff687a93d0c9805c74ec5",
     "lib/platform/research/robot-r66-loopback-transport.mjs": "2fd23b4d87581fdc09d516b6aba8b465eb1d0b2b81c73d15a3a9f0ebc4979006",
@@ -48,6 +46,16 @@
     "tests/platformRobotR66OperationalReadiness.test.mjs": "c247b335632daf7a3a03278adf73c2d1bc367154e5a1a8a8d3e26e99e5c755a8",
     "tests/platformRobotR66Outbox.test.mjs": "ff3551fc4400c5dca6816c87baa462c3a9af99484c6b2dcdfc4c1f2f6b35e932"
   },
+  "r12r65AlgorithmFilesChanged": 0,
+  "dbSchemaFilesChanged": 0,
+  "appOrSocialOrPaymentsFilesChanged": 0,
+  "privateCoreSourceCommitted": false,
+  "legacyLedgerSectionsPreserved": 14,
   "ciBoundary": "New branch-only workflow with disposable PostgreSQL, no deployment job",
-  "preservationRule": "R65 reference evidence unchanged; every original root ledger section is deep-equal before appending R66."
+  "noDeployReference": {
+    "sha": "1b7b3a7d660e30f29e54c46157d5a00aa1998232",
+    "count": 0
+  },
+  "preservationRule": "R65 reference evidence unchanged; all 14 original root ledger sections deep-equal before appended durableEmitterIntegration.",
+  "closingRule": "Final CI and certified backup identify consolidated SHA; reference JSON retains original source."
 }

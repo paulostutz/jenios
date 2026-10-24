@@ -1,0 +1,116 @@
+{
+  "schema": "JENIOS_ROBOT_R63_CONTINUOUS_IMPROVEMENT_CHECKPOINT_V1",
+  "revision": "R63",
+  "classification": "IMPLEMENTED_PENDING_CI",
+  "createdAt": "2026-10-24T15:03:58Z",
+  "base": {
+    "branch": "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024",
+    "commit": "b1703f5cce578bf13a5c5a29949f427a8247636d",
+    "validationRun": 40099968197
+  },
+  "branch": "research/jenios-robot-r63-continuous-improvement-20261024",
+  "backup": {
+    "branch": "backup/jenios-robot-r63-continuous-improvement-certified-20261024",
+    "creationRule": "Only after complete CI on consolidated commit succeeds. Backup ref and matching Actions run identify final commit."
+  },
+  "authorization": {
+    "ownerPreapprovalRecorded": true,
+    "authorizationId": "OWNER_PREAPPROVAL_20261024",
+    "automaticImprovementsApproved": true,
+    "implementationScope": "Bounded synthetic research only; existing no-production/no-deploy/no-live/no-external-Paper constraints preserved.",
+    "customerTechnicalNotifications": false,
+    "operationalDataDisclosureRequired": true
+  },
+  "implemented": {
+    "observationStudy": true,
+    "independentFixtureEvaluation": true,
+    "automaticResearchPromotion": true,
+    "activeVersionUsedBySubsequentR47Evaluation": true,
+    "rollbackWithHistory": true,
+    "durableLocalJournal": true,
+    "wholeWorkerLease": true,
+    "adminReadEndpoint": true,
+    "dedicatedPlatformAdminAuthorization": true,
+    "dailyScheduleContract": true,
+    "localFixtureWorkerEntry": true,
+    "generativeAnalystContract": true,
+    "uiPreview": true
+  },
+  "automaticDomain": {
+    "change": "TIGHTEN_MARKET_FRESHNESS",
+    "fromMaxAgeMs": 750,
+    "toMaxAgeMs": 500,
+    "maxPromotions": 1,
+    "minValidationCases": 6,
+    "minPerClass": 2,
+    "strictFalseAllowImprovement": true,
+    "remainingFalseAllows": 0,
+    "noFalseBlockRegression": true,
+    "evaluation": "Preregistered synthetic cases and virtual clocks; not external prospective attestation.",
+    "arbitraryCodeAllowed": false,
+    "automaticDeploymentAllowed": false
+  },
+  "reportSchedule": {
+    "cadence": "DAILY_09",
+    "timeZone": "America/Sao_Paulo",
+    "period": "previous closed local calendar day",
+    "backfill": false,
+    "productionSchedulerActive": false,
+    "customerMonitoringActive": false,
+    "externalNotificationsSent": 0
+  },
+  "generative": {
+    "providerInjectionImplemented": true,
+    "paidProviderCalls": 0,
+    "liveProviderConnectionVerified": false,
+    "authority": "Hypotheses only; independent engine decides.",
+    "rawProviderResponsesPersisted": false,
+    "budgetRequired": true,
+    "maxCallsPerAnalysis": 1,
+    "maxOutputTokens": 700
+  },
+  "invariants": {
+    "r12r62CertifiedAlgorithmsChanged": false,
+    "r15ProspectiveBackfill": false,
+    "alignmentGuardThreshold": 0.65,
+    "manualOperatorControlPreserved": true,
+    "hybridAdvisoryOnly": true,
+    "reverseSelective": true,
+    "losseshometroSyntheticOnly": true,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "productionConfigurationChanged": false,
+    "productionDeployPerformed": false,
+    "mergePerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "validation": {
+    "status": "PENDING_CI",
+    "local": {
+      "tests": 135,
+      "passed": 135,
+      "failed": 0,
+      "skipped": 0,
+      "runtime": "v24.22.1"
+    },
+    "plannedBrowserCases": 52,
+    "preservedBrowserCases": 41,
+    "newBrowserCases": 11,
+    "authenticatedRealAdminSessionTested": false,
+    "authContractTestedWithInjectedIdentity": true
+  },
+  "limitations": [
+    "Only SYNTHETIC_FIXTURE events accepted. Operational/customer events are rejected.",
+    "750 to 500 ms is the sole automatic configuration change in this revision; further studies report NO_CHANGE.",
+    "Six fixture cases prove the mechanism, not statistical significance, economic benefit or execution integration.",
+    "Local journal supports 100 records and 8 MiB; full retention blocks writes until a separate archival process is designed.",
+    "Whole-directory rollback to a valid signed old backup requires an external monotonic witness to detect.",
+    "Local worker and report schedule are implemented but no background service or production scheduler was started.",
+    "Admin API reuses existing dedicated Platform permission checks; real login and cross-host durable integration remain unverified.",
+    "Generative contract tested with injected providers only; paid service and persistent provider-response audit remain unverified.",
+    "Manual owner acceptance and production/external execution integration remain outstanding."
+  ]
+}

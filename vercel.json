@@ -47,7 +47,9 @@
       "research/jenios-robot-r61-qa-policy-integration-20261024": false,
       "backup/jenios-robot-r61-qa-policy-integration-certified-20261024": false,
       "research/jenios-robot-r62-qa-boundary-closeout-20261024": false,
-      "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024": false
+      "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024": false,
+      "research/jenios-robot-r63-continuous-improvement-20261024": false,
+      "backup/jenios-robot-r63-continuous-improvement-certified-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"

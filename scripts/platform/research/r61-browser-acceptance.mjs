@@ -16,7 +16,7 @@ const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const ORIGIN = 'http://127.0.0.1:4317';
 const ROUTE = '/platform/homologacao/robos';
 const REVISION = process.env.JENIOS_ROBOT_QA_ACCEPTANCE_REVISION || 'R61';
-assert.ok(['R61', 'R62'].includes(REVISION), 'Unsupported robot acceptance revision.');
+assert.ok(['R61', 'R62', 'R63'].includes(REVISION), 'Unsupported robot acceptance revision.');
 const PREFIX = REVISION.toLowerCase();
 const ARTIFACT_DIR = resolve(process.env.ROBOT_QA_ARTIFACT_DIR || process.env.R61_ARTIFACT_DIR || resolve(process.env.RUNNER_TEMP || tmpdir(), `jenios-${PREFIX}-evidence`));
 const FILES = {
@@ -25,6 +25,7 @@ const FILES = {
   desktop: resolve(ARTIFACT_DIR, `${PREFIX}-browser-desktop.png`),
   mobile: resolve(ARTIFACT_DIR, `${PREFIX}-browser-mobile.png`),
   failure: resolve(ARTIFACT_DIR, `${PREFIX}-browser-failure.png`),
+  evolution: resolve(ARTIFACT_DIR, `${PREFIX}-evolution-mobile.png`),
 };
 const FLAGS = Object.freeze({
   VERCEL_ENV: 'preview',
@@ -33,13 +34,14 @@ const FLAGS = Object.freeze({
   JENIOS_REAL_EXECUTION_ENABLED: 'false',
   JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false',
   JENIOS_PRIVATE_PAPER_EXECUTOR: 'false',
+  JENIOS_ROBOT_EVOLUTION_ENABLED: REVISION === 'R63' ? 'true' : 'false',
 });
 const started = Date.now();
 const attempts = { externalRequests: 0, apiRequests: 0, mutations: 0, webSockets: 0 };
 const report = {
   schema: `JENIOS_${REVISION}_BROWSER_ACCEPTANCE_V1`, status: 'FAIL',
   startedAt: new Date(started).toISOString(), commit: process.env.GITHUB_SHA || null,
-  coverage: { baseline: 'R61', baselineCases: 33, additionalBoundaryCases: REVISION === 'R62' ? 8 : 0 },
+  coverage: { baseline: 'R61', baselineCases: 33, additionalBoundaryCases: REVISION === 'R61' ? 0 : 8, additionalEvolutionCases: REVISION === 'R63' ? 11 : 0 },
   scope: {
     evidenceKind: 'SYNTHETIC_FIXTURE', origin: ORIGIN,
     networkRestriction: 'BROWSER_REQUESTS_AND_WEBSOCKETS_ONLY',
@@ -439,15 +441,19 @@ check('mobile_controls_results_and_no_horizontal_overflow', 'mobile', async () =
   return measurements;
 });
 
-if (REVISION === 'R62') {
+if (REVISION === 'R62' || REVISION === 'R63') {
   const { registerR62SessionLimitCases } = await import('./r62-session-limit-cases.mjs');
   const { registerR62ExecutionFlagCases } = await import('./r62-execution-flag-cases.mjs');
   const harness = {
     check, getPage: () => page, getExpect: () => expect, startServer,
-    ultra, ultraEvent, expectEmptyUltra, origin: ORIGIN, route: ROUTE, report,
+    ultra, ultraEvent, expectEmptyUltra, origin: ORIGIN, route: ROUTE, report, screenshot,
   };
   // Limits need the enabled fixture server; flag-denial cases run afterwards.
   registerR62SessionLimitCases(harness);
+  if (REVISION === 'R63') {
+    const { registerR63EvolutionCases } = await import('./r63-evolution-cases.mjs');
+    registerR63EvolutionCases(harness);
+  }
   registerR62ExecutionFlagCases(harness);
 }
 
@@ -477,7 +483,7 @@ check('zero_external_api_mutation_socket_attempts_and_page_errors', 'transport_b
   return { ...attempts, pageErrors: report.pageErrors.length, renderedZeroOrderChecks: zeroOrderChecks };
 });
 
-assert.equal(checks.length, REVISION === 'R62' ? 41 : 33, 'The complete planned acceptance battery must be registered.');
+assert.equal(checks.length, REVISION === 'R63' ? 52 : REVISION === 'R62' ? 41 : 33, 'The complete planned acceptance battery must be registered.');
 assert.equal(new Set(checks.map((entry) => entry.id)).size, checks.length, 'Acceptance case IDs must be unique.');
 
 try {

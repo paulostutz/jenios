@@ -24,6 +24,11 @@ export default function PlatformAdminHome(){
     </header>
     <PlatformAdminOverview/>
     <PlatformResearchReadiness/>
+    <section style={{background:'#fff',border:'1px solid #ddd6fe',borderRadius:15,padding:22}} aria-labelledby="platform-robot-admin-title">
+     <h2 id="platform-robot-admin-title" style={{fontSize:19,margin:'0 0 10px'}}>Administração dos robôs</h2>
+     <p style={{color:'#64748b',lineHeight:1.6,fontSize:14,margin:'0 0 14px'}}>Consulte o banco definitivo, os registros de homologação e a conexão do motor privado com seu acesso administrativo da Platform.</p>
+     <Link href="/platform/admin/robos" style={{color:'#6d28d9',fontWeight:750}}>Abrir painel dos robôs →</Link>
+    </section>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:14}}>
      {[
       ['Diagnóstico comportamental','Persistência por conta, classificação inicial e bloqueio de conta real sem autorização.'],

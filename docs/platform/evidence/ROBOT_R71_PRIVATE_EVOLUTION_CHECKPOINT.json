@@ -1,0 +1,563 @@
+{
+  "schema": "JENIOS_ROBOT_R71_PRIVATE_EVOLUTION_CHECKPOINT_V1",
+  "revision": "R71",
+  "classification": "ORIGINAL_PRIVATE_CORE_WITH_BOUNDED_EXTERNAL_RUNTIME_POLICY_QA_NOT_HOSTED_CERTIFICATION",
+  "createdAt": "2026-10-24T21:49:25.854010+00:00",
+  "base": {
+    "commit": "851804aa45ac8cee2aea4fe9096712a7aeff2048",
+    "branch": "backup/jenios-robot-r70-target-preflight-certified-20261024",
+    "researchBranch": "research/jenios-robot-r70-target-preflight-20261024",
+    "validationRun": 40129546998,
+    "jobId": 120978121948,
+    "finishedAt": "2026-10-24T20:25:16Z",
+    "backupCheckpointLedgerCiConsultedBeforeChanges": true,
+    "researchAndCertifiedRefsMatched": true,
+    "vercelDeploymentsOfBaseSha": 0
+  },
+  "branch": "research/jenios-robot-r71-private-evolution-20261024",
+  "backup": {
+    "progress": "backup/jenios-robot-r71-private-evolution-progress-20261024",
+    "certified": "backup/jenios-robot-r71-private-evolution-certified-20261024",
+    "creationRule": "Reference JSONs keep producing SHA 5b32d99812eb61a37b4058951d15d531260edfe9. After this documentation consolidation, require full successful final CI and matching research/certified refs on the consolidated SHA. Their match closes this checkpoint without a recursive own-CI documentation commit."
+  },
+  "policy": {
+    "kind": "HONOR_EXISTING_POSITION_CONTEXT_FOR_ASSISTED",
+    "target": "VERSIONED_EXTERNAL_RUNTIME_WRAPPER",
+    "allowedModes": [
+      "hybrid",
+      "reverse"
+    ],
+    "referenceVersion": "private:r71-reference-v1",
+    "candidateVersion": "private:r71-position-context-v1",
+    "forwardPositionOpen": {
+      "reference": false,
+      "candidate": true
+    },
+    "maximumEvaluationsPerHistory": 1,
+    "maximumPromotionsPerHistory": 1,
+    "minimumMissedContexts": 3,
+    "requiresBothHybridAndReverse": true,
+    "validationCases": 8,
+    "registrationDelayMs": 1000,
+    "validationWindowMs": 10000,
+    "requiresStrictMeasuredImprovement": true,
+    "candidateMissedRoutingAllowed": 0,
+    "protectedCaseChangesAllowed": 0,
+    "unsupportedCandidateOutcomesAllowed": 0,
+    "protectedCases": [
+      "Manual",
+      "position closed",
+      "paused"
+    ],
+    "generationIncreasesOnApplyAndRollback": true,
+    "rejectionAndRollbackRetireCandidate": true,
+    "arbitraryCodeAllowed": false,
+    "financialParameterChangesAllowed": false,
+    "applicationEnvironment": "SYNTHETIC_QA_ONLY",
+    "r65UltraFastPolicy": "SEPARATE_UNCHANGED_750_TO_500_MS"
+  },
+  "implemented": {
+    "originalCoreLocatedAndReused": true,
+    "originalPrivateBytesUnchangedAndNotCommitted": true,
+    "separateSignedR71Annotation": true,
+    "nativeR67BindingPreserved": true,
+    "atomicNativeAndContextualAdmission": true,
+    "bareR67RetroactiveEnrichmentRejected": true,
+    "databaseAdmissionClockAfterLocks": true,
+    "immutableMvccStudyMembership": true,
+    "completePaginationBeyondThirty": true,
+    "membershipDigestRecomputedInJavaScriptAndPostgres": true,
+    "historicalSignaturesVerifiedAtOriginalAdmission": true,
+    "validationExcludedFromStudyEligibility": true,
+    "versionAndGenerationBound": true,
+    "boundedHypothesisContractPrepared": true,
+    "deterministicHypothesisUsed": true,
+    "planRegisteredBeforeWindow": true,
+    "sourceExecutesFixedValidation": true,
+    "noRetrospectiveCaseCreation": true,
+    "independentSqlEvaluationCriteria": true,
+    "durableStateCasAndOperationReplay": true,
+    "singlePromotionAndRetirement": true,
+    "samePrivateInstanceConsumesApplyAndRollback": true,
+    "durableFullRecordRetransmissionAfterRestart": true,
+    "durableLastRuntimeViewRegressionCheck": true,
+    "separateSignedSourceQueryDomain": true,
+    "preflightBeforeStateReadAndCapture": true,
+    "existingTlsAndHostLifecycleReused": true,
+    "platformAdminAuthenticationBoundary": true,
+    "canonicalServerAdminOrigin": true,
+    "anonymousHtmlContainsNoAdminFeed": true,
+    "sessionChangeClearsReport": true,
+    "minimalAdminProjection": true,
+    "explicitWorkerAndDistinctSchedulerToken": true,
+    "allPreviousLedgerFieldsPreserved": true,
+    "noDeployGuardsForAllR71Refs": true
+  },
+  "validation": {
+    "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
+    "countsAreOverlapping": true,
+    "referenceCi": {
+      "runId": 40135386515,
+      "jobId": 120995700981,
+      "commit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T21:46:58Z",
+      "url": "https://github.com/paulostutz/jenios/actions/runs/40135386515",
+      "counts": {
+        "r71": 78,
+        "preserved": 345,
+        "general": 2741,
+        "inheritedGate": 94,
+        "postgres": 21,
+        "publicIntegrated": 14,
+        "privateIntegrated": 14,
+        "staticPages": 76,
+        "failed": 0,
+        "skipped": 0,
+        "countsAreOverlapping": true
+      },
+      "logsInspected": true
+    },
+    "localCleanBuild": {
+      "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "sourceTreeDirtyAtBuildStart": false,
+      "startedAt": "2026-10-24T21:42:40.251072+00:00",
+      "finishedAt": "2026-10-24T21:43:15.799261+00:00",
+      "exitCode": 0,
+      "logSha256": "a65bbc5a865c2c6e3b2cbad950a4f20c4e65cd0033868cb9ddaf6603b2378e34",
+      "node": "v24.22.1",
+      "general": "2741/2741",
+      "inheritedApplicationGate": "94/94",
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0
+    },
+    "evidence": {
+      "postgres": {
+        "file": "docs/platform/evidence/ROBOT_R71_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+        "bytes": 5192,
+        "sha256": "5a5a5a23a4c964b2b3240e2d61205d8772559b4d3768517a5f34a431de8d5416",
+        "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+        "finishedAt": "2026-10-24T21:44:09.858Z",
+        "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+        "publicCiExecution": true,
+        "tests": {
+          "total": 21,
+          "passed": 21,
+          "failed": 0,
+          "notRun": 0
+        },
+        "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+        "snapshotRecords": 33,
+        "snapshotPages": 4,
+        "lateCommitRecordsInNextSnapshot": 34,
+        "validationCases": 8,
+        "incompleteValidationCases": 3,
+        "capTestRetainedPairs": 257,
+        "sqlSignatureVerification": false,
+        "administrativeActorIsExplicitFixture": true
+      },
+      "publicIntegrated": {
+        "file": "docs/platform/evidence/ROBOT_R71_PUBLIC_EVOLUTION_ACCEPTANCE_EVIDENCE.json",
+        "bytes": 49592,
+        "sha256": "25faa7dcd539aa0c86b61b5c3ff6b4f9984f407b2d5f3e682a8d23c48d03c581",
+        "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+        "finishedAt": "2026-10-24T21:46:30.601Z",
+        "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+        "publicCiExecution": true,
+        "sourceTreeDirty": false,
+        "tests": {
+          "total": 14,
+          "passed": 14,
+          "failed": 0,
+          "notRun": 0
+        },
+        "nodeVersion": "v22.23.3",
+        "counts": {
+          "nextProcesses": 3,
+          "sourceProcesses": 3,
+          "observationHttpRequests": 7,
+          "acknowledgementLosses": 1,
+          "actualSqlRpcCalls": 75,
+          "snapshots": 4,
+          "nativeBatches": 5,
+          "validationCases": 8,
+          "historyRevisions": 9,
+          "contextualBatches": 5,
+          "contextualDecisions": 40
+        },
+        "source": {
+          "originalPrivateCoreExecuted": false,
+          "privateHostCliExercised": false,
+          "originalCoreBinding": {
+            "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+            "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+            "originalVersion": "jenios-research-r29.1",
+            "policyVersion": "private:r67-v1",
+            "generation": 0
+          },
+          "originalPrivateBytesCommitted": false,
+          "driver": "PUBLIC_SIGNED_CLAIM_FIXTURE_WITH_PRODUCTION_OUTBOX_AND_TLS",
+          "nativeAnalysesCompleted": 0,
+          "publicModeledCaptures": 40,
+          "sourceProcesses": 3,
+          "sameInstanceConsumedApplyAndRollback": true
+        },
+        "implementationDigestsVerified": 31,
+        "database": {
+          "serverVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+          "disposable": true,
+          "hosted": false,
+          "clockEvidence": {
+            "nodeBeforeMs": 1792878352647,
+            "databaseNowMs": 1792878352684,
+            "nodeAfterMs": 1792878352687,
+            "manipulatedClock": false
+          }
+        },
+        "browser": {
+          "identity": "EXPLICIT_LOCAL_AUTH_SESSION_FIXTURE",
+          "realIdentityVerified": false,
+          "adminFeedInjected": false,
+          "browserOriginTransport": "HTTP_LITERAL_LOOPBACK",
+          "backendGatewayTlsVerified": true,
+          "playwright": "1.56.1",
+          "chromium": "141.0.7390.37",
+          "adminReads": 2,
+          "adminMutations": 1,
+          "blockedRequests": 0,
+          "webSockets": 0,
+          "pageErrors": [],
+          "consoleErrors": [],
+          "mobile": {
+            "width": 320,
+            "document": 320,
+            "body": 320
+          },
+          "rollbackViaActualEndpoint": true
+        },
+        "buildEvidence": {
+          "buildId": "6cZ5lYZqPKY0Lmrl1lI4i",
+          "nextVersion": "15.5.28",
+          "supabaseSdkVersion": "2.117.3",
+          "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+          "compiledSourceCommitIndependentlyAttested": false,
+          "compiledRouteSha256": {
+            ".next/server/app/api/platform/robot-private-policy-observations/route.js": "6028016071aae94ec528dfd8c0d6bb4450f47a6216f0cbb9fb07b2fe3c138517",
+            ".next/server/app/api/platform/robot-private-evolution-state/route.js": "1bf7b1b03d36b29f00ed07a60b481b9bfc8b38a3e3824a75d75f616544233bb8",
+            ".next/server/app/api/platform/admin/robot-private-evolution/route.js": "4d770150739651358e566a302e4b871fbb637387647bbb6638ca6d4d1dd338db",
+            ".next/server/app/api/platform/internal/robot-private-evolution/route.js": "36c2fb418ad3112a126a92a26be490868c3f005ada31f554371ff0fff78eeedb",
+            ".next/server/app/platform/homologacao/robos/privado/page.js": "a46aafc1a00f90d52fc43ef9dcda1a6577b7c06e26dfe4a9ef35100794d744a0"
+          }
+        },
+        "comparison": {
+          "expectedCases": 8,
+          "observedCases": 8,
+          "baselineMissedExistingPositionRouting": 3,
+          "candidateMissedExistingPositionRouting": 0,
+          "protectedCaseChanges": 0,
+          "unsupportedCandidateOutcomes": 0
+        },
+        "finalVersion": {
+          "activationGeneration": 2,
+          "forwardPositionOpen": false,
+          "versionId": "private:r71-reference-v1"
+        },
+        "candidateRetired": true,
+        "missedWindowResult": {
+          "planId": "plan:a0b7bfa9abe23b66",
+          "snapshotId": "0787fcfd-8db7-4953-96c5-6359cf0ecc07",
+          "studyDigest": "259e799a0f6b52c458a10733a23653285b82b7b781d12eb1eca1bc6b2ffdf088",
+          "completedAtMs": 1792878388114,
+          "status": "REJECTED_INCOMPLETE",
+          "summary": {
+            "expectedCases": 8,
+            "observedCases": 0,
+            "baselineMissedExistingPositionRouting": null,
+            "candidateMissedExistingPositionRouting": null,
+            "protectedCaseChanges": null,
+            "unsupportedCandidateOutcomes": null
+          }
+        },
+        "observedHttpRequestsAreNotAdmissionCount": true
+      },
+      "originalPrivateIntegrated": {
+        "file": "docs/platform/evidence/ROBOT_R71_PRIVATE_EVOLUTION_ACCEPTANCE_EVIDENCE.json",
+        "bytes": 49639,
+        "sha256": "0692687bbae6d7cc54123d2a96f54e4075b5bd6e4d527cef5b6a3b5381e2e113",
+        "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+        "finishedAt": "2026-10-24T21:44:16.258Z",
+        "evidenceKind": "ORIGINAL_PRIVATE_CORE_WITH_VERSIONED_EXTERNAL_RUNTIME_POLICY_SYNTHETIC_QA",
+        "publicCiExecution": false,
+        "sourceTreeDirty": false,
+        "tests": {
+          "total": 14,
+          "passed": 14,
+          "failed": 0,
+          "notRun": 0
+        },
+        "nodeVersion": "v24.22.1",
+        "counts": {
+          "nextProcesses": 3,
+          "sourceProcesses": 3,
+          "observationHttpRequests": 7,
+          "acknowledgementLosses": 1,
+          "actualSqlRpcCalls": 75,
+          "snapshots": 4,
+          "nativeBatches": 5,
+          "validationCases": 8,
+          "historyRevisions": 9,
+          "contextualBatches": 5,
+          "contextualDecisions": 40
+        },
+        "source": {
+          "originalPrivateCoreExecuted": true,
+          "privateHostCliExercised": false,
+          "originalCoreBinding": {
+            "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+            "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+            "originalVersion": "jenios-research-r29.1",
+            "policyVersion": "private:r67-v1",
+            "generation": 0
+          },
+          "originalPrivateBytesCommitted": false,
+          "driver": "ACTUAL_BRANDED_SOURCE_AND_DURABLE_EMITTER_IN_PERSISTENT_FIXTURE_PROCESS",
+          "nativeAnalysesCompleted": 40,
+          "publicModeledCaptures": 0,
+          "sourceProcesses": 3,
+          "sameInstanceConsumedApplyAndRollback": true
+        },
+        "implementationDigestsVerified": 31,
+        "database": {
+          "serverVersion": "16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)",
+          "disposable": true,
+          "hosted": false,
+          "clockEvidence": {
+            "nodeBeforeMs": 1792878221621,
+            "databaseNowMs": 1792878221649,
+            "nodeAfterMs": 1792878221650,
+            "manipulatedClock": false
+          }
+        },
+        "browser": {
+          "identity": "EXPLICIT_LOCAL_AUTH_SESSION_FIXTURE",
+          "realIdentityVerified": false,
+          "adminFeedInjected": false,
+          "browserOriginTransport": "HTTP_LITERAL_LOOPBACK",
+          "backendGatewayTlsVerified": true,
+          "playwright": "1.56.1",
+          "chromium": "141.0.7390.37",
+          "adminReads": 2,
+          "adminMutations": 1,
+          "blockedRequests": 0,
+          "webSockets": 0,
+          "pageErrors": [],
+          "consoleErrors": [],
+          "mobile": {
+            "width": 320,
+            "document": 320,
+            "body": 320
+          },
+          "rollbackViaActualEndpoint": true
+        },
+        "buildEvidence": {
+          "buildId": "ziSBZVueEEqZj74wCsM7D",
+          "nextVersion": "15.5.28",
+          "supabaseSdkVersion": "2.117.3",
+          "selectedBuild": "EXISTING_BUILD_PROVIDED_BEFORE_ACCEPTANCE",
+          "compiledSourceCommitIndependentlyAttested": false,
+          "compiledRouteSha256": {
+            ".next/server/app/api/platform/robot-private-policy-observations/route.js": "f375fae1abcc732fa647372f6662f2745cef6cea3a43af4cce4994545fe66abe",
+            ".next/server/app/api/platform/robot-private-evolution-state/route.js": "a5d00ce4262b1384ed7736b48bbf21ffa0d88ab36986a92f45a09c0ee9228c3a",
+            ".next/server/app/api/platform/admin/robot-private-evolution/route.js": "f8e9f45632ad374be26e331e2818d3087ab2e9a950f5ed1fd1d293b4637b8cab",
+            ".next/server/app/api/platform/internal/robot-private-evolution/route.js": "164c96512e887839cb069b600af2f2085d41379409a03b3173b18da57c5980f8",
+            ".next/server/app/platform/homologacao/robos/privado/page.js": "899e05f6ffe6bee351fb99eda12ef01da3f249244597544a363931659c7f99ce"
+          }
+        },
+        "comparison": {
+          "expectedCases": 8,
+          "observedCases": 8,
+          "baselineMissedExistingPositionRouting": 3,
+          "candidateMissedExistingPositionRouting": 0,
+          "protectedCaseChanges": 0,
+          "unsupportedCandidateOutcomes": 0
+        },
+        "finalVersion": {
+          "activationGeneration": 2,
+          "forwardPositionOpen": false,
+          "versionId": "private:r71-reference-v1"
+        },
+        "candidateRetired": true,
+        "missedWindowResult": {
+          "planId": "plan:90aafefccdf88d88",
+          "snapshotId": "2593e530-b9c0-4810-b646-fc125244e3bf",
+          "studyDigest": "4cb55edfea028093921a28bc746ac6355dfe3808fee6c0a62011ae62318ae975",
+          "completedAtMs": 1792878254307,
+          "status": "REJECTED_INCOMPLETE",
+          "summary": {
+            "expectedCases": 8,
+            "observedCases": 0,
+            "baselineMissedExistingPositionRouting": null,
+            "candidateMissedExistingPositionRouting": null,
+            "protectedCaseChanges": null,
+            "unsupportedCandidateOutcomes": null
+          }
+        },
+        "observedHttpRequestsAreNotAdmissionCount": true
+      }
+    },
+    "artifact": {
+      "id": 12575814524,
+      "name": "r71-public-evolution-evidence-5b32d99812eb61a37b4058951d15d531260edfe9",
+      "bytes": 255948,
+      "zipSha256": "52d56299669db56d14dfce131c3d10500a7fac22d0c1f2c4208a37942daf9695",
+      "sourceRun": 40135386515,
+      "sourceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "expiresAt": "2026-11-07T21:46:30Z",
+      "zipHashVerified": true,
+      "jsonsCopiedByteForByte": true
+    },
+    "referenceNoDeploy": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "sha": "5b32d99812eb61a37b4058951d15d531260edfe9",
+      "deployments": [],
+      "pagination": {
+        "count": 0
+      },
+      "resultInspectedAt": "2026-10-24 21:43:25 UTC"
+    },
+    "localAcceptanceProcessesStopped": {
+      "localDisposablePostgresStopped": true,
+      "nextAndSourceProcessesCleanedByAcceptance": true,
+      "port": 56471,
+      "otherDatabasesTouched": false
+    },
+    "finalConsolidatedRun": "Required before certified backup",
+    "preliminaryPublic": {
+      "sourceCommit": "851804aa45ac8cee2aea4fe9096712a7aeff2048",
+      "sourceTreeDirty": true,
+      "passed": 14,
+      "failed": 0,
+      "notRun": 0,
+      "referenceEvidence": false
+    },
+    "preliminaryFocusedPostgres": {
+      "commit": null,
+      "passed": 21,
+      "failed": 0,
+      "notRun": 0,
+      "postgresVersion": "16.15",
+      "referenceEvidence": false
+    }
+  },
+  "preservation": {
+    "priorLedgerSections": 19,
+    "canonicalization": "JSON sorted keys, compact separators, UTF-8, ensure_ascii=false",
+    "priorLedgerSectionSha256": {
+      "schema": "c92b3a7ae0210e42dacb22534924179aa4b0f2fa034379ef6e7c4c61a3c27d7f",
+      "generatedAt": "3418a19e34e692f17e1342fa85080565c74df48bdb5bb7c0200e8fcd8d5251b2",
+      "scope": "dad88f09c1dd2a5a03f4e0fdb2cfa9189f9c95bec5a8d436f05844331696b847",
+      "globalRules": "db6b86aaad48721132db87b8d5ddd547be16a95977d42eaacdd8bf4ac58e5ffa",
+      "robots": "6831e2fdb52d4841f14998dd27c04a0a701ee676b78be13e1314d54377dcf405",
+      "certifiedBlocks": "ec74b8ce03722652444057c89dab222d692ac70990a0068bace02927c2e45315",
+      "nextObjectives": "7690357c096c3666c38c794343dbe04c3685ff69b34b5d99ceca073dcf6e06a5",
+      "finalCertification": "3f3af4f9c66df44f2a0e034d8703de2c76ffc3ebad9c7e0d72b292ad7a6f5afe",
+      "operationalCloseout": "783ee177b28a40b9ee2fa3f5a3d876a2e37ef828c1c1fde23026bcb53dcb1313",
+      "qaPolicyIntegration": "03773010cc69456657be6b15892ec26198888a63a225dbf97e75c64ec88c5f12",
+      "qaBoundaryCloseout": "030ce172ab7aa01e473a427099f02b7eb14bc849d9fd996eb66b5114bc8d491a",
+      "continuousImprovement": "db51f3c177ccce4d2ae1f4dec62b447d538f8488ac541f4788069852a74eb359",
+      "operationalObservationIntegration": "74119e3004e95278d6992904ab1c179739be61b27ade0503dae152fa51b1bf51",
+      "durableEvolutionCycle": "f95f8af2e3f80fd2772cf8e000a25b57ee2f8ab068a42df74830b4bcb7972998",
+      "durableEmitterIntegration": "c7d7509b69161f6d10481cf202055200416ddc4d35532703ce856b660c22aaaa",
+      "privateSourceBridge": "f512fc1fa52b67e712f830c27ae0a466603a2c2c17bbfef699548068a90ded5f",
+      "privateHostReadiness": "3efb381dc21bedd54dc1646a9db0cf7c55b6d302e93c617d266b1774a731aca3",
+      "httpsPrivateHostIntegration": "9fa4afe5f630e2e3fd8922178520c911b03a179b76d16d1faec73452d4a34580",
+      "targetPreflightIntegration": "66b750fcccfd15344215f50b53f62af5885d518bfef1fc06c0619b6d73f84537"
+    },
+    "priorEvidenceShaAttributionUnchanged": true,
+    "originalPrivateBytesChanged": false,
+    "originalPrivateBytesCommitted": false,
+    "r64r65r67ExistingSchemaFilesChanged": 0,
+    "r12r65AlgorithmFilesChanged": 0,
+    "unrelatedProductCodeChanged": false,
+    "priorBlocksRebuilt": false,
+    "priorBlocksFinancialRecertificationClaimed": false,
+    "sharedExtensions": {
+      "robot-private-durable-file.mjs": "Closed R71 profile and existing lifetime lock recognition",
+      "robot-r67-private-core-loader.mjs": "New branded helper calling original service and chooseMode; original capture stays unmodified",
+      "robot-r68-outbox-doctor.mjs": "Closed R71 profile only",
+      "robot-r68-private-host.mjs": "Closed R71 host profile over preserved lifecycle",
+      "robot-r69-https-transport.mjs": "Fixed R71 intake/query paths over preserved TLS engine"
+    }
+  },
+  "invariants": {
+    "manualOperatorControlPreserved": true,
+    "certifiedR61AlignmentGuardPreserved": 0.65,
+    "alignmentGuardReattributedToOriginalPrivateCore": false,
+    "losseshometroSyntheticOnly": true,
+    "r15ProspectiveBackfill": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "paidGenerationEnabled": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "internalCoreRetuning": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false,
+    "operationalReady": false,
+    "independentRuntimeAttestation": false,
+    "hostedAuthenticationCertified": false
+  },
+  "limits": {
+    "snapshotRecords": 256,
+    "snapshotEntries": 8000,
+    "pageRecords": 10,
+    "stateRevisions": 32,
+    "stateBytes": 8388608,
+    "recordBytes": 524288,
+    "signedRecordLifetimeMs": 120000,
+    "combinedLimitsRejectWithoutTruncation": true,
+    "renewExpiryOnRetry": false,
+    "originalRuntimeInternalHistoryRestored": false,
+    "automaticOrphanLockRecovery": false,
+    "wholeDirectoryRollbackDetectedWithoutIndependentWitness": false,
+    "sourceClockIndependentlyAttested": false,
+    "privateHostCliExercisedByIntegratedAcceptance": false,
+    "privateCoreProvidesUltraFast": false,
+    "providerConnectedOrCalled": false,
+    "privateCoreInternalRetuning": false,
+    "physicalPurgeImplemented": false,
+    "spaceReclaimedBytes": 0,
+    "realBrokerPositionObserved": false,
+    "realAdministrativeIdentityVerified": false,
+    "completeHostedEnvironmentVerified": false,
+    "persistentPrivateHostCertified": false
+  },
+  "targetInventory": {
+    "file": "docs/platform/evidence/ROBOT_R71_TARGET_INVENTORY.json",
+    "sha256": "44ed876c46b5c9a631d93f421b58deefaf9bc5441f60ead81f0a2d1dfb6fc889",
+    "completeEnvironmentVerified": false,
+    "persistentPrivateHostVerified": false,
+    "secretValuesInspected": false
+  },
+  "remainingOperationalWork": [
+    "Accept an isolated robot QA deployment with exact team, project, repository, SHA, deployment ID and unique URL; deployment remains outside this authorized scope.",
+    "Complete inherited environment metadata inventory without reading or publishing secrets; the current global tool payload is truncated.",
+    "Accept the real persistent private host, protected volume, custody, fencing and independent monotonic rollback witness.",
+    "In separately authorized hosted QA work, install reviewed schemas and exercise actual Platform administrative identity, permissions and the worker/scheduler.",
+    "Bind an accepted operational source and owner-reviewed data/position provenance before customer monitoring; current position contexts and inputs are synthetic.",
+    "Keep provider execution/costs disabled until JENIOS-specific authorization and operational acceptance; the closed R71 proposal contract alone does not activate a provider."
+  ],
+  "certificationRule": "Reference JSONs keep producing SHA 5b32d99812eb61a37b4058951d15d531260edfe9. After this documentation consolidation, require full successful final CI and matching research/certified refs on the consolidated SHA. Their match closes this checkpoint without a recursive own-CI documentation commit.",
+  "evidenceReferenceCommit": "5b32d99812eb61a37b4058951d15d531260edfe9",
+  "guide": "docs/platform/ROBOT_R71_PRIVATE_EVOLUTION.md"
+}

@@ -1,0 +1,1328 @@
+{
+  "schema": "JENIOS_R72_DEFINITIVE_DATABASE_INSTALLATION_EVIDENCE_V1",
+  "recordedAtUtc": "2026-10-24 22:39:31 UTC",
+  "classification": "ACTUAL_HOSTED_DATABASE_INSTALLATION_NOT_RUNTIME_OR_FINANCIAL_CERTIFICATION",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "authorization": {
+    "ownerInstructions": [
+      "Publique já no banco final",
+      "Vamos logo para o definitivo"
+    ],
+    "hostedDatabasePreparationExplicitlyAuthorized": true,
+    "previousHostedMigrationProhibitionSupersededForThisInstallation": true,
+    "realOrdersAuthorized": false,
+    "externalPaperAuthorized": false,
+    "paidProviderCallsAuthorized": false
+  },
+  "target": {
+    "projectId": "xaicvhagftzjkqphnbgx",
+    "projectName": "jenios-platform-homologacao",
+    "region": "sa-east-1",
+    "historicalNameDoesNotMeanDisposable": true,
+    "actualServerVersion": "17.11",
+    "finalPlatformBinding": {
+      "productionDeployment": {
+        "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+        "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+        "id": "dpl_2V4cExgpq2cCuPfyGf4Shc6NgNeV",
+        "url": "jenios-ecossistem-daqttszot-jenios.vercel.app",
+        "state": "READY",
+        "target": "production",
+        "commitSha": "81a0cd8f3ce1205f4d5db456388a4fe32964b4b8",
+        "branch": "release/jenios-genios-g44-20261024"
+      },
+      "requiredPlatformUrl": "https://xaicvhagftzjkqphnbgx.supabase.co",
+      "productionBuildGuardSource": "https://github.com/paulostutz/jenios/blob/81a0cd8f3ce1205f4d5db456388a4fe32964b4b8/lib/release/environment-scope.mjs",
+      "privateEnvironmentValuesRead": false
+    }
+  },
+  "certifiedBase": {
+    "handoffCommit": "766fa78746f3dcd096063ad90dca292edaea82b5",
+    "r71Commit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "r71FinalCi": 40135970938,
+    "checkpointAndBackupReadBeforeChange": true
+  },
+  "installation": {
+    "schema": "JENIOS_R72_MIGRATION_COMPOSITION_V1",
+    "preparedAtUtc": "2026-10-24T22:32:58.071280+00:00",
+    "baseCommit": "766fa78746f3dcd096063ad90dca292edaea82b5",
+    "certifiedCodeCommit": "3fb6e9c4335422440d149fd969907e9eddc840c6",
+    "targetProject": "xaicvhagftzjkqphnbgx",
+    "path": "supabase/migrations/20261024223334_jenios_robot_r72_definitive_store.sql",
+    "sqlSha256": "84408ccac4cd794016069301d97b4149e0afc7becfba6367e00eb40f1fcb75ed",
+    "bytes": 165029,
+    "cliVersion": "2.122.0",
+    "name": "jenios_robot_r72_definitive_store",
+    "atomicity": "SINGLE_DO_STATEMENT_NO_INTERNAL_TRANSACTION_CONTROL",
+    "freshObjectsOnly": true,
+    "transformations": [
+      {
+        "block": "R64",
+        "source": "db/schema/robot-r64-operational-store.sql",
+        "sourceSha256": "5a377a85f86ec3f7044409050eeb35e2ae0a67e7d1050b6b8bf35c13731e4d3c",
+        "outerTransactionMarkersRemoved": 2,
+        "replaceFunctionHeadersMadeCreateOnly": 8,
+        "tableHeadersMadeCreateOnly": 4,
+        "indexHeadersMadeCreateOnly": 3,
+        "newTableDropTriggerNoOpsRemoved": 0,
+        "functionBodiesUnchanged": 8
+      },
+      {
+        "block": "R65",
+        "source": "db/schema/robot-r65-lifecycle-store.sql",
+        "sourceSha256": "0c9234f8b6f7d8d23725971663be82b4c69592224027760d895c505074d54887",
+        "outerTransactionMarkersRemoved": 2,
+        "replaceFunctionHeadersMadeCreateOnly": 15,
+        "tableHeadersMadeCreateOnly": 6,
+        "indexHeadersMadeCreateOnly": 3,
+        "newTableDropTriggerNoOpsRemoved": 3,
+        "functionBodiesUnchanged": 15
+      },
+      {
+        "block": "R67",
+        "source": "db/schema/robot-r67-private-capture-store.sql",
+        "sourceSha256": "5172c89d6f94cbfa50ae789fd2df09e9843c63a81d663a798971833ae7dec58b",
+        "outerTransactionMarkersRemoved": 2,
+        "replaceFunctionHeadersMadeCreateOnly": 2,
+        "tableHeadersMadeCreateOnly": 1,
+        "indexHeadersMadeCreateOnly": 1,
+        "newTableDropTriggerNoOpsRemoved": 0,
+        "functionBodiesUnchanged": 2
+      },
+      {
+        "block": "R71",
+        "source": "db/schema/robot-r71-private-evolution-store.sql",
+        "sourceSha256": "8edeee3a14fbce217dc0538bf3aedd56fe32aaafa06bc01994374c922b723b49",
+        "outerTransactionMarkersRemoved": 2,
+        "replaceFunctionHeadersMadeCreateOnly": 14,
+        "tableHeadersMadeCreateOnly": 5,
+        "indexHeadersMadeCreateOnly": 1,
+        "newTableDropTriggerNoOpsRemoved": 0,
+        "functionBodiesUnchanged": 14
+      }
+    ],
+    "expectedTables": 16,
+    "expectedFunctions": 39,
+    "expectedExplicitIndexes": 8,
+    "expectedTriggers": 3,
+    "immediateDataWrites": "ONE_DISABLED_CONFIG_SINGLETON_ONLY",
+    "callsToBusinessRpcs": 0,
+    "cliCreatedPath": "supabase/migrations/20261024223116_jenios_robot_r72_definitive_store.sql",
+    "appliedMigrationVersion": "20261024223334",
+    "historyFilenameReconciled": true,
+    "tool": "supabase_apply_migration",
+    "attempt": {
+      "startedAtUtc": "2026-10-24 22:33:32 UTC",
+      "name": "jenios_robot_r72_definitive_store",
+      "project": "xaicvhagftzjkqphnbgx",
+      "sqlSha256": "84408ccac4cd794016069301d97b4149e0afc7becfba6367e00eb40f1fcb75ed",
+      "attemptNumber": 1
+    },
+    "response": {
+      "success": true
+    },
+    "completedAtUtc": "2026-10-24 22:33:35 UTC",
+    "migrationVersion": "20261024223334",
+    "appliedExactlyOnce": true,
+    "destructiveDropsExecuted": 0,
+    "mutatingBusinessRpcsExecuted": 0
+  },
+  "before": {
+    "catalogCollisionRows": [],
+    "preservation": {
+      "observed_at": "2026-10-24 22:30:12.675836+00",
+      "preserved_relations": 6,
+      "relation_catalog_sha256": "55ebc310f6ce9670f9074c1466f5e7533ba9cfa249dea50a1ecaab7594466443",
+      "preserved_functions": 3,
+      "function_catalog_sha256": "3dd4e9fa64542e3a855d24f6ee69ed4c1b4396de051a2f096453286e4eb67271",
+      "managed_roles": [
+        {
+          "name": "anon",
+          "bypass_rls": false
+        },
+        {
+          "name": "authenticated",
+          "bypass_rls": false
+        },
+        {
+          "name": "service_role",
+          "bypass_rls": true
+        }
+      ]
+    },
+    "migrationHistory": [
+      {
+        "version": "20261019110404",
+        "name": "platform_diagnostic_private_cp63"
+      },
+      {
+        "version": "20261019110417",
+        "name": "platform_risk_evidence_cp66"
+      },
+      {
+        "version": "20261019110736",
+        "name": "platform_dedicated_admin_roles_cp67r1"
+      },
+      {
+        "version": "20261019205839",
+        "name": "b106_synthetic_offline_remote_receipt_witness"
+      },
+      {
+        "version": "20261019211308",
+        "name": "r45_b108_public_readonly_candle_receipt_research_only"
+      },
+      {
+        "version": "20261020185620",
+        "name": "jenios_platform_b165_b169_demo_broker_qa"
+      }
+    ]
+  },
+  "after": {
+    "catalog": {
+      "observed_at": "2026-10-24 22:34:03.931665+00",
+      "tables": [
+        {
+          "rls": true,
+          "name": "jenios_robot_archive_items_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_archives_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_budgets_r64",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_config_r64",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_cycles_r64",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_events_r64",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_evolution_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_observation_provenance_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_captures_r67",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_evolution_r71",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_observations_r71",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_studies_r71",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_study_members_r71",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_private_validation_cases_r71",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_reconciliations_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        },
+        {
+          "rls": true,
+          "name": "jenios_robot_validation_cases_r65",
+          "present": true,
+          "anon_access": false,
+          "service_delete": false,
+          "service_select": true,
+          "service_truncate": false,
+          "authenticated_access": false
+        }
+      ],
+      "functions": [
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_analyst_policy(jsonb)",
+          "body_sha256": "8898af50f62a97036bdda47150a3b5ffe0ae4c157e55935e7a4487e6f2f1b16e",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_claim_cycle(jsonb)",
+          "body_sha256": "f0203b07d0d89ee5e57cc1581197e06fecdaf8f0687f32854651a19f238515f6",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_complete_cycle(jsonb)",
+          "body_sha256": "669fcb0541dd6ee4776e74b383f0b22118382ab409b023a0a71d7139f593115a",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_ingest(jsonb)",
+          "body_sha256": "2cf5fbb2cba6e0ca67693a3331d79c5ad3501328dbf8e854cab556b2d6a35bcc",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_read_cycle(jsonb)",
+          "body_sha256": "4e994e0b67909f10c453785959728063d31d78e4b0e2ce6190943f2c235490f4",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_read_receipts(jsonb)",
+          "body_sha256": "7279e5de2dbe609fadfe50e9d2a6c7295421c461300792b2f18d86672ae4a41d",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_read_reports(jsonb)",
+          "body_sha256": "0f92840034ac51c4c74b7c9c28c70d180251fab66f31ce73cc42da8cac476ad6",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r64_reserve_dispatch(jsonb)",
+          "body_sha256": "e71233d5d67b27b4a3041ffe1a6fb0167dbf07f4dee48aee6f4bd74fa1eeb3a9",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_append_evolution(jsonb)",
+          "body_sha256": "4f1b97e6edcb93c19ee05d1e3904b09c69b0d30a382426c964d09fe4236ccf68",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_archive_commit(jsonb)",
+          "body_sha256": "dae24264396ea334f9e4706cd6ffbcb8ad267d952a2cba6dc4749d732c06328c",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\"",
+            "TimeZone=UTC"
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_archive_preview(jsonb)",
+          "body_sha256": "988734da7b56f2f830cc86d8f5a58f44a857651fd1dbbc565dad0cf0d6a9baa9",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\"",
+            "TimeZone=UTC"
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_digest(jsonb)",
+          "body_sha256": "a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6",
+          "return_type": "text",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_disable_only()",
+          "body_sha256": "1c2e66ff7426a15f705f56321697582b54f2ad921e5dfe10aa0c4a9c5f70a560",
+          "return_type": "trigger",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_guard_archive()",
+          "body_sha256": "15c0a2c9b29ed3a1031162c0c641928949e90fc0599bb3ef546bb39d03415acf",
+          "return_type": "trigger",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_guard_cycle()",
+          "body_sha256": "e50b43555b583a901eeb6e58777a9c17567a998ba47f5dd6ed4f663766f205a1",
+          "return_type": "trigger",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_ingest_observation(jsonb)",
+          "body_sha256": "87341020c03e3cc8708f2c23a95df7d70accbe9c3740a5c282bacc7364bd6dc0",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_read_archive(jsonb)",
+          "body_sha256": "4e8d9bb030b8df75f541387adbb3b2123ee08576f31be21793697aaf9677d0c7",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\"",
+            "TimeZone=UTC"
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_read_cycle_hypothesis(jsonb)",
+          "body_sha256": "0df9022a5a6f34433fd49bbeb276e5be4e5953e22681ee2632befdbea0ed1b62",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_read_evolution(jsonb)",
+          "body_sha256": "c6b2cd9409891d6016f3b2ec5313a09db567f09f8ca7ec7e63319e7351e2a49b",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_read_overview(jsonb)",
+          "body_sha256": "a47c8dcfcddf597062b36536f00f3ac0b9f4b8de9cf5ee04973d8e909875faf0",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_read_validation_cases(jsonb)",
+          "body_sha256": "1a72bb7bf8e98779393794814e90de0d3edf447d45c28447bc88a2dfdcc30f66",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_reconcile_cost(jsonb)",
+          "body_sha256": "e99cbe7c4b9bc5cb8b9d65695a4e9e75d4a2405ff8fed087791aa1b88ec6eafd",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\"",
+            "TimeZone=UTC"
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r65_record_validation_case(jsonb)",
+          "body_sha256": "78222d261ba42aa156d55e410d6c4d7cf9f86b34d09fc023396da67c4e0d1bee",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r67_ingest_private_capture(jsonb)",
+          "body_sha256": "8cda57ef996770e6cafad99bb5fd6b06ea37a12246081e4ff74fc49a54881e03",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r67_read_private_captures(jsonb)",
+          "body_sha256": "c935f72e2de63b8ffc12d8d34c8e267a3399cf11798c57577503f9b8f9827869",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_append_state(jsonb)",
+          "body_sha256": "5a7099a2b4840f032560661b04e111a5fd22918e4f8eb6f5d66767ec05575597",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_digest(jsonb)",
+          "body_sha256": "a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6",
+          "return_type": "text",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_fields(jsonb,text[])",
+          "body_sha256": "b81c110bc9018f193fed894f4f3a41a60a4e725c735c01d5bba30604da2c14ed",
+          "return_type": "boolean",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_freeze_study(jsonb)",
+          "body_sha256": "466f77d7ad985389c7491c2a12cf066098b90b6634063411129a11d0d1f7cf5e",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_ingest_private_observation(jsonb)",
+          "body_sha256": "9ad6654b560227d975cbb16eac01fc95e8eb8eaebea1e0160638b42b51ea84d4",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_integer(jsonb,bigint,bigint)",
+          "body_sha256": "13237bfa140323743eba75ecca8f6cbc119138e2eb1b7d9243d6346717e7cf6e",
+          "return_type": "boolean",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_now(jsonb)",
+          "body_sha256": "f15aebd90dff5816867ec10b6041f2948e01913544388c60983cf16bf0bc5abd",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_plan(jsonb)",
+          "body_sha256": "8907bdcff640f14a14310dd723e5df3558c3958a7958433b73ea3e79dee397bc",
+          "return_type": "boolean",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_read_overview(jsonb)",
+          "body_sha256": "c7376520e04a47f61a3f577245e1573ceed7c9a6f9a8c123eed362e083ad8124",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_read_state(jsonb)",
+          "body_sha256": "951936f1ea9e1dbd48f5bc41de7708d93993637be3431fdc51792e99b417f447",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_read_study_page(jsonb)",
+          "body_sha256": "efff17232141b6c3ba13bced23b6ec6833a66ef3f44224a54a6740751124c918",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_read_validation_cases(jsonb)",
+          "body_sha256": "49d1a9b851602057254287b0df49a87e4bcfe3aa830b87131cf8e00beb9e5d45",
+          "return_type": "jsonb",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_scope(jsonb)",
+          "body_sha256": "256693979129bb88493d39a27af4a048f899a21483c9eed1fd9e6aa46f773b61",
+          "return_type": "boolean",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "present": true,
+          "signature": "public.jenios_robot_r71_version(jsonb)",
+          "body_sha256": "90a5be04b1c68e7f76db07efb158b04d767200a671421e20f178677842b95122",
+          "return_type": "boolean",
+          "anon_execute": false,
+          "body_matches": true,
+          "configuration": [
+            "search_path=\"\""
+          ],
+          "service_execute": true,
+          "security_definer": false,
+          "authenticated_execute": false
+        }
+      ],
+      "triggers": [
+        {
+          "name": "jenios_robot_r65_disable_only",
+          "table": "jenios_robot_config_r64",
+          "enabled": "O",
+          "definition": "CREATE TRIGGER jenios_robot_r65_disable_only BEFORE UPDATE OF generation_enabled ON public.jenios_robot_config_r64 FOR EACH ROW EXECUTE FUNCTION jenios_robot_r65_disable_only()"
+        },
+        {
+          "name": "jenios_robot_r65_guard_archive",
+          "table": "jenios_robot_archives_r65",
+          "enabled": "O",
+          "definition": "CREATE TRIGGER jenios_robot_r65_guard_archive BEFORE UPDATE ON public.jenios_robot_archives_r65 FOR EACH ROW EXECUTE FUNCTION jenios_robot_r65_guard_archive()"
+        },
+        {
+          "name": "jenios_robot_r65_guard_cycle",
+          "table": "jenios_robot_cycles_r64",
+          "enabled": "O",
+          "definition": "CREATE TRIGGER jenios_robot_r65_guard_cycle BEFORE INSERT OR DELETE OR UPDATE ON public.jenios_robot_cycles_r64 FOR EACH ROW EXECUTE FUNCTION jenios_robot_r65_guard_cycle()"
+        }
+      ],
+      "initial_config": {
+        "pricing_approved": false,
+        "generation_enabled": false,
+        "allowed_model_count": 0,
+        "max_request_nano_usd": 0,
+        "monthly_limit_nano_usd": 0,
+        "requires_reconciliation": false
+      },
+      "budget_rows": 0
+    },
+    "preservation": {
+      "observed_at": "2026-10-24 22:34:07.216576+00",
+      "preserved_relations": 6,
+      "relation_catalog_sha256": "55ebc310f6ce9670f9074c1466f5e7533ba9cfa249dea50a1ecaab7594466443",
+      "preserved_functions": 3,
+      "function_catalog_sha256": "3dd4e9fa64542e3a855d24f6ee69ed4c1b4396de051a2f096453286e4eb67271",
+      "managed_roles": [
+        {
+          "name": "anon",
+          "bypass_rls": false
+        },
+        {
+          "name": "authenticated",
+          "bypass_rls": false
+        },
+        {
+          "name": "service_role",
+          "bypass_rls": true
+        }
+      ]
+    },
+    "rowCountsAndColumnGrants": {
+      "observed_at": "2026-10-24 22:35:52.275128+00",
+      "installed_row_counts": {
+        "jenios_robot_config_r64": 1,
+        "jenios_robot_cycles_r64": 0,
+        "jenios_robot_events_r64": 0,
+        "jenios_robot_budgets_r64": 0,
+        "jenios_robot_archives_r65": 0,
+        "jenios_robot_evolution_r65": 0,
+        "jenios_robot_archive_items_r65": 0,
+        "jenios_robot_private_studies_r71": 0,
+        "jenios_robot_reconciliations_r65": 0,
+        "jenios_robot_private_captures_r67": 0,
+        "jenios_robot_validation_cases_r65": 0,
+        "jenios_robot_private_evolution_r71": 0,
+        "jenios_robot_private_observations_r71": 0,
+        "jenios_robot_private_study_members_r71": 0,
+        "jenios_robot_observation_provenance_r65": 0,
+        "jenios_robot_private_validation_cases_r71": 0
+      },
+      "limited_column_updates": [
+        {
+          "table": "jenios_robot_archives_r65",
+          "column": "actor_id",
+          "privilege": "UPDATE"
+        },
+        {
+          "table": "jenios_robot_archives_r65",
+          "column": "committed_at",
+          "privilege": "UPDATE"
+        },
+        {
+          "table": "jenios_robot_archives_r65",
+          "column": "operation_id",
+          "privilege": "UPDATE"
+        },
+        {
+          "table": "jenios_robot_archives_r65",
+          "column": "request_digest",
+          "privilege": "UPDATE"
+        },
+        {
+          "table": "jenios_robot_archives_r65",
+          "column": "status",
+          "privilege": "UPDATE"
+        },
+        {
+          "table": "jenios_robot_config_r64",
+          "column": "generation_enabled",
+          "privilege": "UPDATE"
+        }
+      ],
+      "private_append_only": [
+        {
+          "name": "jenios_robot_private_captures_r67",
+          "service_update": false
+        },
+        {
+          "name": "jenios_robot_private_evolution_r71",
+          "service_update": false
+        },
+        {
+          "name": "jenios_robot_private_observations_r71",
+          "service_update": false
+        },
+        {
+          "name": "jenios_robot_private_studies_r71",
+          "service_update": false
+        },
+        {
+          "name": "jenios_robot_private_study_members_r71",
+          "service_update": false
+        },
+        {
+          "name": "jenios_robot_private_validation_cases_r71",
+          "service_update": false
+        }
+      ],
+      "explicit_index_candidates": [
+        "jenios_robot_archives_r65_scope",
+        "jenios_robot_cycles_r64_provider_response",
+        "jenios_robot_cycles_r64_reports",
+        "jenios_robot_events_r64_period",
+        "jenios_robot_private_captures_r67_recent",
+        "jenios_robot_private_observations_r71_period",
+        "jenios_robot_reconciliations_r65_scope"
+      ],
+      "indexInventoryQualification": "The row-count query used a partial candidate selector; after.explicitIndexes is the authoritative complete source-derived inventory and confirms all eight explicit indexes. No schema change was needed between these reads."
+    },
+    "explicitIndexes": [
+      {
+        "indexname": "jenios_robot_archives_r65_scope",
+        "indexdef": "CREATE INDEX jenios_robot_archives_r65_scope ON public.jenios_robot_archives_r65 USING btree (scope_id, created_at DESC, archive_id)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_cycles_r64_provider_response",
+        "indexdef": "CREATE UNIQUE INDEX jenios_robot_cycles_r64_provider_response ON public.jenios_robot_cycles_r64 USING btree (provider_response_id) WHERE (provider_response_id IS NOT NULL)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_cycles_r64_reports",
+        "indexdef": "CREATE INDEX jenios_robot_cycles_r64_reports ON public.jenios_robot_cycles_r64 USING btree (scope_id, period_key DESC) WHERE (state = ANY (ARRAY['COMPLETED'::text, 'NEEDS_RECONCILIATION'::text, 'DISPATCHED'::text]))",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_events_r64_period",
+        "indexdef": "CREATE INDEX jenios_robot_events_r64_period ON public.jenios_robot_events_r64 USING btree (scope_id, occurred_at_ms, event_id)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_private_captures_r67_recent",
+        "indexdef": "CREATE INDEX jenios_robot_private_captures_r67_recent ON public.jenios_robot_private_captures_r67 USING btree (scope_id, source_id, admitted_at_ms DESC, event_id)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_private_observations_r71_period",
+        "indexdef": "CREATE INDEX jenios_robot_private_observations_r71_period ON public.jenios_robot_private_observations_r71 USING btree (scope_id, source_id, captured_at_ms, event_id)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_reconciliations_r65_response",
+        "indexdef": "CREATE UNIQUE INDEX jenios_robot_reconciliations_r65_response ON public.jenios_robot_reconciliations_r65 USING btree (provider_response_id) WHERE (provider_response_id IS NOT NULL)",
+        "valid": true
+      },
+      {
+        "indexname": "jenios_robot_reconciliations_r65_scope",
+        "indexdef": "CREATE INDEX jenios_robot_reconciliations_r65_scope ON public.jenios_robot_reconciliations_r65 USING btree (scope_id, resolved_at DESC, cycle_id)",
+        "valid": true
+      }
+    ],
+    "migrationHistory": [
+      {
+        "version": "20261019110404",
+        "name": "platform_diagnostic_private_cp63"
+      },
+      {
+        "version": "20261019110417",
+        "name": "platform_risk_evidence_cp66"
+      },
+      {
+        "version": "20261019110736",
+        "name": "platform_dedicated_admin_roles_cp67r1"
+      },
+      {
+        "version": "20261019205839",
+        "name": "b106_synthetic_offline_remote_receipt_witness"
+      },
+      {
+        "version": "20261019211308",
+        "name": "r45_b108_public_readonly_candle_receipt_research_only"
+      },
+      {
+        "version": "20261020185620",
+        "name": "jenios_platform_b165_b169_demo_broker_qa"
+      },
+      {
+        "version": "20261024223334",
+        "name": "jenios_robot_r72_definitive_store"
+      }
+    ],
+    "securityAdvisor": [
+      {
+        "name": "rls_enabled_no_policy",
+        "level": "INFO",
+        "totalProjectFindings": 24,
+        "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy",
+        "robotFindings": [
+          {
+            "table": "jenios_robot_archive_items_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_archives_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_budgets_r64",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_config_r64",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_cycles_r64",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_events_r64",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_evolution_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_observation_provenance_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_captures_r67",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_evolution_r71",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_observations_r71",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_studies_r71",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_study_members_r71",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_private_validation_cases_r71",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_reconciliations_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          },
+          {
+            "table": "jenios_robot_validation_cases_r65",
+            "schema": "public",
+            "observedAt": "2026-10-24T22:34:04.631Z"
+          }
+        ],
+        "robotInterpretation": "Expected deny-by-default table design: anon/authenticated have no effective table/column privileges; server service_role is intentionally trusted and checked separately."
+      },
+      {
+        "name": "auth_leaked_password_protection",
+        "level": "WARN",
+        "totalProjectFindings": 1,
+        "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+        "robotFindings": [],
+        "robotInterpretation": "Project-level observation; no Auth settings were changed by this migration."
+      }
+    ]
+  },
+  "checks": {
+    "tablesPresent": 16,
+    "tablesWithRls": 16,
+    "functionsPresent": 39,
+    "functionBodiesMatchCertified": 39,
+    "securityInvokerFunctions": 39,
+    "emptySearchPathFunctions": 39,
+    "explicitIndexesValid": 8,
+    "triggersPresent": 3,
+    "anonAndAuthenticatedTableAndFunctionAccessAbsent": true,
+    "existingRelationsPreserved": 6,
+    "existingFunctionsPreserved": 3,
+    "relationCatalogSha256Unchanged": true,
+    "functionCatalogSha256Unchanged": true,
+    "configurationSeedRows": 1,
+    "configurationGenerationEnabled": false,
+    "configurationPricingApproved": false,
+    "configuredPaidLimitNanoUsd": 0,
+    "budgetRows": 0,
+    "observationRows": 0,
+    "evolutionRows": 0,
+    "privateTablesAppendOnlyToServiceRole": true,
+    "sourceSqlFilesUnchanged": true,
+    "newSyntheticTestsRun": 0,
+    "newBuildsRun": 0
+  },
+  "queries": {
+    "preservation": "WITH relations AS (\n SELECT c.oid,c.relname,c.relkind,c.relrowsecurity,c.relforcerowsecurity,c.relacl,\n   (SELECT coalesce(jsonb_agg(jsonb_build_object('name',a.attname,'type',format_type(a.atttypid,a.atttypmod),'notnull',a.attnotnull,'default',pg_get_expr(d.adbin,d.adrelid)) ORDER BY a.attnum),'[]'::jsonb)\n    FROM pg_attribute a LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped) AS columns,\n   (SELECT coalesce(jsonb_agg(pg_get_constraintdef(k.oid) ORDER BY k.conname),'[]'::jsonb) FROM pg_constraint k WHERE k.conrelid=c.oid) AS constraints,\n   (SELECT coalesce(jsonb_agg(pg_get_indexdef(i.indexrelid) ORDER BY i.indexrelid),'[]'::jsonb) FROM pg_index i WHERE i.indrelid=c.oid) AS indexes,\n   (SELECT coalesce(jsonb_agg(pg_get_triggerdef(t.oid) ORDER BY t.tgname),'[]'::jsonb) FROM pg_trigger t WHERE t.tgrelid=c.oid AND NOT t.tgisinternal) AS triggers,\n   (SELECT coalesce(jsonb_agg(to_jsonb(p) ORDER BY p.polname),'[]'::jsonb) FROM pg_policy p WHERE p.polrelid=c.oid) AS policies\n FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace\n WHERE n.nspname='public' AND c.relkind IN('r','p','v','m','f') AND c.relname !~ '^jenios_robot_.*_r(64|65|67|71)$'\n), functions AS (\n SELECT p.oid,p.oid::regprocedure::text AS signature,p.prosrc,p.probin,p.prorettype,p.provolatile,p.prosecdef,p.proconfig,p.proacl\n FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace\n WHERE n.nspname='public' AND p.proname !~ '^jenios_robot_r(64|65|67|71)_'\n)\nSELECT clock_timestamp() AS observed_at,\n (SELECT count(*) FROM relations) AS preserved_relations,\n (SELECT encode(sha256(convert_to(coalesce(jsonb_agg(to_jsonb(r) ORDER BY r.oid),'[]'::jsonb)::text,'UTF8')),'hex') FROM relations r) AS relation_catalog_sha256,\n (SELECT count(*) FROM functions) AS preserved_functions,\n (SELECT encode(sha256(convert_to(coalesce(jsonb_agg(to_jsonb(f) ORDER BY f.oid),'[]'::jsonb)::text,'UTF8')),'hex') FROM functions f) AS function_catalog_sha256,\n (SELECT jsonb_agg(jsonb_build_object('name',rolname,'bypass_rls',rolbypassrls) ORDER BY rolname) FROM pg_roles WHERE rolname IN('anon','authenticated','service_role')) AS managed_roles;",
+    "postInstall": "WITH expected_tables(name) AS (VALUES ('jenios_robot_events_r64'),('jenios_robot_config_r64'),('jenios_robot_budgets_r64'),('jenios_robot_cycles_r64'),('jenios_robot_observation_provenance_r65'),('jenios_robot_reconciliations_r65'),('jenios_robot_archives_r65'),('jenios_robot_archive_items_r65'),('jenios_robot_evolution_r65'),('jenios_robot_validation_cases_r65'),('jenios_robot_private_captures_r67'),('jenios_robot_private_evolution_r71'),('jenios_robot_private_observations_r71'),('jenios_robot_private_studies_r71'),('jenios_robot_private_study_members_r71'),('jenios_robot_private_validation_cases_r71')), expected_functions(signature,body_sha256) AS (VALUES ('public.jenios_robot_r64_ingest(jsonb)','2cf5fbb2cba6e0ca67693a3331d79c5ad3501328dbf8e854cab556b2d6a35bcc'),('public.jenios_robot_r64_read_receipts(jsonb)','7279e5de2dbe609fadfe50e9d2a6c7295421c461300792b2f18d86672ae4a41d'),('public.jenios_robot_r64_claim_cycle(jsonb)','f0203b07d0d89ee5e57cc1581197e06fecdaf8f0687f32854651a19f238515f6'),('public.jenios_robot_r64_read_cycle(jsonb)','4e994e0b67909f10c453785959728063d31d78e4b0e2ce6190943f2c235490f4'),('public.jenios_robot_r64_analyst_policy(jsonb)','8898af50f62a97036bdda47150a3b5ffe0ae4c157e55935e7a4487e6f2f1b16e'),('public.jenios_robot_r64_reserve_dispatch(jsonb)','e71233d5d67b27b4a3041ffe1a6fb0167dbf07f4dee48aee6f4bd74fa1eeb3a9'),('public.jenios_robot_r64_complete_cycle(jsonb)','669fcb0541dd6ee4776e74b383f0b22118382ab409b023a0a71d7139f593115a'),('public.jenios_robot_r64_read_reports(jsonb)','0f92840034ac51c4c74b7c9c28c70d180251fab66f31ce73cc42da8cac476ad6'),('public.jenios_robot_r65_digest(jsonb)','a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6'),('public.jenios_robot_r65_ingest_observation(jsonb)','87341020c03e3cc8708f2c23a95df7d70accbe9c3740a5c282bacc7364bd6dc0'),('public.jenios_robot_r65_guard_archive()','15c0a2c9b29ed3a1031162c0c641928949e90fc0599bb3ef546bb39d03415acf'),('public.jenios_robot_r65_disable_only()','1c2e66ff7426a15f705f56321697582b54f2ad921e5dfe10aa0c4a9c5f70a560'),('public.jenios_robot_r65_guard_cycle()','e50b43555b583a901eeb6e58777a9c17567a998ba47f5dd6ed4f663766f205a1'),('public.jenios_robot_r65_reconcile_cost(jsonb)','e99cbe7c4b9bc5cb8b9d65695a4e9e75d4a2405ff8fed087791aa1b88ec6eafd'),('public.jenios_robot_r65_read_evolution(jsonb)','c6b2cd9409891d6016f3b2ec5313a09db567f09f8ca7ec7e63319e7351e2a49b'),('public.jenios_robot_r65_append_evolution(jsonb)','4f1b97e6edcb93c19ee05d1e3904b09c69b0d30a382426c964d09fe4236ccf68'),('public.jenios_robot_r65_read_cycle_hypothesis(jsonb)','0df9022a5a6f34433fd49bbeb276e5be4e5953e22681ee2632befdbea0ed1b62'),('public.jenios_robot_r65_record_validation_case(jsonb)','78222d261ba42aa156d55e410d6c4d7cf9f86b34d09fc023396da67c4e0d1bee'),('public.jenios_robot_r65_read_validation_cases(jsonb)','1a72bb7bf8e98779393794814e90de0d3edf447d45c28447bc88a2dfdcc30f66'),('public.jenios_robot_r65_archive_preview(jsonb)','988734da7b56f2f830cc86d8f5a58f44a857651fd1dbbc565dad0cf0d6a9baa9'),('public.jenios_robot_r65_archive_commit(jsonb)','dae24264396ea334f9e4706cd6ffbcb8ad267d952a2cba6dc4749d732c06328c'),('public.jenios_robot_r65_read_archive(jsonb)','4e8d9bb030b8df75f541387adbb3b2123ee08576f31be21793697aaf9677d0c7'),('public.jenios_robot_r65_read_overview(jsonb)','a47c8dcfcddf597062b36536f00f3ac0b9f4b8de9cf5ee04973d8e909875faf0'),('public.jenios_robot_r67_ingest_private_capture(jsonb)','8cda57ef996770e6cafad99bb5fd6b06ea37a12246081e4ff74fc49a54881e03'),('public.jenios_robot_r67_read_private_captures(jsonb)','c935f72e2de63b8ffc12d8d34c8e267a3399cf11798c57577503f9b8f9827869'),('public.jenios_robot_r71_digest(jsonb)','a0244e3f247525076c99efb364763652437538991a6982a33c1bcae1975cfac6'),('public.jenios_robot_r71_fields(jsonb,text[])','b81c110bc9018f193fed894f4f3a41a60a4e725c735c01d5bba30604da2c14ed'),('public.jenios_robot_r71_integer(jsonb,bigint,bigint)','13237bfa140323743eba75ecca8f6cbc119138e2eb1b7d9243d6346717e7cf6e'),('public.jenios_robot_r71_version(jsonb)','90a5be04b1c68e7f76db07efb158b04d767200a671421e20f178677842b95122'),('public.jenios_robot_r71_scope(jsonb)','256693979129bb88493d39a27af4a048f899a21483c9eed1fd9e6aa46f773b61'),('public.jenios_robot_r71_now(jsonb)','f15aebd90dff5816867ec10b6041f2948e01913544388c60983cf16bf0bc5abd'),('public.jenios_robot_r71_ingest_private_observation(jsonb)','9ad6654b560227d975cbb16eac01fc95e8eb8eaebea1e0160638b42b51ea84d4'),('public.jenios_robot_r71_freeze_study(jsonb)','466f77d7ad985389c7491c2a12cf066098b90b6634063411129a11d0d1f7cf5e'),('public.jenios_robot_r71_read_study_page(jsonb)','efff17232141b6c3ba13bced23b6ec6833a66ef3f44224a54a6740751124c918'),('public.jenios_robot_r71_read_state(jsonb)','951936f1ea9e1dbd48f5bc41de7708d93993637be3431fdc51792e99b417f447'),('public.jenios_robot_r71_read_validation_cases(jsonb)','49d1a9b851602057254287b0df49a87e4bcfe3aa830b87131cf8e00beb9e5d45'),('public.jenios_robot_r71_read_overview(jsonb)','c7376520e04a47f61a3f577245e1573ceed7c9a6f9a8c123eed362e083ad8124'),('public.jenios_robot_r71_plan(jsonb)','8907bdcff640f14a14310dd723e5df3558c3958a7958433b73ea3e79dee397bc'),('public.jenios_robot_r71_append_state(jsonb)','5a7099a2b4840f032560661b04e111a5fd22918e4f8eb6f5d66767ec05575597')),\nrels AS (SELECT e.name,c.oid,c.relrowsecurity,c.relforcerowsecurity FROM expected_tables e LEFT JOIN pg_class c ON c.oid=to_regclass('public.'||e.name)),\nfns AS (SELECT e.signature,e.body_sha256,p.oid,p.prosrc,p.prosecdef,p.proconfig,pg_get_function_result(p.oid) AS return_type FROM expected_functions e LEFT JOIN pg_proc p ON p.oid=to_regprocedure(e.signature))\nSELECT clock_timestamp() AS observed_at,\n (SELECT jsonb_agg(jsonb_build_object('name',name,'present',oid IS NOT NULL,'rls',relrowsecurity,\n 'anon_access',CASE WHEN oid IS NULL THEN NULL ELSE has_table_privilege('anon',oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') OR has_any_column_privilege('anon',oid,'SELECT,INSERT,UPDATE,REFERENCES') END,\n 'authenticated_access',CASE WHEN oid IS NULL THEN NULL ELSE has_table_privilege('authenticated',oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') OR has_any_column_privilege('authenticated',oid,'SELECT,INSERT,UPDATE,REFERENCES') END,\n 'service_select',CASE WHEN oid IS NULL THEN NULL ELSE has_table_privilege('service_role',oid,'SELECT') END,\n 'service_delete',CASE WHEN oid IS NULL THEN NULL ELSE has_table_privilege('service_role',oid,'DELETE') END,\n 'service_truncate',CASE WHEN oid IS NULL THEN NULL ELSE has_table_privilege('service_role',oid,'TRUNCATE') END) ORDER BY name) FROM rels) AS tables,\n (SELECT jsonb_agg(jsonb_build_object('signature',signature,'present',oid IS NOT NULL,'body_sha256',encode(sha256(convert_to(prosrc,'UTF8')),'hex'),\n 'body_matches',encode(sha256(convert_to(prosrc,'UTF8')),'hex')=body_sha256,'security_definer',prosecdef,'configuration',proconfig,'return_type',return_type,\n 'anon_execute',CASE WHEN oid IS NULL THEN NULL ELSE has_function_privilege('anon',oid,'EXECUTE') END,\n 'authenticated_execute',CASE WHEN oid IS NULL THEN NULL ELSE has_function_privilege('authenticated',oid,'EXECUTE') END,\n 'service_execute',CASE WHEN oid IS NULL THEN NULL ELSE has_function_privilege('service_role',oid,'EXECUTE') END) ORDER BY signature) FROM fns) AS functions,\n (SELECT jsonb_agg(jsonb_build_object('name',t.tgname,'table',c.relname,'enabled',t.tgenabled,'definition',pg_get_triggerdef(t.oid)) ORDER BY t.tgname)\n FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace\n WHERE n.nspname='public' AND NOT t.tgisinternal AND t.tgname IN('jenios_robot_r65_guard_archive','jenios_robot_r65_disable_only','jenios_robot_r65_guard_cycle')) AS triggers,\n (SELECT jsonb_build_object('generation_enabled',generation_enabled,'requires_reconciliation',requires_reconciliation,'pricing_approved',pricing_approved,\n 'allowed_model_count',cardinality(allowed_models),'max_request_nano_usd',max_request_nano_usd,'monthly_limit_nano_usd',monthly_limit_nano_usd) FROM public.jenios_robot_config_r64 WHERE singleton) AS initial_config,\n (SELECT count(*) FROM public.jenios_robot_budgets_r64) AS budget_rows;",
+    "rowCountsAndGrants": "SELECT clock_timestamp() AS observed_at,\n (SELECT jsonb_object_agg(table_name,row_count ORDER BY table_name) FROM (SELECT 'jenios_robot_events_r64' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_events_r64 UNION ALL SELECT 'jenios_robot_config_r64' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_config_r64 UNION ALL SELECT 'jenios_robot_budgets_r64' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_budgets_r64 UNION ALL SELECT 'jenios_robot_cycles_r64' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_cycles_r64 UNION ALL SELECT 'jenios_robot_observation_provenance_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_observation_provenance_r65 UNION ALL SELECT 'jenios_robot_reconciliations_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_reconciliations_r65 UNION ALL SELECT 'jenios_robot_archives_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_archives_r65 UNION ALL SELECT 'jenios_robot_archive_items_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_archive_items_r65 UNION ALL SELECT 'jenios_robot_evolution_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_evolution_r65 UNION ALL SELECT 'jenios_robot_validation_cases_r65' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_validation_cases_r65 UNION ALL SELECT 'jenios_robot_private_captures_r67' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_captures_r67 UNION ALL SELECT 'jenios_robot_private_evolution_r71' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_evolution_r71 UNION ALL SELECT 'jenios_robot_private_observations_r71' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_observations_r71 UNION ALL SELECT 'jenios_robot_private_studies_r71' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_studies_r71 UNION ALL SELECT 'jenios_robot_private_study_members_r71' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_study_members_r71 UNION ALL SELECT 'jenios_robot_private_validation_cases_r71' AS table_name,count(*)::integer AS row_count FROM public.jenios_robot_private_validation_cases_r71) counts) AS installed_row_counts,\n (SELECT jsonb_agg(jsonb_build_object('table',table_name,'column',column_name,'privilege',privilege_type) ORDER BY table_name,column_name)\n  FROM information_schema.column_privileges WHERE table_schema='public' AND grantee='service_role' AND privilege_type='UPDATE'\n  AND table_name IN('jenios_robot_archives_r65','jenios_robot_config_r64')) AS limited_column_updates,\n (SELECT jsonb_agg(jsonb_build_object('name',c.relname,'service_update',has_any_column_privilege('service_role',c.oid,'UPDATE')) ORDER BY c.relname)\n  FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind IN('r','p')\n  AND c.relname ~ '^jenios_robot_private_.*_r(67|71)$') AS private_append_only,\n (SELECT jsonb_agg(indexname ORDER BY indexname) FROM pg_indexes WHERE schemaname='public' AND indexname IN(\n 'jenios_robot_events_r64_period','jenios_robot_cycles_r64_provider_response','jenios_robot_cycles_r64_reports',\n 'jenios_robot_reconciliations_r65_scope','jenios_robot_archives_r65_scope','jenios_robot_evolution_r65_scope',\n 'jenios_robot_private_captures_r67_recent','jenios_robot_private_observations_r71_period')) AS explicit_index_candidates;",
+    "indexes": "SELECT indexname,indexdef,i.indisvalid AS valid FROM pg_indexes x JOIN pg_class c ON c.relname=x.indexname JOIN pg_namespace n ON n.oid=c.relnamespace AND n.nspname=x.schemaname JOIN pg_index i ON i.indexrelid=c.oid WHERE x.schemaname='public' AND indexname IN('jenios_robot_events_r64_period','jenios_robot_cycles_r64_provider_response','jenios_robot_cycles_r64_reports','jenios_robot_reconciliations_r65_response','jenios_robot_reconciliations_r65_scope','jenios_robot_archives_r65_scope','jenios_robot_private_captures_r67_recent','jenios_robot_private_observations_r71_period') ORDER BY indexname;"
+  },
+  "applicationIntegration": {
+    "commit": "81a0cd8f3ce1205f4d5db456388a4fe32964b4b8",
+    "tree": "296092eede8e9fcaa385cfb3facc690346a5dcb0",
+    "truncated": false,
+    "entries": 1265,
+    "checkedPaths": [
+      {
+        "path": "app/api/platform/robot-evolution-observations/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/internal/robot-evolution-cycle/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/admin/robot-evolution-cycle/route.js",
+        "present": false
+      },
+      {
+        "path": "app/platform/homologacao/robos/ciclo/page.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/robot-private-observations/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/admin/robot-private-observations/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/robot-private-target-preflight/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/robot-private-policy-observations/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/robot-private-evolution-state/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/admin/robot-private-evolution/route.js",
+        "present": false
+      },
+      {
+        "path": "app/api/platform/internal/robot-private-evolution/route.js",
+        "present": false
+      },
+      {
+        "path": "app/platform/homologacao/robos/privado/page.js",
+        "present": false
+      },
+      {
+        "path": "scripts/platform/research/r71-cycle-worker.mjs",
+        "present": false
+      }
+    ],
+    "httpRoutesRequested": false,
+    "interpretation": "Absent from the code tree of the observed READY production deployment; no HTTP 404 is claimed."
+  },
+  "boundaries": {
+    "productionDatabaseSchemaChanged": true,
+    "productionWebsiteDeploymentChanged": false,
+    "productionWebsiteCodeChanged": false,
+    "sourceKeysOrSecretsRead": false,
+    "newHostingResourcesCreated": 0,
+    "newCustomerDataRead": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "hostedSchedulerStarted": false,
+    "privateHostStarted": false,
+    "customerMonitoringActive": false,
+    "operationalRuntimeCertified": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null
+  },
+  "sourcePreservation": {
+    "originalSchemaFilesUnchanged": true,
+    "privateCoreFilesChanged": false,
+    "r71CertificateReattributed": false,
+    "r71ReferenceEvidenceRewritten": false,
+    "compiledApplicationOrStrategyCodeChanged": false
+  }
+}

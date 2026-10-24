@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "release/jenios-robot-r73-definitive-app-20261024": false,
+      "backup/jenios-robot-r73-definitive-app-published-20261024": false,
+      "backup/jenios-robot-r73-definitive-app-prepared-20261024": false
+    }
+  }
+}

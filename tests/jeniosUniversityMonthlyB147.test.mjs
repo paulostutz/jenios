@@ -9,7 +9,7 @@ const A='b1470000-0000-4000-8000-000000000001',B='b1470000-0000-4000-8000-000000
 const O='b1470000-0000-4000-8000-000000000011',P='b1470000-0000-4000-8000-000000000012',I='b1470000-0000-4000-8000-000000000013';
 const NOW=Date.parse('2026-10-20T12:00:00Z'),paid='2026-10-20T11:00:00Z',key='university-client-key-001';
 const sku={id:P,code:PRODUCT,category:'other',price_cents:4990,currency:'BRL',billing_type:'monthly',active:true};
-const env={JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'fixture',INTER_CLIENT_SECRET:'fixture',INTER_CERTIFICATE:'fixture',INTER_PRIVATE_KEY:'fixture',INTER_PIX_KEY:'fixture'};
+const env={JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'fixture',INTER_CLIENT_SECRET:'fixture',INTER_CERTIFICATE:'fixture',INTER_PRIVATE_KEY:'fixture',INTER_PIX_KEY:'fixture'};
 function evidence(){
  const order={id:O,user_id:A,product_id:P,provider:'inter_pix',amount_cents:4990,currency:'BRL',status:'paid',created_at:'2026-10-20T10:59:00Z',idempotency_key:'university:'+A+':'+key,external_reference:JSON.stringify({productCode:PRODUCT,scope:'social',termsVersion:TERMS,billingType:'monthly',renewalMode:'manual_pix',fingerprint:'university:'+A+':'+key})};
  const invoice={id:I,user_id:A,order_id:O,request_key:key,terms_version:TERMS,amount_cents:4990,currency:'BRL',status:'active',receipt_id:'receipt-a',paid_at:paid,period_start:paid,period_end:'2026-11-20T11:00:00Z',anchor_day:20,anchor_time:'08:00:00',created_at:order.created_at};
@@ -17,7 +17,7 @@ function evidence(){
  return {invoice,order,receipt};
 }
 function database({active=false,includePlan=false,failTable=null}={}){
- const e=evidence(),tables={jenios_pay_products:[sku],jenios_pay_subscriptions:[],jenios_pay_entitlements:[],jenios_pay_orders:[],jenios_pay_payments:[],[TABLE]:[]};
+ const e=evidence(),tables={jenios_pay_products:[structuredClone(sku)],jenios_pay_subscriptions:[],jenios_pay_entitlements:[],jenios_pay_orders:[],jenios_pay_payments:[],[TABLE]:[]};
  if(active){tables[TABLE].push(e.invoice);tables.jenios_pay_orders.push(e.order);tables.jenios_pay_payments.push(e.receipt);}
  if(includePlan){tables.jenios_pay_products.push({id:'plan',code:'platform-global-crypto',category:'platform'});tables.jenios_pay_subscriptions.push({id:'sub',user_id:A,product_id:'plan',status:'active',current_period_start:'2026-10-01T00:00:00Z',current_period_end:'2026-11-01T00:00:00Z'});}
  let viewer=A;const calls={gateway:0,status:0,prepare:0,confirm:0};
@@ -139,6 +139,33 @@ test('B147 receipt-backed paid access survives a sales pause but new purchases a
  const db=database({active:true});db.tables.jenios_pay_products[0].active=false;
  let response=await handleUniversitySubscription(request('access'),{action:'access',...options(db)}),body=await response.json();assert.equal(body.offer.available,false);assert.equal(body.access.active,true);
  response=await handleUniversitySubscription(request('checkout',consent()),{action:'checkout',...options(db)});assert.equal(response.status,503);assert.equal(db.calls.gateway,0);
+});
+test('University global payment pause hides purchase and rejects checkout before preparing any order',async()=>{
+ for(const flag of [undefined,'false','','TRUE']){
+  const db=database(),paused={...options(db),env:{...env,JENIOS_PAY_PAYMENTS_ENABLED:flag}};
+  let response=await handleUniversitySubscription(request('access'),{action:'access',...paused}),body=await response.json();
+  assert.equal(response.status,200);assert.equal(body.offer.available,false);assert.equal(body.canPurchase,false);assert.equal(body.canRenew,false);
+  response=await handleUniversitySubscription(request('checkout',consent()),{action:'checkout',...paused});body=await response.json();
+  assert.equal(response.status,503);assert.equal(body.code,'UNIVERSITY_PAYMENTS_UNAVAILABLE');assert.equal(body.state,'not_started');
+  assert.equal(db.calls.prepare,0);assert.equal(db.calls.gateway,0);assert.equal(db.calls.status,0);assert.equal(db.calls.confirm,0);
+  assert.equal(db.tables.jenios_pay_orders.length,0);assert.equal(db.tables[TABLE].length,0);
+ }
+});
+test('University global payment pause preserves receipt-backed education without offering renewal',async()=>{
+ const db=database({active:true}),paused={...options(db),env:{...env,JENIOS_PAY_PAYMENTS_ENABLED:'false'}};
+ const response=await handleUniversitySubscription(request('access'),{action:'access',...paused}),body=await response.json();
+ assert.equal(response.status,200);assert.equal(body.access.active,true);assert.equal(body.access.kind,'university-monthly');
+ assert.equal(body.offer.available,false);assert.equal(body.canPurchase,false);assert.equal(body.canRenew,false);assert.equal(db.calls.gateway,0);
+});
+test('University pending order remains readable during payment pause without dispatching another charge',async()=>{
+ const db=database();await handleUniversitySubscription(request('checkout',consent()),{action:'checkout',...options(db)});
+ const paused={...options(db),env:{...env,JENIOS_PAY_PAYMENTS_ENABLED:'false'}};
+ let response=await handleUniversitySubscription(request('access'),{action:'access',...paused}),body=await response.json();
+ assert.equal(response.status,200);assert.equal(body.order.orderId,O);assert.equal(body.canPurchase,false);
+ response=await handleUniversitySubscription(request('status'),{action:'status',...paused});body=await response.json();
+ assert.equal(response.status,200);assert.equal(body.state,'awaiting_payment');assert.equal(db.calls.status,1);
+ response=await handleUniversitySubscription(request('checkout',consent()),{action:'checkout',...paused});body=await response.json();
+ assert.equal(response.status,503);assert.equal(db.calls.gateway,1);assert.equal(db.calls.prepare,1);assert.equal(db.tables.jenios_pay_orders.length,1);
 });
 test('B147 missing database evidence fails closed with no bank dispatch',async()=>{
  const db=database({active:true,failTable:'jenios_pay_payments'});const response=await handleUniversitySubscription(request('access'),{action:'access',...options(db)});assert.equal(response.status,503);assert.equal(db.calls.gateway,0);

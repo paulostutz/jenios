@@ -33,11 +33,15 @@ test('B129 server verifies Master before any Auth Admin management API or invita
  assert.match(src('lib/admin-users.mjs'),/userId===actorId/);
 });
 test('B129 native Platform remains isolated, Social Master bridge is read-only through verified endpoints',()=>{
- const code=src('app/components/platform/PlatformAdminAccess.js');
+ const wrapper=src('app/components/platform/PlatformAdminAccess.js');
+ const code=src('lib/platform/admin-session.mjs');
+ assert.match(wrapper,/import \{createPlatformAdminSession\} from ['"](?:\.\.\/)+lib\/platform\/admin-session\.mjs['"]/);
+ assert.match(wrapper,/createPlatformAdminSession\(\{platformAuth:platformSupabase\?\.auth,socialAuth:socialSupabase\?\.auth\}\)/);
+ assert.match(wrapper,/export async function platformAdminFetch\(url,options=\{\}\)\{\s*return adminSession\.fetch\(url,options\);/);
  assert.match(code,/\/api\/admin\/access/);
  assert.match(code,/\/api\/admin\/ecosystem/);
- assert.match(code,/grants\.isMaster!==true/);
+ assert.match(code,/grants\?\.isMaster!==true/);
  assert.match(code,/getSession/);
- assert.doesNotMatch(code,/auth\.setSession|signInWithPassword/);
+ assert.doesNotMatch(wrapper+'\n'+code,/auth\.setSession|signInWithPassword/);
  assert.match(src('app/api/admin/ecosystem/route.js'),/if\(!isMasterAdmin\(user\)\)/);
 });

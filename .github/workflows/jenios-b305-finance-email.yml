@@ -56,7 +56,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p artifacts
-          node --test tests/platformAdminSessionR39.test.mjs | tee artifacts/jenios-r39-session.tap
+          node --test tests/platformAdminSessionR39.test.mjs tests/jeniosMasterUsersB129.test.mjs | tee artifacts/jenios-r39-session.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -183,6 +183,7 @@ jobs:
             lib/platform/admin-session.mjs
             lib/social/session-fence.mjs
             tests/platformAdminSessionR39.test.mjs
+            tests/jeniosMasterUsersB129.test.mjs
             docs/platform/B305-R39-ADMIN-SESSION-REVOCATION.md
             artifacts/jenios-r39-session.tap
           retention-days: 30

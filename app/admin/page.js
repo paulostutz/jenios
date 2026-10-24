@@ -34,6 +34,7 @@ const LINKS={
   ['Permissões operacionais','Concessões permitidas e auditadas',MASTER_OPERATIONS.href,'🔐']
  ],
  sistemas:[
+  ['E-mails institucionais','Entregas, preferências e edições do Radar de Mercado','/admin/emails','✉'],
   ['Dashboard','Visão geral da negociação educacional','/dashboard','▧'],
   ['Mesa e gráficos','Estudos, TradingView e controles','/mesa-operacoes','▥'],
   ['Hub','Cotações e observações atuais','/tendencias','↗']

@@ -1,0 +1,78 @@
+name: JENIOS R42 production email release
+on:
+  push:
+    branches: [release/jenios-email-r42-20261024]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-email-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: disposable_r42_test_password
+          POSTGRES_DB: jenios_email_r42_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres -d jenios_email_r42_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      JENIOS_EMAIL_R42_TEST_DATABASE_URL: postgresql://postgres:disposable_r42_test_password@127.0.0.1:5432/jenios_email_r42_ci
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Verify migrations, retries, quotas and concurrent claims in disposable PostgreSQL
+        run: node scripts/test-email-dispatch-r42-postgres.mjs
+  verify-release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: fixture-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fixture-public-key
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Preserve the live production baseline
+        run: node scripts/check-email-release-r42.mjs
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify inherited regressions and production build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee /tmp/jenios-email-r42-build.log
+      - name: Preserve exact source and evidence
+        shell: bash
+        run: |
+          mkdir -p .jenios-email-r42-evidence
+          git archive --format=zip --output=.jenios-email-r42-evidence/JENIOS_EMAIL_R42_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-email-r42-evidence/COMMIT.txt
+          sha256sum .jenios-email-r42-evidence/JENIOS_EMAIL_R42_SOURCE.zip > .jenios-email-r42-evidence/SHA256SUMS.txt
+          cp /tmp/jenios-email-r42-build.log .jenios-email-r42-evidence/
+          cp docs/platform/R42-EMAIL-PUBLICATION.md .jenios-email-r42-evidence/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_EMAIL_R42_BACKUP_20261024
+          path: .jenios-email-r42-evidence/
+          retention-days: 30
+          if-no-files-found: error
+          include-hidden-files: true

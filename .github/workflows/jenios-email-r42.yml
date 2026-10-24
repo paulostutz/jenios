@@ -9,21 +9,8 @@ jobs:
   verify-email-postgres:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    services:
-      postgres:
-        image: postgres:17-bookworm
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: disposable_r42_test_password
-          POSTGRES_DB: jenios_email_r42_ci
-        ports: ['5432:5432']
-        options: >-
-          --health-cmd "pg_isready -U postgres -d jenios_email_r42_ci"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
     env:
-      JENIOS_EMAIL_R42_TEST_DATABASE_URL: postgresql://postgres:disposable_r42_test_password@127.0.0.1:5432/jenios_email_r42_ci
+      JENIOS_EMAIL_R42_TEST_DATABASE_URL: postgresql://postgres:disposable_r42_test_password@127.0.0.1:55442/jenios_email_r42_ci
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -31,8 +18,25 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
+      - name: Start disposable PostgreSQL 17 on actual loopback
+        shell: bash
+        run: |
+          docker run --detach --name jenios-email-r42-postgres --network host \
+            -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=disposable_r42_test_password \
+            -e POSTGRES_DB=jenios_email_r42_ci postgres:17-bookworm \
+            -p 55442 -c listen_addresses=127.0.0.1
+          for attempt in {1..30}; do
+            if docker exec jenios-email-r42-postgres pg_isready -h 127.0.0.1 -p 55442 -U postgres -d jenios_email_r42_ci; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
       - name: Verify migrations, retries, quotas and concurrent claims in disposable PostgreSQL
         run: node scripts/test-email-dispatch-r42-postgres.mjs
+      - name: Remove disposable PostgreSQL
+        if: always()
+        run: docker rm --force jenios-email-r42-postgres
   verify-release:
     runs-on: ubuntu-24.04
     timeout-minutes: 25

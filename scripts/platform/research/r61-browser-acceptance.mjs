@@ -1,5 +1,6 @@
 /**
- * R61 browser acceptance. Run after the required Next build, in CI only.
+ * R61 browser acceptance with opt-in R62 boundary checks. Run after the required
+ * Next build, in CI only. The original 33 R61 cases remain the default battery.
  * The application receives fixture flags, no inherited service credentials, and
  * listens only on loopback. Browser routing blocks external/API/mutating/socket
  * traffic; this is not a claim of host-wide or server-side network isolation.
@@ -14,13 +15,16 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const ORIGIN = 'http://127.0.0.1:4317';
 const ROUTE = '/platform/homologacao/robos';
-const ARTIFACT_DIR = resolve(process.env.R61_ARTIFACT_DIR || resolve(process.env.RUNNER_TEMP || tmpdir(), 'jenios-r61-evidence'));
+const REVISION = process.env.JENIOS_ROBOT_QA_ACCEPTANCE_REVISION || 'R61';
+assert.ok(['R61', 'R62'].includes(REVISION), 'Unsupported robot acceptance revision.');
+const PREFIX = REVISION.toLowerCase();
+const ARTIFACT_DIR = resolve(process.env.ROBOT_QA_ARTIFACT_DIR || process.env.R61_ARTIFACT_DIR || resolve(process.env.RUNNER_TEMP || tmpdir(), `jenios-${PREFIX}-evidence`));
 const FILES = {
-  report: resolve(ARTIFACT_DIR, 'r61-browser-acceptance.json'),
-  log: resolve(ARTIFACT_DIR, 'r61-next-servers.log'),
-  desktop: resolve(ARTIFACT_DIR, 'r61-browser-desktop.png'),
-  mobile: resolve(ARTIFACT_DIR, 'r61-browser-mobile.png'),
-  failure: resolve(ARTIFACT_DIR, 'r61-browser-failure.png'),
+  report: resolve(ARTIFACT_DIR, `${PREFIX}-browser-acceptance.json`),
+  log: resolve(ARTIFACT_DIR, `${PREFIX}-next-servers.log`),
+  desktop: resolve(ARTIFACT_DIR, `${PREFIX}-browser-desktop.png`),
+  mobile: resolve(ARTIFACT_DIR, `${PREFIX}-browser-mobile.png`),
+  failure: resolve(ARTIFACT_DIR, `${PREFIX}-browser-failure.png`),
 };
 const FLAGS = Object.freeze({
   VERCEL_ENV: 'preview',
@@ -33,8 +37,9 @@ const FLAGS = Object.freeze({
 const started = Date.now();
 const attempts = { externalRequests: 0, apiRequests: 0, mutations: 0, webSockets: 0 };
 const report = {
-  schema: 'JENIOS_R61_BROWSER_ACCEPTANCE_V1', status: 'FAIL',
+  schema: `JENIOS_${REVISION}_BROWSER_ACCEPTANCE_V1`, status: 'FAIL',
   startedAt: new Date(started).toISOString(), commit: process.env.GITHUB_SHA || null,
+  coverage: { baseline: 'R61', baselineCases: 33, additionalBoundaryCases: REVISION === 'R62' ? 8 : 0 },
   scope: {
     evidenceKind: 'SYNTHETIC_FIXTURE', origin: ORIGIN,
     networkRestriction: 'BROWSER_REQUESTS_AND_WEBSOCKETS_ONLY',
@@ -95,7 +100,7 @@ async function startServer(overrides = {}) {
     if (value === undefined) delete env[key];
     else env[key] = value;
   }
-  log(`\nR61 server: VERCEL_ENV=${env.VERCEL_ENV}; robotQA=${env.JENIOS_ROBOT_QA_ENABLED ?? '<absent>'}\n`);
+  log(`\n${REVISION} server flags: ${JSON.stringify(Object.fromEntries(Object.keys(FLAGS).map((key) => [key, env[key] ?? '<absent>'])))}\n`);
   const child = spawn(process.execPath, [resolve(ROOT, 'node_modules/next/dist/bin/next'), 'start', '--hostname', '127.0.0.1', '--port', '4317'], {
     cwd: ROOT, env, stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -123,8 +128,8 @@ async function startServer(overrides = {}) {
 }
 
 async function setupBrowser() {
-  const modulePath = process.env.JENIOS_R61_PLAYWRIGHT_MODULE;
-  assert.ok(modulePath && isAbsolute(modulePath), 'JENIOS_R61_PLAYWRIGHT_MODULE must be the absolute @playwright/test/index.mjs path.');
+  const modulePath = process.env.JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE || process.env.JENIOS_R61_PLAYWRIGHT_MODULE;
+  assert.ok(modulePath && isAbsolute(modulePath), 'The Playwright module must be an absolute @playwright/test/index.mjs path.');
   const packageJson = JSON.parse(await readFile(resolve(dirname(modulePath), 'package.json'), 'utf8'));
   assert.equal(packageJson.version, '1.56.1', 'The acceptance runner requires pinned Playwright 1.56.1.');
   assert.ok(['@playwright/test', 'playwright'].includes(packageJson.name), 'Unexpected Playwright module package.');
@@ -434,6 +439,18 @@ check('mobile_controls_results_and_no_horizontal_overflow', 'mobile', async () =
   return measurements;
 });
 
+if (REVISION === 'R62') {
+  const { registerR62SessionLimitCases } = await import('./r62-session-limit-cases.mjs');
+  const { registerR62ExecutionFlagCases } = await import('./r62-execution-flag-cases.mjs');
+  const harness = {
+    check, getPage: () => page, getExpect: () => expect, startServer,
+    ultra, ultraEvent, expectEmptyUltra, origin: ORIGIN, route: ROUTE, report,
+  };
+  // Limits need the enabled fixture server; flag-denial cases run afterwards.
+  registerR62SessionLimitCases(harness);
+  registerR62ExecutionFlagCases(harness);
+}
+
 for (const [id, overrides] of [
   ['production_is_404_even_with_qa_flags', { VERCEL_ENV: 'production' }],
   ['missing_robot_qa_flag_is_404', { JENIOS_ROBOT_QA_ENABLED: undefined }],
@@ -459,6 +476,9 @@ check('zero_external_api_mutation_socket_attempts_and_page_errors', 'transport_b
   assert.deepEqual(report.pageErrors, []);
   return { ...attempts, pageErrors: report.pageErrors.length, renderedZeroOrderChecks: zeroOrderChecks };
 });
+
+assert.equal(checks.length, REVISION === 'R62' ? 41 : 33, 'The complete planned acceptance battery must be registered.');
+assert.equal(new Set(checks.map((entry) => entry.id)).size, checks.length, 'Acceptance case IDs must be unique.');
 
 try {
   await mkdir(ARTIFACT_DIR, { recursive: true });
@@ -515,5 +535,5 @@ try {
     report.errors.push(`Artifact persistence: ${printableError(error)}`);
     report.status = 'FAIL'; process.exitCode = 1;
   }
-  console.log(`R61_BROWSER_ACCEPTANCE ${JSON.stringify(report)}`);
+  console.log(`${REVISION}_BROWSER_ACCEPTANCE ${JSON.stringify(report)}`);
 }

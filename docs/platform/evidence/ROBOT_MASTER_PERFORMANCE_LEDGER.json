@@ -997,5 +997,71 @@
       "Separate product runtime integration and account-permission verification, without treating fixture plan codes as real authorization.",
       "Any external Paper or live execution requires separate authorization and prospective evidence; real performance remains unmeasured."
     ]
+  },
+  "qaBoundaryCloseout": {
+    "revision": "R62",
+    "status": "CANDIDATE",
+    "base": {
+      "branch": "backup/jenios-robot-r61-qa-policy-integration-certified-20261024",
+      "commit": "50992b9783903ff0a5a09fbb3f8790dad601025f",
+      "validationRun": 40096729204
+    },
+    "scope": "SYNTHETIC_QA_BOUNDARY_TESTS",
+    "researchBehaviorChanged": false,
+    "qaApplicationUiChanged": false,
+    "plannedCoverage": {
+      "preservedR61BrowserCases": 33,
+      "additionalExecutionFlagCases": 6,
+      "additionalSessionLimitCases": 2,
+      "totalBrowserCases": 41,
+      "executionFlags": [
+        "JENIOS_REAL_EXECUTION_ENABLED",
+        "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+        "JENIOS_PRIVATE_PAPER_EXECUTOR"
+      ],
+      "localFlagFixtureVariants": [
+        "true",
+        "ABSENT"
+      ],
+      "snapshotBoundary": {
+        "accepted": 500,
+        "rejectedAttempt": 501
+      },
+      "eventBoundary": {
+        "accepted": 1000,
+        "rejectedAttempt": 1001
+      },
+      "uiCriteria": [
+        "previous allowed result removed",
+        "visible alert",
+        "advance/pause/resume disabled",
+        "new session has new identifier and two validated snapshots"
+      ]
+    },
+    "invariants": {
+      "researchAlgorithmsChanged": false,
+      "qaApplicationUiChanged": false,
+      "r15ProspectiveBackfill": false,
+      "alignmentGuardThreshold": 0.65,
+      "actualBrokerPnl": null,
+      "actualLossesAvoided": null,
+      "realTradeAccuracy": null,
+      "realOrdersSent": 0,
+      "externalPaperOrdersSent": 0,
+      "productionConfigurationChanged": false,
+      "productionDeployPerformed": false,
+      "mergePerformed": false,
+      "commercialPerformanceCertified": false
+    },
+    "validation": {
+      "status": "PENDING_CI",
+      "local": "Syntax and registration checks only; actual browser acceptance requires CI.",
+      "evidence": null,
+      "browserAcceptance": null
+    },
+    "humanOwnerAcceptanceCompleted": false,
+    "productionIntegrationVerified": false,
+    "checkpoint": "docs/platform/evidence/ROBOT_R62_QA_BOUNDARY_CLOSEOUT_CHECKPOINT.json",
+    "backupRef": "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024"
   }
 }

@@ -69,6 +69,18 @@ test('R65 observation ingestion rejects source escalation and mismatched sidecar
   assert.equal(f.calls.length, 0);
 });
 
+test('R65 intake preserves only known R64 receipt conflicts and sanitizes other database messages', async () => {
+  const args = observation();
+  for (const message of ['R64_DATABASE_RECEIPT', 'R64_DATABASE_RECEIPT_CONFLICT', 'R64_DATABASE_SEQUENCE_REPLAY',
+    'R64_DATABASE_PRIVATE_DETAIL', 'R64_DATABASE_RECEIPT_CONFLICT: private detail']) {
+    const store = createR65DatabaseStore({ db: { rpc: async () => ({ data: null, error: { message } }) } });
+    const expected = ['R64_DATABASE_RECEIPT', 'R64_DATABASE_RECEIPT_CONFLICT', 'R64_DATABASE_SEQUENCE_REPLAY'].includes(message)
+      ? message : 'R65_DATABASE_UNAVAILABLE';
+    await assert.rejects(store.ingestObservation(args), error => error.code === expected && error.message === expected);
+    await assert.rejects(store.readEvolution({ scopeId }), error => error.code === 'R65_DATABASE_UNAVAILABLE');
+  }
+});
+
 test('R65 reconciliation rejects system actors, invented evidence and unknown outcomes before RPC', async () => {
   const f = fake(() => null);
   await assert.rejects(f.store.reconcileCost({ ...reconcile(), actorId: 'system:r65' }), /R65_DATABASE_ACTOR/);

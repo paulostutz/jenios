@@ -58,7 +58,7 @@ A reconciliação de chamadas incertas exige administrador, fingerprint original
 - `POST /api/platform/robot-evolution-observations`: admissão do envelope e da proveniência assinados.
 - `POST /api/platform/internal/robot-evolution-cycle`: tick sem parâmetros, token próprio R65 e escopo fixado no servidor.
 - `GET/POST /api/platform/admin/robot-evolution-cycle`: consulta e ações administrativas; o ator vem da identidade autenticada.
-- `/platform/homologacao/robos/ciclo`: leitura do estado persistido em QA; indisponibilidade não produz resultados fictícios.
+- `/platform/homologacao/robos/ciclo`: shell público sem dados administrativos e leitura autenticada do estado persistido em QA; indisponibilidade não produz resultados fictícios.
 - Painel administrativo: versão ativa, comparação, histórico, reversão, arquivo e reconciliação.
 - `node scripts/platform/research/r65-cycle-worker.mjs --once|--watch`: entrada explícita de worker, sem registrar processo, cron ou serviço automaticamente.
 

@@ -1,0 +1,94 @@
+name: JENIOS ROBOT R65 evolution cycle (no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r65-evolution-cycle-20261024]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_DB: jenios_r64_qa
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: r64-test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JENIOS_R64_TEST_DATABASE_URL: 'postgresql://postgres:r64-test-only@127.0.0.1:5432/jenios_r64_qa'
+      JENIOS_R64_DISPOSABLE_DB: 'true'
+      JENIOS_R65_TEST_DATABASE_URL: 'postgresql://postgres:r64-test-only@127.0.0.1:5432/jenios_r65_qa'
+      JENIOS_R65_DISPOSABLE_DB: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R65 and preserved R12-R64 directed battery
+        run: node --test tests/platformRobotR65*.test.mjs tests/platformRobotR64*.test.mjs tests/platformRobotR63*.test.mjs tests/platformRobotR61AssistedAcceptance.test.mjs tests/platformRobotR61UltrafastAcceptance.test.mjs tests/platformRobotR61QaBoundary.test.mjs tests/platformRobotR60NoDeployGuard.test.mjs tests/platformRobotUiEvidenceBoundary.test.mjs tests/platformRobotR59FinalCertification.test.mjs tests/platformRobotR58ReverseFinalStress.test.mjs tests/platformRobotR57HybridFinalAlignment.test.mjs tests/platformRobotR56ManualFinalAdvisory.test.mjs tests/platformRobotR55LongSessionStress.test.mjs tests/platformRobotR54LargeHorizonMultiwindow.test.mjs tests/platformRobotR53DynamicAssetSelection.test.mjs tests/platformRobotR52MarketSymbolLifecycle.test.mjs tests/platformRobotR51ChaosSoakIntegrated.test.mjs tests/platformRobotR50EconomicShockCliffs.test.mjs tests/platformRobotR49OrderReconciliationRaces.test.mjs tests/platformRobotR48ReconnectBackpressure.test.mjs tests/platformRobotR47MarketdataFreshnessFence.test.mjs tests/platformRobotR46LeaseClockskewHandoff.test.mjs tests/platformRobotR45LeaderFencing.test.mjs tests/platformRobotR44SplitbrainReconvergence.test.mjs tests/platformRobotR43QuorumCheckpoint.test.mjs tests/platformRobotR42RollbackProtection.test.mjs tests/platformRobotR41IntegrityAtomicCheckpoint.test.mjs tests/platformRobotR40FailclosedSnapshot.test.mjs tests/platformRobotR39StateRestoreSessionRotation.test.mjs tests/platformRobotR38MultistreamExpiry.test.mjs tests/platformRobotR37OrderedIngestion.test.mjs tests/platformRobotR36IdempotencyConcurrency.test.mjs tests/platformRobotR35MultisessionRecovery.test.mjs tests/platformRobotR34HoldoutSessionReauth.test.mjs tests/platformRobotR33HysteresisSessionRisk.test.mjs tests/platformRobotR32LongrunInterlockHoldout.test.mjs tests/platformRobotR31RecoveryRegimeInterlock.test.mjs tests/platformRobotR30RegimeAdaptiveGate.test.mjs tests/platformRobotR29BreakevenHoldout.test.mjs tests/platformRobotR28BreakevenRecall.test.mjs tests/platformRobotR27DynamicBreakeven.test.mjs tests/platformRobotR26FeeEvidenceRecovery.test.mjs tests/platformRobotR25ExchangeCostOutageStress.test.mjs tests/platformRobotR24MasterPerformanceLedger.test.mjs tests/platformRobotR23MultiwindowUltrafast.test.mjs tests/platformRobotR22PublicRankingHoldout.test.mjs tests/platformRobotR21OosUltrafastRanking.test.mjs tests/platformRobotR20ExecutionMicrostructure.test.mjs tests/platformRobotR19IntegratedRefinement.test.mjs tests/platformRobotR18UltrafastFoundation.test.mjs tests/platformRobotR17DecisionQuality.test.mjs tests/platformRobotR17SanitizedResults.test.mjs tests/platformRobotR16ExtensiveValidation.test.mjs tests/platformRobotR16ExperimentInfrastructure.test.mjs tests/platformRobotR15MultiwindowProtocol.test.mjs tests/platformRobotR15WindowOutcome.test.mjs tests/platformRobotR14PostCandle.test.mjs tests/platformRobotR13GitEvidenceChain.test.mjs tests/platformRobotR12EvidenceReconciliation.test.mjs
+      - name: Ensure PostgreSQL client for disposable integration
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: R64 durable SQL and concurrency acceptance in disposable PostgreSQL
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r64-postgres-acceptance.mjs
+      - name: Create separate disposable R65 database
+        run: psql "$JENIOS_R64_TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE jenios_r65_qa'
+      - name: R65 durable lifecycle and concurrency acceptance in PostgreSQL
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r65-postgres-acceptance.mjs
+      - run: npm run build
+      - name: Capture bounded continuous improvement evidence
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r63-record-evidence.mjs
+      - name: Install pinned browser acceptance runner outside application dependencies
+        run: |
+          npm install --prefix "$RUNNER_TEMP/jenios-r65-browser" --package-lock=false --ignore-scripts --no-audit --no-fund @playwright/test@1.56.1
+          "$RUNNER_TEMP/jenios-r65-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Preserve all 52 R61-R63 browser cases on loopback
+        env:
+          JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE: ${{ runner.temp }}/jenios-r65-browser/node_modules/@playwright/test/index.mjs
+          JENIOS_ROBOT_QA_ACCEPTANCE_REVISION: R63
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r61-browser-acceptance.mjs
+      - name: R64 signed intake, durable scheduler, admin and browser integration on loopback
+        env:
+          JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE: ${{ runner.temp }}/jenios-r65-browser/node_modules/@playwright/test/index.mjs
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r64-runtime-acceptance.mjs
+      - name: R65 source to durable application, rollback and admin integration
+        env:
+          JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE: ${{ runner.temp }}/jenios-r65-browser/node_modules/@playwright/test/index.mjs
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r65-evidence
+        run: node scripts/platform/research/r65-runtime-acceptance.mjs
+      - name: Retain R65 evolution cycle evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r65-evolution-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/jenios-r65-evidence
+          if-no-files-found: warn
+          retention-days: 14

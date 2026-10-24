@@ -14,7 +14,10 @@ assert.ok(['postgres:', 'postgresql:'].includes(url.protocol) && ['127.0.0.1', '
 assert.equal(url.pathname, '/jenios_r64_qa'); assert.equal(url.search, ''); assert.equal(url.hash, '');
 const childEnv = { ...process.env, PGHOST: '127.0.0.1', PGHOSTADDR: '127.0.0.1', PGPORT: url.port || '5432',
   PGUSER: decodeURIComponent(url.username), PGPASSWORD: decodeURIComponent(url.password), PGDATABASE: 'jenios_r64_qa',
-  PGSERVICE: '', PGOPTIONS: '', PGSSLMODE: 'disable', PGCONNECT_TIMEOUT: '5' };
+  PGOPTIONS: '', PGSSLMODE: 'disable', PGCONNECT_TIMEOUT: '5' };
+// libpq treats even an empty PGSERVICE as a requested service name; omit it entirely.
+delete childEnv.PGSERVICE;
+delete childEnv.PGSERVICEFILE;
 const psql = sql => new Promise((resolve, reject) => {
   const child = spawn('psql', ['-X', '-w', '-q', '-v', 'ON_ERROR_STOP=1', '-At'], { env: childEnv, stdio: ['pipe', 'pipe', 'pipe'] });
   let stdout = '', stderr = '';

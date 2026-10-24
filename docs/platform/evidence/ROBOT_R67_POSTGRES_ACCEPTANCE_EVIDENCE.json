@@ -1,0 +1,128 @@
+{
+  "schema": "JENIOS_R67_POSTGRES_ACCEPTANCE_V1",
+  "status": "PASS",
+  "commit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+  "capturedAt": "2026-10-24T18:24:26.571Z",
+  "database": "DISPOSABLE_LOCAL_POSTGRESQL",
+  "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+  "evidenceKind": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+  "originalPrivateExecutableLoaded": false,
+  "originalPrivateExecutableExecuted": false,
+  "realConcurrentConnections": true,
+  "signatureAuthenticationLayer": "APPLICATION_VERIFIER",
+  "sqlCryptographicVerification": false,
+  "serviceRoleBypassesRls": true,
+  "scopeIsolation": "EXPLICIT_RPC_AND_SERVER_STORE_BINDING",
+  "retainedBatches": 2,
+  "retainedCaptures": 6,
+  "counts": {
+    "total": 21,
+    "passed": 21,
+    "failed": 0,
+    "notRun": 0
+  },
+  "checks": [
+    {
+      "name": "R67 additive isolated schema applies twice without replacing R64/R65",
+      "status": "PASS"
+    },
+    {
+      "name": "R67 table enables RLS as defense in depth",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous and authenticated roles cannot read the table or execute either RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "service role has no update or delete privilege on accepted private batches",
+      "status": "PASS"
+    },
+    {
+      "name": "real independent connections admit one whole batch and one idempotent duplicate",
+      "status": "PASS"
+    },
+    {
+      "name": "database roundtrip retains original actions, both signatures and the first receipt exactly",
+      "status": "PASS"
+    },
+    {
+      "name": "later verification cannot rewrite the original receipt timestamp",
+      "status": "PASS"
+    },
+    {
+      "name": "conflicting replay compares both signatures rather than accepting matching payload digests alone",
+      "status": "PASS"
+    },
+    {
+      "name": "receipt provenance binding cannot change on replay",
+      "status": "PASS"
+    },
+    {
+      "name": "sessions start at one and cannot skip unacknowledged or expired predecessors",
+      "status": "PASS"
+    },
+    {
+      "name": "session capture time cannot move backwards",
+      "status": "PASS"
+    },
+    {
+      "name": "the exact next signed sequence is admitted after its predecessor",
+      "status": "PASS"
+    },
+    {
+      "name": "a previously committed operation cannot be resigned under another session",
+      "status": "PASS"
+    },
+    {
+      "name": "scope/source parameters are explicit and cross-scope reads do not return another source history",
+      "status": "PASS"
+    },
+    {
+      "name": "real PostgreSQL clock rejects expired or future-dated admission even when receipt is internally coherent",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL independently rejects matching null fields, duplicate scenario IDs and invalid optional scenario shape",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL requires string digests rather than accepting numeric text coercion",
+      "status": "PASS"
+    },
+    {
+      "name": "native action safety, synthetic invariants and separate policy version are SQL-enforced",
+      "status": "PASS"
+    },
+    {
+      "name": "admin storage reads are bounded and reject extra caller-controlled fields",
+      "status": "PASS"
+    },
+    {
+      "name": "all rejected batches remain atomic and leave exactly two accepted records",
+      "status": "PASS"
+    },
+    {
+      "name": "complete R64/R65 event, policy, accounting and evolution table snapshots remain unchanged",
+      "status": "PASS"
+    }
+  ],
+  "automaticPromotionAllowed": false,
+  "executionAllowed": false,
+  "customerMonitoringActive": false,
+  "privateOperationalSourceActive": false,
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "paidProviderCalls": 0,
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "commercialPerformanceCertified": false,
+  "independentRuntimeAttestation": false,
+  "independentBrokerAttestation": false,
+  "independentCustomerConsentVerified": false,
+  "productionDatabaseAccessed": false,
+  "migrationAppliedToSupabase": false,
+  "productionConfigurationChanged": false,
+  "actualHostIdentityVerified": false
+}

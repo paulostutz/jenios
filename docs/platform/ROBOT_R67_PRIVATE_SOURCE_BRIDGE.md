@@ -127,7 +127,23 @@ Há duas linhas de evidência que não devem ser confundidas:
 1. **Execução privada original local:** o script `r67-private-source-acceptance.mjs` carrega os bytes retidos, usa processos separados, HTTP real em loopback e PostgreSQL descartável exclusivo `jenios_r67_private_qa`. O teste demonstra captura, persistência, perda do ACK após commit, morte do processo, repetição exata, nova sessão e leitura administrativa. A identidade administrativa é deliberadamente simulada. Não testa o servidor Next completo, Auth hospedado ou PostgREST hospedado.
 2. **CI pública:** valida contratos e fixtures explicitamente identificadas, controles negativos do loader, compatibilidade da fila, HTTP, permissões, concorrência e admissão PostgreSQL. Não contém ou executa os módulos privados. Executa também os contratos herdados, testes gerais e build.
 
-O ensaio privado preliminar passou em 17/17 casos e persistiu 3 lotes com 9 decisões em 2 sessões. As 6 decisões adicionais usadas na prova separada do loader são registradas à parte e não são somadas aos registros admitidos. A referência definitiva será produzida sobre um commit limpo identificado pelo relatório.
+O ensaio privado definitivo passou em **17/17 casos** e persistiu **3 lotes com 9 decisões em 2 sessões**. As 6 decisões adicionais usadas na prova separada do loader são registradas à parte e não são somadas aos registros admitidos. Ele foi executado em Node `v24.22.1`, sobre o commit limpo `abbc7daf21ede928dc411f1a6d36300b60a919bf`, sem alterações locais, encerrando às 18:24:18 UTC de 24/10/2026. Os hashes dos 13 arquivos de implementação e ensaio usados na execução foram reconferidos.
+
+A [CI de referência 40120493877](https://github.com/paulostutz/jenios/actions/runs/40120493877), job `120950770666`, passou no mesmo commit. Encerramento do job: 18:25:44 UTC de 24/10/2026, 15:25:44 em São Paulo.
+
+| Bateria de referência | Resultado | Natureza |
+|---|---:|---|
+| Testes específicos R67 | 64/64 | Contratos públicos e fronteiras negativas do loader |
+| Subconjunto preservado R61/R64/R65/R66 e proteção contra deploy | 291/291 | Regressão dos componentes reaproveitados |
+| PostgreSQL R67 | 21/21 | Fixture pública em PostgreSQL 17.6 descartável, com conexões concorrentes reais |
+| Motor original local | 17/17 | Bytes originais, processos, HTTP e PostgreSQL local; evidência separada da CI |
+| Testes gerais | 2.557/2.557 | Gate herdado do repositório |
+| Gate Social herdado pelo build | 94/94 | Nenhum código Social modificado |
+| Build e páginas estáticas | PASS; 76/76 | Sem deploy |
+
+Falhas e casos omitidos: zero. O ensaio público terminou com 2 lotes e 6 capturas de fixture; esses dados não são somados às 9 decisões originais do ensaio privado. Os snapshots das dez tabelas R64/R65 permaneceram iguais no ensaio PostgreSQL público.
+
+Durante a revisão, foram corrigidas duas lacunas de defesa do RPC SQL direto: campos nulos coincidentes/forma incompleta de cenários e hashes numéricos aceitos por coerção textual. A camada HTTP já os recusava. O ensaio PostgreSQL agora reproduz essas condições e verifica sua rejeição. A validação do store também preserva corretamente o primeiro recibo quando verificações concorrentes chegam ao banco em ordem diferente.
 
 As contagens das baterias se sobrepõem: os testes direcionados também estão nos gerais. Quantidades de testes, lotes e decisões sintéticas não são operações independentes de mercado.
 
@@ -135,9 +151,17 @@ Evidências e fechamento são registrados em:
 
 - `docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_BRIDGE_CHECKPOINT.json`.
 - `docs/platform/evidence/ROBOT_R67_CHANGE_AUDIT.json`.
-- `docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_EVIDENCE.json` após o ensaio definitivo.
-- `docs/platform/evidence/ROBOT_R67_POSTGRES_ACCEPTANCE_EVIDENCE.json` após a CI de referência.
+- `docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_EVIDENCE.json` — origem privada local no commit de referência.
+- `docs/platform/evidence/ROBOT_R67_POSTGRES_ACCEPTANCE_EVIDENCE.json` — JSON original do artefato da CI de referência, copiado sem alteração de bytes.
 - Nova seção `privateSourceBridge` do ledger, preservando os valores das 15 seções anteriores.
+
+| Evidência | SHA-256 |
+|---|---|
+| JSON privado local | `1b8d2192048beff5c239481b7217a7c75353ab6e88322b0b404eb88ab18ef5b1` |
+| JSON PostgreSQL da CI | `9adeb293838c0f716a4f995227d022e7430248e787aa759d625a3300d81643b4` |
+| ZIP do artefato `12570961853` | `750f73d954d4eb4c6e25dade2c897be793a0be780dd2ccf346f309c29c801a37` |
+
+As duas evidências mantêm o SHA `abbc7daf21ede928dc411f1a6d36300b60a919bf`, que realmente as produziu. A consolidação documental cria outro commit e exige uma segunda CI completa antes do backup `backup/jenios-robot-r67-private-source-bridge-certified-20261024`. Não se reatribui a evidência ao commit consolidado nem se inicia um ciclo de commits para inserir a CI do próprio commit.
 
 ## Limites preservados e próxima dependência
 

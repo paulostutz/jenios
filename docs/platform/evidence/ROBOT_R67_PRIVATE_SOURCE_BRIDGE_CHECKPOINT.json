@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_R67_PRIVATE_SOURCE_BRIDGE_CHECKPOINT_V1",
   "revision": "R67",
-  "classification": "PRIVATE_SOURCE_BRIDGE_QA_VALIDATION_IN_PROGRESS",
+  "classification": "QA_ORIGINAL_PRIVATE_SOURCE_BRIDGE_CERTIFIED",
   "createdAt": "2026-10-24T18:10:57.198373+00:00",
   "base": {
     "commit": "4110b424f09499221d6c7c50c9237ccfe5a47135",
@@ -64,7 +64,7 @@
     "customerMonitoringActive": false
   },
   "validation": {
-    "status": "AWAITING_REFERENCE_CI_AND_CLEAN_COMMIT_PRIVATE_ACCEPTANCE",
+    "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
     "localOriginalPreliminary": {
       "total": 17,
       "passed": 17,
@@ -113,7 +113,156 @@
       "Direct SQL null/type/shape and duplicate scenario IDs rejected; HTTP already rejected these",
       "Direct SQL numeric internal hashes rejected; exact string type required",
       "Concurrent duplicate receipt verification time need not precede first persisted receipt time"
-    ]
+    ],
+    "localOriginal": {
+      "file": "docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "1b8d2192048beff5c239481b7217a7c75353ab6e88322b0b404eb88ab18ef5b1",
+      "bytes": 10454,
+      "sourceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "sourceTreeDirty": false,
+      "finishedAt": "2026-10-24T18:24:18.189Z",
+      "publicCiEvidence": false,
+      "total": 17,
+      "passed": 17,
+      "failed": 0,
+      "notRun": 0,
+      "core": {
+        "schema": "JENIOS_R67_VERIFIED_PRIVATE_CORE_V1",
+        "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+        "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+        "originalVersion": "jenios-research-r29.1",
+        "localExecutableBytesVerified": true,
+        "independentRuntimeAttestation": false,
+        "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "loaderEvidence": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+        "commercialModes": [
+          "manual",
+          "hybrid",
+          "reverse"
+        ],
+        "ultrafastProvided": false,
+        "liveExecutionGuardVerified": true,
+        "executionAllowed": false,
+        "customerMonitoringActive": false,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "paidProviderCalls": 0
+      },
+      "scope": {
+        "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "evidenceKind": "SIGNED_PRIVATE_QA_CAPTURE",
+        "runtimeEvidenceKind": "SYNTHETIC_PRIVATE_LAB_ONLY",
+        "sourceInputs": "CONTROLLED_SYNTHETIC_SCENARIOS",
+        "commercialModes": [
+          "manual",
+          "hybrid",
+          "reverse"
+        ],
+        "ultraFastProvidedByPrivateCore": false,
+        "loader": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+        "database": "REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r67_private_qa",
+        "databaseHost": "127.0.0.1",
+        "databasePort": 56467,
+        "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+        "transport": "ACTUAL_LOOPBACK_HTTP",
+        "sourceClock": "REAL_WALL_CLOCK",
+        "handler": "createR67ObservationHandler",
+        "adminHandler": "createR67AdminHandler",
+        "administrationIdentity": "EXPLICIT_QA_SIMULATION_NOT_REAL_AUTH",
+        "browserTested": false,
+        "nextServerTested": false,
+        "hostedSupabaseTested": false,
+        "privateOperationalSourceActive": false
+      },
+      "execution": {
+        "node": "v24.22.1",
+        "emitterProcesses": 3,
+        "deliberateSigkillsAfterUnconfirmedCommit": 1,
+        "responsesLostAfterDatabaseCommit": 1,
+        "intakeHttpRequests": 4,
+        "adminHttpRequests": 5,
+        "simulatedIdentityChecks": 3,
+        "separateLoaderProofDecisions": 6,
+        "databaseSummary": {
+          "batches": 3,
+          "captures": 9,
+          "sessions": 2
+        },
+        "finalQueue": {
+          "total": 3,
+          "pending": 0,
+          "acknowledged": 3,
+          "unconfirmed": 0,
+          "expiredUnconfirmed": 0,
+          "blockedByEarlierUnconfirmed": 0
+        },
+        "signedRecordDigests": [
+          "e3a9c357b6ce73e34a8b54730cd9f475428736ab8c8f286483f04a1b12728be6",
+          "6c8204e36131f61e74de495494450215ebe19b9f66a7f9222997ce8a5e3338ed",
+          "95ee1a42e479db9e0b93fcde0a3d8b98158b7b14e5e31bf0938ee9fd3c06dc1a"
+        ]
+      },
+      "publicImplementationDigestsVerified": 13
+    },
+    "referenceNoDeploy": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "projectName": "jenios-ecossistem",
+      "verifiedCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "deploymentCount": 0
+    },
+    "localDisposablePostgresStopped": true,
+    "reference": {
+      "runId": 40120493877,
+      "jobId": 120950770666,
+      "commit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T18:25:44Z",
+      "focusedR67": "64/64",
+      "preservedContractSubset": "291/291",
+      "general": "2557/2557",
+      "inheritedSocialGate": "94/94",
+      "socialProductCodeChanged": false,
+      "postgresPublicFixtures": "21/21",
+      "localOriginalPrivateSource": "17/17",
+      "localOriginalIsPublicCiExecution": false,
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0,
+      "countsAreOverlapping": true,
+      "noPriorBrowserOrEvolutionRecertificationClaim": true
+    },
+    "publicPostgres": {
+      "file": "docs/platform/evidence/ROBOT_R67_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "9adeb293838c0f716a4f995227d022e7430248e787aa759d625a3300d81643b4",
+      "bytes": 4186,
+      "sourceRun": 40120493877,
+      "sourceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "scope": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+      "privateExecutableExecuted": false,
+      "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+      "counts": {
+        "total": 21,
+        "passed": 21,
+        "failed": 0,
+        "notRun": 0
+      },
+      "retainedBatches": 2,
+      "retainedCaptures": 6,
+      "r64r65SnapshotsPreserved": true
+    },
+    "artifact": {
+      "id": 12570961853,
+      "name": "r67-public-protocol-evidence-abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "sourceRun": 40120493877,
+      "sourceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+      "bytes": 1758,
+      "zipSha256": "750f73d954d4eb4c6e25dade2c897be793a0be780dd2ccf346f309c29c801a37",
+      "zipHashVerified": true,
+      "expiresAt": "2026-11-07T18:25:35Z",
+      "referenceJsonCopiedByteForByte": true
+    }
   },
   "preservation": {
     "priorLedgerSections": 15,

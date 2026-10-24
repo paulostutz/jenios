@@ -1,0 +1,269 @@
+{
+  "schema": "JENIOS_ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_V1",
+  "startedAt": "2026-10-24T18:24:16.467Z",
+  "finishedAt": "2026-10-24T18:24:18.189Z",
+  "sourceCommitSha": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+  "sourceTreeDirty": false,
+  "publicImplementationDigests": {
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "32c27475cbb1d83ac9b887953558a31ed34793a3a5fb74500131b446ae1a99b1",
+    "lib/platform/research/robot-r67-private-source.mjs": "c1e748c85a54a1693ccea90bff6394da659ba65b6ff412738d4dfee36b7e6944",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-r67-private-capture-outbox.mjs": "7ccca07cc08d36f11d85e95c3a8c32fe5847d4b2a241d2a81d87ac7991e4e0fd",
+    "lib/platform/research/robot-private-durable-file.mjs": "eb7fd31dfe618c9284db361965ba306ff442e61eef6dbf9af2f012b68dd02422",
+    "lib/platform/research/robot-r67-durable-emitter.mjs": "4e9fab4db097eac54735c72cd5af8d31a5b29d0bf7746d0b1c6b23196eb0b606",
+    "lib/platform/research/robot-r67-loopback-transport.mjs": "f8c14ab504fb9691ed4a795b02a41aad49b08cf522839ffc06da6cbe02875fa0",
+    "lib/platform/research/robot-r67-database-store.mjs": "3264a25faff8809b3da7763b45add1b2fde4a633535e185180791fcaa80579d1",
+    "lib/platform/research/robot-r67-http.mjs": "4bf92e70fc68669027e54ea1311d0739475ed44f614cff7bf41bbbdb7b704d9b",
+    "lib/platform/research/robot-r67-access.mjs": "c8e278a411f984a24bb5992af0e029b018d72ce18169eb98c1925a88fc87d086",
+    "db/schema/robot-r67-private-capture-store.sql": "5172c89d6f94cbfa50ae789fd2df09e9843c63a81d663a798971833ae7dec58b",
+    "scripts/platform/research/r67-private-source-acceptance.mjs": "480af1deae9cc839d810fb39e16ad0e0bc03c60413db00496962b299ee470b7a",
+    "tests/fixtures/r67-private-emitter-process.mjs": "385c90f7f79c9cd5feea11b1f90291d53b05ec312d03420cf0d06de342504329"
+  },
+  "classification": "ORIGINAL_PRIVATE_BYTES_LOCAL_VM_REAL_PROCESS_HTTP_POSTGRES_SYNTHETIC_QA",
+  "publicCiEvidence": false,
+  "privateExecutableBytesIncludedInPublicArtifact": false,
+  "scope": {
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+    "evidenceKind": "SIGNED_PRIVATE_QA_CAPTURE",
+    "runtimeEvidenceKind": "SYNTHETIC_PRIVATE_LAB_ONLY",
+    "sourceInputs": "CONTROLLED_SYNTHETIC_SCENARIOS",
+    "commercialModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "ultraFastProvidedByPrivateCore": false,
+    "loader": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseName": "jenios_r67_private_qa",
+    "databaseHost": "127.0.0.1",
+    "databasePort": 56467,
+    "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+    "transport": "ACTUAL_LOOPBACK_HTTP",
+    "sourceClock": "REAL_WALL_CLOCK",
+    "handler": "createR67ObservationHandler",
+    "adminHandler": "createR67AdminHandler",
+    "administrationIdentity": "EXPLICIT_QA_SIMULATION_NOT_REAL_AUTH",
+    "browserTested": false,
+    "nextServerTested": false,
+    "hostedSupabaseTested": false,
+    "privateOperationalSourceActive": false
+  },
+  "core": {
+    "schema": "JENIOS_R67_VERIFIED_PRIVATE_CORE_V1",
+    "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+    "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+    "originalVersion": "jenios-research-r29.1",
+    "localExecutableBytesVerified": true,
+    "independentRuntimeAttestation": false,
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+    "loaderEvidence": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+    "commercialModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "ultrafastProvided": false,
+    "liveExecutionGuardVerified": true,
+    "executionAllowed": false,
+    "customerMonitoringActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0
+  },
+  "execution": {
+    "node": "v24.22.1",
+    "emitterProcesses": 3,
+    "deliberateSigkillsAfterUnconfirmedCommit": 1,
+    "responsesLostAfterDatabaseCommit": 1,
+    "intakeHttpRequests": 4,
+    "adminHttpRequests": 5,
+    "simulatedIdentityChecks": 3,
+    "separateLoaderProofDecisions": 6,
+    "databaseSummary": {
+      "batches": 3,
+      "captures": 9,
+      "sessions": 2
+    },
+    "finalQueue": {
+      "total": 3,
+      "pending": 0,
+      "acknowledged": 3,
+      "unconfirmed": 0,
+      "expiredUnconfirmed": 0,
+      "blockedByEarlierUnconfirmed": 0
+    },
+    "signedRecordDigests": [
+      "e3a9c357b6ce73e34a8b54730cd9f475428736ab8c8f286483f04a1b12728be6",
+      "6c8204e36131f61e74de495494450215ebe19b9f66a7f9222997ce8a5e3338ed",
+      "95ee1a42e479db9e0b93fcde0a3d8b98158b7b14e5e31bf0938ee9fd3c06dc1a"
+    ],
+    "httpEvents": [
+      {
+        "eventId": "evt:7a71e9c543561ba2",
+        "bodySha256": "2b37c8b5ea5bcc2aaa8331282e9e6200ca6ad0946cf5de692d62050200f346dd",
+        "capturedAtMs": 1792866256861,
+        "expiresAtMs": 1792866376861,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:7a71e9c543561ba2",
+        "bodySha256": "2b37c8b5ea5bcc2aaa8331282e9e6200ca6ad0946cf5de692d62050200f346dd",
+        "capturedAtMs": 1792866256861,
+        "expiresAtMs": 1792866376861,
+        "httpStatus": 200,
+        "intakeStatus": "ALREADY_STORED"
+      },
+      {
+        "eventId": "evt:f021f7c31b819e28",
+        "bodySha256": "eece842a192527444ec6f178dec96e82a6fa3816d5f3f65b8e9628971bab812d",
+        "capturedAtMs": 1792866256896,
+        "expiresAtMs": 1792866376896,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:e56ba02bd4a9c0e6",
+        "bodySha256": "7c6ec76f3f4aa47a2fec8937d1b4ca05f7e3090fd85952193ed6328e6be37c9d",
+        "capturedAtMs": 1792866257272,
+        "expiresAtMs": 1792866377272,
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      }
+    ],
+    "adminEvents": [
+      {
+        "method": "GET",
+        "queryPresent": false,
+        "httpStatus": 200
+      },
+      {
+        "method": "GET",
+        "queryPresent": false,
+        "httpStatus": 401
+      },
+      {
+        "method": "GET",
+        "queryPresent": false,
+        "httpStatus": 401
+      },
+      {
+        "method": "GET",
+        "queryPresent": false,
+        "httpStatus": 403
+      },
+      {
+        "method": "GET",
+        "queryPresent": true,
+        "httpStatus": 400
+      }
+    ]
+  },
+  "total": 17,
+  "passed": 17,
+  "failed": 0,
+  "notRun": 0,
+  "status": "PASS",
+  "error": null,
+  "cases": [
+    {
+      "name": "original private executable bytes and LIVE_DISABLED guard are verified locally",
+      "status": "PASS"
+    },
+    {
+      "name": "compiled bytes survive pathname replacement while a new load rejects replacements",
+      "status": "PASS"
+    },
+    {
+      "name": "exclusive disposable database accepts reviewed R67 schema beside unchanged R64/R65",
+      "status": "PASS"
+    },
+    {
+      "name": "two original three-mode batches are durable before any HTTP transmission",
+      "status": "PASS"
+    },
+    {
+      "name": "native B297 actions and separate private provenance remain intact and signed",
+      "status": "PASS"
+    },
+    {
+      "name": "first HTTP response is lost only after the database commits the original batch",
+      "status": "PASS"
+    },
+    {
+      "name": "SIGKILL after the uncertain result occurs outside persistence critical sections",
+      "status": "PASS"
+    },
+    {
+      "name": "new process restores pending records and starts a distinct source session",
+      "status": "PASS"
+    },
+    {
+      "name": "retry after process death preserves complete records and both signatures",
+      "status": "PASS"
+    },
+    {
+      "name": "a new original batch starts sequence one in the new session",
+      "status": "PASS"
+    },
+    {
+      "name": "actual HTTP retry returns ALREADY_STORED and commits exactly three batches",
+      "status": "PASS"
+    },
+    {
+      "name": "database retains exact signed records and first receipt without duplicate captures",
+      "status": "PASS"
+    },
+    {
+      "name": "administrative HTTP GET displays original native actions under explicitly simulated identity",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous invalid non-admin and caller-selected-scope administrative requests are denied",
+      "status": "PASS"
+    },
+    {
+      "name": "R67 source scope is isolated and R64/R65 study policy and paid budget remain untouched",
+      "status": "PASS"
+    },
+    {
+      "name": "acknowledgements survive another process restart without another send",
+      "status": "PASS"
+    },
+    {
+      "name": "original synthetic execution remains distinct from operational monitoring and financial performance",
+      "status": "PASS"
+    }
+  ],
+  "invariants": {
+    "automaticPromotionAllowed": false,
+    "executionAllowed": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false,
+    "independentRuntimeAttestation": false,
+    "independentBrokerAttestation": false,
+    "independentCustomerConsentVerified": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false
+  },
+  "limitations": [
+    "This local run executes the retained original private bytes using controlled synthetic inputs.",
+    "Original source is not public. Public CI contract fixtures cannot independently repeat or attest this positive run.",
+    "The VM uses known hash-pinned modules and is not claimed as a sandbox for arbitrary hostile code.",
+    "The local byte proof is not independent attestation of another host, a customer feed or a broker.",
+    "Administrative identity is deliberately simulated; hosted Auth and administrative access are not certified.",
+    "Process death follows completed persistence and a lost response; power loss and distributed recovery are not certified.",
+    "The private policy binding is generation zero and does not apply the R65 UltraFast policy.",
+    "No operational customer monitoring, paid provider, financial performance, order or production activation is certified."
+  ]
+}

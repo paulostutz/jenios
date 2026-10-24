@@ -2,7 +2,7 @@
   "schema": "JENIOS_ROBOT_R67_CHANGE_AUDIT_V1",
   "baseCommit": "4110b424f09499221d6c7c50c9237ccfe5a47135",
   "branch": "research/jenios-robot-r67-private-source-bridge-20261024",
-  "status": "IMPLEMENTATION_VALIDATED_AWAITING_CI_REFERENCE",
+  "status": "REFERENCE_VALIDATED_FINAL_CONSOLIDATED_CI_REQUIRED",
   "scope": "JENIOS robots only; private original source bridge in isolated synthetic QA",
   "changedPaths": [
     ".github/workflows/jenios-robot-r67-private-source-bridge.yml",
@@ -10,6 +10,10 @@
     "app/api/platform/robot-private-observations/route.js",
     "db/schema/robot-r67-private-capture-store.sql",
     "docs/platform/ROBOT_R67_PRIVATE_SOURCE_BRIDGE.md",
+    "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
+    "docs/platform/evidence/ROBOT_R67_CHANGE_AUDIT.json",
+    "docs/platform/evidence/ROBOT_R67_POSTGRES_ACCEPTANCE_EVIDENCE.json",
+    "docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_EVIDENCE.json",
     "docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_BRIDGE_CHECKPOINT.json",
     "lib/platform/research/robot-private-durable-file.mjs",
     "lib/platform/research/robot-r66-observation-outbox.mjs",
@@ -37,8 +41,7 @@
     "tests/platformRobotR67PrivateOutbox.test.mjs",
     "tests/platformRobotR67PrivateProtocol.test.mjs",
     "tests/platformRobotR67PrivateSourceBoundary.test.mjs",
-    "vercel.json",
-    "docs/platform/evidence/ROBOT_R67_CHANGE_AUDIT.json"
+    "vercel.json"
   ],
   "implementationAndTestDigests": {
     ".github/workflows/jenios-robot-r67-private-source-bridge.yml": "4b72f84348e9c44c64e09ba7557fcbb5352ea03b20698279e360be85759e07be",
@@ -88,5 +91,22 @@
     "protocolSourceTransport": "Independent adversarial review completed",
     "sqlAndAdmin": "Independent review; concrete shape/type findings corrected and PostgreSQL regression tested"
   },
-  "selfHashPolicy": "No self-referential file hash or own-commit CI rewrite is required. Evidence retains its source commit."
+  "selfHashPolicy": "No self-referential file hash or own-commit CI rewrite is required. Evidence retains its source commit.",
+  "referenceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf",
+  "referenceRun": 40120493877,
+  "referenceJob": 120950770666,
+  "priorLedgerSectionsPreserved": 15,
+  "evidence": {
+    "docs/platform/evidence/ROBOT_R67_POSTGRES_ACCEPTANCE_EVIDENCE.json": {
+      "bytes": 4186,
+      "sha256": "9adeb293838c0f716a4f995227d022e7430248e787aa759d625a3300d81643b4",
+      "sourceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf"
+    },
+    "docs/platform/evidence/ROBOT_R67_PRIVATE_SOURCE_ACCEPTANCE_EVIDENCE.json": {
+      "bytes": 10454,
+      "sha256": "1b8d2192048beff5c239481b7217a7c75353ab6e88322b0b404eb88ab18ef5b1",
+      "sourceCommit": "abbc7daf21ede928dc411f1a6d36300b60a919bf"
+    }
+  },
+  "originalPrivateEvidenceIsPublicCiExecution": false
 }

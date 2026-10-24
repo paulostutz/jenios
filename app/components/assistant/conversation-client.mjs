@@ -20,11 +20,37 @@ export function safeAssistantLinks(links){
   typeof (x.title||x.label)==='string').map(x=>({href:x.href,title:x.title||x.label,id:x.id||x.href})).slice(0,12);
 }
 export function settledTurn(turn){return Boolean(turn&&typeof turn.answer==='string'&&turn.answer.trim());}
+/** Describe the response that actually arrived; memory availability is independent. */
+export function assistantResponsePresentation(mode,notice){
+ const text=typeof notice==='string'?notice.trim().slice(0,800):'';
+ const labels={ai:'Resposta com IA',guided:'Resposta guiada',tool:'Consulta ao serviço',pending:'Em andamento',history:'Histórico da conversa',replayed:'Histórico da conversa'};
+ let explanation=text;
+ if(mode==='guided'&&text){
+  const plain=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  if(/envio a ia externa nao autorizado/.test(plain))explanation='Você não autorizou o uso de IA. Esta resposta usa informações revisadas da JENIOS.';
+  else if(/orcamento|configuracao|limite autorizado de uso|ia externa ainda nao esta conectada/.test(plain))explanation='O atendimento com IA não está disponível agora. Esta resposta usa informações revisadas da JENIOS.';
+  else if(/limite de contexto|contexto.*limite|modelo|formato|valid|referencias nao|nao corresponde/.test(plain))explanation='Não consegui confirmar uma resposta da IA. Para orientar você, usei o material revisado da JENIOS.';
+  else if(/ia nao respondeu|ia esta indisponivel/.test(plain))explanation='A IA não pôde responder desta vez. Para ajudar, usei informações revisadas da JENIOS.';
+ }
+ if(!explanation){
+  if(mode==='guided')explanation='Esta resposta usa informações revisadas da JENIOS.';
+  else if(mode==='ai')explanation='Confira as informações e as referências indicadas na resposta da IA.';
+  else if(['history','replayed'].includes(mode))explanation='Resposta recuperada da conversa anterior.';
+ }
+ return {label:labels[mode]||'Resposta do atendimento',notice:explanation};
+}
 export function mergeConversationTurns(snapshot,local=[]){
- const rows=new Map((snapshot?.turns||[]).map(t=>[t.turnId,{...t,source:'server'}]));
+ const rows=new Map((snapshot?.turns||[]).map(t=>[t.turnId,{...t,mode:t.mode||'history',source:'server'}]));
  for(const turn of local){
   const previous=rows.get(turn.turnId);
   if(!previous||!settledTurn(previous))rows.set(turn.turnId,{...previous,...turn});
+  else if(settledTurn(turn)&&turn.answer.trim()===previous.answer.trim()&&['ai','guided'].includes(turn.mode)){
+   // The snapshot confirms the answer; keep the notice/source returned with that
+   // same answer in this tab. Never attach them to a different restored result.
+   rows.set(turn.turnId,{...previous,
+    mode:['ai','guided','tool'].includes(previous.mode)?previous.mode:turn.mode,
+    notice:typeof previous.notice==='string'?previous.notice:turn.notice});
+  }
  }
  return [...rows.values()].slice(-40);
 }
@@ -35,9 +61,9 @@ export function mergeConsultationRows(snapshot,local=[]){
   const questionId=turn.turnId+':question',previous=existing.get(turn.turnId);
   rows.push({id:questionId,question:turn.question});existing.delete(questionId);
   if(previous?.result&&previous.result.mode!=='pending')rows.push(previous);
-  else rows.push({id:turn.turnId,result:{mode:settledTurn(turn)?'guided':'pending',
+  else rows.push({id:turn.turnId,result:{mode:settledTurn(turn)?turn.mode||'history':'pending',
    title:settledTurn(turn)?'Resposta recuperada':'Resposta em conferência',
-   explanation:turn.answer||'Confira o estado desta solicitação antes de repetir.',articles:turn.articles||[]}});
+   explanation:turn.answer||'Confira o estado desta solicitação antes de repetir.',articles:turn.articles||[],notice:turn.notice}});
   existing.delete(turn.turnId);
  }
  return [...rows,...existing.values()].slice(-80);

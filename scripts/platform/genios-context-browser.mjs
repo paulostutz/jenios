@@ -127,10 +127,10 @@ try{
  await page.getByRole('button',{name:'Confirmar exclusão',exact:true}).click();
  await page.getByText('Conversa excluída.',{exact:true}).waitFor();
  check(await page.getByText('Resposta local: E esse inclui gráficos?',{exact:true}).count()===0,'explicit deletion clears the current transcript');
- mode='unavailable';await page.reload();await page.getByText(/modo guiado/).first().waitFor();
+ mode='unavailable';await page.reload();await page.getByText('Memória e conversas · não disponível',{exact:true}).waitFor();
  freeDelay=50;await sendFree('Ajuda nesta visita.');
  await page.getByText('Resposta local: Ajuda nesta visita.',{exact:true}).waitFor();
- check(!freeCalls.at(-1).conversationId,'unavailable memory is explicitly guided and does not invent persistence');
+ check(!freeCalls.at(-1).conversationId,'unavailable memory is explicit and does not invent persistence or determine response mode');
  mode='error';await page.reload();await page.getByText(/Falha temporária de memória da fixture/).last().waitFor();
  check(await page.getByRole('button',{name:'Enviar pergunta',exact:true}).isDisabled(),'infrastructure error is visible and does not silently fall back');
  mode='ok';

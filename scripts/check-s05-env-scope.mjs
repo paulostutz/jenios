@@ -9,7 +9,7 @@ if(process.env.VERCEL_GIT_COMMIT_REF==='release/jenios-genios-g44-20261024'){
   proEnabled:process.env.JENIOS_PRO_GENERATION_ENABLED==='true',
   visitorSaltConfigured:present('JENIOS_SALES_VISITOR_SALT'),
   proQuoteConfigured:present('JENIOS_PRO_QUOTE_SECRET'),
-  socialServerConfigured:present('SOCIAL_SUPABASE_SERVICE_ROLE_KEY')||present('SUPABASE_SERVICE_ROLE_KEY')||present('SUPABASE_SECRET_KEY'),
+  socialServerConfigured:present('SUPABASE_SERVICE_ROLE_KEY')||present('SUPABASE_SECRET_KEY'),
   platformServerConfigured:present('PLATFORM_SUPABASE_SERVICE_ROLE_KEY')
  }));
 }

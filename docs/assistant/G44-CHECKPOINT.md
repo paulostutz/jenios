@@ -18,6 +18,10 @@ A tela mostra até 50 consultas autorizadas pela API, com estados, origem do con
 
 A RPC `jenios_assistant_repair_context_g44` separa inspeção e aplicação. Confere dono, canal, expiração, chave, fingerprint, ledger liquidado e resposta original; a aplicação usa CAS e grava resposta, referências oficiais e resumo atomicamente. Não gera outra resposta nem altera o ledger. Um reparo antigo não substitui o resumo de uma conversa que já avançou. Dados relatados permanecem não verificados. Falha ou conflito mantém `conversationSyncPending`, inclusive em um turno G43 previamente marcado como concluído.
 
+### Comunicação fiel ao estado real
+
+O atendimento exibe a origem recebida na resposta e seu aviso, independentemente da disponibilidade da memória. A confirmação do histórico preserva os metadados da mesma resposta durante a visita; uma recuperação sem origem registrada não presume geração por IA. Memória indisponível informa apenas a limitação do histórico. A prontidão contextual usa `salesModelReady` no servidor e um booleano no contrato público, sem importar módulos de servidor na interface. O Pro mantém uma explicação geral quando a causa específica da inativação não pode ser distinguida. As correções passaram em 168 verificações focadas e na análise de sintaxe JSX.
+
 ### Operação sem teto mensal fixo
 
 O modo `uncapped` é explícito, com `capped` preservado para compatibilidade. No suporte, ambiente e política persistida precisam concordar; as RPCs nova e antiga compartilham contador e lock. No Pro, o contador mensal admite limite nulo no modo sem teto. Permanecem reserva por solicitação, contagem de tokens, limites por chamada, 12 reservas por visitante/hora no suporte, direitos de plano, franquias, ledger, dispatch único e conciliação. Nenhum número artificial é apresentado como orçamento ilimitado.
@@ -64,6 +68,16 @@ O workflow `jenios-genios-activation-g44.yml` verifica fonte, suíte completa, S
 O relatório operacional final deve registrar CI final, deployments e banco realmente ativados, testes reais do provedor, custos observados e pendências. Este checkpoint descreve a fonte candidata e a preparação já comprovada; não é declaração antecipada de produção ativada ou de qualidade de modelo real.
 
 ## Continuação e reversão
+
+### Conferência hospedada e instalação em produção
+
+O primeiro candidato G44, commit `abfd0d934e474d0a42828f7c83aaeb8e90f80f6e`, passou no workflow `40134500215`: 1.442 testes gerais, 94 S05, build com 81 páginas e três suítes PostgreSQL 17 (9, 3 e 12 blocos). Os 1.007 arquivos e a árvore completa do backup foram conferidos contra o Git. Os ajustes posteriores de mensagens/prontidão exigem nova execução na SHA final.
+
+O preview `dpl_CU84N6Ag1vwH72MdF6o2CUNNpuvb` confirmou `openAiConfigured:false`. O smoke real de memória retornou `503 / CONVERSATION_STORAGE_UNAVAILABLE`; o log do Supabase confirmou `401` na RPC. A credencial legada da branch QA foi recusada e não constitui prova de acesso funcional. A instalação do schema e seus testes passaram, mas a integração hospedada da QA depende de uma credencial de servidor válida. Não extrair segredos classificados como sensíveis nem modificar a proteção do Supabase para contornar essa pendência.
+
+As quatro migrações G43/G44 também foram instaladas em `igayfjorjmucthlfoasf`, após confirmar B143 já existente e ausência das novas estruturas. A limpeza `jenios-assistant-cleanup-g44` foi agendada nos mesmos minutos da QA, com primeira execução retornando zero exclusões; o job dos e-mails continuou ativo, sem mudança de horário. Os dois modos mensais foram ajustados para `uncapped`, mantendo geração e pagamentos Pro desligados e franquias zero.
+
+A configuração da próxima implantação de produção recebeu segredos independentes de sessão, visitante e cotação, certificação do schema, memória habilitada, modelo comercial e modo mensal. As flags de geração permanecem desligadas até prova do provedor. A branch esperada dos e-mails acompanha G44; o corte temporal e suas credenciais foram preservados. A publicação deve usar uma implantação de produção preparada sem associação automática de domínio, permitindo testar o runtime com a configuração existente do site antes de transferir tráfego. A falha de QA não deve ser descrita como teste hospedado aprovado.
 
 Conferir novamente a produção e o head da branch do Work antes da publicação. Preservar qualquer atualização posterior a `43283a1`. Ativar memória após conferência do banco/limpeza; validar perguntas reais no ambiente aprovado; certificar a versão exata e publicar a implantação testada. O Pro exige assinatura real e franquia definida; Master não cria saldo. Não fabricar assinatura ou pagamento para demonstrar funcionamento.
 

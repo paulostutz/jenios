@@ -4,7 +4,7 @@ import {connectionSecret} from '../../../lib/platform/connections/support.mjs';
 import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import useAssistantConversation from './useAssistantConversation';
 import ConversationControls,{AnswerFeedback} from './ConversationControls';
-import {mergeConversationTurns,safeAssistantLinks,settledTurn,conversationScreen} from './conversation-client.mjs';
+import {mergeConversationTurns,safeAssistantLinks,settledTurn,conversationScreen,assistantResponsePresentation} from './conversation-client.mjs';
 import s from './FreeAssistantRoom.module.css';
 const starters=['Qual plano você me recomenda conhecer?','O que está incluído no plano de R$ 149,90?','Como contratar a JENIOS?'];
 export default function FreeAssistantRoom({onPersonaChange,initialPersona=null,guideQuestion=null,standalone=false}){
@@ -39,7 +39,7 @@ export default function FreeAssistantRoom({onPersonaChange,initialPersona=null,g
    if(!alive.current||stamp!==memory.actorEpoch())return;
    if(body.ok!==true||body.persona!==memory.persona||body.paidAi!==false)throw Error('Não foi possível confirmar a resposta do atendimento.');
    if(body.conversation&&!memory.adopt(body.conversation))throw Error('A resposta chegou, mas o histórico não pôde ser confirmado.');
-   setLocalTurns(prev=>prev.map(row=>row.turnId===turnId?{...row,answer:String(body.explanation||''),articles:safeAssistantLinks(body.links||body.articles),status:'completed',mode:body.mode,conversationId:conversation?.id}:row));
+   setLocalTurns(prev=>prev.map(row=>row.turnId===turnId?{...row,answer:String(body.explanation||''),articles:safeAssistantLinks(body.links||body.articles),status:'completed',mode:body.replayed?'history':body.mode,notice:body.notice,conversationId:conversation?.id}:row));
    setProgress(body.conversationSyncPending?'A resposta chegou. Atualize a conversa para conferir a sincronização do histórico.':'');
   }catch(e){
    if(!alive.current||stamp!==memory.actorEpoch())return;
@@ -57,15 +57,15 @@ export default function FreeAssistantRoom({onPersonaChange,initialPersona=null,g
     aria-pressed={memory.persona===p.id} className={s.persona}><img src={p.image} alt="" width="35" height="35"/>{p.name}</button>)}
   </div>
   <p className={s.welcome}><strong>{selected.name}:</strong> Posso explicar a JENIOS, seus planos e o próximo passo. Você pode continuar a mesma conversa ao trocar de personagem.</p>
-  <details className={s.memory}><summary>Memória e conversas{memory.status==='unavailable'?' · modo guiado':memory.conversation?.remember?' · salva na sua conta':''}</summary><ConversationControls memory={memory} disabled={busy}/></details>
+  <details className={s.memory}><summary>Memória e conversas{memory.status==='unavailable'?' · não disponível':memory.conversation?.remember?' · salva na sua conta':''}</summary><ConversationControls memory={memory} disabled={busy}/></details>
   {!history.length&&<div className={s.starters}>{(guideQuestion?[guideQuestion,...starters]:starters).map(t=><button type="button" key={t} disabled={busy||memory.status==='loading'||memory.status==='error'} onClick={()=>void ask(t)}>{t}</button>)}</div>}
-  <div ref={historyRef} className={s.history} aria-live="polite" aria-relevant="additions text">{history.map(row=><article key={row.turnId} className={s.exchange}>
+  <div ref={historyRef} className={s.history} aria-live="polite" aria-relevant="additions text">{history.map(row=>{const presentation=assistantResponsePresentation(row.mode,row.notice);return <article key={row.turnId} className={s.exchange}>
    <p className={s.question}>{row.question}</p>
-   <div className={s.reply}><strong>{selected.name}</strong>{settledTurn(row)?<><p>{row.answer}</p><div className={s.links}>{safeAssistantLinks(row.articles).map(x=><a href={x.href} key={x.href}>{x.title} ↗</a>)}</div>
+   <div className={s.reply}><strong>{selected.name}</strong>{settledTurn(row)?<><small className={s.responseMode}>{presentation.label}</small><p>{row.answer}</p>{presentation.notice&&<p className={s.responseNotice}>{presentation.notice}</p>}<div className={s.links}>{safeAssistantLinks(row.articles).map(x=><a href={x.href} key={x.href}>{x.title} ↗</a>)}</div>
     {memory.conversation?.turns.some(t=>t.turnId===row.turnId)&&<AnswerFeedback key={row.turnId} memory={memory} turnId={row.turnId}/>}</>:<p role="status">{row.status==='pending'&&busy?'Preparando sua resposta…':row.notice||'Resposta em conferência. Atualize a conversa.'}</p>}
     {!settledTurn(row)&&!busy&&(row.conversationId||memory.conversation)?<button type="button" className={s.recheck} onClick={()=>void reconcile()}>Conferir resposta salva</button>:!settledTurn(row)&&!busy&&row.status==='failed'?<button type="button" className={s.recheck} onClick={()=>setQuestion(row.question)}>Retomar pergunta</button>:null}
    </div>
-  </article>)}</div>
+  </article>;})}</div>
   {progress&&<p role="status" className={s.progress}>{progress}</p>}
   {error&&<p role="alert" className={s.error}>{error}</p>}
   {memory.error&&<p role="alert" className={s.error}>{memory.error} Abra “Memória e conversas” para conferir.</p>}

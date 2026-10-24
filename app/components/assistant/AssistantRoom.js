@@ -5,13 +5,14 @@ import {PERSONAS} from '../../../lib/assistant/contracts.mjs';
 import s from './AssistantRoom.module.css';
 import useAssistantConversation from './useAssistantConversation';
 import ConversationControls from './ConversationControls';
-import {mergeConsultationRows} from './conversation-client.mjs';
+import {mergeConsultationRows,assistantResponsePresentation} from './conversation-client.mjs';
 const quick=['Como começar na plataforma?','Como funcionam as trilhas de aprendizado?','Qual a diferença entre day e swing trade?','O modo reverso garante lucro?'];
 const networks=['ethereum','bitcoin','bsc','tron','solana','polygon','arbitrum','base','avalanche'];
 function ResultCard({r,onChooseBank,onAsk}){
  if(!r)return null;
+ const presentation=assistantResponsePresentation(r.replayed?'history':r.mode,r.notice);
  return <article className={s.reply}>
-  <div className={s.tag}>{r.mode==='ai'?'Resposta de IA':r.mode==='tool'?'Consulta ao serviço':'Material de suporte'}</div>
+  <div className={s.tag}>{presentation.label}</div>
   <h3>{r.title||r.name||'Atendimento'}</h3>
   {r.explanation&&<p className={s.prose}>{r.explanation}</p>}
   {r.consultedAt&&<small>Consulta feita em {new Date(r.consultedAt).toLocaleString('pt-BR')}</small>}
@@ -20,7 +21,7 @@ function ResultCard({r,onChooseBank,onAsk}){
   {r.sections?.map(section=><section key={section.key} className={s.section}><h4>{section.title}</h4><small>{section.status?.disponivel===false?'Fonte indisponível':section.status?.historico?'Movimentos históricos':'Confira o horário de cada registro'}</small>{section.items.length?section.items.map((i,n)=><p key={n}><b>{i.name}</b> · {i.symbol}<br/><small>Horário do registro: {i.timestamp} · Variação: {i.variation}</small></p>):<p>Nenhum registro retornado nesta consulta.</p>}</section>)}
   {r.findings?.map((f,i)=><section className={s.section} key={i}><b>{f.title}</b><p>{f.explanation}</p></section>)}
   {r.notices?.map((n,i)=><p className={s.small} key={i}>{n}</p>)}
-  {r.notice&&<p className={s.small}>{r.notice}</p>}
+  {presentation.notice&&<p className={s.small}>{presentation.notice}</p>}
   <div className={s.actions}>{(r.links||r.articles||[]).map((l,i)=><a className={s.link} key={i} href={l.href}>{l.label||l.title}</a>)}</div>
   {!!r.followUps?.length&&<div className={s.choices} aria-label="Perguntas relacionadas">
    {r.followUps.map(q=><button type="button" key={q} onClick={()=>onAsk?.(q)}>{q}</button>)}
@@ -109,7 +110,7 @@ export default function AssistantRoom({embedded=false,onPersonaChange=null}){
    {!embedded&&<div className={s.banner}>Atendimento informativo. Consulte módulos e aulas diretamente. Este atendimento não envia ordens reais nem avisos por WhatsApp.</div>}
    <div className={s.layout}>
     <aside className={s.sidebar}><h2>Quem vai te atender?</h2><div className={s.personas}>{PERSONAS.map(p=><button disabled={busy} type="button" key={p.id} className={s.persona} aria-pressed={account.persona===p.id} onClick={()=>void choosePersona(p.id)}><img src={p.image} alt={p.name} width="76" height="76"/><span>{p.name}</span></button>)}</div><p className={s.small}>Mesmas informações e critérios. A escolha muda o personagem, não a qualidade do atendimento.</p>
-     <label className={s.consent}><input type="checkbox" disabled={busy} checked={account.aiConsent} onChange={e=>send({action:'preferences',persona:account.persona,aiConsent:e.target.checked})}/>Autorizar envio das minhas perguntas de suporte à OpenAI, quando configurada.</label><p className={s.small}>{account.aiConfigured?'Provedor configurado; disponível somente com consentimento.':'IA externa ainda não configurada. O modo guiado permanece disponível.'} Resumos verificados e datados das consultas autorizadas podem apoiar perguntas seguintes, com seu consentimento para IA. Dados de acesso e relatórios completos não são incluídos. Não escreva dados sensíveis nas perguntas.</p>
+     <label className={s.consent}><input type="checkbox" disabled={busy} checked={account.aiConsent} onChange={e=>send({action:'preferences',persona:account.persona,aiConsent:e.target.checked})}/>Autorizar envio das minhas perguntas de suporte à OpenAI, quando configurada.</label><p className={s.small}>{account.aiConfigured?'Este atendimento pode usar IA com sua autorização. Se ela não estiver disponível, você recebe uma resposta guiada.':'Respostas com IA ainda não estão disponíveis neste atendimento. As orientações guiadas continuam disponíveis.'} Resumos verificados e datados das consultas autorizadas podem apoiar perguntas seguintes, com seu consentimento para IA. Dados de acesso e relatórios completos não são incluídos. Não escreva dados sensíveis nas perguntas.</p>
      <nav aria-label="Consultas do atendimento">{[['help','Dúvidas da plataforma'],['trends','Hub de Tendências'],['bankscore','BankScore'],['crypto','Validador Cripto']].map(([id,label])=><button disabled={busy} type="button" className={s.nav} aria-current={tab===id?'page':undefined} key={id} onClick={()=>setTab(id)}>{label}</button>)}</nav>
      <a className={s.school} href="/notifications">Acompanhar alertas na Central de Notificações →</a><a className={s.school} href="/platform/aprender">Universidade JENIOS · Estudo diário →</a><a className={s.school} href="/dashboard">Abrir laboratório de leitura →</a>
     </aside>

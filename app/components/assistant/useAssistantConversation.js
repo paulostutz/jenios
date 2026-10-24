@@ -46,7 +46,7 @@ export default function useAssistantConversation(channel,{initialPersona=null}={
   try{
    const result=await request('/api/assistant/conversations?channel='+channel+(validConversationId(id)?'&id='+encodeURIComponent(id):''));
    if(stamp!==epoch.current)return null;
-   if(result.available===false){snapshot.current=null;write({status:'unavailable',conversation:null,conversations:[],error:'',notice:'A memória ainda não está disponível. Você pode usar o atendimento guiado nesta visita.'});return null;}
+   if(result.available===false){snapshot.current=null;write({status:'unavailable',conversation:null,conversations:[],error:'',notice:'A memória de conversas ainda não está disponível. Você pode continuar nesta visita.'});return null;}
    if(result.available!==true)throw Error('O serviço não confirmou a disponibilidade da memória.');
    const list=Array.isArray(result.conversations)?result.conversations.filter(c=>validConversationId(c?.id)):[];
    write({status:'ready',conversations:list,error:'',notice:''});
@@ -79,7 +79,7 @@ export default function useAssistantConversation(channel,{initialPersona=null}={
    if(!live)return;if(error){actorRef.current={id:'error',authenticated:false};write({status:'error',error:'Não foi possível verificar sua sessão. Atualize antes de continuar.'});return;}
    reset(data?.session);
   }).catch(()=>{if(live)write({status:'error',error:'Não foi possível verificar sua sessão.'});});
-  if(!supabase){actorRef.current={id:'visitor',authenticated:false};setActor(actorRef.current);write({status:'unavailable',notice:'Atendimento guiado disponível nesta visita.'});}
+  if(!supabase){actorRef.current={id:'visitor',authenticated:false};setActor(actorRef.current);write({status:'unavailable',notice:'A memória de conversas não está disponível nesta visita.'});}
   const subscription=supabase?.auth.onAuthStateChange((event,session)=>{
    if(event==='INITIAL_SESSION')return;
    const id=session?.access_token&&session.user&&!session.user.is_anonymous?session.user.id:'visitor';
@@ -101,7 +101,7 @@ export default function useAssistantConversation(channel,{initialPersona=null}={
    return snapshot.current;
   }
   const result=await request('/api/assistant/conversations?channel='+channel,{body:{action:'create',channel,persona:personaRef.current,remember:actorRef.current.authenticated&&rememberRef.current}});
-  if(result.available===false){write({status:'unavailable',notice:'A memória ainda não está disponível; o atendimento será guiado nesta visita.'});return null;}
+  if(result.available===false){write({status:'unavailable',notice:'A memória de conversas ainda não está disponível. Você pode continuar nesta visita.'});return null;}
   const next=adopt(result.conversation);if(!next)throw Error('A conversa não pôde ser confirmada.');
   newRequested.current=false;return next;
  },[channel,request,adopt,write]);

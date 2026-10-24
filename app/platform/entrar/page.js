@@ -5,11 +5,15 @@ import {useRouter} from 'next/navigation';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
 import {isPlatformSignupEnabled,registerPlatformAccount} from '../../../lib/platform/account-access.mjs';
 import {resolveSocialPortalEntry} from '../../../lib/platform/unified-entry.mjs';
+import SocialAccessForm from '../../components/SocialAccessForm';
+import {socialAuthReturnPath} from '../../components/social-auth-return.mjs';
 
 const signupEnabled=isPlatformSignupEnabled(process.env.NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED);
 
 export default function PlatformLogin(){
  const router=useRouter();
+ const [dedicated,setDedicated]=useState(false);
+ const [destination,setDestination]=useState('/dashboard-logado');
  const [register,setRegister]=useState(false);
  const [email,setEmail]=useState('');
  const [password,setPassword]=useState('');
@@ -19,15 +23,19 @@ export default function PlatformLogin(){
  const [message,setMessage]=useState('');
  useEffect(()=>{
   let mounted=true;
+  const next=new URLSearchParams(window.location.search).get('next');
+  const target=next?socialAuthReturnPath(next):'/dashboard-logado';
+  setDestination(target);
   async function routeExistingSession(){
    try{
+    const social=await resolveSocialPortalEntry();
+    if(!mounted)return;
+    if(social){router.replace(target);return;}
     const {data}=platformSupabase?.auth ? await platformSupabase.auth.getUser():{data:null};
     if(!mounted)return;
     if(data?.user?.id && !data.user.is_anonymous){
-     router.replace('/dashboard-logado');return;
+     router.replace(target);return;
     }
-    const social=await resolveSocialPortalEntry();
-    if(mounted && social)router.replace('/dashboard-logado');
    }catch{/* Dedicated login remains available if sessions cannot be verified. */}
   }
   void routeExistingSession();
@@ -42,7 +50,7 @@ export default function PlatformLogin(){
      const result=await registerPlatformAccount(platformSupabase.auth,email,password,
        confirmation,window.location.origin,process.env.NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED);
      setPassword('');setConfirmation('');setMessage(result.message);
-     if(result.session){router.replace('/dashboard-logado');router.refresh();}
+     if(result.session){router.replace(destination);router.refresh();}
      else setRegister(false);
    }else{
      const {data,error:loginError}=await platformSupabase.auth.signInWithPassword({
@@ -51,18 +59,27 @@ export default function PlatformLogin(){
      if(loginError || !data?.session || data.session.user?.is_anonymous)
        throw Error('Não foi possível autenticar na JENIOS Platform.');
      setPassword('');
-     router.replace('/dashboard-logado');
+     router.replace(destination);
      router.refresh();
    }
   }catch(e){setError(e?.message||'Acesso indisponível.');setPassword('');setConfirmation('');}
   finally{setBusy(false);}
  }
  const input={boxSizing:'border-box',width:'100%',padding:'12px 14px',border:'1px solid #cbd5e1',borderRadius:10,fontSize:14};
+ if(!dedicated)return <>
+  <header style={{background:'#0f172a',color:'#fff',padding:'24px 20px 0',textAlign:'center',fontFamily:'system-ui'}}>
+   <h1 style={{margin:0,fontSize:24}}>Entrar na JENIOS Platform</h1>
+   <p>Use a mesma conta da JENIOS Social para acessar sua área de simulação.</p>
+   <button type="button" onClick={()=>setDedicated(true)} style={{border:0,background:'transparent',color:'#c4b5fd',textDecoration:'underline',cursor:'pointer'}}>Tenho um acesso exclusivo da Platform</button>
+  </header>
+  <SocialAccessForm returnTo={destination}/>
+ </>;
  return <main style={{minHeight:'100vh',background:'linear-gradient(135deg,#0f172a,#251354)',padding:18,display:'grid',placeItems:'center',fontFamily:'system-ui'}}>
    <section style={{background:'#fff',color:'#0f172a',padding:'clamp(22px,4vw,35px)',maxWidth:460,width:'100%',borderRadius:18,boxSizing:'border-box'}}>
     <div style={{fontSize:11,color:'#6d28d9',fontWeight:900,letterSpacing:2}}>JENIOS PLATFORM</div>
     <h1 style={{fontSize:26,margin:'10px 0'}}>{register?'Crie seu acesso':'Acesso da Platform'}</h1>
-    <p style={{fontSize:13,lineHeight:1.6,color:'#64748b'}}>Acesso independente da JENIOS Social. Nenhuma senha ou credencial de corretora é solicitada aqui.</p>
+    <p style={{fontSize:13,lineHeight:1.6,color:'#64748b'}}>Este formulário é para contas exclusivas da Platform. Para sua conta da Social, use a entrada principal da JENIOS.</p>
+    <button type="button" disabled={busy} onClick={()=>{setDedicated(false);setPassword('');setConfirmation('');setError('');}} style={{border:0,background:'transparent',color:'#6d28d9',padding:'8px 0',cursor:'pointer'}}>Entrar com minha conta da JENIOS Social</button>
     {error && <p role="alert" style={{padding:12,background:'#fef2f2',borderRadius:8,color:'#991b1b'}}>{error}</p>}
     {message && <p role="status" style={{padding:12,background:'#f0fdf4',borderRadius:8,color:'#166534'}}>{message}</p>}
     <form onSubmit={submit} style={{display:'grid',gap:14}}>

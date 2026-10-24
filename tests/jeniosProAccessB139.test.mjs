@@ -19,6 +19,8 @@ test('B139 customer sees plan-only advanced access, preserved usage history and 
  const page=src('app/genios-pro/page.js');
  assert.doesNotMatch(page,/<ProCredits /);
  assert.match(page,/Seu histórico de consumo/);
+ assert.match(page,/account\.kind==='ready'&&<History/);
+ assert.match(page,/items=\{history\.items\} hasMore=\{history\.hasMore\}/);
  assert.match(page,/149,90/);assert.match(page,/199,90/);
  for(const route of ['quote','checkout','status'])assert.match(src('app/api/assistant/pro/credits/'+route+'/route.js'),/AI_CREDITS_SALES_DISABLED/);
  assert.match(page,/href="\/platform\/aprender"/);

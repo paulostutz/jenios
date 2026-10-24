@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import {resolveAssetSymbol} from '../../lib/platform/asset-symbol.mjs';
 import NewTokenRadar from '../components/NewTokenRadar';
 import ResponsiveTradingViewChart from '../components/platform/ResponsiveTradingViewChart';
 import {BrandLockup,BrandFooter} from '../components/brand/BrandSignature';
@@ -49,10 +50,10 @@ export default function DashboardPage() {
 
   const solicitarContaReal = () => {
     if (!diagnosticoConcluido) {
-      alert('Para iniciar a conta real é necessário concluir o Diagnóstico Comportamental, disponível nesta Dashboard. Você pode continuar no simulador.');
+      setStatusMensagem('Para iniciar a conta real é necessário concluir o Diagnóstico Comportamental, disponível nesta Dashboard. Você pode continuar no simulador.');
       return;
     }
-    alert('Diagnóstico inicial registrado. A conta real ainda requer validação no servidor, corretora homologada e autorização de execução. Nenhuma ordem real foi habilitada.');
+    setStatusMensagem('Diagnóstico inicial registrado. A conta real ainda requer validação no servidor, corretora homologada e autorização de execução. Nenhuma ordem real foi habilitada.');
   };
 
   const atualizarSaldoSimulado = (novoValor) => {
@@ -70,12 +71,11 @@ export default function DashboardPage() {
   
   // Input de busca personalizada
   const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
+  const [erroBusca,setErroBusca]=useState('');
   
   // Estados de Gestão de Capital e Risco
   const [capitalAlocado, setCapitalAlocado] = useState(10000);
-  const [alavancagem, setAlavancagem] = useState('10x');
   const [lotes, setLotes] = useState(1);
-  const [stopDiario, setStopDiario] = useState(500);
 
   // Single authoritative hub snapshot; shared cache also feeds the Social and /tendencias.
   const {data:hub,loading:hubLoading,error:hubError,clock:hubClock}=useTrendsData('/api/tendencias');
@@ -112,23 +112,11 @@ export default function DashboardPage() {
 
   const handleBuscaCustomizada = (e) => {
     e.preventDefault();
-    if (!inputBuscaCustomizada.trim()) return;
-
-    let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
-    if (!simboloFormatado.includes(':')) {
-      if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
-        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
-        if (simboloFormatado === 'BMFBOVESPA:WIN') simboloFormatado = 'BMFBOVESPA:WIN1!';
-        if (simboloFormatado === 'BMFBOVESPA:WDO') simboloFormatado = 'BMFBOVESPA:WDO1!';
-      } else if (['BTCUSDT', 'ETHUSDT', 'SOLUSDT'].includes(simboloFormatado)) {
-        simboloFormatado = `BINANCE:${simboloFormatado}`;
-      } else {
-        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
-      }
-    }
-
-    setAtivoSelecionado(simboloFormatado);
-    setNomeAtivoExibicao(inputBuscaCustomizada.toUpperCase());
+    const result=resolveAssetSymbol(inputBuscaCustomizada);
+    if(!result.ok){setErroBusca(result.error);return;}
+    setErroBusca('');
+    setAtivoSelecionado(result.symbol);
+    setNomeAtivoExibicao(result.label);
     setInputBuscaCustomizada('');
   };
 
@@ -153,7 +141,7 @@ export default function DashboardPage() {
 
   const acionarTravaManual = () => {
     if(!writeSimulationPaused(window.sessionStorage,operadorId,true)){
-      alert('Pausa local indisponível. Nenhuma ordem real é transmitida por este painel.');
+      setStatusMensagem('Pausa local indisponível. Nenhuma ordem real é transmitida por este painel.');
       return;
     }
     setAntifuriaAcionado(true);
@@ -161,21 +149,21 @@ export default function DashboardPage() {
   };
 
   const executarOrdem = (direcao) => {
-    if (tipoConta !== 'simulada') { alert('Execução real bloqueada: autorização no servidor indisponível.'); return; }
+    if (tipoConta !== 'simulada') { setStatusMensagem('Execução real bloqueada: autorização no servidor indisponível.'); return; }
     if (readSimulationPaused(window.sessionStorage,operadorId)) {
       setBloqueiosSimulados(n => n + 1);
-      alert('Tentativa fictícia bloqueada pelo Botão Antifúria. Não é possível calcular uma perda evitada com base nesse bloqueio.');
+      setStatusMensagem('Tentativa fictícia bloqueada pelo Botão Antifúria. Não é possível calcular uma perda evitada com base nesse bloqueio.');
       return;
     }
 
     if (!Number.isFinite(Number(capitalAlocado)) || Number(capitalAlocado)<=0 || Number(capitalAlocado)>saldoSimulado || !Number.isInteger(Number(lotes)) || Number(lotes)<1) {
-      alert('Revise o capital fictício e a quantidade de lotes antes de registrar a intenção.');
+      setStatusMensagem('Revise o capital fictício e a quantidade de lotes antes de registrar a intenção.');
       return;
     }
 
     const recorded=appendSimIntention(window.sessionStorage,operadorId,
       {ativo:nomeAtivoExibicao,direcao,modo:modoReversoAtivo?'reversa':'manual',
-       capital:Number(capitalAlocado)});
+       capital:Number(capitalAlocado),quantidade:Number(lotes)});
     if(!recorded.ok) {setStatusMensagem('Diário local indisponível; nenhuma ordem foi enviada.');return;}
     setIntencoesFicticias(recorded.events);
     setStatusMensagem('Intenção de negociação fictícia registrada. Nenhuma ordem transmitida.');
@@ -190,7 +178,7 @@ export default function DashboardPage() {
           <div>
             <BrandLockup tone="light" context="Platform" priority/>
             <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#7c3aed', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>
-              JENIOS PLATFORM • SALA DE CONTROLO HFT
+              JENIOS PLATFORM • SALA DE CONTROLE
             </span>
             <h1 style={{ fontSize: '22px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>Olá, Operador</h1>
             <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0 0' }}>{statusMensagem}</p>
@@ -212,7 +200,7 @@ export default function DashboardPage() {
                   onClick={solicitarContaReal} 
                   style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
-                  Real (validar)
+                  Sobre a conta real
                 </button>
               </div>
 
@@ -262,8 +250,8 @@ export default function DashboardPage() {
           
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
-              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>MODO DE RETIFICAÇÃO</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Modo Reverso Automático</h3>
+              <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>MODO DE ESTUDO</span>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 8px 0' }}>Modo de estudo reverso</h3>
               <p style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5', margin: '0 0 16px 0' }}>
                 Modo reverso disponível para estudo no simulador. Latência e roteamento real não certificados.
               </p>
@@ -294,7 +282,7 @@ export default function DashboardPage() {
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
             <div>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', fontFamily: 'monospace', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>ESTATÍSTICAS</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Losses evitados · eventos verificáveis</h3>
+              <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0f172a', margin: '0 0 4px 0' }}>Bloqueios da simulação</h3>
               <div style={{ fontSize: '22px', fontWeight: '900', color: '#059669', marginBottom: '4px' }}>—</div>
               <p style={{ fontSize: '11px', color: '#64748b', margin: 0 }}>
                 {riskEvidence.verifiedBlocks===null?'Sem fonte de corretora verificada':
@@ -302,9 +290,7 @@ export default function DashboardPage() {
                   {bloqueiosSimulados} bloqueio(s) fictício(s) nesta sessão. Sem valor financeiro de perda evitada comprovado.
               </p>
             </div>
-            <button onClick={() => alert('Simulação de proteção ativa.')} style={{ backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '8px', borderRadius: '8px', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer', width: '100%', marginTop: '10px' }}>
-              Simular Proteção
-            </button>
+
           </div>
 
           <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
@@ -361,7 +347,10 @@ export default function DashboardPage() {
                   <span>🔍</span>
                   <input 
                     type="text" 
-                    placeholder="Digite qualquer ativo (ex: PETR4, VALE3, BTCUSDT, AAPL)..."
+                    aria-label="Buscar ativo"
+                  aria-describedby="asset-search-message"
+                  aria-invalid={Boolean(erroBusca)}
+                  placeholder="PETR4, BTC/USDT, EUR/USD ou NASDAQ:AAPL"
                     value={inputBuscaCustomizada}
                     onChange={(e) => setInputBuscaCustomizada(e.target.value)}
                     style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
@@ -371,6 +360,7 @@ export default function DashboardPage() {
                   Buscar Ativo
                 </button>
               </form>
+              <p id="asset-search-message" role={erroBusca?"alert":undefined} style={{margin:0,fontSize:12,color:erroBusca?"#b91c1c":"#64748b"}}>{erroBusca||"Para outros ativos, informe BOLSA:ATIVO. A disponibilidade é confirmada pelo TradingView."}</p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
@@ -421,31 +411,6 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '6px' }}>Alavancagem HFT</label>
-                  <select 
-                    value={alavancagem} 
-                    onChange={(e) => setAlavancagem(e.target.value)} 
-                    style={{ width: '100%', backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: '8px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
-                  >
-                    <option value="1x">1x (Sem Alavancagem)</option>
-                    <option value="5x">5x</option>
-                    <option value="10x">10x</option>
-                    <option value="20x">20x</option>
-                    <option value="50x">50x (Institucional)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '6px' }}>Stop Diário / Perda Máxima (R$)</label>
-                  <input 
-                    type="number" 
-                    value={stopDiario} 
-                    onChange={(e) => setStopDiario(e.target.value)} 
-                    style={{ width: '100%', backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px', borderRadius: '8px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }} 
-                  />
-                </div>
-
-                <div>
                   <label style={{ fontSize: '12px', color: '#64748b', display: 'block', marginBottom: '6px' }}>Quantidade / Lotes</label>
                   <input 
                     type="number" 
@@ -467,12 +432,13 @@ export default function DashboardPage() {
                 </button>
               </div>
 
+              <p role="status" style={{fontSize:13,color:"#334155",lineHeight:1.5}}>{statusMensagem}</p>
               <div className={terminal.history} aria-live="polite">
                 <strong>Diário de intenções fictícias</strong>
                 {intencoesFicticias.length===0 ? <p className={terminal.note}>Nenhuma intenção registrada nesta sessão.</p> : (
                   <ol>{intencoesFicticias.map(item=><li key={item.id}>
                     <span>{item.hora} · {item.direcao} · {item.ativo}</span>
-                    <span>R$ {item.capital.toLocaleString('pt-BR')} · {item.modo}</span>
+                    <span>R$ {item.capital.toLocaleString('pt-BR')} · {item.modo}{item.quantidade ? ` · ${item.quantidade} lote(s)` : ''}</span>
                   </li>)}</ol>
                 )}
                 <p className={terminal.note}>Diário compartilhado entre Dashboard e Mesa nesta sessão. Os cliques não representam ordens executadas nem lucros.</p>
@@ -524,7 +490,7 @@ export default function DashboardPage() {
 
         </div>
 
-        <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
+        <PlatformStrategyLab userId={operadorId} balance={saldoSimulado} paused={antifuriaAcionado}/>
         <BrandFooter tone="light" scope="Platform"/>
       </div>
     </main>

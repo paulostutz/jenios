@@ -43,7 +43,7 @@ function memoryFixture(channel='support'){
   },
   failTurn:async({turnId,uncertain})=>{const turn=snapshot.turns.find(t=>t.turnId===turnId);if(turn)turn.status=uncertain?'uncertain':'failed';return {ok:true};}
  };
- return {repo,snapshot,setFailComplete:v=>{failComplete=v;},stats:()=>({claims,completions}),factory:(db,resolved)=>{assert.equal(resolved.ownerId,USER);return repo;}};
+ return {repo,snapshot,setFailComplete:v=>{failComplete=v;},completionUnavailable:()=>failComplete,stats:()=>({claims,completions}),factory:(db,resolved)=>{assert.equal(resolved.ownerId,USER);return repo;}};
 }
 const supportBody={persona:'genia',message:'E o segundo?',conversationId:CID,revision:0,turnId:TURN,screen:'/platform/assistente'};
 const supportAnswer={ok:true,free:true,paidAi:false,mode:'guided',explanation:'O Global Crypto custa R$ 149,90 por mês.',articles:[],summary:initialConversationSummary(),modelCalls:0};
@@ -104,6 +104,36 @@ test('G43 context digest changes on substantive facts, not clock passage',()=>{
 });
 function proHarness(){
  const memory=memoryFixture('pro'),rows=new Map();let calls=0,reserves=0,captured;
+ const fingerprints=new Map(),priorSummaries=new Map();let inspections=0,applications=0,repairRace=false;
+ const originalClaim=memory.repo.claimTurn;
+ memory.repo.claimTurn=async input=>{
+  const before=clone(memory.snapshot.summary),result=await originalClaim(input);
+  if(result.state==='claimed'){fingerprints.set(input.turnId,input.requestFingerprint);priorSummaries.set(input.turnId,before);}
+  return result;
+ };
+ // Model the G44 repository boundary, backed by the same ledger rows as the
+ // Pro lifecycle fixture. Semantic reconstruction remains the real helper;
+ // PostgreSQL tests separately exercise the actual atomic RPC implementation.
+ memory.repo.inspectProTurnRepair=async({id,turnId})=>{
+  inspections++;assert.equal(id,CID);const entry=rows.get(turnId),index=memory.snapshot.turns.findIndex(t=>t.turnId===turnId);
+  const conversation=clone(memory.snapshot);
+  if(index<0||entry?.user_id!==USER||entry.state!=='settled'||entry.fingerprint!==fingerprints.get(turnId))
+   return {ok:true,eligible:false,conversation};
+  const turn=memory.snapshot.turns[index];
+  return {ok:true,eligible:true,conversation,priorSummary:clone(priorSummaries.get(turnId)||initialConversationSummary()),
+   previousTurns:clone(memory.snapshot.turns.slice(0,index).filter(t=>t.status==='completed').slice(-8)),
+   turn:{turnId,question:turn.question,answer:entry.result_data.answer,createdAt:turn.createdAt,persona:memory.snapshot.persona}};
+ };
+ memory.repo.applyProTurnRepair=async({id,turnId,revision,answer,articles,summary})=>{
+  applications++;assert.equal(id,CID);const entry=rows.get(turnId);
+  assert.equal(entry.user_id,USER);assert.equal(entry.state,'settled');assert.equal(entry.fingerprint,fingerprints.get(turnId));assert.equal(answer,entry.result_data.answer);
+  if(memory.completionUnavailable())throw fail('CONVERSATION_STORAGE_UNAVAILABLE',503);
+  if(repairRace){repairRace=false;memory.snapshot.revision++;throw fail('CONVERSATION_REVISION_CONFLICT');}
+  if(revision!==memory.snapshot.revision)throw fail('CONVERSATION_REVISION_CONFLICT');
+  const turn=memory.snapshot.turns.find(t=>t.turnId===turnId);
+  Object.assign(turn,{answer,articles:clone(articles),status:'completed'});memory.snapshot.summary=clone(summary);memory.snapshot.revision++;
+  return {ok:true,repaired:true,conversation:clone(memory.snapshot)};
+ };
  const env={JENIOS_ASSISTANT_MEMORY_ENABLED:'true',JENIOS_PRO_GENERATION_ENABLED:'true',OPENAI_API_KEY:'synthetic-key-for-local-fixture-only',JENIOS_PRO_QUOTE_SECRET:'synthetic-signing-secret-at-least-32-characters'};
  const config={installed:true,generationEnabled:true,allowedModels:['gpt-6-luna'],maxRequestProviderNanoUsd:1_000_000_000,allowances:{[plan.code]:2_000_000_000}};
  const repo={config:async()=>config,status:async()=>({ok:true,pendingRequests:0,allowance:{availableNanoUsd:2_000_000_000}}),request:async key=>rows.get(key),
@@ -114,7 +144,7 @@ function proHarness(){
  const options={db:{},env,now,planOnly:true,authorize:async()=>actor.user,repository:()=>repo,memoryRepository:memory.factory,planResolver:async()=>plan,
   marketLoader:async()=>null,provider:async input=>{calls++;captured=input;return {kind:'usage_confirmed',cost:{providerCostNanoUsd:100,retailDebitNanoUsd:200},usage:{input_tokens:1,output_tokens:0},result:{answer:'O segundo plano é o Global Crypto.',persona:'genia',source:null}};}};
  const input={persona:'genia',task:'advanced_question',prompt:'E o segundo?',source:'included',conversationId:CID,conversationRevision:0};
- return {memory,rows,repo,options,input,stats:()=>({calls,reserves}),captured:()=>captured,
+ return {memory,rows,repo,options,input,stats:()=>({calls,reserves}),repairStats:()=>({inspections,applications}),setRepairRace:()=>{repairRace=true;},captured:()=>captured,
   async quoted(){const response=await handlePro(request(input),{...options,action:'quote'});assert.equal(response.status,200);const {quote}=await response.json();return {...input,requestKey:TURN,quoteId:quote.id,maxRetailNanoUsd:quote.maxRetailNanoUsd,consent:true};}};
 }
 test('G43 Pro binds server context to its quote, supplies previous turns and replays settled answers',async()=>{
@@ -124,7 +154,11 @@ test('G43 Pro binds server context to its quote, supplies previous turns and rep
  assert.equal(h.captured().conversationContext.turns[0].question,prior.question);
  const payload=proProviderPayload(h.captured(),{maxOutputTokens:2000},null),prompt=JSON.parse(payload.input[0].content[0].text);
  assert.equal(prompt.verifiedAccount.planCode,plan.code);assert.equal(prompt.conversation.turns.length,1);assert.deepEqual(payload.tools,[]);assert.equal(payload.store,false);
- const repeated=await handlePro(request(body),{...h.options,action:'chat'});assert.equal((await repeated.json()).replayed,true);assert.deepEqual(h.stats(),{calls:1,reserves:1});
+ const before=clone(h.rows.get(TURN));
+ const repeated=await handlePro(request(body),{...h.options,action:'chat'}),replay=await repeated.json();
+ assert.equal(replay.replayed,true);assert.equal(replay.conversationSyncPending,undefined);
+ assert.deepEqual(replay.conversation.summary.planCodes,['platform-global-crypto']);assert.equal(replay.conversation.turns.at(-1).articles[0].id,'plans');
+ assert.deepEqual(h.repairStats(),{inspections:1,applications:1});assert.deepEqual(h.rows.get(TURN),before);assert.deepEqual(h.stats(),{calls:1,reserves:1});
 });
 test('G43 changed conversation revision or lesson facts invalidate quote before holding balance',async()=>{
  const h=proHarness(),body=await h.quoted();h.memory.snapshot.revision++;
@@ -136,7 +170,25 @@ test('G43 a settled Pro result is shown once even when memory is temporarily una
  const h=proHarness(),body=await h.quoted();h.memory.setFailComplete(true);
  const response=await handlePro(request(body),{...h.options,action:'chat'}),data=await response.json();
  assert.equal(response.status,200);assert.equal(data.state,'settled');assert.equal(data.conversationSyncPending,true);assert.ok(data.answer);
- const repeat=await handlePro(request(body),{...h.options,action:'chat'});assert.equal((await repeat.json()).replayed,true);assert.deepEqual(h.stats(),{calls:1,reserves:1});
+ const before=clone(h.rows.get(TURN));
+ const repeat=await handlePro(request(body),{...h.options,action:'chat'}),pending=await repeat.json();
+ assert.equal(pending.replayed,true);assert.equal(pending.conversationSyncPending,true);assert.equal(pending.answer,data.answer);assert.deepEqual(h.stats(),{calls:1,reserves:1});
+ h.memory.setFailComplete(false);
+ const recovered=await handlePro(request(body),{...h.options,action:'chat'}),restored=await recovered.json();
+ assert.equal(restored.replayed,true);assert.equal(restored.conversationSyncPending,undefined);assert.equal(restored.conversation.turns.at(-1).status,'completed');
+ assert.deepEqual(restored.conversation.summary.planCodes,['platform-global-crypto']);assert.equal(restored.conversation.turns.at(-1).articles[0].id,'plans');
+ assert.deepEqual(h.rows.get(TURN),before);assert.deepEqual(h.stats(),{calls:1,reserves:1});
+});
+test('G44 Pro replay preserves pending-context status when a completed legacy turn loses the repair CAS',async()=>{
+ const h=proHarness(),body=await h.quoted();await handlePro(request(body),{...h.options,action:'chat'});
+ // A G43 repair could have recovered only the answer, leaving this old summary.
+ h.memory.snapshot.summary=initialConversationSummary();h.memory.snapshot.turns.at(-1).articles=[];
+ const before=clone(h.rows.get(TURN));h.setRepairRace();
+ const response=await handlePro(request(body),{...h.options,action:'chat'}),data=await response.json();
+ assert.equal(response.status,200);assert.equal(data.replayed,true);assert.equal(data.state,'settled');
+ assert.equal(data.conversation.turns.at(-1).status,'completed');assert.equal(data.conversationSyncPending,true);
+ assert.deepEqual(data.conversation.summary,initialConversationSummary());assert.equal(data.answer,before.result_data.answer);
+ assert.deepEqual(h.rows.get(TURN),before);assert.deepEqual(h.stats(),{calls:1,reserves:1});assert.deepEqual(h.repairStats(),{inspections:1,applications:1});
 });
 test('G43 prohibited Pro history injection and prepaid usage fail before provider dispatch',async()=>{
  const h=proHarness();assert.throws(()=>normalizeProInput({...h.input,history:[prior]}));assert.throws(()=>normalizeProInput({...h.input,lessonId:'mercado'}));

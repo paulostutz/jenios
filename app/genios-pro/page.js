@@ -16,17 +16,20 @@ function VerifiedSource({source}){
  if(!source||typeof source.provider!=='string'||typeof source.symbol!=='string'||!Number.isFinite(Date.parse(source.sourceAt)))return null;
  return <p className={styles.source}>Fonte: {source.provider} · {source.symbol}{PRO_TIMEFRAME_LABELS[source.timeframe]?' · '+PRO_TIMEFRAME_LABELS[source.timeframe]:''}. Último candle encerrado em {formatProDate(source.sourceAt)} (horário local).</p>;
 }
-function History({state,error,items,onRefresh,busy}){
+function History({state,status,error,items,hasMore,onRefresh,busy,refreshing,hasPending}){
  return <section className={styles.panel} aria-labelledby="pro-history-title">
-  <div className={styles.sectionHeading}><div><h2 id="pro-history-title">Seu histórico de consumo</h2><p>Valores e estados das suas últimas 50 consultas.</p></div><button type="button" className={styles.secondary} onClick={onRefresh} disabled={busy}>Atualizar histórico</button></div>
-  {state==='loading'?<p role="status">Conferindo seu histórico…</p>:error?<p role="alert" className={styles.error}>{error}</p>:!items.length?<p className={styles.empty}>Nenhum consumo Pro registrado nesta conta.</p>:<ol className={styles.history}>{items.map((item,index)=>{
+  <div className={styles.sectionHeading}><div><h2 id="pro-history-title">Seu histórico de consumo</h2><p>Até 50 consultas mais recentes desta conta, da mais nova para a mais antiga.</p></div><button type="button" className={styles.secondary} onClick={onRefresh} disabled={busy}>Atualizar histórico e conversa</button></div>
+  {refreshing&&<p role="status">Atualizando os registros do consumo e da conversa…</p>}
+  {hasPending&&<p className={styles.pendingNotice}>Existe uma consulta em conferência. Atualize para acompanhar o resultado; ela não será reenviada automaticamente.</p>}
+  {state==='loading'?<p role="status">Conferindo seu histórico…</p>:error?<p role="alert" className={styles.error}>{error} Use “Atualizar histórico e conversa” para conferir novamente.</p>:status==='not_provisioned'?<p className={styles.empty}>O histórico Pro ainda não está disponível nesta conta. Nenhum valor foi confirmado por esta consulta.</p>:!items.length?<p className={styles.empty}>Nenhuma consulta Pro registrada nesta conta.</p>:<><ol className={styles.history} aria-label="Consultas Pro registradas">{items.map((item,index)=>{
    const task=PRO_UI_TASKS.find(t=>t.id===item.task),persona=PERSONAS.find(p=>p.id===item.persona);
+   const final=['settled','released'].includes(item.state);
    return <li key={item.id||item.requestKey||index}>
-    <div><strong>{task?.label||'Consulta Pro'}</strong><small>{formatProDate(item.createdAt)}{persona?' · '+persona.name+' Pro':''}</small><span>{item.source==='included'?'Franquia do plano':item.source==='prepaid'?'Créditos comprados':'Origem a verificar'}</span></div>
-    <div className={styles.historyAmount}><span className={unresolvedRequest(item.state)?styles.pending:styles.status}>{requestStateLabel(item.state)}</span><strong>{!['settled','released'].includes(item.state)||item.chargedNanoUsd===null||item.chargedNanoUsd===undefined?'Valor a confirmar':formatNanoUsd(item.chargedNanoUsd)}</strong></div>
+    <div><strong>{task?.label||'Consulta Pro'}</strong><small>{formatProDate(item.createdAt)}{persona?' · '+persona.name+' Pro':''}</small><span>{item.source==='included'?'Franquia do plano':item.source==='prepaid'?'Créditos adquiridos anteriormente':'Origem a verificar'}</span></div>
+    <div className={styles.historyAmount}><span className={final?styles.status:styles.pending}>{requestStateLabel(item.state)}</span><strong>{!final||item.chargedNanoUsd===null||item.chargedNanoUsd===undefined?'Valor a confirmar':formatNanoUsd(item.chargedNanoUsd)}</strong></div>
     {item.state==='settled'&&typeof item.answer==='string'&&item.answer&&<details className={styles.historyDetail}><summary>Ver resposta</summary><div className={styles.answer}>{item.answer}</div><VerifiedSource source={item.sourceInfo}/></details>}
    </li>;
-  })}</ol>}
+  })}</ol><p className={styles.small}>Valores em US$ conforme o registro de consumo. O uso da franquia do plano não representa uma compra adicional.</p>{hasMore&&<p className={styles.historyLimit} role="status">Existem consultas anteriores. Este extrato exibe somente as 50 mais recentes.</p>}</>}
   <p className={styles.small}>O histórico mostra somente a sua conta. As imagens não são armazenadas neste extrato.</p>
  </section>;
 }
@@ -36,7 +39,7 @@ export default function GeniosPro(){
  const [lessonId,setLessonId]=useState(null),[memorySyncPending,setMemorySyncPending]=useState(false);
  const sendAbort=useRef(null),answersRef=useRef(null),conversationRef=useRef(null);
  const [account,setAccount]=useState({kind:'checking'}),[refresh,setRefresh]=useState(0),[error,setError]=useState('');
- const [history,setHistory]=useState({kind:'loading',items:[],error:''}),[busy,setBusy]=useState('');
+ const [history,setHistory]=useState({kind:'loading',status:null,items:[],hasMore:false,error:''}),[busy,setBusy]=useState('');
  const [persona,setPersona]=useState('genio'),[taskId,setTaskId]=useState('advanced_question'),[prompt,setPrompt]=useState('');
  const [source,setSource]=useState('included'),[symbol,setSymbol]=useState(''),[timeframe,setTimeframe]=useState('');
  const [attachment,setAttachment]=useState(null),[imageReading,setImageReading]=useState(false);
@@ -58,7 +61,7 @@ export default function GeniosPro(){
  function invalidateQuote(){setQuote(null);setConsent(false);setError('');setNotice('');}
  function clearPrivateState(){
   clearImage();setPrompt('');setQuote(null);setConsent(false);setMemorySyncPending(false);setPendingKey(null);setAnswers([]);setNotice('');setError('');
-  setHistory({kind:'loading',items:[],error:''});setLessonId(lessonFromSearch(typeof window==='undefined'?'':window.location.search));setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('included');
+  setHistory({kind:'loading',status:null,items:[],hasMore:false,error:''});setLessonId(lessonFromSearch(typeof window==='undefined'?'':window.location.search));setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('included');
  }
  async function sessionFor(expectedOwner){
   const result=await supabase?.auth.getSession(),session=result?.data?.session;
@@ -86,7 +89,11 @@ export default function GeniosPro(){
   if(ticket!==epoch.current)throw new DOMException('Sua sessão mudou.','AbortError');
   return result;
  }
- function historyItems(value){if(!Array.isArray(value?.items))throw Error('Não foi possível confirmar seu histórico. Atualize antes de continuar.');return value.items;}
+ function confirmedHistory(value){
+  if(!Array.isArray(value?.items)||value.items.length>50||value.items.some(item=>!item||typeof item!=='object'||Array.isArray(item))||
+   value.hasMore!=null&&typeof value.hasMore!=='boolean'||value.status==='not_provisioned'&&(value.items.length||value.hasMore))throw Error('Não foi possível confirmar seu histórico. Atualize antes de continuar.');
+  return {kind:'ready',status:value.status||null,items:value.items,hasMore:value.hasMore===true,error:''};
+ }
  function acceptAccess(value){
   setAccount({kind:'ready',data:value});
   const availableSymbols=Array.isArray(value.marketSymbols)?value.marketSymbols:[],availableTimeframes=Array.isArray(value.marketTimeframes)?value.marketTimeframes:[];
@@ -107,8 +114,8 @@ export default function GeniosPro(){
    setSource('included');
    try{
     const ledger=await api('history',session.access_token,{signal:controller.current.signal});
-    if(live&&ticket===epoch.current)setHistory({kind:'ready',items:historyItems(ledger),error:''});
-   }catch(e){if(live&&ticket===epoch.current&&e.name!=='AbortError')setHistory({kind:'ready',items:[],error:e.message});}
+    if(live&&ticket===epoch.current)setHistory(confirmedHistory(ledger));
+   }catch(e){if(live&&ticket===epoch.current&&e.name!=='AbortError')setHistory({kind:'ready',status:null,items:[],hasMore:false,error:e.message});}
   }catch(e){if(live&&ticket===epoch.current&&e.name!=='AbortError'){setAccount({kind:'unavailable'});setError(e.message);}}}
   void load();
   const auth=supabase?.auth.onAuthStateChange((event,session)=>{
@@ -142,7 +149,7 @@ export default function GeniosPro(){
    if(accessResult.status==='fulfilled')acceptAccess(accessResult.value);
    else{setError(accessResult.reason.message);setAccount(old=>({...old,data:{...old.data,paidGenerationEnabled:false,readinessMessage:'Atualize o histórico para confirmar seu acesso antes de continuar.'}}));}
    if(historyResult.status==='fulfilled'){
-    const items=historyItems(historyResult.value);setHistory({kind:'ready',items,error:''});
+    const nextHistory=confirmedHistory(historyResult.value),items=nextHistory.items;setHistory(nextHistory);
     const completed=pendingKey&&items.find(item=>item.requestKey===pendingKey&&['settled','released'].includes(item.state));
     if(completed){setPendingKey(null);setNotice(completed.state==='settled'?'O consumo desta consulta foi confirmado no histórico.':'A reserva desta consulta foi liberada. Você pode solicitar uma nova estimativa.');setError('');}
    }else setHistory(old=>({...old,kind:'ready',error:historyResult.reason.message}));
@@ -212,7 +219,7 @@ export default function GeniosPro(){
    if(ticket!==epoch.current)return;
    if(results[0].status==='fulfilled')acceptAccess(results[0].value);
    else setAccount(old=>({...old,data:{...old.data,paidGenerationEnabled:false,readinessMessage:'Atualize o histórico para confirmar seu saldo antes de continuar.'}}));
-   if(results[1].status==='fulfilled')setHistory({kind:'ready',items:historyItems(results[1].value),error:''});
+   if(results[1].status==='fulfilled')setHistory(confirmedHistory(results[1].value));
    else setHistory(old=>({...old,error:'Não foi possível atualizar o histórico. Consulte novamente antes de continuar.'}));
   }catch{if(ticket===epoch.current)setHistory(old=>({...old,error:'Não foi possível atualizar o histórico. Consulte novamente antes de continuar.'}));}
  }
@@ -252,7 +259,7 @@ export default function GeniosPro(){
   </section>
   {busy==='chat'&&<div className={styles.panel} role="status"><p>Preparando sua resposta com o contexto autorizado…</p><button type="button" className={styles.secondary} onClick={()=>sendAbort.current?.abort(new DOMException('Espera interrompida.','AbortError'))}>Parar espera</button><p className={styles.small}>Interromper a espera não cancela uma geração que o provedor já iniciou.</p></div>}
   {!!visibleAnswers.length&&<section ref={answersRef} className={styles.panel} aria-label="Conversa avançada"><h2>Sua conversa</h2><div className={styles.answers} aria-live="polite">{visibleAnswers.map(result=><article key={result.turnId}><div className={styles.answerHeading}><strong>{PERSONAS.find(p=>p.id===(result.persona||memory.persona))?.name||'Gênio'} Pro</strong></div><p className={styles.question}>{result.question}</p><div className={styles.answer}>{settledTurn(result)?result.answer:result.notice||'Preparando ou conferindo a resposta…'}</div><VerifiedSource source={result.sourceInfo}/>{settledTurn(result)&&memory.conversation?.turns.some(t=>t.turnId===result.turnId)&&<div className={styles.answer}><AnswerFeedback memory={memory} turnId={result.turnId}/></div>}</article>)}</div></section>}
-  {account.kind==='ready'&&<section className={styles.panel}><h2>Estado das consultas</h2><p>Confira se uma solicitação foi concluída antes de tentar novamente.</p><button type="button" className={styles.secondary} disabled={Boolean(busy)||imageReading} onClick={refreshLedger}>Atualizar histórico e conversa</button>{history.error&&<p role="alert" className={styles.error}>{history.error}</p>}{hasPending&&<p className={styles.pendingNotice}>Existe uma consulta em conferência. Ela não será reenviada automaticamente.</p>}</section>}
+  {account.kind==='ready'&&<History state={history.kind} status={history.status} error={history.error} items={history.items} hasMore={history.hasMore} onRefresh={refreshLedger} busy={Boolean(busy)||imageReading} refreshing={busy==='refresh'} hasPending={hasPending}/>}
 
   
   

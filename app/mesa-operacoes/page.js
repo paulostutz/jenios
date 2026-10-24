@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import {resolveAssetSymbol} from '../../lib/platform/asset-symbol.mjs';
 import BrokerGuideLinks from '../components/platform/BrokerGuideLinks';
 import { adaptiveModeSuggestion } from '../../lib/platform/diagnostic-routing.mjs';
 import PlatformStrategyLab from '../components/platform/PlatformStrategyLab';
@@ -30,6 +31,7 @@ export default function MesaOperacoesPage() {
   const [intencoes, setIntencoes] = useState([]);
   const [riskEvidence,setRiskEvidence]=useState(NO_EVIDENCE);
   const [pausaManual, setPausaManual] = useState(false);
+  const [mensagemOrdem,setMensagemOrdem]=useState('');
   const [bloqueiosDeRisco, setBloqueiosDeRisco] = useState(0);
 
   const atualizarSaldoSimulado = (novoValor) => {
@@ -62,9 +64,9 @@ export default function MesaOperacoesPage() {
   };
   const solicitarContaReal = () => {
     if (!diagnosticoConcluido) {
-      alert('Para iniciar operações reais é obrigatório concluir o Diagnóstico Comportamental disponível na Dashboard. O simulador continua acessível.');
+      setMensagemOrdem('Para iniciar operações reais é obrigatório concluir o Diagnóstico Comportamental disponível na Dashboard. O simulador continua acessível.');
     } else {
-      alert('Seu diagnóstico inicial foi registrado. A execução real aguarda validação no servidor e conexão homologada da corretora. O navegador não autoriza ordens reais.');
+      setMensagemOrdem('Seu diagnóstico inicial foi registrado. A execução real aguarda validação no servidor e conexão homologada da corretora. O navegador não autoriza ordens reais.');
     }
   };
 
@@ -78,6 +80,7 @@ export default function MesaOperacoesPage() {
   
   // Input de busca personalizada
   const [inputBuscaCustomizada, setInputBuscaCustomizada] = useState('');
+  const [erroBusca,setErroBusca]=useState('');
 
   // Gestão de Risco e Alocação (Baseada no Saldo Simulado Sincronizado)
   const [capitalAlocar, setCapitalAlocar] = useState(1000);
@@ -116,41 +119,30 @@ export default function MesaOperacoesPage() {
 
   const handleBuscaCustomizada = (e) => {
     e.preventDefault();
-    if (!inputBuscaCustomizada.trim()) return;
-
-    let simboloFormatado = inputBuscaCustomizada.trim().toUpperCase();
-    if (!simboloFormatado.includes(':')) {
-      if (['WIN', 'WDO', 'PETR4', 'VALE3', 'ITUB4', 'BBDC4'].includes(simboloFormatado)) {
-        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
-        if (simboloFormatado === 'BMFBOVESPA:WIN') simboloFormatado = 'BMFBOVESPA:WIN1!';
-        if (simboloFormatado === 'BMFBOVESPA:WDO') simboloFormatado = 'BMFBOVESPA:WDO1!';
-      } else if (['BTCUSDT', 'ETHUSDT', 'SOLUSDT'].includes(simboloFormatado)) {
-        simboloFormatado = `BINANCE:${simboloFormatado}`;
-      } else {
-        simboloFormatado = `BMFBOVESPA:${simboloFormatado}`;
-      }
-    }
-
-    setAtivoSelecionado(simboloFormatado);
-    setNomeAtivoExibicao(inputBuscaCustomizada.toUpperCase());
+    const result=resolveAssetSymbol(inputBuscaCustomizada);
+    if(!result.ok){setErroBusca(result.error);return;}
+    setErroBusca('');
+    setAtivoSelecionado(result.symbol);
+    setNomeAtivoExibicao(result.label);
     setInputBuscaCustomizada('');
   };
 
 
 
   const executarOrdem = (direcao) => {
-    if (tipoConta !== 'simulada') { alert('Ordens reais não autorizadas nesta interface.'); return; }
-    if (readSimulationPaused(window.sessionStorage,operadorId)) { setBloqueiosDeRisco(n=>n+1); return; }
+    if (tipoConta !== 'simulada') { setMensagemOrdem('Ordens reais não autorizadas nesta interface.'); return; }
+    if (readSimulationPaused(window.sessionStorage,operadorId)) { setBloqueiosDeRisco(n=>n+1); setMensagemOrdem('Simulação pausada. Retome a sessão para registrar outra intenção.'); return; }
     const valor=Number(capitalAlocar),quantidade=Number(contratos);
     if (!Number.isFinite(valor)||valor<=0||valor>limiteMaximoRiscoPermitido||!Number.isInteger(quantidade)||quantidade<1) {
       setBloqueiosDeRisco(n=>n+1);
-      alert('Intenção fictícia bloqueada: revise o limite máximo de 5% e a quantidade de contratos.');
+      setMensagemOrdem('Intenção fictícia bloqueada: revise o limite máximo de 5% e a quantidade de contratos.');
       return;
     }
     const recorded=appendSimIntention(window.sessionStorage,operadorId,
-      {ativo:nomeAtivoExibicao,direcao,modo:modoOperacao,valor});
-    if(!recorded.ok){alert('Não foi possível salvar o diário de simulação. Nenhuma ordem foi enviada.');return;}
+      {ativo:nomeAtivoExibicao,direcao,modo:modoOperacao,valor,quantidade});
+    if(!recorded.ok){setMensagemOrdem('Não foi possível salvar o diário de simulação. Nenhuma ordem foi enviada.');return;}
     setIntencoes(recorded.events);
+    setMensagemOrdem('Intenção fictícia registrada. Nenhuma ordem transmitida.');
   };return (
     <main style={{ backgroundColor: '#0f172a', color: '#f8fafc', minHeight: '100vh', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       
@@ -191,7 +183,7 @@ export default function MesaOperacoesPage() {
               onClick={solicitarContaReal} 
               style={{ backgroundColor: tipoConta === 'real' ? '#059669' : 'transparent', color: tipoConta === 'real' ? '#fff' : '#475569', border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
             >
-              Conta Real
+              Sobre a conta real
             </button>
           </div>
 
@@ -228,7 +220,7 @@ export default function MesaOperacoesPage() {
             onClick={() => setModalRiscoAberto(true)}
             style={{ backgroundColor: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
           >
-            ⚙️ Risco & Alvo (1.5x)
+            Como funciona o limite
           </button>
         </div>
       </div>
@@ -251,7 +243,10 @@ export default function MesaOperacoesPage() {
                 <span>🔍</span>
                 <input 
                   type="text" 
-                  placeholder="Digite qualquer ativo (ex: PETR4, VALE3, BTCUSDT, AAPL)..."
+                  aria-label="Buscar ativo"
+                  aria-describedby="asset-search-message"
+                  aria-invalid={Boolean(erroBusca)}
+                  placeholder="PETR4, BTC/USDT, EUR/USD ou NASDAQ:AAPL"
                   value={inputBuscaCustomizada}
                   onChange={(e) => setInputBuscaCustomizada(e.target.value)}
                   style={{ border: 'none', outline: 'none', fontSize: '12px', width: '100%', background: 'transparent', color: '#0f172a' }}
@@ -261,6 +256,7 @@ export default function MesaOperacoesPage() {
                 Buscar Ativo
               </button>
             </form>
+              <p id="asset-search-message" role={erroBusca?"alert":undefined} style={{margin:0,fontSize:12,color:erroBusca?"#b91c1c":"#64748b"}}>{erroBusca||"Para outros ativos, informe BOLSA:ATIVO. A disponibilidade é confirmada pelo TradingView."}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold' }}>⚡ Atalhos Principais:</span>
@@ -292,6 +288,7 @@ export default function MesaOperacoesPage() {
           </div>
 
           <ResponsiveTradingViewChart symbol={ativoSelecionado} label={nomeAtivoExibicao}/>
+          {mensagemOrdem && <p role="status" style={{fontSize:13,color:"#334155"}}>{mensagemOrdem}</p>}
         </div>
 
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '20px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', boxSizing: 'border-box' }}>
@@ -309,13 +306,13 @@ export default function MesaOperacoesPage() {
                   onClick={() => alterarModo('manual')}
                   style={{ backgroundColor: modoOperacao === 'manual' ? '#334155' : '#f1f5f9', color: modoOperacao === 'manual' ? '#fff' : '#334155', border: 'none', padding: '8px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
-                  Manual Puro
+                  Manual
                 </button>
                 <button 
                   onClick={() => alterarModo('reversa')}
                   style={{ backgroundColor: modoOperacao === 'reversa' ? '#7c3aed' : '#f1f5f9', color: modoOperacao === 'reversa' ? '#fff' : '#334155', border: 'none', padding: '8px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                 >
-                  Engenharia Reversa
+                  Reverso (estudo)
                 </button>
               </div>
             </div>
@@ -361,7 +358,7 @@ export default function MesaOperacoesPage() {
             <strong>Histórico de intenções fictícias</strong>
             <p className={terminal.note}>Intenções: {intencoes.length}. Bloqueios simulados: {bloqueiosDeRisco}. Valor de prejuízo evitado não apurado.</p>
             {intencoes.length===0 ? <p className={terminal.note}>Ainda não há decisões fictícias registradas nesta sessão.</p> :
-              <ol>{intencoes.map(entry=><li key={entry.id}><span>{entry.hora} · {entry.ativo} · {entry.direcao}</span><span>R$ {entry.valor.toLocaleString('pt-BR')} · {entry.modo}</span></li>)}</ol>}
+              <ol>{intencoes.map(entry=><li key={entry.id}><span>{entry.hora} · {entry.ativo} · {entry.direcao}</span><span>R$ {entry.valor.toLocaleString('pt-BR')} · {entry.modo}{entry.quantidade ? ` · ${entry.quantidade} lote(s)` : ''}</span></li>)}</ol>}
             <div style={{display:'flex',gap:8,marginTop:12,flexWrap:'wrap'}}>
               <button type="button" onClick={()=>{
                 const paused=!pausaManual;
@@ -372,7 +369,7 @@ export default function MesaOperacoesPage() {
             </div>
           </section>
                     <div style={{ backgroundColor: '#f3e8ff', border: '1px solid #e9d5ff', borderRadius: '10px', padding: '10px', fontSize: '10px', color: '#581c87', marginTop: '16px' }}>
-            <b>Estratégia Aplicada:</b> Perder de colherinha (stop matemático curto) e ganhar de balde (alvo configurado automaticamente a 1.5x do risco).
+            <b>Diário de estudo:</b> registre valor, quantidade e direção da intenção. Não há execução, alvo ou stop automático nesta tela.
           </div>
         </div>
 
@@ -383,24 +380,24 @@ export default function MesaOperacoesPage() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '420px', width: '100%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>
-                GESTÃO INSTITUCIONAL • Configuração de Risco
+                SIMULAÇÃO • Limite de alocação
               </span>
-              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Parâmetros de Proteção</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Limite por intenção</h2>
               <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>
-                Defina os limites de alocação e o multiplicador de ganho assimétrico.
+                Nesta mesa, cada intenção pode usar até 5% do saldo fictício. Ajuste o valor no formulário principal.
               </p>
             </div>
 
             <div style={{ backgroundColor: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <span>🛡️ <b>Trava de Capital (5%):</b> Máximo permitido com base no saldo simulado atual: <b>R$ {limiteMaximoRiscoPermitido.toFixed(2)}</b>.</span>
-              <span>🎯 <b>Relação Risco/Retorno:</b> Alvo ilustrativo de <b>1.5x</b> o valor do risco estipulado.</span>
+              <span>Esse limite é uma regra do simulador. Ele não configura proteção ou ordens em uma corretora.</span>
             </div>
 
             <button 
               onClick={() => setModalRiscoAberto(false)}
               style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer', textTransform: 'uppercase' }}
             >
-              Fechar parâmetros ilustrativos
+              Entendi
             </button>
           </div>
         </div>
@@ -411,9 +408,9 @@ export default function MesaOperacoesPage() {
           <div style={{ backgroundColor: '#ffffff', color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', maxWidth: '520px', width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
               <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px', display: 'block' }}>
-                JENIOS BROKER GATEWAY • Conexão Segura
+                JENIOS • Guias de corretoras
               </span>
-              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Conectar minha corretora</h2>
+              <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#0f172a', margin: '0 0 4px 0' }}>Conhecer as conexões</h2>
             </div>
             <BrokerGuideLinks/>
             <button 
@@ -426,7 +423,7 @@ export default function MesaOperacoesPage() {
         </div>
       )}
 
-      <PlatformStrategyLab userId={operadorId} balance={saldoSimulado}/>
+      <PlatformStrategyLab userId={operadorId} balance={saldoSimulado} paused={pausaManual}/>
       <BrandFooter tone="dark" scope="Mesa de operações"/>
     </main>
   );

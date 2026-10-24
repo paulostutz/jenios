@@ -21,6 +21,7 @@ jobs:
       JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
       JENIOS_REAL_EXECUTION_ENABLED: 'false'
       JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_PLATFORM_SUBSCRIPTION_LIFECYCLE_CERTIFIED: 'false'
       JENIOS_INTER_CHARGES_ENABLED: 'false'
       JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
       JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED: 'false'
@@ -46,6 +47,11 @@ jobs:
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: B305 finance email template and guards
         run: node --test tests/jeniosB305FinanceEmail.test.mjs tests/jeniosB305OutboxWorker.test.mjs tests/jeniosB305PrivateRunner.test.mjs tests/jeniosB305ReadinessDiagnostic.test.mjs tests/jeniosB305Dunning.test.mjs tests/jeniosB305DunningRoute.test.mjs tests/jeniosB305LifecycleCampaigns.test.mjs tests/jeniosB305TransactionalDelivery.test.mjs tests/emailPublicCopyB305.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs tests/jeniosB305OnboardingBridge.test.mjs tests/jeniosB305SubscriptionLifecycleEmails.test.mjs tests/jeniosB305MarketingPlanner.test.mjs tests/jeniosB305NonFinancialLifecycle.test.mjs tests/jeniosB305UniversityMilestones.test.mjs tests/jeniosB305EmailAdminHealth.test.mjs tests/jeniosB305ResendSuppressionLedger.test.mjs tests/jeniosB305EmailObservability.test.mjs tests/jeniosB305EmailReleaseReadiness.test.mjs tests/jeniosB305UniversityDeliveryEvidence.test.mjs tests/jeniosB305UniversityMessageAdapter.test.mjs tests/jeniosB305MarketingMessageAdapter.test.mjs tests/jeniosB305FinanceOutboxIndex.test.mjs tests/jeniosB305EmailPreflightSql.test.mjs tests/jeniosB305ResendWebhookEndpoint.test.mjs tests/jeniosB305MarketingDeliveryWorker.test.mjs tests/jeniosB305UniversityTransactionalWorker.test.mjs
+      - name: R36-R37 platform and commercial boundary regression
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          node --test tests/jeniosB305BlockAAdminContract.test.mjs tests/jeniosB305BlockAJourney.test.mjs tests/jeniosB305BlockBCheckoutRelease.test.mjs tests/jeniosB305BlockBCommerceFlow.test.mjs | tee artifacts/jenios-r37-contracts.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -149,4 +155,16 @@ jobs:
             docs/platform/B305-R34-MARKETING-DELIVERY-WORKER.md
             tests/jeniosB305UniversityTransactionalWorker.test.mjs
             docs/platform/B305-R35-UNIVERSITY-TRANSACTIONAL-WORKER.md
+            lib/email/database-preflight.mjs
+            tests/jeniosB305BlockAAdminContract.test.mjs
+            tests/jeniosB305BlockAJourney.test.mjs
+            docs/platform/B305-R36-BLOCK-A-STABILIZATION.md
+            lib/pay/checkout-release.mjs
+            app/api/platform/checkout/route.js
+            app/api/jenios-pay/checkout/route.js
+            app/api/jenios-pay/products/route.js
+            tests/jeniosB305BlockBCheckoutRelease.test.mjs
+            tests/jeniosB305BlockBCommerceFlow.test.mjs
+            docs/platform/B305-R37-BLOCK-AB-CHECKOUT-BOUNDARY.md
+            artifacts/jenios-r37-contracts.tap
           retention-days: 30

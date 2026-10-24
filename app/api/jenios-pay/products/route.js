@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getJeniosPayAdmin } from "../../../../lib/jenios-pay-admin";
 import { mergeCatalog, productScope } from '../../../../lib/pay/catalog.mjs';
 import { gatewayConfig } from '../../../../lib/pay/gateway.mjs';
+import {checkoutCatalogReadiness} from '../../../../lib/pay/checkout-release.mjs';
 import { withBankscoreAvailability } from '../../../../lib/bankscore/coverage.mjs';
 
 export const runtime = "nodejs";
@@ -15,13 +16,14 @@ export async function GET(request) {
       .select("id,code,name,category,description,price_cents,currency,billing_type,active")
       .order("name").limit(100);
     if (error) throw error;
+    let gateway=null;
+    try{gateway=gatewayConfig();}catch{}
+    const readiness=checkoutCatalogReadiness(scope,{env:process.env,gateway});
     return NextResponse.json({
       products: mergeCatalog(data).filter(p => productScope(p) === scope).map(p => withBankscoreAvailability({ ...p, configured: Boolean(p.id) })),
-      paymentsEnabled: Boolean(gatewayConfig() && (scope==='social'||gatewayConfig().provider!=='inter_pix')),
-      checkoutReady: Boolean(gatewayConfig() && (scope==='social'||gatewayConfig().provider!=='inter_pix')),
-      checkoutScope: scope,
+      ...readiness,
     }, { headers: { "Cache-Control": "no-store" } });
   } catch {
-    return NextResponse.json({ products: mergeCatalog().filter(p => productScope(p) === scope).map(p => withBankscoreAvailability({ ...p, configured: false })), catalogStatus: 'defaults', paymentsEnabled: false, checkoutReady: false, checkoutScope: scope }, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json({ products: mergeCatalog().filter(p => productScope(p) === scope).map(p => withBankscoreAvailability({ ...p, configured: false })), catalogStatus: 'defaults', paymentsEnabled: false, checkoutReady: false, checkoutScope: scope, subscriptionLifecycleReady: false }, { headers: { "Cache-Control": "no-store" } });
   }
 }

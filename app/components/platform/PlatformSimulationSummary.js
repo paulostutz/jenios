@@ -1,9 +1,10 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
 import Link from 'next/link';
+import MoneyInput from './MoneyInput';
 import {readSimJournal,clearSimJournal} from '../../../lib/platform/simulation-journal.mjs';
 import {
- DEFAULT_SIMULATED_BALANCE,MAX_SIMULATED_BALANCE,readSimulatedBalance,
+ DEFAULT_SIMULATED_BALANCE,readSimulatedBalance,
  writeSimulatedBalance,readSimulationPaused,writeSimulationPaused
 } from '../../../lib/platform/simulation-account.mjs';
 
@@ -88,8 +89,7 @@ export default function PlatformSimulationSummary({userId}){
   <form onSubmit={changeBalance} style={{display:'flex',gap:9,alignItems:'end',flexWrap:'wrap'}}>
    <label style={{display:'grid',gap:5,fontSize:12,fontWeight:700}}>
     Ajustar capital fictício (R$)
-    <input type="number" inputMode="decimal" min="0" max={MAX_SIMULATED_BALANCE} step="0.01"
-      value={balanceInput} onChange={event=>setBalanceInput(event.target.value)}
+    <MoneyInput value={balanceInput} onValueChange={setBalanceInput}
       style={{padding:'10px 11px',border:'1px solid #cbd5e1',borderRadius:9,maxWidth:220,width:'100%'}}/>
    </label>
    <button type="submit" style={{...actionStyle,background:'#6d28d9',color:'#fff'}}>

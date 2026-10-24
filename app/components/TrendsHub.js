@@ -5,7 +5,7 @@ import NewTokenRadar from './NewTokenRadar';
 
 import Link from 'next/link';
 import useTrendsData from './useTrendsData';
-import {TREND_MODULES,trendDetail,trendUrl,visibleTrendRows} from '../../lib/trends-ui.mjs';
+import {ACTIVE_TREND_MODULES,trendDetail,trendUrl,visibleTrendRows} from '../../lib/trends-ui.mjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const COLORS = {
@@ -20,7 +20,7 @@ const COLORS = {
 };
 
 // Search-popularity trends are a legacy dataset, not an approved Social Hub module.
-const MODULES = TREND_MODULES.filter(item => item.id !== 'tokens');
+const MODULES = ACTIVE_TREND_MODULES;
 
 function formatTime(value) {
   if (!value) return 'Aguardando atualização';

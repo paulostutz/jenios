@@ -53,3 +53,20 @@ Uma aprovação da CI demonstra os testes automatizados e o build desse commit. 
 3. Tratar qualquer validação futura em corretora como etapa separada, mediante autorização específica, sem preencher retroativamente o R15 e sem substituir os resultados sintéticos.
 
 Enquanto isso, `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` continuam `null`; performance comercial e rentabilidade real permanecem não certificadas.
+
+## Resultado de referência do bloco
+
+CI de referência: [40093976596](https://github.com/paulostutz/jenios/actions/runs/40093976596), commit `bd83b220a96c964f5fd59e72fc932ffe9fa1c651`, concluída em 24/10/2026 às 12:28:26 UTC.
+
+| Verificação | Resultado |
+|---|---:|
+| Direcionados, incluindo preservação R12–R59 | 264/264 |
+| Gerais | 2.070/2.070 |
+| Social | 94/94 |
+| Build | PASS |
+| Páginas | 76/76 |
+| Falhas / testes ignorados | 0 / 0 |
+
+A consulta da Vercel às 12:28:55 UTC retornou zero tentativas de deploy para esse commit. A primeira execução do R60 identificou uma asserção legada dependente do comando inline; o histórico dessa falha e da correção permanece no checkpoint. Nenhum teste foi removido ou ignorado.
+
+Após consolidar estes registros, executar novamente o workflow no commit consolidado e criar o backup `backup/jenios-robot-r60-operational-closeout-certified-20261024` apontando para esse mesmo commit aprovado. O SHA da ref e a CI associada identificam o resultado final sem autorreferência no conteúdo versionado.

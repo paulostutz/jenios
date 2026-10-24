@@ -818,7 +818,7 @@
   },
   "operationalCloseout": {
     "revision": "R60",
-    "status": "AWAITING_CI",
+    "status": "OFFLINE_VALIDATED",
     "researchCertificationPreserved": "R12-R59",
     "baseResearchCommit": "f7dd8f4a0db658dcd3bd957bc403c397d08f7621",
     "baseResearchRun": 39957136366,
@@ -841,7 +841,20 @@
     "externalPaperOrdersSent": 0,
     "mergePerformed": false,
     "deployPerformed": false,
-    "productionApproved": false
+    "productionApproved": false,
+    "validatedAt": "2026-10-24T12:28:26Z",
+    "evidence": {
+      "validationRun": 40093976596,
+      "validatedCommit": "bd83b220a96c964f5fd59e72fc932ffe9fa1c651",
+      "directed": "264/264",
+      "general": "2070/2070",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "failures": 0,
+      "skipped": 0
+    },
+    "automaticDeploymentAttemptsForValidatedCommit": 0,
+    "backupRef": "backup/jenios-robot-r60-operational-closeout-certified-20261024"
   }
 }
-

@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_R60_OPERATIONAL_CLOSEOUT_CHECKPOINT_V1",
   "block": "R60",
-  "classification": "OPERATIONAL_CLOSEOUT_AWAITING_CI",
+  "classification": "OPERATIONAL_CLOSEOUT_OFFLINE_CERTIFIED",
   "scope": "research deployment isolation, truthful demonstration UI, and manual acceptance handoff",
   "base": {
     "branch": "backup/jenios-robot-r59-final-research-certified-20261023",
@@ -9,7 +9,6 @@
     "validationRun": 39957136366
   },
   "branch": "research/jenios-robot-r60-operational-closeout-20261024",
-  "backupPlanned": "backup/jenios-robot-r60-operational-closeout-certified-20261024",
   "createdAt": "2026-10-24T12:12:46Z",
   "invariantPreservation": {
     "researchR12R59ModulesChanged": false,
@@ -43,7 +42,7 @@
     "guide": "docs/platform/ROBOT_R60_MANUAL_ACCEPTANCE.md"
   },
   "validation": {
-    "status": "AWAITING_CI",
+    "status": "PASS",
     "localUiBoundaryTests": {
       "passed": 3,
       "total": 3
@@ -52,7 +51,7 @@
       "researchExitCode": 0,
       "normalBranchExitCode": 1
     },
-    "localGuardSuite": "NOT_VALIDATED_LOCAL_CHILD_PROCESS_EPERM; full suite required in GitHub Actions",
+    "localGuardSuite": "Subprocess execution is restricted locally (EPERM); all seven guard cases passed in GitHub Actions Node 22.",
     "priorAttempts": [
       {
         "run": 40093896831,
@@ -62,11 +61,32 @@
         "conclusion": "FAIL",
         "reason": "Legacy R5 deploy test required inline branch names; replaced with actual configured command execution, preserving exclusions."
       }
-    ]
+    ],
+    "evidence": {
+      "validationRun": 40093976596,
+      "validatedCommit": "bd83b220a96c964f5fd59e72fc932ffe9fa1c651",
+      "directed": "264/264",
+      "general": "2070/2070",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "failures": 0,
+      "skipped": 0
+    },
+    "deploymentIsolation": {
+      "checkedAt": "2026-10-24T12:28:55Z",
+      "commit": "bd83b220a96c964f5fd59e72fc932ffe9fa1c651",
+      "automaticVercelDeploymentAttempts": 0
+    }
   },
   "limitations": [
     "Source-level checks and CI build are not browser end-to-end acceptance.",
     "The four certified research policies are not yet all connected to the audited product UI.",
     "Future real execution requires separate evidence and authorization."
-  ]
+  ],
+  "validatedAt": "2026-10-24T12:28:26Z",
+  "backup": {
+    "branch": "backup/jenios-robot-r60-operational-closeout-certified-20261024",
+    "creationRule": "Create only after the consolidated commit passes CI; the Git ref is authoritative for its final SHA."
+  }
 }

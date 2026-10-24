@@ -43,9 +43,10 @@
       "research/jenios-robot-*": false,
       "backup/jenios-robot-*": false,
       "research/jenios-robot-r60-operational-closeout-20261024": false,
-      "backup/jenios-robot-r60-operational-closeout-certified-20261024": false
+      "backup/jenios-robot-r60-operational-closeout-certified-20261024": false,
+      "research/jenios-robot-r61-qa-policy-integration-20261024": false,
+      "backup/jenios-robot-r61-qa-policy-integration-certified-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"
 }
-

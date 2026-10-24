@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {notFound} from 'next/navigation';
+import { isRobotR61QaEnabled } from '../../../lib/platform/research/robot-r61-qa-access.mjs';
 export const dynamic='force-dynamic';
 export const metadata={title:'Homologação privada • JENIOS Platform',robots:{index:false,follow:false}};
 /** B232: preview-only static QA information. No account data, secrets, routes or permissions. */
@@ -21,7 +22,9 @@ export default function HomologacaoPage(){
     {sections.map(([title,description])=><section key={title} style={{background:'#1e293b',border:'1px solid #475569',padding:20,borderRadius:14}}><h2 style={{fontSize:18,color:'#e9d5ff'}}>{title}</h2><p style={{fontSize:14,lineHeight:1.6}}>{description}</p></section>)}
    </div>
    <p style={{marginTop:28,fontSize:14,color:'#fbbf24'}}>Estado da execução automatizada: NÃO HOMOLOGADA. Custódia pela JENIOS: NÃO.</p>
+   {isRobotR61QaEnabled(process.env) && <p style={{marginTop:24}}><Link href="/platform/homologacao/robos" prefetch={false} style={{color:'#c4b5fd',fontWeight:800}}>Abrir homologação dos quatro robôs com dados sintéticos →</Link></p>}
    <Link href="/integracoes" style={{color:'#c4b5fd',fontWeight:800}}>Ver os guias de corretoras →</Link>
   </article>
  </main>;
 }
+

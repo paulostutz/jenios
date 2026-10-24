@@ -57,7 +57,10 @@
       "backup/jenios-robot-r65-evolution-cycle-progress-20261024": false,
       "research/jenios-robot-r66-durable-emitter-20261024": false,
       "backup/jenios-robot-r66-durable-emitter-progress-20261024": false,
-      "backup/jenios-robot-r66-durable-emitter-certified-20261024": false
+      "backup/jenios-robot-r66-durable-emitter-certified-20261024": false,
+      "research/jenios-robot-r67-private-source-bridge-20261024": false,
+      "backup/jenios-robot-r67-private-source-bridge-progress-20261024": false,
+      "backup/jenios-robot-r67-private-source-bridge-certified-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"

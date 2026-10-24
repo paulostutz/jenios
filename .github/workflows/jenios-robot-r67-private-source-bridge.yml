@@ -1,0 +1,66 @@
+name: JENIOS ROBOT R67 private source bridge (no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r67-private-source-bridge-20261024]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_DB: jenios_r67_qa
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: r67-test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JENIOS_R67_TEST_DATABASE_URL: 'postgresql://postgres:r67-test-only@127.0.0.1:5432/jenios_r67_qa'
+      JENIOS_R67_DISPOSABLE_DB: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R67 public contract fixtures and private-loader rejection boundaries
+        run: node --test tests/platformRobotR67*.test.mjs
+      - name: Preserve R66 persistence compatibility and R64 R65 adapter contracts
+        run: node --test tests/platformRobotR66*.test.mjs tests/platformRobotR65*.test.mjs tests/platformRobotR64*.test.mjs tests/platformRobotR61AssistedAcceptance.test.mjs tests/platformRobotR61UltrafastAcceptance.test.mjs tests/platformRobotR60NoDeployGuard.test.mjs
+      - name: Ensure disposable PostgreSQL client
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: R67 public protocol fixtures on actual disposable PostgreSQL
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r67-evidence
+        run: node scripts/platform/research/r67-postgres-acceptance.mjs
+      - name: Preserve complete application test and build gates
+        run: npm run build
+      - name: Retain sanitized public R67 PostgreSQL evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r67-public-protocol-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/jenios-r67-evidence
+          if-no-files-found: warn
+          retention-days: 14

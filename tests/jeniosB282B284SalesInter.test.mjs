@@ -169,19 +169,22 @@ test('B283 bank test does only READ for nonexistent charge, never creates paymen
  const config={purpose:'jenios_pix_configuration_only',client_id:'b283-fake-client-id',
   client_secret:'b283-fake-client-secret',certificate:cert,private_key:key,
   pix_key:'b283-pix-key-value',account_number:''};
+ const metadata={configured:true,bankAuthenticated:true,chargesEnabled:false,configurationVersion:1,
+  fingerprintSha256:validateJeniosInterSetup(material()).fingerprintSha256};
  const calls=[],db={rpc:async(name,params)=>{
   calls.push({name,params});return {data:name==='jenios_inter_load_b283'?config:
-   {bankAuthenticated:true,chargesEnabled:false},error:null};
+   name==='jenios_inter_claim_setup_attempt_r40'?true:metadata,error:null};
  }};
  const runtime=await loadJeniosInterServerEnv(db,{JENIOS_PAY_PROVIDER:'inter_pix'});
  assert.equal(runtime.INTER_CLIENT_ID,config.client_id);
  const status=await testJeniosInterAuth(db,{makeClient:()=>({
-  read:async txid=>{calls.push({name:'GET_CHARGE',txid});throw Object.assign(Error('Not found'),{bankStatus:404});},
+  read:async txid=>{calls.push({name:'GET_CHARGE',txid});throw Object.assign(Error('Not found'),{bankStatus:404,bankOperation:'pix_read'});},
   create:async()=>assert.fail('No real bank charge')
  })});
  assert.equal(status.bankAuthenticated,true);assert.equal(status.chargesEnabled,false);
- assert.deepEqual(calls.map(x=>x.name),['jenios_inter_load_b283','jenios_inter_load_b283',
-  'GET_CHARGE','jenios_inter_mark_auth_b283']);
+ assert.deepEqual(calls.map(x=>x.name),['jenios_inter_load_b283','jenios_inter_claim_setup_attempt_r40',
+  'jenios_inter_status_b283','jenios_inter_load_b283','GET_CHARGE','jenios_inter_mark_auth_r40']);
+ assert.deepEqual(calls.at(-1).params,{p_expected_version:1,p_cert_fingerprint:metadata.fingerprintSha256});
 });
 test('B284 LP and Platform reuse Social sales room, and legacy fixed Pix is absent',()=>{
  const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');

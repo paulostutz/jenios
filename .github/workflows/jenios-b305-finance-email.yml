@@ -24,6 +24,7 @@ jobs:
       JENIOS_PLATFORM_SUBSCRIPTION_LIFECYCLE_CERTIFIED: 'false'
       JENIOS_INTER_CHARGES_ENABLED: 'false'
       JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
+      JENIOS_EMAIL_PRODUCTION_ENABLED: 'false'
       JENIOS_B305_PRIVATE_EMAIL_RUNNER_ENABLED: 'false'
       JENIOS_SUBSCRIPTION_DUNNING_ENABLED: 'false'
       JENIOS_TRANSACTIONAL_EMAILS_ENABLED: 'false'
@@ -57,6 +58,11 @@ jobs:
           set -o pipefail
           mkdir -p artifacts
           node --test tests/platformAdminSessionR39.test.mjs tests/jeniosMasterUsersB129.test.mjs | tee artifacts/jenios-r39-session.tap
+      - name: R40 Inter setup, Vault monthly payments and production delivery guards
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          node --test tests/jeniosInterSetupR40.test.mjs tests/interPix.test.mjs tests/jeniosB282B284SalesInter.test.mjs tests/jeniosUniversityInterVaultR40.test.mjs tests/jeniosUniversityMonthlyB147.test.mjs tests/jeniosUniversityInterfaceB147.test.mjs tests/jeniosB305ProductionEmailDeliveryR40.test.mjs tests/jeniosB305ProductionFinanceEndpointR40.test.mjs | tee artifacts/jenios-r40-integration.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -186,20 +192,37 @@ jobs:
             tests/jeniosMasterUsersB129.test.mjs
             docs/platform/B305-R39-ADMIN-SESSION-REVOCATION.md
             artifacts/jenios-r39-session.tap
+            app/admin/cobrancas/page.js
+            app/api/admin/inter/setup/route.js
+            app/components/InterAdminPanel.js
+            app/components/InterSetupForm.js
+            lib/pay/inter-vault.mjs
+            lib/pay/inter-pix.mjs
+            lib/assistant/university-subscription.mjs
+            lib/email/production-delivery-policy.mjs
+            app/api/internal/email/finance/route.js
+            supabase/migrations/20261024164335_jenios_b305_inter_setup_r40.sql
+            tests/sql/jenios_inter_setup_r40_regression.sql
+            tests/jeniosInterSetupR40.test.mjs
+            tests/jeniosUniversityInterVaultR40.test.mjs
+            tests/jeniosB305ProductionEmailDeliveryR40.test.mjs
+            tests/jeniosB305ProductionFinanceEndpointR40.test.mjs
+            docs/platform/B305-R40-INTER-SETUP-AND-DELIVERY.md
+            artifacts/jenios-r40-integration.tap
           retention-days: 30
-      - name: Archive complete R39 source with commit and checksum
+      - name: Archive complete R40 source with commit and checksum
         if: success()
         run: |
-          mkdir -p artifacts/r39-source
-          git archive --format=zip --output=artifacts/r39-source/JENIOS_B305_R39_SOURCE.zip HEAD
-          git rev-parse HEAD > artifacts/r39-source/COMMIT.txt
-          cd artifacts/r39-source
-          sha256sum JENIOS_B305_R39_SOURCE.zip > SHA256SUMS.txt
-      - name: Preserve complete R39 source backup
+          mkdir -p artifacts/r40-source
+          git archive --format=zip --output=artifacts/r40-source/JENIOS_B305_R40_SOURCE.zip HEAD
+          git rev-parse HEAD > artifacts/r40-source/COMMIT.txt
+          cd artifacts/r40-source
+          sha256sum JENIOS_B305_R40_SOURCE.zip > SHA256SUMS.txt
+      - name: Preserve complete R40 source backup
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: JENIOS_B305_R39_FULL_SOURCE
-          path: artifacts/r39-source/
+          name: JENIOS_B305_R40_FULL_SOURCE
+          path: artifacts/r40-source/
           retention-days: 30
           if-no-files-found: error

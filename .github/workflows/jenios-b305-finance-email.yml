@@ -63,6 +63,11 @@ jobs:
           set -o pipefail
           mkdir -p artifacts
           node --test tests/jeniosInterSetupR40.test.mjs tests/interPix.test.mjs tests/jeniosB282B284SalesInter.test.mjs tests/jeniosUniversityInterVaultR40.test.mjs tests/jeniosUniversityMonthlyB147.test.mjs tests/jeniosUniversityInterfaceB147.test.mjs tests/jeniosB305ProductionEmailDeliveryR40.test.mjs tests/jeniosB305ProductionFinanceEndpointR40.test.mjs | tee artifacts/jenios-r40-integration.tap
+      - name: R41 Master account, first access and own email change
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          node --test tests/jeniosAdminAccountR41.test.mjs tests/jeniosMasterProvisionR41.test.mjs tests/jeniosPasswordRecoveryR41.test.mjs tests/jeniosOwnAccountSdkR41.test.mjs tests/jeniosMasterB122.test.mjs tests/jeniosMasterUsersB129.test.mjs tests/jeniosB305AuthLifecycleEmails.test.mjs | tee artifacts/jenios-r41-account.tap
       - name: Full regression and Next build with real sending disabled
         run: npm run build
       - name: Archive scoped technical evidence
@@ -209,20 +214,36 @@ jobs:
             tests/jeniosB305ProductionFinanceEndpointR40.test.mjs
             docs/platform/B305-R40-INTER-SETUP-AND-DELIVERY.md
             artifacts/jenios-r40-integration.tap
+            app/admin/login/page.js
+            app/admin/meu-acesso/page.js
+            app/admin/recuperar-senha/page.js
+            app/admin/redefinir-senha/page.js
+            app/components/PasswordRecovery.js
+            lib/admin-account.mjs
+            lib/password-recovery.mjs
+            scripts/admin/master-provision-r41.mjs
+            tests/jeniosAdminAccountR41.test.mjs
+            tests/jeniosMasterProvisionR41.test.mjs
+            tests/jeniosPasswordRecoveryR41.test.mjs
+            tests/jeniosOwnAccountSdkR41.test.mjs
+            supabase/migrations/20261024172157_jenios_b305_master_admin_r41.sql
+            tests/sql/jenios_master_admin_r41_regression.sql
+            docs/platform/B305-R41-MASTER-ACCOUNT-ACCESS.md
+            artifacts/jenios-r41-account.tap
           retention-days: 30
-      - name: Archive complete R40 source with commit and checksum
+      - name: Archive complete R41 source with commit and checksum
         if: success()
         run: |
-          mkdir -p artifacts/r40-source
-          git archive --format=zip --output=artifacts/r40-source/JENIOS_B305_R40_SOURCE.zip HEAD
-          git rev-parse HEAD > artifacts/r40-source/COMMIT.txt
-          cd artifacts/r40-source
-          sha256sum JENIOS_B305_R40_SOURCE.zip > SHA256SUMS.txt
-      - name: Preserve complete R40 source backup
+          mkdir -p artifacts/r41-source
+          git archive --format=zip --output=artifacts/r41-source/JENIOS_B305_R41_SOURCE.zip HEAD
+          git rev-parse HEAD > artifacts/r41-source/COMMIT.txt
+          cd artifacts/r41-source
+          sha256sum JENIOS_B305_R41_SOURCE.zip > SHA256SUMS.txt
+      - name: Preserve complete R41 source backup
         if: success()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: JENIOS_B305_R40_FULL_SOURCE
-          path: artifacts/r40-source/
+          name: JENIOS_B305_R41_FULL_SOURCE
+          path: artifacts/r41-source/
           retention-days: 30
           if-no-files-found: error

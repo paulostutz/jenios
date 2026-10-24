@@ -38,7 +38,7 @@ test('B305-R17 security templates use no external tracking or executable content
 });
 
 test('B305-R17 recovery screen uses Supabase Auth real reset flow and safe generic response',()=>{
- const src=read('app/components/PasswordRecovery.js');
+ const src=read('app/components/PasswordRecovery.js')+'\n'+read('lib/password-recovery.mjs');
  assert.match(src,/resetPasswordForEmail/);
  assert.match(src,/\/redefinir-senha/);
  assert.match(src,/Se houver uma conta para este e-mail/);

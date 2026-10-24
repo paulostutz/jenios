@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
     try {
       if (!supabase?.auth) throw Error('Autenticação indisponível. Tente novamente mais tarde.');
       const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         password: senha
       });
       if (error) throw Error('Não foi possível autenticar com essas credenciais.');
@@ -72,6 +72,7 @@ export default function AdminLoginPage() {
           </label>
           <button type="submit" disabled={busy} style={{background:busy?'#a78bfa':'#6d28d9',color:'#fff',padding:14,border:0,borderRadius:10,fontWeight:800,cursor:busy?'progress':'pointer'}}>{busy?'Validando credenciais…':'Acessar área administrativa'}</button>
         </form>
+        <p style={{margin:'18px 0 0'}}><Link href="/admin/recuperar-senha" style={{color:'#6d28d9',fontSize:13}}>Primeiro acesso / Esqueci minha senha</Link></p>
         <p style={{margin:'20px 0 0'}}><Link href="/login" style={{color:'#6d28d9',fontSize:12}}>← Voltar à entrada da JENIOS</Link></p>
         <BrandFooter tone="light" scope="Admin"/>
       </section>

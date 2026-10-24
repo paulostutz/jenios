@@ -30,6 +30,7 @@ const LINKS={
   ['BankScore e Tokens','Consultas administrativas completas','/admin/consultas','▧']
  ],
  acessos:[
+  ['Meu acesso','Consultar minha conta e alterar meu e-mail com confirmação','/admin/meu-acesso','✉'],
   ['Cadastros de usuários e Masters','Convidar contas e gerir Masters com auditoria','/admin/usuarios','👥'],
   ['Permissões operacionais','Concessões permitidas e auditadas',MASTER_OPERATIONS.href,'🔐']
  ],
@@ -79,7 +80,7 @@ function Home(){
   </aside>
   <main className={styles.main}>
    <header className={styles.top}><div><span className={styles.kicker}>JENIOS · CENTRAL MASTER</span><h1>Escritório Administrativo</h1><p>Gestão organizada e rápida, com módulos carregados somente quando necessários.</p></div>
-   <div className={styles.actions}><Link href="/dashboard-logado" className={styles.action}>Sala de Controle</Link><button className={styles.action} type="button" disabled={busy} onClick={logout}>{busy?'Saindo…':'Sair'}</button></div></header>
+   <div className={styles.actions}><Link href="/admin/meu-acesso" className={styles.action}>Meu acesso</Link><Link href="/dashboard-logado" className={styles.action}>Sala de Controle</Link><button className={styles.action} type="button" disabled={busy} onClick={logout}>{busy?'Saindo…':'Sair'}</button></div></header>
    {error&&<p role="alert">{error}</p>}
    <section className={styles.hero}><small>ADMINISTRAÇÃO PRIVADA</small><h2>Seu ecossistema em um só escritório.</h2><p>Social, Platform, pagamentos, relatórios e segurança, preservando os bancos e as autorizações independentes.</p></section>
    {section==='platform'?<PlatformPanel/>:<section aria-label={SECTIONS.find(([id])=>id===section)?.[1]}>

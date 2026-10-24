@@ -51,7 +51,10 @@
       "research/jenios-robot-r63-continuous-improvement-20261024": false,
       "backup/jenios-robot-r63-continuous-improvement-certified-20261024": false,
       "research/jenios-robot-r64-operational-integration-20261024": false,
-      "backup/jenios-robot-r64-operational-integration-certified-20261024": false
+      "backup/jenios-robot-r64-operational-integration-certified-20261024": false,
+      "research/jenios-robot-r65-evolution-cycle-20261024": false,
+      "backup/jenios-robot-r65-evolution-cycle-certified-20261024": false,
+      "backup/jenios-robot-r65-evolution-cycle-progress-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"

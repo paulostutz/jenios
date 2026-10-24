@@ -1,0 +1,114 @@
+{
+  "schema": "JENIOS_ROBOT_R65_EVOLUTION_CYCLE_CHECKPOINT_V1",
+  "revision": "R65",
+  "classification": "CORE_VALIDATED_RUNTIME_ACCEPTANCE_PENDING",
+  "createdAt": "2026-10-24T16:55:56.993345+00:00",
+  "base": {
+    "branch": "backup/jenios-robot-r64-operational-integration-certified-20261024",
+    "commit": "58e1699ee1d01bdefb71ea969f360d278605732f",
+    "validationRun": 40110326680
+  },
+  "branch": "research/jenios-robot-r65-evolution-cycle-20261024",
+  "backup": {
+    "branch": "backup/jenios-robot-r65-evolution-cycle-certified-20261024",
+    "creationRule": "Create only after complete CI on the consolidated commit succeeds; the immutable backup ref and matching Actions run identify the final SHA."
+  },
+  "scope": "SIGNED_QA_OBSERVATION_TO_SYNTHETIC_EVALUATION_AND_DURABLE_APPLICATION",
+  "authorization": {
+    "ownerAutomaticImprovementPreapprovalPreserved": "OWNER_PREAPPROVAL_20261024",
+    "productionChangeAuthorized": false,
+    "paidProviderActivationAuthorized": false
+  },
+  "implemented": {
+    "executedFourRobotQaSource": true,
+    "dualSignedProvenance": true,
+    "atomicIntake": true,
+    "frozenR64StudyReplay": true,
+    "registeredIndependentSyntheticPlan": true,
+    "databaseTimedValidationCases": true,
+    "boundedAutomaticApplication": true,
+    "durableRevisionAndDigestCas": true,
+    "activeRuntimeConsumption": true,
+    "rollbackAndHistory": true,
+    "logicalArchive": true,
+    "adminCostReconciliation": true,
+    "adminPanelAndPersistedQaPreview": true,
+    "explicitHostWorkerEntry": true
+  },
+  "automaticPolicy": {
+    "robot": "ultrafast",
+    "parameter": "maxAgeMs",
+    "from": 750,
+    "to": 500,
+    "maximumApplications": 1,
+    "freshConfirmationsAfterGenerationChange": 2,
+    "falseAllowsCandidate": 0,
+    "strictFalseAllowReductionRequired": true,
+    "noFalseBlockRegressionRequired": true,
+    "arbitraryGeneratedCodeExecution": false
+  },
+  "evidence": {
+    "observation": "SIGNED_QA_REPLAY",
+    "runtimeOrigin": "R61_SYNTHETIC_RUNTIME",
+    "validation": "SYNTHETIC_FIXTURE",
+    "privateEngineConnected": false,
+    "customerMonitoringActive": false,
+    "durableEmitterOutbox": false
+  },
+  "database": {
+    "schema": "db/schema/robot-r65-lifecycle-store.sql",
+    "status": "REVIEW_ONLY_NOT_APPLIED_TO_HOSTED_DATABASE",
+    "realSupabaseDatabasesChanged": 0,
+    "validationClock": "POSTGRESQL_CLOCK_TIMESTAMP",
+    "archiveMode": "LOGICAL_COPY_ONLY",
+    "physicalDeletionPerformed": false,
+    "spaceReclaimedBytes": 0,
+    "originalR64RecordsRewritten": false
+  },
+  "invariants": {
+    "r12r64ResearchAlgorithmsChanged": false,
+    "r15ProspectiveBackfill": false,
+    "alignmentGuardThreshold": 0.65,
+    "manualOperatorControlPreserved": true,
+    "losseshometroSyntheticOnly": true,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "productionConfigurationChanged": false,
+    "productionDeployPerformed": false,
+    "mergePerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "validation": {
+    "status": "PENDING_CI",
+    "observedReferenceRun": null,
+    "finalConsolidatedRun": "Required before backup creation",
+    "local": {
+      "tests": 123,
+      "passed": 123,
+      "failed": 0,
+      "skipped": 0,
+      "node": "v24.22.1"
+    },
+    "localPostgres": {
+      "version": "16",
+      "tests": 42,
+      "passed": 42,
+      "preservedR64WithR65Extension": 32
+    }
+  },
+  "remainingOperationalWork": [
+    "Verified external private runtime source integration",
+    "Durable emitter retry/outbox across process restart",
+    "Customer data handling and disclosures",
+    "Hosted QA database, actual identity and scheduler setup",
+    "Authorized provider and budget activation",
+    "Controlled operational observation and manual acceptance",
+    "Physical purge only after durable replay markers exist"
+  ],
+  "progressBackup": "backup/jenios-robot-r65-evolution-cycle-progress-20261024"
+}

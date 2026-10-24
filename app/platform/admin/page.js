@@ -5,6 +5,7 @@ import PlatformAdminOverview from '../../components/platform/PlatformAdminOvervi
 import PlatformResearchReadiness from '../../components/platform/PlatformResearchReadiness';
 import PlatformRobotEvolutionAdmin from '../../components/platform/PlatformRobotEvolutionAdmin';
 import PlatformRobotOperationalAdmin from '../../components/platform/PlatformRobotOperationalAdmin';
+import PlatformRobotCycleAdmin from '../../components/platform/PlatformRobotCycleAdmin';
 import {BrandLockup,BrandFooter} from '../../components/brand/BrandSignature';
 
 export default function PlatformAdminHome(){
@@ -28,6 +29,7 @@ export default function PlatformAdminHome(){
     <PlatformResearchReadiness/>
     <PlatformRobotEvolutionAdmin/>
     <PlatformRobotOperationalAdmin/>
+    <PlatformRobotCycleAdmin/>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))',gap:14}}>
      {[
       ['Diagnóstico comportamental','Persistência por conta, classificação inicial e bloqueio de conta real sem autorização.'],

@@ -62,7 +62,7 @@ A reconciliação de chamadas incertas exige administrador, fingerprint original
 - Painel administrativo: versão ativa, comparação, histórico, reversão, arquivo e reconciliação.
 - `node scripts/platform/research/r65-cycle-worker.mjs --once|--watch`: entrada explícita de worker, sem registrar processo, cron ou serviço automaticamente.
 
-O acesso exige todos os gates R61/R64 de QA e `JENIOS_ROBOT_R65_ENABLED=true`. O scheduler exige `JENIOS_ROBOT_R65_SCHEDULER_TOKEN` privado de 32 a 256 caracteres. Nenhuma variável pública ativa a coleta. As branches de pesquisa e backup têm deploy desabilitado. O worker continua respeitando a cadência diária R64 às 09h de São Paulo para o estudo do dia anterior; uma avaliação já registrada continua segundo sua própria janela.
+O acesso exige todos os gates R61/R64 de QA e `JENIOS_ROBOT_R65_ENABLED=true`. O scheduler exige `JENIOS_ROBOT_R65_SCHEDULER_TOKEN` privado de 32 a 256 caracteres. A origem externa das ações administrativas deve ser fixada em `JENIOS_ROBOT_R65_ADMIN_ORIGIN`, em formato canônico sem barra final: HTTPS no host de homologação, ou `http://127.0.0.1:4320` no ensaio local. Isso preserva a verificação de origem quando Next normaliza endereços internos; headers Host/Forwarded não escolhem a autoridade confiável. Nenhuma variável pública ativa a coleta. As branches de pesquisa e backup têm deploy desabilitado. O worker continua respeitando a cadência diária R64 às 09h de São Paulo para o estudo do dia anterior; uma avaliação já registrada continua segundo sua própria janela.
 
 ## Validação
 

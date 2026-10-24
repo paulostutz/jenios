@@ -7,6 +7,7 @@ import { createR65EvolutionState, registerR65Evaluation, runR65EvolutionCycle } 
 import { createR65ObservationSource, verifyR65ObservationRecord } from '../lib/platform/research/robot-r65-observation-source.mjs';
 import { createR65RegisteredBenchmark } from '../lib/platform/research/robot-r65-cycle-worker.mjs';
 import { scheduleR64TelemetryPeriod } from '../lib/platform/research/robot-r64-telemetry.mjs';
+import { isR65AdminOriginAllowed } from '../lib/platform/research/robot-r65-cycle-access.mjs';
 
 const T = Date.UTC(2026, 9, 24, 12), SCOPE = 'scope:0000000000000001';
 const USER = '11111111-1111-4111-8111-111111111165';
@@ -82,6 +83,32 @@ const commit = () => ({ action: 'ARCHIVE_COMMIT', operationId: OP, archiveId: AR
 const reconcile = () => ({ action: 'RECONCILE_COST', operationId: OP, cycleId: CYCLE,
   expectedFingerprint: DIGEST, evidenceDigest: 'c'.repeat(64),
   resolution: { kind: 'CONFIRMED_USAGE', costNanoUsd: 1250, providerResponseId: 'resp_fixture_only' } });
+
+test('R65 accepts only the server-pinned browser origin when Next normalizes loopback URLs', async () => {
+  const f=fixture(),origin='http://127.0.0.1:4320';
+  const env={...environment(),JENIOS_ROBOT_R65_ADMIN_ORIGIN:origin};
+  const handler=createR65AdminHandler({env,getDb:f.getDb,getRuntime:f.getRuntime});
+  const req=headers=>request('POST',{url:'http://localhost:4320/api/platform/admin/robot-evolution-cycle',
+    token:'qa-admin',body:{action:'TICK'},headers});
+  assert.equal((await handler(req({Origin:origin}))).status,200);
+  assert.equal(f.calls.filter(c=>c[0]==='runTick').length,1);
+  for(const untrusted of ['http://localhost:4320','https://untrusted.invalid','null',origin+'/']){
+    assert.equal((await handler(req({Origin:untrusted,Host:'127.0.0.1:4320','X-Forwarded-Host':'127.0.0.1:4320'}))).status,403);
+  }
+  assert.equal(f.calls.filter(c=>c[0]==='runTick').length,1);
+});
+
+test('R65 malformed or insecure nonlocal origin configuration fails closed and ignores forwarded authority', () => {
+  const req=request('POST',{token:'qa-admin',body:{action:'TICK'},headers:{Origin:'https://qa.invalid',
+    Host:'qa.invalid','X-Forwarded-Host':'qa.invalid','X-Forwarded-Proto':'https'}});
+  for(const value of ['', 'https://qa.invalid/', 'https://qa.invalid/path','https://qa.invalid?x=1',
+    'https://user:secret@qa.invalid','http://qa.invalid','null',null,undefined,42]){
+    const env={JENIOS_ROBOT_R65_ADMIN_ORIGIN:value};
+    assert.equal(isR65AdminOriginAllowed(req,env),false);
+  }
+  assert.equal(isR65AdminOriginAllowed(req,{JENIOS_ROBOT_R65_ADMIN_ORIGIN:'https://qa.invalid'}),true);
+  assert.equal(isR65AdminOriginAllowed(req,{JENIOS_ROBOT_R65_ADMIN_ORIGIN:'https://other.invalid'}),false);
+});
 
 test('R65 HTTP environment gates precede database, session, runtime and worker dependencies', async () => {
   let touched = 0; const forbidden = () => { touched++; throw new Error('must not construct'); };

@@ -100,7 +100,36 @@
       "passed": 42,
       "preservedR64WithR65Extension": 32
     },
-    "plannedRuntimeCases": 33
+    "plannedRuntimeCases": 33,
+    "attempts": [
+      {
+        "runId": 40114572954,
+        "commit": "10ea0348cda91510b73580fc50535f291339da19",
+        "conclusion": "FAILURE",
+        "directed": "643/643",
+        "general": "2449/2449",
+        "social": "94/94",
+        "build": "PASS",
+        "pages": "76/76",
+        "preservedBrowser": "52/52",
+        "preservedPostgres": "32/32",
+        "postgres": "42/42",
+        "preservedRuntime": "31/31",
+        "runtimeIntegration": {
+          "total": 33,
+          "passed": 23,
+          "failed": 10,
+          "notRun": 0
+        },
+        "cause": "NextURL normalizes 127.0.0.1 to localhost; valid browser Origin failed direct request.url-origin comparison, blocking admin actions and downstream assertions.",
+        "fix": "Server-pinned canonical JENIOS_ROBOT_R65_ADMIN_ORIGIN; preserve malicious-origin rejection and ignore forwarded authority."
+      }
+    ],
+    "originRefinement": {
+      "tests": 34,
+      "passed": 34,
+      "newRegressionCases": 2
+    }
   },
   "remainingOperationalWork": [
     "Verified external private runtime source integration",

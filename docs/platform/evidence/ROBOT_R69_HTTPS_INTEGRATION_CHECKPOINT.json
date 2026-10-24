@@ -1,0 +1,209 @@
+{
+  "schema": "JENIOS_ROBOT_R69_HTTPS_INTEGRATION_CHECKPOINT_V1",
+  "revision": "R69",
+  "classification": "LOCAL_HTTPS_NEXT_INTEGRATION_NOT_HOSTED_CERTIFICATION",
+  "createdAt": "2026-10-24T19:35:37.897585+00:00",
+  "base": {
+    "commit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+    "branch": "backup/jenios-robot-r68-private-host-readiness-certified-20261024",
+    "researchBranch": "research/jenios-robot-r68-private-host-readiness-20261024",
+    "validationRun": 40123178407,
+    "jobId": 120958950536,
+    "finishedAt": "2026-10-24T19:00:55Z",
+    "researchAndCertifiedRefsMatched": true,
+    "vercelDeploymentsOfBaseSha": 0
+  },
+  "branch": "research/jenios-robot-r69-https-integration-20261024",
+  "backup": {
+    "progress": "backup/jenios-robot-r69-https-integration-progress-20261024",
+    "certified": "backup/jenios-robot-r69-https-integration-certified-20261024",
+    "creationRule": "Create certified backup only after complete final CI on consolidated commit succeeds. Matching final Actions SHA, research and certified refs close checkpoint without recursive own-CI documentation commits."
+  },
+  "implemented": {
+    "fixedHttpsSenderForUnchangedR67Protocol": true,
+    "certificateAndHostnameMandatory": true,
+    "redirectsAllowed": false,
+    "ambientProxyUsed": false,
+    "callerTransportInjectionAllowed": false,
+    "totalDeadlineThroughBody": true,
+    "credentialsSentBySource": false,
+    "boundedResponse": true,
+    "r68LoopbackProfilePreserved": true,
+    "r68LifecycleLeaseAndOutboxReused": true,
+    "r69OptInGateRequired": true,
+    "offlineInspectionNoNetworkOrCoreExecution": true,
+    "originalPinnedCoreRequiredInPrivateMode": true,
+    "publicFixtureCannotSubstituteOriginalExecution": true,
+    "realNextRouteRuntimeAndSdkUsed": true,
+    "realR67SqlViaExplicitLocalGateway": true,
+    "lostAckAfterCommittedSql": true,
+    "exactRetryWithoutSecondBatch": true,
+    "readOnlyHostedTargetInventory": true
+  },
+  "validation": {
+    "status": "PRELIMINARY_PASS_REFERENCE_AND_FINAL_CI_REQUIRED",
+    "countsAreOverlapping": true,
+    "localFocused": {
+      "total": 307,
+      "passed": 307,
+      "failed": 0,
+      "skipped": 0,
+      "r69": 22,
+      "preservedSubset": 285,
+      "node": "v24.22.1"
+    },
+    "preliminaryPublic": {
+      "inputMode": "PUBLIC_PROTOCOL_FIXTURE",
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "sourceCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+      "sourceTreeDirty": true,
+      "finishedAt": "2026-10-24T19:30:59.983Z",
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 0,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 0,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "referenceEvidence": false,
+      "build": "Existing R68 build; preliminary only"
+    },
+    "preliminaryPrivate": {
+      "inputMode": "ORIGINAL_PRIVATE_CORE",
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "sourceCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+      "sourceTreeDirty": true,
+      "finishedAt": "2026-10-24T19:32:27.475Z",
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 2,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 3,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "referenceEvidence": false,
+      "build": "Existing R68 build; preliminary only"
+    },
+    "referenceCi": "PENDING",
+    "cleanPrivateReference": "PENDING",
+    "finalConsolidatedRun": "Required before certified backup"
+  },
+  "preservation": {
+    "priorLedgerSections": 17,
+    "canonicalization": "JSON sorted keys, compact separators, UTF-8, ensure_ascii=false",
+    "priorLedgerSectionSha256": {
+      "schema": "c92b3a7ae0210e42dacb22534924179aa4b0f2fa034379ef6e7c4c61a3c27d7f",
+      "generatedAt": "3418a19e34e692f17e1342fa85080565c74df48bdb5bb7c0200e8fcd8d5251b2",
+      "scope": "dad88f09c1dd2a5a03f4e0fdb2cfa9189f9c95bec5a8d436f05844331696b847",
+      "globalRules": "db6b86aaad48721132db87b8d5ddd547be16a95977d42eaacdd8bf4ac58e5ffa",
+      "robots": "6831e2fdb52d4841f14998dd27c04a0a701ee676b78be13e1314d54377dcf405",
+      "certifiedBlocks": "ec74b8ce03722652444057c89dab222d692ac70990a0068bace02927c2e45315",
+      "nextObjectives": "7690357c096c3666c38c794343dbe04c3685ff69b34b5d99ceca073dcf6e06a5",
+      "finalCertification": "3f3af4f9c66df44f2a0e034d8703de2c76ffc3ebad9c7e0d72b292ad7a6f5afe",
+      "operationalCloseout": "783ee177b28a40b9ee2fa3f5a3d876a2e37ef828c1c1fde23026bcb53dcb1313",
+      "qaPolicyIntegration": "03773010cc69456657be6b15892ec26198888a63a225dbf97e75c64ec88c5f12",
+      "qaBoundaryCloseout": "030ce172ab7aa01e473a427099f02b7eb14bc849d9fd996eb66b5114bc8d491a",
+      "continuousImprovement": "db51f3c177ccce4d2ae1f4dec62b447d538f8488ac541f4788069852a74eb359",
+      "operationalObservationIntegration": "74119e3004e95278d6992904ab1c179739be61b27ade0503dae152fa51b1bf51",
+      "durableEvolutionCycle": "f95f8af2e3f80fd2772cf8e000a25b57ee2f8ab068a42df74830b4bcb7972998",
+      "durableEmitterIntegration": "c7d7509b69161f6d10481cf202055200416ddc4d35532703ce856b660c22aaaa",
+      "privateSourceBridge": "f512fc1fa52b67e712f830c27ae0a466603a2c2c17bbfef699548068a90ded5f",
+      "privateHostReadiness": "3efb381dc21bedd54dc1646a9db0cf7c55b6d302e93c617d266b1774a731aca3"
+    },
+    "r12r65AlgorithmFilesChanged": 0,
+    "r64r65r67SchemaFilesChanged": 0,
+    "r67LoaderEmitterOutboxProtocolAndRoutesChanged": false,
+    "privateCoreBytesChanged": false,
+    "privateCoreBytesCommitted": false,
+    "priorEvidenceShaAttributionUnchanged": true,
+    "r68ChangeScope": "Closed internal R68/R69 profiles sharing existing lifecycle; R68 external fields and loopback contract preserved"
+  },
+  "evidenceDomains": {
+    "privateExecution": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_EXECUTION",
+    "publicExecution": "PUBLIC_PROTOCOL_FIXTURE_NO_PRIVATE_EXECUTION",
+    "transport": "SIGNED_PRIVATE_QA_CAPTURE",
+    "inputs": "SYNTHETIC_FIXED_SCENARIOS",
+    "privateCoreModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "privateCoreProvidesUltraFast": false,
+    "independentRuntimeAttestation": false,
+    "adminIdentity": "EXPLICIT_LOCAL_AUTH_GATEWAY_FIXTURE_USERS_NOT_REAL_SUPABASE_IDENTITIES",
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseTransport": "EXPLICIT_LOOPBACK_HTTPS_RPC_GATEWAY_NOT_HOSTED_POSTGREST"
+  },
+  "invariants": {
+    "manualOperatorControlPreserved": true,
+    "certifiedR61AlignmentGuardPreserved": 0.65,
+    "alignmentGuardReattributedToOriginalPrivateCore": false,
+    "losseshometroSyntheticOnly": true,
+    "r15ProspectiveBackfill": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "limits": {
+    "requestBytes": 262144,
+    "responseBytes": 8192,
+    "defaultTimeoutMs": 3000,
+    "minimumTimeoutMs": 50,
+    "maximumTimeoutMs": 10000,
+    "r67AdmissionLifetimeMs": 120000,
+    "knownProductionAliasBlockExhaustive": false,
+    "declaredOriginProvesQaDeployment": false,
+    "compiledSourceCommitIndependentlyAttested": false,
+    "realAdministrativeIdentityCertified": false,
+    "hostedSupabaseCertified": false,
+    "persistentHostCertified": false,
+    "hostWideNetworkSandboxClaimed": false,
+    "automaticLockRecovery": false,
+    "wholeDirectoryRollbackDetectedWithoutExternalWitness": false,
+    "r64r65PolicyInstantiatedInR69Acceptance": false,
+    "privateCoreDynamicPolicyConsumptionCertified": false,
+    "vmIsGeneralUntrustedCodeSandbox": false
+  },
+  "targetInventory": {
+    "file": "docs/platform/evidence/ROBOT_R69_TARGET_INVENTORY.json",
+    "sha256": "baeb7371ecac8d502e4af74ce12556f2ea552b1a077a82d1982894d59b7ffd9d",
+    "readOnly": true,
+    "approvedTargetIndependentlyBound": false
+  },
+  "remainingOperationalWork": [
+    "Accept an isolated robot QA deployment and bind it independently to the declared HTTPS origin; complete the truncated environment metadata inventory.",
+    "Locate and accept the persistent private host with custody, fencing, recovery and independent rollback witness.",
+    "In a separately authorized deployment/migration scope, install reviewed schemas and run actual administrative identity and access acceptance.",
+    "Exercise existing worker and database-clock windows on the real accepted host without client activation.",
+    "Define operational data provenance and obtain JENIOS-specific authorization before paid generation or private-core policy changes."
+  ],
+  "certificationRule": "Keep producing SHAs in reference evidence. Consolidate documents after public CI and clean local original-core acceptance; final CI plus certified backup at same SHA closes the block.",
+  "guide": "docs/platform/ROBOT_R69_HTTPS_INTEGRATION.md",
+  "checkpoint": "docs/platform/evidence/ROBOT_R69_HTTPS_INTEGRATION_CHECKPOINT.json"
+}

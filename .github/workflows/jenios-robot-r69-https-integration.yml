@@ -1,0 +1,68 @@
+name: JENIOS ROBOT R69 HTTPS Next integration (no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r69-https-integration-20261024]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_DB: jenios_r69_next_qa
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: r69-test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      JENIOS_R69_TEST_DATABASE_URL: 'postgresql://postgres:r69-test-only@127.0.0.1:5432/jenios_r69_next_qa'
+      JENIOS_R69_DISPOSABLE_DB: 'true'
+      JENIOS_R69_INPUT_MODE: PUBLIC_PROTOCOL_FIXTURE
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R69 HTTPS transport and fixed private host profile
+        run: node --test tests/platformRobotR69*.test.mjs
+      - name: Preserve R65 R66 R67 R68 contracts and no-deploy guard
+        run: node --test tests/platformRobotR65*.test.mjs tests/platformRobotR66*.test.mjs tests/platformRobotR67*.test.mjs tests/platformRobotR68*.test.mjs tests/platformRobotR60NoDeployGuard.test.mjs
+      - name: Ensure disposable PostgreSQL client and TLS fixture tool
+        run: |
+          if ! command -v psql >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+          command -v openssl
+      - name: Preserve complete application test and build gates
+        run: npm run build
+      - name: R69 real HTTPS Next SDK RPC PostgreSQL with explicit public fixtures
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r69-evidence
+        run: node scripts/platform/research/r69-next-acceptance.mjs
+      - name: Retain sanitized public R69 Next evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r69-public-next-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/jenios-r69-evidence
+          if-no-files-found: warn
+          retention-days: 14

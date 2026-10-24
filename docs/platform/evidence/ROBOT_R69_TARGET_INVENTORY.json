@@ -1,0 +1,198 @@
+{
+  "schema": "JENIOS_ROBOT_R69_TARGET_INVENTORY_V1",
+  "classification": "READ_ONLY_DISCOVERY_NOT_OPERATIONAL_ACCEPTANCE",
+  "observedOn": "2026-10-24",
+  "recordedAt": "2026-10-24 19:33:47 UTC",
+  "baseCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "supabase": {
+    "projectId": "xaicvhagftzjkqphnbgx",
+    "projectName": "jenios-platform-homologacao",
+    "region": "sa-east-1",
+    "observedStatus": "ACTIVE_HEALTHY",
+    "historicalProjectReferences": [
+      "docs/platform/R45-B72-PUBLICACAO-CONTROLADA.md",
+      "docs/platform/CP70-ACEITE-AUTENTICADO.md"
+    ],
+    "branchesReturned": [],
+    "catalogOnly": true,
+    "customerRowsRead": false,
+    "relationFilter": {
+      "schema": "public",
+      "nameRegex": "^jenios_robot_.*r(64|65|67)",
+      "relkinds": [
+        "r",
+        "p",
+        "v",
+        "m"
+      ]
+    },
+    "functionFilter": {
+      "schema": "public",
+      "nameRegex": "^jenios_robot_r(64|65|67)_"
+    },
+    "robotRelationsObserved": [],
+    "robotFunctionsObserved": [],
+    "matchingRobotSchemaInstalled": false,
+    "dedicatedRobotQaIsolationIndependentlyVerified": false,
+    "approvedDeploymentBindingVerified": false,
+    "hostedMigrationsApplied": 0
+  },
+  "vercel": {
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "projectName": "jenios-ecossistem",
+    "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+    "framework": "nextjs",
+    "nodeVersion": "24.x",
+    "baseShaDeploymentCount": 0,
+    "envInspection": {
+      "decrypt": false,
+      "secretValuesInspected": false,
+      "branchFiltered": "research/jenios-robot-r68-private-host-readiness-20261024",
+      "branchFilteredEntries": 0,
+      "branchResultDoesNotExcludeInheritedVariables": true,
+      "entries": [
+        {
+          "key": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "JENIOS_QA_CANDIDATE_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "JENIOS_REAL_EXECUTION_ENABLED",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "NEXT_PUBLIC_PLATFORM_SUPABASE_URL",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "PLATFORM_SUPABASE_URL",
+          "type": "plain",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        },
+        {
+          "key": "NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY",
+          "type": "encrypted",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "fix/jenios-b291qa-integrated-preview-20261021"
+        }
+      ],
+      "truncated": true,
+      "truncation": {
+        "arrays": 1,
+        "omittedArrayItems": 92,
+        "objects": 0,
+        "omittedObjectKeys": 0,
+        "strings": 365,
+        "omittedStringChars": 29577,
+        "depth": 0,
+        "budget": 0
+      },
+      "completeEnvironmentVerified": false
+    },
+    "configurationChanged": false,
+    "deploymentsCreated": 0
+  },
+  "render": {
+    "workspaceId": "tea-dba9mcs9v7es73fmnafg",
+    "includePreviews": true,
+    "jeniosServices": [],
+    "servicesReturned": 1,
+    "scope": "Connected Render workspace only; other hosts not excluded",
+    "otherProviderHostsExcluded": false,
+    "servicesCreated": 0
+  },
+  "historicalPrivateIntegration": {
+    "archive": "JENIOS-Platform-R45-B52-CONSOLIDADO-PRIVADO.zip",
+    "archiveExaminedLocally": true,
+    "privateBytesCommitted": false,
+    "manifestsVerified": [
+      "JENIOS-Platform-R45/MANIFESTO-R45-SHA256.json",
+      "MANIFESTO-CUMULATIVO-R45J.json"
+    ],
+    "server": {
+      "entry": "JENIOS-Platform-R45/nucleo-privado/server.mjs",
+      "bytes": 2659,
+      "sha256": "0ed6ae3a730ce6b9378ff0021f81e2434b454cd3f9a7ed1c5f5f129369db337e",
+      "factory": "researchServer({secret,fetcher,clock})",
+      "routes": [
+        "GET /health",
+        "POST /v1/research"
+      ],
+      "directBind": "127.0.0.1",
+      "defaultPort": 3088,
+      "credentialNameOnly": "JENIOS_RESEARCH_SECRET",
+      "executedInThisBlock": false
+    },
+    "proxy": {
+      "entry": "JENIOS-Platform-R45/app-completa/lib/platform/research-proxy.mjs",
+      "bytes": 2403,
+      "sha256": "fc4bba8fa68daa907f0ea9d94fdb79c8e1a6af60e0a57ef0d5ffecaafe4ba0e9",
+      "endpoint": "/v1/research",
+      "configurationNamesOnly": [
+        "JENIOS_RESEARCH_URL",
+        "JENIOS_RESEARCH_SECRET"
+      ]
+    },
+    "serverProvidesR67DurableOutbox": false,
+    "serverDeploymentInstallationFoundInExaminedArchive": false,
+    "absenceInArchiveDoesNotProveNoExternalHostExists": true,
+    "retainedPath": "Use verified R67 loader and R68 lifecycle through fixed R69 HTTPS profile; do not reinstall the historical server or replace it with the Paper observer.",
+    "existingPaperUnit": "deploy/private/jenios-paper-observer.service.example",
+    "paperUnitIsPrivateCoreHost": false,
+    "paperUnitInstalled": false
+  },
+  "authorization": {
+    "remoteQueriesReadOnly": true,
+    "hostedDataMutated": false,
+    "secretsRetrieved": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "hostedMigrationsApplied": 0,
+    "productionChanged": false
+  },
+  "limitations": [
+    "Project names and historical references do not establish present isolated robot QA ownership or authorize provisioning.",
+    "Vercel environment metadata was truncated; absence of a setting cannot be concluded from this response.",
+    "Only the connected Render workspace was inventoried; another host or provider may exist.",
+    "TLS peer validation and configured origin do not independently bind a receiver to an approved QA deployment.",
+    "No real administrative identity, hosted runtime, scheduler or operational data source was exercised."
+  ]
+}
+

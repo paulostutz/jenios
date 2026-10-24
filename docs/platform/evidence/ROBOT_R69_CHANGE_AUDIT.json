@@ -1,0 +1,138 @@
+{
+  "schema": "JENIOS_ROBOT_R69_CHANGE_AUDIT_V1",
+  "revision": "R69",
+  "baseCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "changedImplementationSha256": {
+    ".github/workflows/jenios-robot-r69-https-integration.yml": "7d7fa01016b09c7c6d44f119ca719db9878839193faa4c44f58e62416d058da9",
+    "lib/platform/research/robot-r68-private-host.mjs": "dd7880dcd480f36940fc6bdb3be3cd8cc58aa8d89e5c5fa5ea302e67cb849a93",
+    "lib/platform/research/robot-r69-https-transport.mjs": "0a648fc62b970d5c56e48b4b0e5fc8bc0aa1858a2e4274ff9083b5d373d21ded",
+    "lib/platform/research/robot-r69-private-host.mjs": "602841bd467f1e01efd1438b513e0a68d3fe8925846454680beb8cf087d8ac8f",
+    "scripts/platform/research/r69-next-acceptance.mjs": "0e2eb5f0e49ba51e48ec71c26732e0780192fb8e4f44b52313c0607bd290b3ae",
+    "scripts/platform/research/r69-private-host.mjs": "d3342c695c813670f29bbb93b735db48eb8a5e3a8f8bbd83d81c89d56ef187fc",
+    "tests/fixtures/r69-next-client.mjs": "f072d4ec447b9600929323e936c8f81dff703f38c126b1755f52baae9831de89",
+    "tests/platformRobotR69HttpsTransport.test.mjs": "0bfa143127470fd643057691816e8e5029136146472b7b5b187a352e0302cacc",
+    "tests/platformRobotR69NoDeployGuard.test.mjs": "e9e26d5b86e87ae8041a9de315923ce2ad7e181f96e62b75a6938c9d91f63253",
+    "tests/platformRobotR69PrivateHost.test.mjs": "8218ce897ef63e6dc5b610eba27392d81378b40efa5fa56bafa488c22bd350b6",
+    "vercel.json": "f54b2bdd136fa922a88c26738fc480511a336a55b09250bf0277aa18c56fba34"
+  },
+  "reviewFindingsClosed": [
+    "HTTPS and host implementations cross-reviewed independently; no blocker.",
+    "Next acceptance independently reviewed for real handler SDK SQL chain and post-commit ACK loss; no blocker.",
+    "Build provenance explicitly records selected build and does not claim independent source attestation."
+  ],
+  "attemptHistory": [
+    {
+      "phase": "Initial HTTPS unit fixture execution",
+      "outcome": "Three test failures from two fixture definitions before final pass",
+      "cause": "ACK helper supplied extra fields; oversized fixture exceeded an individual canonical string limit before reaching the intended body-size boundary.",
+      "correction": "Only test fixtures adjusted; transport implementation unchanged by these fixture failures.",
+      "finalResult": "10 new HTTPS tests and 5 preserved R67 transport tests passed.",
+      "financialOrHostedEffect": false
+    },
+    {
+      "phase": "Preliminary Next public and private acceptance",
+      "outcome": "12/12 PASS each with altered checkout and existing R68 build",
+      "sourceCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+      "sourceTreeDirty": true,
+      "referenceEvidence": false,
+      "changeBetweenRuns": "Add BUILD_ID, compiled-route hashes and Next/SDK versions to evidence metadata before private preliminary run; no failed acceptance attempt."
+    }
+  ],
+  "verification": {
+    "status": "PRELIMINARY_PASS_REFERENCE_AND_FINAL_CI_REQUIRED",
+    "countsAreOverlapping": true,
+    "localFocused": {
+      "total": 307,
+      "passed": 307,
+      "failed": 0,
+      "skipped": 0,
+      "r69": 22,
+      "preservedSubset": 285,
+      "node": "v24.22.1"
+    },
+    "preliminaryPublic": {
+      "inputMode": "PUBLIC_PROTOCOL_FIXTURE",
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "sourceCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+      "sourceTreeDirty": true,
+      "finishedAt": "2026-10-24T19:30:59.983Z",
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 0,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 0,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "referenceEvidence": false,
+      "build": "Existing R68 build; preliminary only"
+    },
+    "preliminaryPrivate": {
+      "inputMode": "ORIGINAL_PRIVATE_CORE",
+      "tests": {
+        "passed": 12,
+        "total": 12,
+        "failed": 0,
+        "notRun": 0
+      },
+      "sourceCommit": "780a786bee6d8fe928dcf356ec16af4c36abd422",
+      "sourceTreeDirty": true,
+      "finishedAt": "2026-10-24T19:32:27.475Z",
+      "counts": {
+        "nextStarts": 2,
+        "privateHostInvocations": 2,
+        "acknowledgementLosses": 1,
+        "observedTlsRejections": 1,
+        "realSqlCalls": 3,
+        "originalPrivateDecisionsExecuted": 3,
+        "batchesStored": 1,
+        "exactSuccessfulRetries": 1
+      },
+      "referenceEvidence": false,
+      "build": "Existing R68 build; preliminary only"
+    },
+    "referenceCi": "PENDING",
+    "cleanPrivateReference": "PENDING",
+    "finalConsolidatedRun": "Required before certified backup"
+  },
+  "preserved": {
+    "priorLedgerSections": 17,
+    "previousEvidenceFilesChanged": false,
+    "r12r65AlgorithmFilesChanged": false,
+    "r64r65r67SchemaFilesChanged": false,
+    "r67LoaderEmitterOutboxProtocolAndRoutesChanged": false,
+    "privateOriginalBytesCommitted": false,
+    "authImplementationChanged": false,
+    "unrelatedProductCodeChanged": false
+  },
+  "actions": {
+    "manualOperatorControlPreserved": true,
+    "certifiedR61AlignmentGuardPreserved": 0.65,
+    "alignmentGuardReattributedToOriginalPrivateCore": false,
+    "losseshometroSyntheticOnly": true,
+    "r15ProspectiveBackfill": false,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "evidenceFiles": [],
+  "publicCiIncludesPrivateExecution": false
+}

@@ -63,7 +63,10 @@
       "backup/jenios-robot-r67-private-source-bridge-certified-20261024": false,
       "research/jenios-robot-r68-private-host-readiness-20261024": false,
       "backup/jenios-robot-r68-private-host-readiness-progress-20261024": false,
-      "backup/jenios-robot-r68-private-host-readiness-certified-20261024": false
+      "backup/jenios-robot-r68-private-host-readiness-certified-20261024": false,
+      "research/jenios-robot-r69-https-integration-20261024": false,
+      "backup/jenios-robot-r69-https-integration-progress-20261024": false,
+      "backup/jenios-robot-r69-https-integration-certified-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"

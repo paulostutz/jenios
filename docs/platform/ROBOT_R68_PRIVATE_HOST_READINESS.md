@@ -121,11 +121,54 @@ Todos os itens acima permanecem `NOT_EXECUTED` no preflight. O R68 não altera a
 
 ## Validação e fechamento
 
-A CI pública executa os novos contratos, preserva a compatibilidade das filas R66/R67 e do worker R65, exercita os cenários de retomada em PostgreSQL descartável e mantém os gates gerais de testes/build. O núcleo privado não é enviado para a CI pública. A aceitação positiva do host privado é executada localmente com os bytes originais, processos separados, HTTP loopback e PostgreSQL descartável.
+A [CI de referência 40122800873](https://github.com/paulostutz/jenios/actions/runs/40122800873) passou no commit `5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1`, job `120957801014`, concluído em **24/10/2026 às 18:55:34 UTC (15:55:34 em São Paulo)**.
 
-A verificação local inicial passou em 46/46 testes R68 e 239/239 contratos preservados; o build passou com 2.603/2.603 testes gerais, gate herdado de 94/94 e 76/76 páginas. O worker passou 9/9 verificações PostgreSQL e o host privado original passou 12/12 verificações. Essas execuções preliminares ocorreram com a árvore de implementação em trabalho; a evidência privada será repetida no commit de referência limpo, em paralelo à CI pública, antes da consolidação final. Os resultados e seus SHAs serão consolidados no checkpoint R68. As evidências locais de núcleo original e as fixtures públicas do worker terão classificação separada. Os testes direcionados também pertencem à bateria geral; essas contagens não devem ser somadas como operações de mercado.
+| Verificação | Resultado | Natureza |
+|---|---:|---|
+| Contratos novos R68 | 46/46 | Arquivos privados, doctor, handoff, supervisor e exclusão de deploy |
+| Contratos R65–R67 preservados e guard existente | 239/239 | Compatibilidade; sem nova certificação de estratégias |
+| Testes gerais | 2.603/2.603 | Gate existente do build |
+| Gate herdado da aplicação | 94/94 | Nenhuma alteração no código dos outros produtos |
+| Worker em PostgreSQL 17.6 na CI | 9/9 | Processos reais e fixtures sintéticas R61/R65 |
+| Host privado original local | 12/12 | CLI real, bytes originais, sinais, HTTP loopback e PostgreSQL 16.15 |
+| Build e páginas estáticas | PASS; 76/76 | Sem deploy |
+| Falhas/omitidos no fechamento de referência | 0/0 | Tentativas preparatórias descritas na auditoria |
 
-O fechamento segue a regra existente: guardar evidências com o SHA que as produziu, consolidar documentação e ledger em outro commit, obter CI final aprovada e criar o backup certificado no mesmo SHA final. Não se reatribui o JSON de referência nem se cria uma sequência recursiva de commits para inserir a própria CI.
+Os testes direcionados estão incluídos na bateria geral. Contagens de testes, lotes e decisões não são operações independentes de mercado. A CI pública não contém nem executa o núcleo privado. A evidência positiva do núcleo foi produzida localmente com Node `v24.22.1`, árvore limpa e o mesmo SHA de referência.
+
+### Resultado concreto do host privado
+
+Foram **16 invocações da CLI**, incluindo consultas e recusas. O cenário fez cinco POSTs locais: quatro no percurso de admissão e um recusado pela indisponibilidade explicitamente simulada antes de qualquer admissão. Um ACK foi perdido depois do commit PostgreSQL. O reinício reutilizou o registro exato e recebeu confirmação de registro já existente.
+
+Durante outra resposta bem-sucedida, um SIGTERM real impediu o segundo envio, deixando o lote seguinte pendente. O novo processo o entregou e admitiu um lote novo, sem duplicar os anteriores. O banco terminou com **três lotes, nove decisões originais sintéticas e duas sessões admitidas**.
+
+Outras três decisões originais ficaram retidas fora do banco. Sua validade de 120 segundos transcorreu com relógio real; consultas repetidas reconheceram a expiração sem regravar a fila, criar sessões ou enviar requisições. Um SIGKILL separado preservou o lock órfão e o próximo runner foi recusado. O teste de perda observada do lease e o de desativação da flag impediram novas capturas/envios.
+
+A fotografia `acknowledgedQueueBeforeOrphanProbe` é anterior ao teste de lock órfão; esse teste posterior acrescenta uma sessão vazia e mantém seu lock. Não se apresenta aquela fotografia como estado final de todos os probes. A custódia de chaves e os diretórios usados são fixtures locais temporárias; não certificam um volume hospedado ou custódia de produção.
+
+### Resultado concreto do worker
+
+Quatro processos, dois SIGKILL anteriores à abertura e um SIGTERM exercitaram o supervisor e o tick R65 original. O primeiro caso foi persistido antes de uma perda simulada do ACK; a tentativa após um segundo manteve seu timestamp e completou os seis casos dentro da janela real do PostgreSQL. Um segundo histórico reiniciou após o fechamento e foi rejeitado com zero casos, sem backfill.
+
+A fixture registrou prospectivamente abertura em quatro segundos para permitir os reinícios em CI. Preservou as seis definições originais e a duração de dez segundos. Não substituiu `Date.now()` nem `clock_timestamp()`. O aceite usa os stores originais sobre adaptador `psql` local; o factory de produção da CLI, PostgREST hospedado e identidade real não foram exercitados.
+
+### Evidências duráveis
+
+- `docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_READINESS_CHECKPOINT.json`.
+- `docs/platform/evidence/ROBOT_R68_CHANGE_AUDIT.json`.
+- `docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_ACCEPTANCE_EVIDENCE.json` — execução original local com árvore limpa.
+- `docs/platform/evidence/ROBOT_R68_WORKER_ACCEPTANCE_EVIDENCE.json` — JSON original do artefato público da CI, preservado byte a byte.
+- Seção `privateHostReadiness` do ledger, mantendo os valores das 16 seções anteriores.
+
+| Evidência | SHA-256 |
+|---|---|
+| JSON privado local | `01782899458b6438de7b33fafca30de0a5766314819110f405d934dd4ccd5925` |
+| JSON worker da CI | `31ce798d33dc1706bb5082ae99b4a6356a8333b017e2b8653dc18a0718b56b2a` |
+| ZIP do artefato `12572380817` | `6883085297e288f8ae335ffc5bbb84d98f72e19fa7c747faacc6417d271d086d` |
+
+Duas ocorrências preparatórias ficaram registradas na auditoria: a fixture inicial do worker omitia `initialSequence`, e uma preparação local de banco forneceu `PGSERVICEFILE` vazio. Ambas pararam antes das novas observações; foram corrigidas na fixture/comando de preparação sem alterar os algoritmos certificados. A repetição limpa privada e a CI de referência terminaram sem falhas ou omissões.
+
+O PostgreSQL local foi encerrado após os ensaios. A consulta ao projeto Vercel confirmou zero deployments do SHA de referência. Os JSONs mantêm o SHA que realmente os produziu. A consolidação documental exige CI final aprovada antes de criar o backup `backup/jenios-robot-r68-private-host-readiness-certified-20261024` no mesmo SHA final; não se cria um ciclo recursivo de commits para inserir a própria CI.
 
 ## Pendências que continuam materiais
 

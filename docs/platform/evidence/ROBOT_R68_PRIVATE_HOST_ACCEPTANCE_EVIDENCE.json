@@ -1,0 +1,291 @@
+{
+  "schema": "JENIOS_ROBOT_R68_PRIVATE_HOST_ACCEPTANCE_V1",
+  "startedAt": "2026-10-24T18:54:41.274Z",
+  "finishedAt": "2026-10-24T18:56:41.979Z",
+  "sourceCommitSha": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+  "sourceTreeDirty": false,
+  "publicImplementationDigests": {
+    "lib/platform/research/robot-r68-private-host.mjs": "c824e675838593dfaa973cf642f1d99c342719ceab3f52b94248eb2370b6e319",
+    "lib/platform/research/robot-r68-private-files.mjs": "cce481a44afdc2dbf043724d0ac580175f873d00165c81cdc09b47beb260ddb4",
+    "lib/platform/research/robot-r68-outbox-doctor.mjs": "53428a513227ebea6c9c4f55812b19dcd47fdfa99f9503644caefee9a60db315",
+    "lib/platform/research/robot-private-durable-file.mjs": "280a1da459fbb34bab8cf2dcdd8eb48750589ef0b4ba9bc474925fca99ef6cf1",
+    "lib/platform/research/robot-r67-private-core-loader.mjs": "32c27475cbb1d83ac9b887953558a31ed34793a3a5fb74500131b446ae1a99b1",
+    "lib/platform/research/robot-r67-private-source.mjs": "c1e748c85a54a1693ccea90bff6394da659ba65b6ff412738d4dfee36b7e6944",
+    "lib/platform/research/robot-r67-private-protocol.mjs": "9ea019dbcad1edec1d1fc868a0e0602ee32583bf8a023d044c15fb5ebbe02fe3",
+    "lib/platform/research/robot-r67-private-capture-outbox.mjs": "fcc085e961da2e99c7df0ea045e354d288721a0b22b2f9f386031f9843c5410e",
+    "lib/platform/research/robot-r67-durable-emitter.mjs": "4e9fab4db097eac54735c72cd5af8d31a5b29d0bf7746d0b1c6b23196eb0b606",
+    "lib/platform/research/robot-r67-loopback-transport.mjs": "f8c14ab504fb9691ed4a795b02a41aad49b08cf522839ffc06da6cbe02875fa0",
+    "lib/platform/research/robot-r67-database-store.mjs": "3264a25faff8809b3da7763b45add1b2fde4a633535e185180791fcaa80579d1",
+    "lib/platform/research/robot-r67-http.mjs": "4bf92e70fc68669027e54ea1311d0739475ed44f614cff7bf41bbbdb7b704d9b",
+    "lib/platform/research/robot-r67-access.mjs": "c8e278a411f984a24bb5992af0e029b018d72ce18169eb98c1925a88fc87d086",
+    "db/schema/robot-r67-private-capture-store.sql": "5172c89d6f94cbfa50ae789fd2df09e9843c63a81d663a798971833ae7dec58b",
+    "scripts/platform/research/r68-private-host.mjs": "fd1e457b7f7b7cfb22952bbe4e48ba03e430ae2975a4304a477cecc9a63ab9c0",
+    "scripts/platform/research/r68-private-host-acceptance.mjs": "7445e9a014e7f770a6cdef9f3650d9c18d2dc42fd139a9baf4aa4cb5ddab594e"
+  },
+  "classification": "ORIGINAL_PRIVATE_BYTES_LOCAL_CLI_HOST_REAL_SIGNALS_HTTP_POSTGRES_SYNTHETIC_QA",
+  "publicCiEvidence": false,
+  "privateExecutableBytesIncludedInArtifact": false,
+  "scope": {
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+    "evidenceKind": "SIGNED_PRIVATE_QA_CAPTURE",
+    "inputs": "CONTROLLED_SYNTHETIC_SCENARIOS",
+    "commercialModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "ultraFastProvidedByPrivateCore": false,
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseName": "jenios_r68_private_qa",
+    "databaseHost": "127.0.0.1",
+    "databasePort": 56468,
+    "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+    "transport": "ACTUAL_LOOPBACK_HTTP",
+    "sourceClock": "REAL_WALL_CLOCK",
+    "expiryClock": "REAL_WALL_CLOCK_NO_INJECTED_ADVANCE",
+    "adminAuthenticationTested": false,
+    "nextServerTested": false,
+    "hostedSupabaseTested": false,
+    "persistentHostCertified": false,
+    "serviceInstalled": false,
+    "privateOperationalSourceActive": false
+  },
+  "core": {
+    "schema": "JENIOS_R67_VERIFIED_PRIVATE_CORE_V1",
+    "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+    "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+    "originalVersion": "jenios-research-r29.1",
+    "localExecutableBytesVerified": true,
+    "independentRuntimeAttestation": false,
+    "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+    "loaderEvidence": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+    "commercialModes": [
+      "manual",
+      "hybrid",
+      "reverse"
+    ],
+    "ultrafastProvided": false,
+    "liveExecutionGuardVerified": true,
+    "executionAllowed": false,
+    "customerMonitoringActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0
+  },
+  "execution": {
+    "node": "v24.22.1",
+    "cliProcesses": 16,
+    "deliberateSigkills": 1,
+    "responsesLostAfterDatabaseCommit": 1,
+    "deliberatelyUnavailableReceiverRequests": 1,
+    "intakeHttpRequests": 5,
+    "firstPostPersistedBatches": 2,
+    "pendingAfterGracefulMidRequestStop": 1,
+    "databaseSummary": {
+      "batches": 3,
+      "captures": 9,
+      "sessions": 2
+    },
+    "retainedOriginalDecisionsOutsideDatabase": 3,
+    "realExpiryWaitMs": 116853,
+    "acknowledgedQueueBeforeOrphanProbe": {
+      "scopeId": "scope:a9c4f1b76b584efb",
+      "sourceId": "source:a4dcaa4535c8cd52",
+      "sourceKeySha256": "8d885d75b0781c1c69101bb6d9f1823f60c0a2db5a4f484e6e9a91a0032ef0fd",
+      "revision": 14,
+      "entries": 3,
+      "sessions": 3,
+      "attempts": 4,
+      "persistedStates": {
+        "PENDING": 0,
+        "UNCONFIRMED": 0,
+        "ACKNOWLEDGED": 3,
+        "EXPIRED_UNCONFIRMED": 0
+      },
+      "statesAtObservation": {
+        "PENDING": 0,
+        "UNCONFIRMED": 0,
+        "ACKNOWLEDGED": 3,
+        "EXPIRED_UNCONFIRMED": 0
+      },
+      "newlyObservedExpired": 0,
+      "inFlightAttempts": 0,
+      "unknownOutcomeEntries": 0,
+      "sequenceBlockedEntries": 0,
+      "expiredPredecessorBlockedEntries": 0,
+      "eligibleByQueueMetadata": 0,
+      "clockBlockedEntries": 0,
+      "attemptLimitBlockedEntries": 0,
+      "blockedSessions": [],
+      "oldestCapturedAtMs": 1792868082900,
+      "nextExpiryAtMs": null,
+      "retainedRecordsSha256": "4067fd072518f06a007f44732605dfdaea2a08f0bad4f5fbecc9bdde4eaa0264",
+      "expiryCalculationOnly": true,
+      "deliveryAdmissionVerified": false
+    },
+    "expiryObservation": {
+      "scopeId": "scope:a9c4f1b76b584efb",
+      "sourceId": "source:a4dcaa4535c8cd52",
+      "sourceKeySha256": "8d885d75b0781c1c69101bb6d9f1823f60c0a2db5a4f484e6e9a91a0032ef0fd",
+      "revision": 4,
+      "entries": 1,
+      "sessions": 1,
+      "attempts": 1,
+      "persistedStates": {
+        "PENDING": 0,
+        "UNCONFIRMED": 1,
+        "ACKNOWLEDGED": 0,
+        "EXPIRED_UNCONFIRMED": 0
+      },
+      "statesAtObservation": {
+        "PENDING": 0,
+        "UNCONFIRMED": 0,
+        "ACKNOWLEDGED": 0,
+        "EXPIRED_UNCONFIRMED": 1
+      },
+      "newlyObservedExpired": 1,
+      "inFlightAttempts": 0,
+      "unknownOutcomeEntries": 1,
+      "sequenceBlockedEntries": 0,
+      "expiredPredecessorBlockedEntries": 0,
+      "eligibleByQueueMetadata": 0,
+      "clockBlockedEntries": 0,
+      "attemptLimitBlockedEntries": 0,
+      "blockedSessions": [],
+      "oldestCapturedAtMs": 1792868081673,
+      "nextExpiryAtMs": null,
+      "retainedRecordsSha256": "fa271f119db964b51b92e1063b77ffba1cb96b3bb043c0bc3b8688476f33f56e",
+      "expiryCalculationOnly": true,
+      "deliveryAdmissionVerified": false
+    },
+    "httpEvents": [
+      {
+        "eventId": "evt:a7725b3b6b91f106",
+        "operationId": "op:00000000000000000000000000000004",
+        "bodySha256": "bd9693397c991e781704d2db2101f20288ffd942d960502a736183bfd4669aac",
+        "httpStatus": 503,
+        "intakeStatus": null,
+        "injection": "RECEIVER_UNAVAILABLE_BEFORE_ADMISSION"
+      },
+      {
+        "eventId": "evt:7b3e53b8fd96b499",
+        "operationId": "op:00000000000000000000000000000001",
+        "bodySha256": "0329e9b86b32c23dc3fda44ed549692f887285018aa1fe1da7ca540365901d70",
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:7b3e53b8fd96b499",
+        "operationId": "op:00000000000000000000000000000001",
+        "bodySha256": "0329e9b86b32c23dc3fda44ed549692f887285018aa1fe1da7ca540365901d70",
+        "httpStatus": 200,
+        "intakeStatus": "ALREADY_STORED"
+      },
+      {
+        "eventId": "evt:0e6bf69ac3f9c323",
+        "operationId": "op:00000000000000000000000000000002",
+        "bodySha256": "8f6a31b8711de20a5150a675b72d04ac12e19e86265381b31b638a69dba4d9da",
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      },
+      {
+        "eventId": "evt:1547230ad87831e1",
+        "operationId": "op:00000000000000000000000000000003",
+        "bodySha256": "6d7e6c6608499a261fc15f069ef9fe711336666370e37ccc4eb824305c4634ed",
+        "httpStatus": 202,
+        "intakeStatus": "STORED"
+      }
+    ]
+  },
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "notRun": 0,
+  "status": "PASS",
+  "error": null,
+  "cases": [
+    {
+      "name": "protected custody and actual CLI checks verify original hashes without session or network effects",
+      "status": "PASS"
+    },
+    {
+      "name": "original private batch remains durable after an explicitly unavailable local receiver",
+      "status": "PASS"
+    },
+    {
+      "name": "one watch host excludes another and reads two original commands from an atomic replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "lost HTTP acknowledgement follows database commit and SIGTERM preserves the uncertain backlog",
+      "status": "PASS"
+    },
+    {
+      "name": "SIGTERM during an in-flight successful acknowledgement prevents a second delivery from starting",
+      "status": "PASS"
+    },
+    {
+      "name": "new CLI process reuses exact records and admits three original batches without duplicates",
+      "status": "PASS"
+    },
+    {
+      "name": "repeated post-delivery CLI checks leave sessions attempts and snapshot bytes unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "changed custody credentials fail closed without resetting the retained queue",
+      "status": "PASS"
+    },
+    {
+      "name": "actual SIGKILL leaves an orphan host lock that inspection retains and another runner refuses",
+      "status": "PASS"
+    },
+    {
+      "name": "real wall-clock expiration is observed by CLI without rewriting or transmitting the retained batch",
+      "status": "PASS"
+    },
+    {
+      "name": "observed lease loss or a disabled QA gate prevents later capture and delivery",
+      "status": "PASS"
+    },
+    {
+      "name": "all host outputs are sanitized and original synthetic evidence remains operationally inactive",
+      "status": "PASS"
+    }
+  ],
+  "invariants": {
+    "automaticPromotionAllowed": false,
+    "executionAllowed": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "commercialPerformanceCertified": false,
+    "independentRuntimeAttestation": false,
+    "independentBrokerAttestation": false,
+    "independentCustomerConsentVerified": false,
+    "persistentHostCertified": false,
+    "hostedEnvironmentCertified": false,
+    "realAdministrativeIdentityCertified": false,
+    "recoveryAuthorized": false,
+    "monotonicWitnessVerified": false,
+    "hostedDatabaseMigrationsApplied": 0,
+    "productionConfigurationChanged": false,
+    "mergePerformed": false,
+    "deployPerformed": false
+  },
+  "limitations": [
+    "Original bytes execute only with synthetic scenarios on this local host; public CI does not repeat this private evidence.",
+    "The private custody files and signing key in this acceptance run are temporary fixtures, not production key custody.",
+    "No hosted service, persistent volume guarantee, service manager or production scheduler is installed or certified.",
+    "A retained lock is inspected but never automatically removed or interpreted as proof of exclusive process ownership.",
+    "A local lease detects observed ownership changes; it is not distributed fencing or an independent monotonic witness.",
+    "Nine original synthetic decisions are admitted; three additional original decisions remain unconfirmed and expire locally.",
+    "Graceful shutdown drains one in-flight request and starts no subsequent delivery after the stop is observed.",
+    "No hosted Auth, operational customer feed, paid provider, order, financial result or private-core strategy change is certified."
+  ]
+}

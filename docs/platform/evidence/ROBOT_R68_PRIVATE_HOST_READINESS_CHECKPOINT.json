@@ -44,7 +44,7 @@
     "hostPlanExplicitlyDeclared": true
   },
   "validation": {
-    "status": "LOCAL_PASS_REFERENCE_AND_FINAL_CI_REQUIRED",
+    "status": "PASS_REFERENCE_FINAL_CI_REQUIRED",
     "countsAreOverlapping": true,
     "localFocused": {
       "total": 285,
@@ -78,8 +78,85 @@
       "validationCases": 6,
       "lateWindowValidationCases": 0
     },
-    "localPrivateHost": "12/12 preliminary, clean-reference rerun required",
-    "referenceCi": "PENDING",
+    "localPrivateHost": {
+      "file": "docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "01782899458b6438de7b33fafca30de0a5766314819110f405d934dd4ccd5925",
+      "bytes": 12170,
+      "sourceCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "sourceTreeDirty": false,
+      "finishedAt": "2026-10-24T18:56:41.979Z",
+      "publicCiEvidence": false,
+      "total": 12,
+      "passed": 12,
+      "failed": 0,
+      "notRun": 0,
+      "scope": {
+        "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "evidenceKind": "SIGNED_PRIVATE_QA_CAPTURE",
+        "inputs": "CONTROLLED_SYNTHETIC_SCENARIOS",
+        "commercialModes": [
+          "manual",
+          "hybrid",
+          "reverse"
+        ],
+        "ultraFastProvidedByPrivateCore": false,
+        "database": "REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r68_private_qa",
+        "databaseHost": "127.0.0.1",
+        "databasePort": 56468,
+        "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+        "transport": "ACTUAL_LOOPBACK_HTTP",
+        "sourceClock": "REAL_WALL_CLOCK",
+        "expiryClock": "REAL_WALL_CLOCK_NO_INJECTED_ADVANCE",
+        "adminAuthenticationTested": false,
+        "nextServerTested": false,
+        "hostedSupabaseTested": false,
+        "persistentHostCertified": false,
+        "serviceInstalled": false,
+        "privateOperationalSourceActive": false
+      },
+      "core": {
+        "schema": "JENIOS_R67_VERIFIED_PRIVATE_CORE_V1",
+        "engineSha256": "9341d9243cbe742b90bf40149663e632fc472f5586c74bf70bdfcfd114e65aea",
+        "serviceSha256": "cbb92005459f79bf6e23a0edc7c5542cc62b632b6c301e3f23b98ebd514ce5be",
+        "originalVersion": "jenios-research-r29.1",
+        "localExecutableBytesVerified": true,
+        "independentRuntimeAttestation": false,
+        "runtimeOrigin": "ORIGINAL_PRIVATE_CORE_SYNTHETIC_RUNTIME",
+        "loaderEvidence": "VM_SOURCE_TEXT_MODULE_PINNED_BYTES",
+        "commercialModes": [
+          "manual",
+          "hybrid",
+          "reverse"
+        ],
+        "ultrafastProvided": false,
+        "liveExecutionGuardVerified": true,
+        "executionAllowed": false,
+        "customerMonitoringActive": false,
+        "realOrdersSent": 0,
+        "externalPaperOrdersSent": 0,
+        "paidProviderCalls": 0
+      },
+      "execution": {
+        "node": "v24.22.1",
+        "cliProcesses": 16,
+        "deliberateSigkills": 1,
+        "responsesLostAfterDatabaseCommit": 1,
+        "deliberatelyUnavailableReceiverRequests": 1,
+        "intakeHttpRequests": 5,
+        "firstPostPersistedBatches": 2,
+        "pendingAfterGracefulMidRequestStop": 1,
+        "databaseSummary": {
+          "batches": 3,
+          "captures": 9,
+          "sessions": 2
+        },
+        "retainedOriginalDecisionsOutsideDatabase": 3,
+        "realExpiryWaitMs": 116853
+      },
+      "publicImplementationDigestsVerified": 16,
+      "queueStageNote": "Acknowledged queue snapshot is before the later orphan-lock probe; that probe adds one empty session and retains its host lock."
+    },
     "finalConsolidatedRun": "Required before certified backup creation",
     "localPrivateHostPreliminary": {
       "total": 12,
@@ -98,7 +175,91 @@
       "retainedOriginalDecisionsOutsideDatabase": 3,
       "realExpiryWaitMs": 116951,
       "publicCiEvidence": false
-    }
+    },
+    "reference": {
+      "runId": 40122800873,
+      "jobId": 120957801014,
+      "commit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T18:55:34Z",
+      "focusedR68": "46/46",
+      "preservedContractSubset": "239/239",
+      "general": "2603/2603",
+      "inheritedApplicationGate": "94/94",
+      "unrelatedProductCodeChanged": false,
+      "workerPostgres": "9/9",
+      "localOriginalPrivateHost": "12/12",
+      "localOriginalIsPublicCiExecution": false,
+      "build": "PASS",
+      "staticPages": "76/76",
+      "failed": 0,
+      "skipped": 0,
+      "countsAreOverlapping": true,
+      "priorR59R67RecertificationClaimed": false
+    },
+    "publicWorker": {
+      "file": "docs/platform/evidence/ROBOT_R68_WORKER_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "31ce798d33dc1706bb5082ae99b4a6356a8333b017e2b8653dc18a0718b56b2a",
+      "bytes": 9169,
+      "sourceRun": 40122800873,
+      "sourceCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "finishedAt": "2026-10-24T18:54:37.857Z",
+      "scope": {
+        "observationOrigin": "R61_SYNTHETIC_RUNTIME",
+        "transportEvidenceKind": "SIGNED_QA_REPLAY",
+        "validationEvidenceKind": "SYNTHETIC_FIXTURE",
+        "database": "REAL_DISPOSABLE_POSTGRESQL",
+        "databaseName": "jenios_r68_worker_qa",
+        "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+        "sourceCalendar": "PINNED_QA_REPLAY_CLOCK_FOR_EXISTING_R65_OBSERVATIONS",
+        "validationClock": "UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+        "prospectiveFixtureStartDelayMs": 4000,
+        "originalValidationWindowMs": 10000,
+        "originalCaseDefinitionsUnchanged": true,
+        "productionCliRuntimeFactoryExercised": false,
+        "hostedWorkerTested": false,
+        "realAdminIdentityTested": false,
+        "privateR67SourceLoaded": false,
+        "crossProcessFenceClaimed": false,
+        "supervisorModule": "runR68R65Worker",
+        "tickAlgorithm": "UNCHANGED_runR65EvolutionTick"
+      },
+      "counts": {
+        "total": 9,
+        "passed": 9,
+        "failed": 0,
+        "notRun": 0
+      },
+      "execution": {
+        "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+        "node": "v22.23.3",
+        "workerProcesses": 4,
+        "deliberateSigkills": 2,
+        "gracefulSigterms": 1,
+        "responseLossesAfterCaptureCommit": 1,
+        "validationCases": 6,
+        "lateWindowValidationCases": 0
+      },
+      "implementationDigestsVerified": 4
+    },
+    "artifact": {
+      "id": 12572380817,
+      "name": "r68-public-worker-evidence-5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "sourceRun": 40122800873,
+      "sourceCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "bytes": 2801,
+      "zipSha256": "6883085297e288f8ae335ffc5bbb84d98f72e19fa7c747faacc6417d271d086d",
+      "zipHashVerified": true,
+      "expiresAt": "2026-11-07T18:55:26Z",
+      "referenceJsonCopiedByteForByte": true
+    },
+    "referenceNoDeploy": {
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "projectName": "jenios-ecossistem",
+      "verifiedCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "deploymentCount": 0
+    },
+    "localDisposablePostgresStopped": true
   },
   "preservation": {
     "priorLedgerSections": 16,

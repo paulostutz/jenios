@@ -2,14 +2,16 @@
   "schema": "JENIOS_ROBOT_R68_CHANGE_AUDIT_V1",
   "baseCommit": "a2079604f11781ac11f012fe517297bd31ebaaab",
   "branch": "research/jenios-robot-r68-private-host-readiness-20261024",
-  "status": "LOCAL_PASS_REFERENCE_AND_FINAL_CI_REQUIRED",
+  "status": "REFERENCE_VALIDATED_FINAL_CONSOLIDATED_CI_REQUIRED",
   "scope": "JENIOS robots only; local private host custody/restart/diagnosis and preparation for hosted QA",
   "changedPaths": [
     ".github/workflows/jenios-robot-r68-private-host-readiness.yml",
     "docs/platform/ROBOT_R68_PRIVATE_HOST_READINESS.md",
     "docs/platform/evidence/ROBOT_MASTER_PERFORMANCE_LEDGER.json",
     "docs/platform/evidence/ROBOT_R68_CHANGE_AUDIT.json",
+    "docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_ACCEPTANCE_EVIDENCE.json",
     "docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_READINESS_CHECKPOINT.json",
+    "docs/platform/evidence/ROBOT_R68_WORKER_ACCEPTANCE_EVIDENCE.json",
     "lib/platform/research/robot-private-durable-file.mjs",
     "lib/platform/research/robot-r66-observation-outbox.mjs",
     "lib/platform/research/robot-r67-private-capture-outbox.mjs",
@@ -68,6 +70,20 @@
       "reason": "initialSequence required by certified R65 source was omitted",
       "correction": "Fixture supplies initialSequence:1; R65 unchanged",
       "financialOrHostedEffect": false
+    },
+    {
+      "area": "local clean-reference private acceptance setup",
+      "sourceCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+      "result": "BLOCKED_BY_FRESH_DISPOSABLE_DATABASE_GUARD",
+      "reason": "The local reset command supplied an empty PGSERVICEFILE; psql refused that configuration and the subsequent acceptance found the old disposable tables. It stopped before installing schema, executing the core or admitting observations.",
+      "reportedAttemptCounts": {
+        "passed": 0,
+        "failed": 1,
+        "notRun": 11
+      },
+      "correction": "Recreate only jenios_r68_private_qa using a minimal psql environment without the empty service variable; assert reset success before the acceptance command. No implementation change.",
+      "finalResult": "12/12 PASS with sourceTreeDirty=false",
+      "financialOrHostedEffect": false
     }
   ],
   "verification": {
@@ -79,8 +95,22 @@
     "localBuild": "PASS",
     "staticPages": "76/76",
     "localWorker": "9/9",
-    "localOriginalPrivateHost": "12/12 preliminary, clean-reference rerun required",
-    "ci": "PENDING"
+    "localOriginalPrivateHost": "12/12 on clean reference commit",
+    "ci": {
+      "runId": 40122800873,
+      "jobId": 120957801014,
+      "conclusion": "SUCCESS",
+      "completedAt": "2026-10-24T18:55:34Z",
+      "focusedR68": 46,
+      "preservedSubset": 239,
+      "general": 2603,
+      "inheritedApplicationGate": 94,
+      "workerPostgres": 9,
+      "staticPages": 76,
+      "failures": 0,
+      "skips": 0
+    },
+    "referenceCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1"
   },
   "preserved": {
     "priorLedgerSections": 16,
@@ -100,5 +130,25 @@
     "productionChanged": false,
     "mergePerformed": false,
     "deploymentPerformed": false
-  }
+  },
+  "evidenceFiles": [
+    {
+      "file": "docs/platform/evidence/ROBOT_R68_PRIVATE_HOST_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "01782899458b6438de7b33fafca30de0a5766314819110f405d934dd4ccd5925",
+      "bytes": 12170
+    },
+    {
+      "file": "docs/platform/evidence/ROBOT_R68_WORKER_ACCEPTANCE_EVIDENCE.json",
+      "sha256": "31ce798d33dc1706bb5082ae99b4a6356a8333b017e2b8653dc18a0718b56b2a",
+      "bytes": 9169
+    }
+  ],
+  "publicCiIncludesPrivateExecution": false,
+  "referenceNoDeploy": {
+    "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+    "projectName": "jenios-ecossistem",
+    "verifiedCommit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+    "deploymentCount": 0
+  },
+  "localDisposablePostgresStopped": true
 }

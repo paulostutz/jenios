@@ -1,0 +1,273 @@
+{
+  "schema": "JENIOS_R68_WORKER_ACCEPTANCE_V1",
+  "status": "PASS",
+  "commit": "5e7550f1e8b48d661aeab03cf85fbe6f7b92a7e1",
+  "startedAt": "2026-10-24T18:54:22.797Z",
+  "finishedAt": "2026-10-24T18:54:37.857Z",
+  "counts": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "notRun": 0
+  },
+  "checks": [
+    {
+      "name": "strictly local disposable database uses unmodified PostgreSQL wall clock",
+      "status": "PASS"
+    },
+    {
+      "name": "two pending plans use original R65 registration, persisted R61 provenance and six unchanged definitions",
+      "status": "PASS"
+    },
+    {
+      "name": "real process kills before the windows preserve pending plans and create no retrospective cases",
+      "status": "PASS"
+    },
+    {
+      "name": "restarted supervisor immediately recovers the original pending window from PostgreSQL",
+      "status": "PASS"
+    },
+    {
+      "name": "one-second serial retry recovers a lost capture ACK and retains all six real in-window timestamps",
+      "status": "PASS"
+    },
+    {
+      "name": "PostgreSQL independently rejects a missing case submitted after its actual window",
+      "status": "PASS"
+    },
+    {
+      "name": "restart after closure rejects the empty window on its first tick without any backfill",
+      "status": "PASS"
+    },
+    {
+      "name": "supervisor follows the persisted closing deadline and exits after the unchanged bounded R65 evaluation",
+      "status": "PASS"
+    },
+    {
+      "name": "only six synthetic validation cases exist; paid policy stays disabled and no R67 private table participates",
+      "status": "PASS"
+    }
+  ],
+  "scope": {
+    "observationOrigin": "R61_SYNTHETIC_RUNTIME",
+    "transportEvidenceKind": "SIGNED_QA_REPLAY",
+    "validationEvidenceKind": "SYNTHETIC_FIXTURE",
+    "database": "REAL_DISPOSABLE_POSTGRESQL",
+    "databaseName": "jenios_r68_worker_qa",
+    "databaseRpcTransport": "LOCAL_PSQL_ADAPTER_NOT_HOSTED_POSTGREST",
+    "sourceCalendar": "PINNED_QA_REPLAY_CLOCK_FOR_EXISTING_R65_OBSERVATIONS",
+    "validationClock": "UNMODIFIED_POSTGRESQL_CLOCK_TIMESTAMP",
+    "prospectiveFixtureStartDelayMs": 4000,
+    "originalValidationWindowMs": 10000,
+    "originalCaseDefinitionsUnchanged": true,
+    "productionCliRuntimeFactoryExercised": false,
+    "hostedWorkerTested": false,
+    "realAdminIdentityTested": false,
+    "privateR67SourceLoaded": false,
+    "crossProcessFenceClaimed": false,
+    "supervisorModule": "runR68R65Worker",
+    "tickAlgorithm": "UNCHANGED_runR65EvolutionTick"
+  },
+  "execution": {
+    "postgresVersion": "17.6 (Debian 17.6-2.pgdg13+1)",
+    "node": "v22.23.3",
+    "workerProcesses": 4,
+    "deliberateSigkills": 2,
+    "gracefulSigterms": 1,
+    "responseLossesAfterCaptureCommit": 1,
+    "validationCases": 6,
+    "lateWindowValidationCases": 0,
+    "windows": [
+      {
+        "scopeId": "scope:0000000000006801",
+        "planId": "plan:8c1ed8134c2e66c2",
+        "startsAtMs": 1792868067317,
+        "endsAtMs": 1792868077317,
+        "initialWaiting": {
+          "schema": "JENIOS_R68_CYCLE_SUPERVISOR_EVENT_V1",
+          "event": "WAITING",
+          "observedAtMs": 1792868063485,
+          "tick": 1,
+          "status": "WAITING_VALIDATION_WINDOW",
+          "revision": 1,
+          "nextAtMs": 1792868067317,
+          "consecutiveFailures": 0,
+          "delayMs": 3882,
+          "code": null
+        },
+        "summary": {
+          "schema": "JENIOS_R68_CYCLE_SUPERVISOR_RESULT_V1",
+          "mode": "watch",
+          "status": "STOPPED",
+          "code": "R68_WORKER_STOP_REQUESTED",
+          "startedAtMs": 1792868063671,
+          "stoppedAtMs": 1792868077702,
+          "ticksStarted": 4,
+          "ticksSucceeded": 3,
+          "ticksFailed": 1,
+          "consecutiveFailures": 0,
+          "lastStatus": "AUTO_APPLIED",
+          "revision": 2,
+          "nextAtMs": null,
+          "singleFlight": true,
+          "crossProcessFence": false,
+          "hostedServiceRegistered": false,
+          "productionSchedulerStarted": false
+        },
+        "cases": [
+          {
+            "caseId": "case:0a9d9e88a31e038b",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": false,
+            "occurredAtMs": 1792868067433,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              600,
+              650
+            ]
+          },
+          {
+            "caseId": "case:60077b52f3161035",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": false,
+            "occurredAtMs": 1792868068542,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              700,
+              700
+            ]
+          },
+          {
+            "caseId": "case:97af5c222d0b504d",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": false,
+            "occurredAtMs": 1792868068573,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              1001,
+              1001
+            ]
+          },
+          {
+            "caseId": "case:b03eab04a6077acd",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": true,
+            "occurredAtMs": 1792868068604,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              50,
+              50
+            ]
+          },
+          {
+            "caseId": "case:bed78249ea79d0fd",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": true,
+            "occurredAtMs": 1792868068635,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              300,
+              450
+            ]
+          },
+          {
+            "caseId": "case:c9066f0575676bd2",
+            "evidenceKind": "SYNTHETIC_FIXTURE",
+            "expectedAllow": false,
+            "occurredAtMs": 1792868068667,
+            "scopeId": "scope:0000000000006801",
+            "snapshotAgesMs": [
+              900,
+              1000
+            ]
+          }
+        ]
+      },
+      {
+        "scopeId": "scope:0000000000006802",
+        "planId": "plan:be2ecfe042b11c7e",
+        "startsAtMs": 1792868067325,
+        "endsAtMs": 1792868077325,
+        "initialWaiting": {
+          "schema": "JENIOS_R68_CYCLE_SUPERVISOR_EVENT_V1",
+          "event": "WAITING",
+          "observedAtMs": 1792868063485,
+          "tick": 1,
+          "status": "WAITING_VALIDATION_WINDOW",
+          "revision": 1,
+          "nextAtMs": 1792868067325,
+          "consecutiveFailures": 0,
+          "delayMs": 3890,
+          "code": null
+        },
+        "summary": {
+          "schema": "JENIOS_R68_CYCLE_SUPERVISOR_RESULT_V1",
+          "mode": "watch",
+          "status": "STOPPED",
+          "code": "R68_WORKER_STOP_REQUESTED",
+          "startedAtMs": 1792868077497,
+          "stoppedAtMs": 1792868077646,
+          "ticksStarted": 1,
+          "ticksSucceeded": 1,
+          "ticksFailed": 0,
+          "consecutiveFailures": 0,
+          "lastStatus": "REJECTED",
+          "revision": 2,
+          "nextAtMs": null,
+          "singleFlight": true,
+          "crossProcessFence": false,
+          "hostedServiceRegistered": false,
+          "productionSchedulerStarted": false
+        },
+        "cases": [],
+        "rejection": "INCOMPLETE_PREREGISTERED_WINDOW"
+      }
+    ],
+    "transientFailure": {
+      "schema": "JENIOS_R68_CYCLE_SUPERVISOR_EVENT_V1",
+      "event": "TICK_FAILED",
+      "observedAtMs": 1792868067435,
+      "tick": 2,
+      "status": "WAITING_VALIDATION_WINDOW",
+      "revision": 1,
+      "nextAtMs": 1792868067317,
+      "consecutiveFailures": 1,
+      "requestedAtMs": 1792868067371,
+      "completedAtMs": 1792868067435,
+      "code": "R65_DATABASE_UNAVAILABLE"
+    },
+    "recoveredCapture": {
+      "schema": "JENIOS_R68_CYCLE_SUPERVISOR_EVENT_V1",
+      "event": "TICK_SUCCEEDED",
+      "observedAtMs": 1792868068669,
+      "tick": 3,
+      "status": "VALIDATION_CAPTURED",
+      "revision": 1,
+      "nextAtMs": 1792868077317,
+      "consecutiveFailures": 0,
+      "requestedAtMs": 1792868068437,
+      "completedAtMs": 1792868068669,
+      "code": null
+    }
+  },
+  "implementationSha256": {
+    "lib/platform/research/robot-r68-cycle-supervisor.mjs": "f4ae20cf8b8ea3f3c9b9d6a90fea0b932e847f773142fb8d7487fe1e1c292d93",
+    "scripts/platform/research/r68-cycle-supervisor.mjs": "649c41aa7f8cde51790ca93e10772624523ac4ed81cc77330973a7c0d5c54b50",
+    "scripts/platform/research/r68-worker-acceptance.mjs": "cf1f70dca5c3092e855e5c3035d8eab0fc30f43b0e57cafc58e6bc2cf150eef3",
+    "tests/fixtures/r68-worker-process.mjs": "0043e3ce687ecb59052a96672894b14ad6ac739677c755ecfce2ec9ae0ee46cd"
+  },
+  "realOrdersSent": 0,
+  "externalPaperOrdersSent": 0,
+  "paidProviderCalls": 0,
+  "customerMonitoringActive": false,
+  "privateOperationalSourceActive": false,
+  "actualBrokerPnl": null,
+  "actualLossesAvoided": null,
+  "realTradeAccuracy": null,
+  "commercialPerformanceCertified": false,
+  "hostedServiceRegistered": false,
+  "productionDatabaseAccessed": false,
+  "hostedMigrationApplied": false,
+  "mergePerformed": false,
+  "deploymentPerformed": false
+}

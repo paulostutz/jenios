@@ -32,7 +32,8 @@
     "tests/jeniosAssistantFloatingB128.test.mjs",
     "tests/jeniosFreeNeverBillsB140.test.mjs",
     "tests/jeniosProAccessB139.test.mjs",
-    "tests/jeniosSocialFreeGeniosB136.test.mjs"
+    "tests/jeniosSocialFreeGeniosB136.test.mjs",
+    "tests/platformPilotPrep.test.mjs"
   ],
   "blobs": {
     ".DS_Store": "0b49e3a2edc20a9fb04574c886910d377de9fb3f",

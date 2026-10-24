@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,rmSync,statSync,symlinkSync} from 'node:fs';
+import {mkdtempSync,rmSync,statSync,symlinkSync,openSync,closeSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
@@ -82,7 +82,22 @@ test('B152 multi-process reservations cannot exceed the configured aggregate bud
  const dir=mkdtempSync(join(tmpdir(),'jenios-concurrent-')),path=join(dir,'paper.db'),db=new PaperLedger(path);db.configure(session,connection,limits);
  const fixture={session,connection,input};
  const worker=new URL('../scripts/platform/pilot-prep/concurrency-worker.mjs',import.meta.url);
- try{const results=await Promise.all(Array.from({length:6},(_,n)=>new Promise((resolve,reject)=>{const child=spawn(process.execPath,[worker.pathname,path,JSON.stringify({...fixture,input:{...input,order:{...order,clientOrderId:'parallel-'+n}}})],{stdio:['ignore','pipe','pipe']});let out='';child.stdout.on('data',x=>out+=x);child.once('error',reject);child.once('exit',code=>code===0?resolve(JSON.parse(out)):reject(Error('Worker failed')));})));assert.equal(results.filter(r=>r.reserved).length,2);assert.equal(db.snapshot(session,connection).length,2);}finally{db.close();rmSync(dir,{recursive:true,force:true});}
+ try{
+  const completed=await Promise.all(Array.from({length:6},(_,n)=>new Promise((resolve,reject)=>{
+   const resultPath=join(dir,'worker-'+n+'.json'),output=openSync(resultPath,'wx',0o600);
+   const child=spawn(process.execPath,[worker.pathname,path,JSON.stringify({...fixture,input:{...input,order:{...order,clientOrderId:'parallel-'+n}}})],{stdio:['ignore',output,'ignore']});
+   let closed=false;const closeOutput=()=>{if(!closed){closed=true;closeSync(output);}};
+   child.once('error',error=>{closeOutput();reject(error);});
+   // Capture each worker in a private file, then await every process before
+   // parsing. This avoids truncated pipe output without serializing the race.
+   child.once('close',code=>{
+    closeOutput();resolve({code,resultPath});
+   });
+  })));
+  assert.ok(completed.every(result=>result.code===0),'All concurrency workers must complete successfully');
+  const results=completed.map(result=>JSON.parse(readFileSync(result.resultPath,'utf8')));
+  assert.equal(results.filter(r=>r.reserved).length,2);assert.equal(db.snapshot(session,connection).length,2);
+ }finally{db.close();rmSync(dir,{recursive:true,force:true});}
 });
 test('B153 cTrader maps units to centiunits and does not open a network connection',()=>{const d=limitDraft(session,connection,{order,meta,now,costs});assert.equal(d.request.payload.volume,100);assert.equal(d.request.payload.orderType,2);assert.equal(d.request.payloadType,2106);assert.equal(d.request.payload.stopLoss,99);assert.equal(d.networkSent,false);});
 test('B153 Kraken preserves contract quantity and explicitly refuses to claim protective orders sent',()=>{const c={...connection,provider:'kraken-futures'},m={...meta,provider:'kraken-futures',quantityUnit:'contracts',id:'PI_XBTUSD'};const d=limitDraft(session,c,{order,meta:m,now,costs});assert.equal(d.request.query.size,'1');assert.equal(d.request.query.cliOrdId,order.clientOrderId);assert.equal(d.protectionStatus,'separate_protective_orders_not_sent; live_readiness_blocked');assert.equal(d.networkSent,false);});

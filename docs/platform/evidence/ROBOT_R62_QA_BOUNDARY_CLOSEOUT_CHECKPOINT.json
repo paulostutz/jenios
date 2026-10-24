@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_R62_QA_BOUNDARY_CLOSEOUT_CHECKPOINT_V1",
   "block": "R62",
-  "classification": "SYNTHETIC_QA_BOUNDARY_CANDIDATE",
+  "classification": "SYNTHETIC_QA_BOUNDARIES_CERTIFIED",
   "scope": "HTTP execution-flag denial and UI session-limit invalidation, exclusively on the isolated synthetic QA console",
   "base": {
     "branch": "backup/jenios-robot-r61-qa-policy-integration-certified-20261024",
@@ -65,10 +65,163 @@
     "negativeFlagFixtures": "Only the local child process varies one flag at a time. No deployed or account configuration is changed."
   },
   "validation": {
-    "status": "PENDING_CI",
+    "status": "PASS",
     "local": "Syntax and registration checks only; actual browser acceptance requires CI.",
-    "evidence": null,
-    "browserAcceptance": null
+    "evidence": {
+      "validationRun": 40099646953,
+      "validatedCommit": "0376f772b593d5d9175f71a6624de47c9c32fad2",
+      "directed": "307/307",
+      "general": "2113/2113",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "browser": "41/41",
+      "failures": 0,
+      "skipped": 0
+    },
+    "browserAcceptance": {
+      "status": "PASS",
+      "reportFile": "docs/platform/evidence/ROBOT_R62_BROWSER_BOUNDARY_EVIDENCE.json",
+      "total": 41,
+      "passed": 41,
+      "failed": 0,
+      "notRun": 0,
+      "preservedR61Cases": 33,
+      "executionFlagCases": 6,
+      "sessionLimitCases": 2,
+      "renderedZeroOrderChecks": 57,
+      "attempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      },
+      "pageErrors": 0,
+      "expectedHttp404ConsoleMessages": 8,
+      "limits": [
+        {
+          "id": "r62_snapshot_limit_revokes_previous_decision_and_allows_new_session",
+          "boundary": "maxSnapshots",
+          "limit": 500,
+          "rejectedAttempt": 501,
+          "priorResultRemoved": true,
+          "newSessionIdentifier": true
+        },
+        {
+          "id": "r62_event_limit_revokes_previous_decision_and_allows_new_session",
+          "boundary": "maxEvents",
+          "limit": 1000,
+          "rejectedAttempt": 1001,
+          "priorResultRemoved": true,
+          "newSessionIdentifier": true
+        }
+      ],
+      "executionFlagResults": [
+        {
+          "scenario": "r62_real_execution_true_is_404",
+          "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+          "fixtureValue": "true",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        },
+        {
+          "scenario": "r62_real_execution_absent_is_404",
+          "flag": "JENIOS_REAL_EXECUTION_ENABLED",
+          "fixtureValue": "ABSENT",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        },
+        {
+          "scenario": "r62_private_paper_transport_true_is_404",
+          "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+          "fixtureValue": "true",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        },
+        {
+          "scenario": "r62_private_paper_transport_absent_is_404",
+          "flag": "JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED",
+          "fixtureValue": "ABSENT",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        },
+        {
+          "scenario": "r62_private_paper_executor_true_is_404",
+          "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+          "fixtureValue": "true",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        },
+        {
+          "scenario": "r62_private_paper_executor_absent_is_404",
+          "flag": "JENIOS_PRIVATE_PAPER_EXECUTOR",
+          "fixtureValue": "ABSENT",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentStatus": 200,
+          "parentLinkAbsent": true,
+          "transportAttempts": {
+            "externalRequests": 0,
+            "apiRequests": 0,
+            "mutations": 0,
+            "webSockets": 0
+          }
+        }
+      ],
+      "humanOwnerAcceptanceCompleted": false
+    },
+    "deploymentIsolation": {
+      "checkedAt": "2026-10-24T13:50:46Z",
+      "commit": "0376f772b593d5d9175f71a6624de47c9c32fad2",
+      "automaticVercelDeploymentAttempts": 0
+    },
+    "consolidatedCommitRule": "Re-run complete CI on the consolidated commit; create the certified backup only after success. The backup ref and its Actions run identify the final commit."
   },
   "acceptance": {
     "humanOwnerAcceptanceCompleted": false,
@@ -76,9 +229,10 @@
     "externalExecutionValidated": false,
     "manualGuide": "docs/platform/ROBOT_R61_SYNTHETIC_ACCEPTANCE.md"
   },
-  "plannedEvidenceFile": "docs/platform/evidence/ROBOT_R62_BROWSER_BOUNDARY_EVIDENCE.json",
   "backup": {
     "branch": "backup/jenios-robot-r62-qa-boundary-closeout-certified-20261024",
     "creationRule": "Create only after complete CI on the consolidated commit succeeds; the backup Git ref is authoritative for its final SHA."
-  }
+  },
+  "validatedAt": "2026-10-24T13:50:46Z",
+  "evidenceFile": "docs/platform/evidence/ROBOT_R62_BROWSER_BOUNDARY_EVIDENCE.json"
 }

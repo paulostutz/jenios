@@ -2,7 +2,23 @@
 
 ## Estado e escopo
 
-**Candidato em validação.** Este bloco acrescenta oito verificações de navegador às 33 do R61, com foco em dois caminhos ainda não observados na interface: negação HTTP pelas flags de execução e invalidação ao exceder os limites da sessão UltraFast. A aprovação depende da CI completa e da revalidação do commit consolidado antes do backup final.
+**Fronteiras de QA validadas.** Este bloco acrescentou oito verificações de navegador às 33 do R61, com foco em negação HTTP pelas flags de execução e invalidação ao exceder os limites da sessão UltraFast. A CI de referência `40099646953`, no commit `0376f772b593d5d9175f71a6624de47c9c32fad2`, concluiu todas as etapas com sucesso. O commit que consolida essa evidência deve passar novamente pela CI completa antes da criação do backup final.
+
+| Evidência observada na CI de referência | Resultado |
+|---|---:|
+| Direcionados R12–R61 preservados | 307/307 PASS |
+| Testes gerais | 2.113/2.113 PASS |
+| Social | 94/94 PASS |
+| Build | PASS |
+| Páginas estáticas | 76/76 |
+| Browser: 33 casos anteriores + 8 fronteiras novas | 41/41 PASS |
+| Falhas ou casos ignorados | 0 |
+
+Os seis cenários de flags retornaram 404, sem console, com página-mãe 200 e link ausente. As duas fronteiras foram atingidas com uma decisão permitida antes da rejeição; em ambos os casos, a tela removeu o resultado, mostrou alerta, desabilitou os controles e aceitou outra sessão com identificador novo. Nenhuma correção de algoritmo, limite ou interface foi necessária.
+
+O relatório registrou 57 verificações visíveis de ordens reais/Paper externo em zero, zero tentativas externas/API/mutações/WebSocket e zero erros JavaScript. As oito mensagens HTTP 404 do console correspondem aos oito cenários negativos de rota. A bateria de browser completa levou aproximadamente 71,5 segundos nesta execução; esse tempo é do teste local em CI e não mede latência de corretora ou performance operacional.
+
+[Abrir a CI de referência](https://github.com/paulostutz/jenios/actions/runs/40099646953).
 
 Base consultada: `backup/jenios-robot-r61-qa-policy-integration-certified-20261024`, commit `50992b9783903ff0a5a09fbb3f8790dad601025f`, CI `40096729204` em SUCCESS. O backup R61 e sua evidência permanecem preservados.
 
@@ -46,7 +62,7 @@ Arquivos de casos novos:
 
 O workflow `.github/workflows/jenios-robot-r62-qa-boundary-closeout.yml` preserva a bateria direcionada R12–R61, executa `npm run build` com os testes gerais e Social e roda Chromium sobre o build local. Playwright continua fixado em 1.56.1, instalado fora das dependências da aplicação. O relatório usa o marcador `R62_BROWSER_ACCEPTANCE`; o artefato `r62-browser-evidence-<SHA>` retém JSON, logs e screenshots por 14 dias.
 
-Não há alterações planejadas nos algoritmos, adapters, limites ou UI da aplicação. As exclusões de deploy do R60/R61 permanecem e recebem os refs exatos do R62. Nenhum merge ou deploy faz parte deste bloco.
+Não foram alterados os algoritmos, adapters, limites ou UI da aplicação. As exclusões de deploy do R60/R61 permanecem e recebem os refs exatos do R62. Nenhum merge ou deploy faz parte deste bloco.
 
 ### Revisão da inicialização
 
@@ -58,7 +74,7 @@ Não foi encontrado caminho de inicialização de transporte no código inspecio
 
 Checkpoint: `docs/platform/evidence/ROBOT_R62_QA_BOUNDARY_CLOSEOUT_CHECKPOINT.json`.
 
-O ledger acrescenta `qaBoundaryCloseout`, preservando todos os registros R12–R61. Após o sucesso da CI, o relatório completo será salvo em `docs/platform/evidence/ROBOT_R62_BROWSER_BOUNDARY_EVIDENCE.json` antes da revalidação do commit consolidado.
+O ledger acrescenta `qaBoundaryCloseout`, preservando todos os registros R12–R61. O relatório completo da CI de referência está salvo em `docs/platform/evidence/ROBOT_R62_BROWSER_BOUNDARY_EVIDENCE.json`, com os 41 resultados individuais, parâmetros das seis variantes, estados nos limites, rejeições, novos identificadores, runtime e metadados do artefato. Essa evidência integra o commit consolidado que será revalidado antes do backup.
 
 Permanecem: alignment guard 0,65; R15 prospectivo sem backfill; `actualBrokerPnl`, `actualLossesAvoided` e `realTradeAccuracy` nulos; zero ordens reais e Paper externo; nenhuma certificação de performance comercial.
 

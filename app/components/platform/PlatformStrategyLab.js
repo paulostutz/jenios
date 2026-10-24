@@ -32,7 +32,7 @@ function parseLocalBars(text){
   });
  }
 }
-export default function PlatformStrategyLab({userId=null,balance=100000}){
+export default function PlatformStrategyLab({userId=null,balance=100000,paused:pauseSignal=false}){
  const [input,setInput]=useState(''),[timeframe,setTimeframe]=useState('swing');
  const [mode,setMode]=useState('direto'),[allocation,setAllocation]=useState(1000);
  const [stop,setStop]=useState(500),[result,setResult]=useState(null),[error,setError]=useState('');
@@ -51,7 +51,7 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
   };
   refresh();window.addEventListener('focus',refresh);
   return()=>window.removeEventListener('focus',refresh);
- },[userId,balance]);
+ },[userId,balance,pauseSignal]);
  useEffect(()=>{
   requestVersion.current++;
   setSourceLoading(false);setPublicCapture(null);setMultiStudy(null);setRollingEvaluation(null);
@@ -116,6 +116,9 @@ export default function PlatformStrategyLab({userId=null,balance=100000}){
  }
  function simulateReplay(){
   setError('');setReplay(null);setRollingEvaluation(null);
+  if(readSimulationPaused(window.sessionStorage,userId)){
+   setPaused(true);setError('A sessão está pausada. Retome a simulação antes de executar o replay.');return;
+  }
   if(!plan.rehearsalAllowed){setError('A pausa, alocação ou os limites fictícios impedem o replay nesta conta.');return;}
   try{
    const bars=parseLocalBars(input);

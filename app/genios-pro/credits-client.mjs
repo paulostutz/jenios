@@ -41,7 +41,21 @@ export function validCreditAttempt(value,now=Date.now()){
  // reference. Every resumed operation is still revalidated by the server.
  const created=Date.parse(value?.quote?.createdAt),referenceTime=Number.isFinite(created)?Math.max(now,created):now;
  return Boolean(value&&uuid.test(value.requestKey||'')&&validCreditQuote(value.quote,{now:referenceTime,allowExpired:true})&&
-  (value.orderId===null||uuid.test(value.orderId||'')));
+  (value.orderId===null||uuid.test(value.orderId||''))&&(value.statusOnly===undefined||typeof value.statusOnly==='boolean'));
+}
+export function creditAttemptStorageKey(userId){
+ return typeof userId==='string'&&userId.length>0?'jenios:pro:credits:'+userId:null;
+}
+export function restoreCreditAttempt(saved,{userId,now=Date.now()}={}){
+ if(!creditAttemptStorageKey(userId)||!validCreditAttempt(saved,now)||saved.ownerId!=null&&saved.ownerId!==userId)return null;
+ return {requestKey:saved.requestKey,quote:saved.quote,orderId:saved.orderId,state:'restored',status:null,
+  statusOnly:saved.statusOnly===true,retrySameOrder:!saved.orderId&&saved.statusOnly!==true,checkoutUrl:null,pixCode:null,pixExpiresAt:null};
+}
+/** Status lookup never opens an order, including when checkout lost its reply. */
+export function creditStatusPath(attempt){
+ if(uuid.test(attempt?.orderId||''))return 'status?orderId='+encodeURIComponent(attempt.orderId);
+ if(attempt?.orderId!==null||!uuid.test(attempt?.quote?.id||'')||!uuid.test(attempt?.requestKey||''))return null;
+ return 'status?quoteId='+encodeURIComponent(attempt.quote.id)+'&requestKey='+encodeURIComponent(attempt.requestKey);
 }
 export function projectCreditCheckout(result,attempt){
  if(result?.ok!==true||!uuid.test(result.orderId||'')||attempt?.orderId&&result.orderId!==attempt.orderId||result.quoteId!==attempt?.quote?.id||result.requestKey!==attempt.requestKey||
@@ -51,22 +65,28 @@ export function projectCreditCheckout(result,attempt){
   checkoutUrl:result.state==='awaiting_payment'?safeCreditCheckoutUrl(result.checkoutUrl,result.orderId):null,pixCode:null,pixExpiresAt:null};
 }
 export function projectCreditStatus(result,attempt){
- if(!uuid.test(attempt?.orderId||'')||result?.orderId!==attempt.orderId||result.quoteId!==attempt.quote.id||!knownStatuses.has(result.status))return null;
- const next={...attempt,status:result.status,state:result.state,pixCode:null,pixExpiresAt:null,checkoutUrl:null};
+ if(!validCreditAttempt(attempt))return null;
+ if(attempt.orderId===null&&result?.orderId==null&&result?.ok===false&&result.referencePreserved===true&&result.quoteId===attempt.quote.id&&result.requestKey===attempt.requestKey&&result.credited===false&&result.retrySameOrder===false&&result.state==='order_unconfirmed'&&['ORDER_REFERENCE_NOT_FOUND','QUOTE_NOT_FOUND'].includes(result.code)){
+  return {...attempt,state:'order_unconfirmed',status:null,statusOnly:true,code:result.code,retrySameOrder:false,pixCode:null,pixExpiresAt:null,checkoutUrl:null};
+ }
+ const resolved=attempt?.orderId===null&&result?.resolvedExistingOrder===true&&result.requestKey===attempt.requestKey;
+ if(!uuid.test(result?.orderId||'')||(!resolved&&result.orderId!==attempt?.orderId)||result.quoteId!==attempt?.quote?.id||!knownStatuses.has(result.status))return null;
+ const next={...attempt,orderId:result.orderId,status:result.status,state:result.state,pixCode:null,pixExpiresAt:null,checkoutUrl:null};
  if(result.state==='credited')return result.ok===true&&result.status==='paid'&&result.credited===true&&result.creditedNanoUsd===attempt.quote.retailNanoUsd?{...next,retrySameOrder:false}:null;
  if(result.state==='paid_pending_credit')return result.status==='paid'&&result.credited===false?{...next,retrySameOrder:false}:null;
  if(result.ok!==true||result.credited!==false)return null;
  if(result.state==='closed')return ['cancelled','expired','refunded'].includes(result.status)?{...next,retrySameOrder:false}:null;
  if(result.state!=='awaiting_payment'||!['pending','awaiting_payment'].includes(result.status))return null;
  const pix=typeof result.pixCode==='string'&&result.pixCode.length>=20&&result.pixCode.length<=4096&&Number.isFinite(Date.parse(result.expiresAt));
- return {...next,retrySameOrder:result.status==='pending',checkoutUrl:safeCreditCheckoutUrl(attempt.checkoutUrl,attempt.orderId),
+ return {...next,retrySameOrder:result.status==='pending'&&attempt.statusOnly!==true,checkoutUrl:safeCreditCheckoutUrl(attempt.checkoutUrl,result.orderId),
   ...(pix?{pixCode:result.pixCode,pixExpiresAt:result.expiresAt}:{})};
 }
 export function preserveCreditAttempt(attempt,result){
  const sameQuote=result?.quoteId===attempt.quote.id,sameKey=result?.requestKey===attempt.requestKey;
+ if(sameQuote&&sameKey&&result.referencePreserved===true)return {...attempt,state:attempt.orderId?'order_preserved':'order_unconfirmed',statusOnly:true,code:result.code,retrySameOrder:false,checkoutUrl:null,pixCode:null,pixExpiresAt:null};
  if(sameQuote&&sameKey&&result.state==='not_started'&&result.retrySameOrder!==true&&['QUOTE_EXPIRED','ORDER_CLOSED'].includes(result.code))return {...attempt,state:'closed',status:null,code:result.code,retrySameOrder:false,checkoutUrl:null,pixCode:null,pixExpiresAt:null};
  if(sameQuote&&sameKey&&result.state==='not_started'&&result.retrySameOrder!==true&&result.code==='IDEMPOTENCY_CONFLICT')return {...attempt,state:'reference_conflict',code:result.code,retrySameOrder:false,checkoutUrl:null,pixCode:null,pixExpiresAt:null};
  const knownOrder=sameQuote&&uuid.test(result?.orderId||'')&&(!attempt.orderId||result.orderId===attempt.orderId)?result.orderId:attempt.orderId;
- return {...attempt,orderId:knownOrder,state:knownOrder?'order_preserved':'order_unconfirmed',retrySameOrder:sameQuote&&sameKey&&result.retrySameOrder===true||!knownOrder,
+ return {...attempt,orderId:knownOrder,state:knownOrder?'order_preserved':'order_unconfirmed',retrySameOrder:attempt.statusOnly!==true&&(sameQuote&&sameKey&&result.retrySameOrder===true||!knownOrder),
   checkoutUrl:null,pixCode:null,pixExpiresAt:null};
 }

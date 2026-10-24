@@ -5,13 +5,43 @@ import {supabase} from '../../lib/supabase';
 import {PERSONAS} from '../../lib/assistant/contracts.mjs';
 
 import {PRO_UI_TASKS,PRO_PLAN_LABELS,PRO_TIMEFRAME_LABELS,formatNanoUsd,formatProDate,
- verifiedWallet,verifiedAllowance,taskAvailability,validQuote,requestStateLabel,fileProblem,canPrepareQuote,unresolvedRequest,initialProTask} from './pro-client.mjs';
+ verifiedWallet,verifiedAllowance,taskAvailability,validQuote,requestStateLabel,fileProblem,canPrepareQuote,unresolvedRequest,initialProTask,
+ formatProviderNanoUsd,eligibleProSubscriber,insufficientProBalance,proConsumptionOptions,proConsultationCopy} from './pro-client.mjs';
+import ProCredits from './ProCredits';
 import styles from './pro.module.css';
 import useAssistantConversation from '../components/assistant/useAssistantConversation';
 import ConversationControls,{AnswerFeedback} from '../components/assistant/ConversationControls';
 import {lessonFromSearch,mergeConversationTurns,settledTurn} from '../components/assistant/conversation-client.mjs';
 
 function BalanceRows({rows}){return <dl className={styles.amounts}>{rows.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{formatNanoUsd(value)}</dd></div>)}</dl>;}
+function QuotaPanel({options,offer}){
+ const {quota,wallet,transitionPending,showRecovery,includedInsufficient,prepaidInsufficient,canUsePrepaid,canUpgrade}=options;
+ const configured=quota.state!=='unconfigured';
+ return <section className={styles.panel} aria-labelledby="pro-quota-title">
+  <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>USO NESTE CICLO</span><h2 id="pro-quota-title">Sua franquia e seus adicionais</h2><p>A franquia se renova conforme a vigência da assinatura. Um adicional só é liberado após a confirmação do pagamento.</p></div></div>
+  <div className={styles.balanceGrid}>
+   <div className={styles.balanceCard} aria-label="Franquia incluída no plano"><h3>Franquia incluída no plano</h3>
+    {configured?<><div className={styles.balanceMain}>{formatProviderNanoUsd(quota.providerAvailableNanoUsd)}<small>Disponível em custo de IA</small></div>
+     <dl className={styles.amounts}>{[['Limite do ciclo',quota.providerLimitNanoUsd],['Consumido',quota.providerSpentNanoUsd],['Reservado em consultas',quota.providerReservedNanoUsd]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{formatProviderNanoUsd(value)}</dd></div>)}</dl>
+     <label className={styles.quotaLabel} htmlFor="pro-quota-progress">{quota.usedPercent}% utilizada ou reservada</label><progress id="pro-quota-progress" className={styles.quotaProgress} max="100" value={Math.min(100,quota.usedPercent)}/>
+     <p className={styles.small}>Renovação do ciclo: {formatProDate(quota.periodEnd)}. As reservas ficam separadas do consumo confirmado.</p>
+    </>:<p className={styles.availability}>{transitionPending?'A mudança de plano está em conferência. Seu consumo anterior será preservado; a nova franquia aparecerá após essa confirmação.':'A franquia ainda aguarda configuração ou conferência. Nenhum saldo disponível foi presumido.'}</p>}
+   </div>
+   <div className={styles.balanceCard} aria-label="Créditos adicionais confirmados"><h3>Saldo adicional confirmado</h3>
+    {wallet?<><div className={styles.balanceMain}>{formatNanoUsd(wallet.available)}<small>Créditos adicionais disponíveis</small></div><BalanceRows rows={[["Saldo total",wallet.total],["Reservado em consultas",wallet.reserved]]}/><p className={styles.small}>Os créditos deste saldo são descontados conforme as condições da compra. Escolha essa origem ao preparar uma consulta.</p></>:<p className={styles.small}>O saldo adicional ainda não foi confirmado. Consulte a disponibilidade de contratação abaixo.</p>}
+   </div>
+  </div>
+  {quota.state==='near_limit'&&!includedInsufficient&&<p className={styles.pendingNotice} role="status">Você já utilizou ou reservou pelo menos 80% da franquia deste ciclo. Confira o saldo e a renovação antes das próximas consultas.</p>}
+  {includedInsufficient&&<p className={styles.pendingNotice} role="status">{quota.state==='exhausted'?'A franquia disponível deste ciclo foi esgotada ou está reservada em consultas.':'O saldo da franquia não cobre o limite da consulta que você tentou preparar.'} Para continuar antes da renovação, use um adicional confirmado{canUpgrade?' ou confira o upgrade para Internacional Pro':''}. Seu histórico e sua pergunta permanecem disponíveis.</p>}
+  {prepaidInsufficient&&<p className={styles.pendingNotice} role="status">O saldo adicional não cobre o limite desta consulta. Confira sua franquia incluída ou contrate outro adicional, conforme disponibilidade.</p>}
+  {showRecovery&&<div className={styles.quotaRecovery}>
+   {canUsePrepaid&&<p className={styles.notice}>Você tem saldo adicional confirmado. Selecione “Saldo adicional” na origem da próxima consulta.</p>}
+   <div className={styles.actions}><a className={styles.secondary} href="#pro-credits-title">{offer?.enabled?'Consultar contratação adicional':'Ver disponibilidade de adicional'}</a>{canUpgrade&&<Link className={styles.secondary} href="/checkout">Conferir upgrade para Internacional Pro →</Link>}</div>
+   {!offer?.enabled&&<p className={styles.small}>A contratação adicional aguarda liberação do preço e do pagamento. Nenhuma compra será iniciada automaticamente.</p>}
+   {canUpgrade&&<p className={styles.small}>Confira as condições da mudança de plano no checkout. A franquia maior depende da confirmação da alteração e preserva o consumo já realizado no ciclo.</p>}
+  </div>}
+ </section>;
+}
 function VerifiedSource({source}){
  if(!source||typeof source.provider!=='string'||typeof source.symbol!=='string'||!Number.isFinite(Date.parse(source.sourceAt)))return null;
  return <p className={styles.source}>Fonte: {source.provider} · {source.symbol}{PRO_TIMEFRAME_LABELS[source.timeframe]?' · '+PRO_TIMEFRAME_LABELS[source.timeframe]:''}. Último candle encerrado em {formatProDate(source.sourceAt)} (horário local).</p>;
@@ -25,11 +55,11 @@ function History({state,status,error,items,hasMore,onRefresh,busy,refreshing,has
    const task=PRO_UI_TASKS.find(t=>t.id===item.task),persona=PERSONAS.find(p=>p.id===item.persona);
    const final=['settled','released'].includes(item.state);
    return <li key={item.id||item.requestKey||index}>
-    <div><strong>{task?.label||'Consulta Pro'}</strong><small>{formatProDate(item.createdAt)}{persona?' · '+persona.name+' Pro':''}</small><span>{item.source==='included'?'Franquia do plano':item.source==='prepaid'?'Créditos adquiridos anteriormente':'Origem a verificar'}</span></div>
+    <div><strong>{task?.label||'Consulta Pro'}</strong><small>{formatProDate(item.createdAt)}{persona?' · '+persona.name+' Pro':''}</small><span>{item.source==='included'?'Franquia do plano':item.source==='prepaid'?'Créditos adicionais':'Origem a verificar'}</span></div>
     <div className={styles.historyAmount}><span className={final?styles.status:styles.pending}>{requestStateLabel(item.state)}</span><strong>{!final||item.chargedNanoUsd===null||item.chargedNanoUsd===undefined?'Valor a confirmar':formatNanoUsd(item.chargedNanoUsd)}</strong></div>
     {item.state==='settled'&&typeof item.answer==='string'&&item.answer&&<details className={styles.historyDetail}><summary>Ver resposta</summary><div className={styles.answer}>{item.answer}</div><VerifiedSource source={item.sourceInfo}/></details>}
    </li>;
-  })}</ol><p className={styles.small}>Valores em US$ conforme o registro de consumo. O uso da franquia do plano não representa uma compra adicional.</p>{hasMore&&<p className={styles.historyLimit} role="status">Existem consultas anteriores. Este extrato exibe somente as 50 mais recentes.</p>}</>}
+  })}</ol><p className={styles.small}>Valores em US$ de créditos de consumo, conforme o registro original. O débito em créditos corresponde a duas vezes o custo da IA; a franquia acima apresenta esse custo de IA diretamente. O uso da franquia do plano não representa uma compra adicional.</p>{hasMore&&<p className={styles.historyLimit} role="status">Existem consultas anteriores. Este extrato exibe somente as 50 mais recentes.</p>}</>}
   <p className={styles.small}>O histórico mostra somente a sua conta. As imagens não são armazenadas neste extrato.</p>
  </section>;
 }
@@ -42,25 +72,27 @@ export default function GeniosPro(){
  const [history,setHistory]=useState({kind:'loading',status:null,items:[],hasMore:false,error:''}),[busy,setBusy]=useState('');
  const [persona,setPersona]=useState('genio'),[taskId,setTaskId]=useState('advanced_question'),[prompt,setPrompt]=useState('');
  const [source,setSource]=useState('included'),[symbol,setSymbol]=useState(''),[timeframe,setTimeframe]=useState('');
+ const [balanceBlocked,setBalanceBlocked]=useState(null);
  const [attachment,setAttachment]=useState(null),[imageReading,setImageReading]=useState(false);
  const [quote,setQuote]=useState(null),[consent,setConsent]=useState(false),[clock,setClock]=useState(Date.now());
  const [pendingKey,setPendingKey]=useState(null),[notice,setNotice]=useState(''),[answers,setAnswers]=useState([]);
  const epoch=useRef(0),owner=useRef(null),controller=useRef(null),busyRef=useRef(false),imageEpoch=useRef(0),fileInput=useRef(null),previewRef=useRef(null);
  const data=account.data||{},wallet=verifiedWallet(data.wallet),allowance=verifiedAllowance(data.allowance),task=taskAvailability(data,taskId);
+ const consumption=proConsumptionOptions(data,{source,insufficientBalance:balanceBlocked?.source===source}),confirmationCopy=proConsultationCopy(source);
  const hasPending=Boolean(pendingKey||data.pendingRequests>0||history.items.some(item=>unresolvedRequest(item.state)));
  const locked=Boolean(busy||imageReading||hasPending||account.kind==='ready'&&(history.kind==='loading'||history.error||(!data.proIncluded&&!data.masterPreview)));
  const symbols=Array.isArray(data.marketSymbols)?data.marketSymbols.filter(s=>typeof s==='string'):[];
  const timeframes=Array.isArray(data.marketTimeframes)?data.marketTimeframes.filter(t=>Object.hasOwn(PRO_TIMEFRAME_LABELS,t)):[];
  const selectedPersona=PERSONAS.find(p=>p.id===persona)||PERSONAS[0];
  const quoteCurrent=validQuote(quote,source,clock);
- const canPrepare=account.kind==='ready'&&!memorySyncPending&&!['loading','error'].includes(memory.status)&&canPrepareQuote({data,taskId,source,prompt,image:attachment,hasPending,locked})&&
+ const canPrepare=account.kind==='ready'&&eligibleProSubscriber(data)&&!memorySyncPending&&!['loading','error'].includes(memory.status)&&canPrepareQuote({data,taskId,source,prompt,image:attachment,hasPending,locked})&&
   (!task?.requiresCurrentData||(symbols.includes(symbol)&&timeframes.includes(timeframe)));
  const canSend=account.kind==='ready'&&quoteCurrent&&consent&&canPrepare;
 
  function clearImage(){imageEpoch.current++;setImageReading(false);if(previewRef.current)URL.revokeObjectURL(previewRef.current);previewRef.current=null;setAttachment(null);if(fileInput.current)fileInput.current.value='';}
- function invalidateQuote(){setQuote(null);setConsent(false);setError('');setNotice('');}
+ function invalidateQuote(){setQuote(null);setConsent(false);setError('');setNotice('');setBalanceBlocked(null);}
  function clearPrivateState(){
-  clearImage();setPrompt('');setQuote(null);setConsent(false);setMemorySyncPending(false);setPendingKey(null);setAnswers([]);setNotice('');setError('');
+  clearImage();setPrompt('');setQuote(null);setConsent(false);setMemorySyncPending(false);setPendingKey(null);setAnswers([]);setNotice('');setError('');setBalanceBlocked(null);
   setHistory({kind:'loading',status:null,items:[],hasMore:false,error:''});setLessonId(lessonFromSearch(typeof window==='undefined'?'':window.location.search));setTaskId(initialProTask(typeof window==='undefined'?'':window.location.search));setSymbol('');setTimeframe('');setSource('included');
  }
  async function sessionFor(expectedOwner){
@@ -182,8 +214,8 @@ export default function GeniosPro(){
    const result=await api('quote',session.access_token,{body:draft(),signal:controller.current.signal});
    if(ticket!==epoch.current)return;
    if(!validQuote(result.quote,source))throw Error('A estimativa não pôde ser confirmada. Solicite uma nova estimativa.');
-   setClock(Date.now());setQuote(result.quote);
-  }catch(e){if(ticket===epoch.current&&e.name!=='AbortError')setError(e.message);}
+   setClock(Date.now());setQuote(result.quote);setBalanceBlocked(null);
+  }catch(e){if(ticket===epoch.current&&e.name!=='AbortError'){setError(e.message);if(insufficientProBalance(e))setBalanceBlocked({source});}}
   finally{if(ticket===epoch.current){busyRef.current=false;setBusy('');}}
  }
  async function send(){
@@ -203,6 +235,7 @@ export default function GeniosPro(){
    else setNotice('Estamos conferindo o consumo desta solicitação. Atualize o histórico antes de iniciar outra consulta.');
   }catch(e){
    if(ticket===epoch.current){
+    if(insufficientProBalance(e))setBalanceBlocked({source:input.source});
     if(!submitted||['released','not_started'].includes(e.proState))setPendingKey(null);
     const interrupted=e.name==='AbortError'||e.name==='TimeoutError';
     const message=submitted&&!['released','not_started'].includes(e.proState)?(interrupted?'A espera foi interrompida. A solicitação pode ser concluída e contabilizada; atualize o histórico antes de uma nova consulta.':'A resposta ainda não foi confirmada. Atualize o histórico antes de uma nova consulta.'):e.message;
@@ -226,15 +259,16 @@ export default function GeniosPro(){
 
  return <main className={styles.page} data-jenios-pro="b145"><div className={styles.wrap}>
   <header className={styles.header}><div className={styles.topLinks}><Link href="/social">← JENIOS Social</Link><Link href="/social">Atendimento gratuito →</Link></div>
-   <div className={styles.tag}>JENIOS · INTELIGÊNCIA AVANÇADA</div><h1>Gênio Pro e Gênia Pro</h1><p>Estude gráficos e contextos de mercado com apoio avançado, incluído nos planos de R$ 149,90 e R$ 199,90. Sem venda de créditos individuais.</p>
+   <div className={styles.tag}>JENIOS · INTELIGÊNCIA AVANÇADA</div><h1>Gênio Pro e Gênia Pro</h1><p>Estude gráficos e contextos de mercado com apoio avançado e franquia incluída nos planos Global Crypto e Internacional Pro. Ao atingir o limite, confira a contratação adicional ou a mudança para um plano superior disponível.</p>
   </header>
   <section className={styles.panel} aria-label="Sua conta Pro">
    {account.kind==='checking'?<p role="status">Verificando sua conta…</p>:account.kind==='guest'?<div className={styles.sectionHeading}><div><h2>Entre para acessar o Pro</h2><p>Gênio e Gênia gratuitos continuam disponíveis na Social, sem cadastro. Sua conta permite verificar a Universidade, a franquia e os créditos Pro.</p></div><Link className={styles.primary} href="/login">Entrar na JENIOS</Link></div>:account.kind==='unavailable'?<><p role="alert" className={styles.error}>{error}</p><button type="button" className={styles.secondary} onClick={()=>setRefresh(n=>n+1)}>Verificar minha conta novamente</button></>:<>
     <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>SUA CONTA</span><h2>{data.masterPreview?'Administrador JENIOS':PRO_PLAN_LABELS[data.planCode]||'Acesso sem assinatura'}</h2><p>{['purchased-pass','university-monthly'].includes(data.universityAccessKind)?'Universidade contratada separadamente e ativa.':data.universityIncluded?'Universidade incluída no seu plano.':'Universidade disponível separadamente por R$ 49,90 mensais.'} {data.proIncluded?'O suporte avançado integra o plano ativo, conforme disponibilidade.':'O suporte avançado é exclusivo dos planos Global Crypto e Internacional Pro.'}</p></div><Link className={styles.secondary} href="/platform/aprender">Abrir Universidade →</Link></div>
-    <p className={styles.small}>As consultas avançadas estão incluídas nos planos de R$ 149,90 e R$ 199,90, com limites internos de segurança. Não é necessário comprar pacotes avulsos de IA.</p>
+    <p className={styles.small}>As consultas utilizam a franquia do plano ou um saldo adicional contratado separadamente. Toda consulta exige sua confirmação; nenhuma compra adicional é automática.</p>
    </>}
    <nav className={styles.links}><Link href="/platform/aprender">Universidade JENIOS →</Link><Link href="/universidade">Contratação independente da Universidade →</Link><Link href="/social">Gênio e Gênia gratuitos →</Link></nav>
   </section>
+  {account.kind==='ready'&&consumption.eligible&&<QuotaPanel options={consumption} offer={data.creditsOffer}/>}
   <section className={styles.panel} aria-labelledby="pro-consult-title">
    <div className={styles.sectionHeading}><div><span className={styles.eyebrow}>SUA PRÓXIMA CONSULTA</span><h2 id="pro-consult-title">Como podemos ajudar?</h2></div><span className={data.paidGenerationEnabled?styles.status:styles.pending}>{data.paidGenerationEnabled?'Pro disponível':'Pro em preparação'}</span></div>
    <div className={styles.personas} aria-label="Escolha seu assistente Pro">{PERSONAS.map(p=><button key={p.id} type="button" className={styles.character} aria-pressed={persona===p.id} disabled={locked} onClick={()=>void choosePersona(p.id)}><img src={p.image} alt="" width="68" height="68"/><span><strong>{p.name} Pro</strong><small>{persona===p.id?'Seu assistente selecionado':'Selecionar assistente'}</small></span></button>)}</div>
@@ -245,6 +279,7 @@ export default function GeniosPro(){
    <ConversationControls memory={memory} disabled={locked}/>
    {taskId==='university_tutor'&&lessonId&&<p className={styles.notice}>Esta conversa está vinculada à aula que você abriu na Universidade.</p>}
    <form onSubmit={prepare} className={styles.form}>
+    {account.kind==='ready'&&consumption.eligible&&<label htmlFor="pro-source">Origem do consumo<select id="pro-source" value={source} disabled={locked} onChange={e=>{setSource(e.target.value);invalidateQuote();}}><option value="included" disabled={!allowance||allowance.available<=0}>Franquia incluída no plano</option><option value="prepaid" disabled={!wallet||wallet.available<=0}>Saldo adicional</option></select><span className={styles.small}>{source==='included'?'A consulta utilizará somente a franquia disponível neste ciclo.':'A consulta utilizará somente o saldo adicional já confirmado.'} A origem escolhida será confirmada antes do envio.</span></label>}
     <div className={styles.fields}><label htmlFor="pro-task">Tipo de consulta<select id="pro-task" value={taskId} disabled={locked} onChange={e=>{setTaskId(e.target.value);if(!PRO_UI_TASKS.find(t=>t.id===e.target.value)?.acceptsImage)clearImage();invalidateQuote();}}>{PRO_UI_TASKS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}</select></label></div>
     <p className={styles.taskHelp}>{task?.description}</p>
     {task?.requiresCurrentData&&<div className={styles.fields}><label htmlFor="pro-symbol">Ativo<select id="pro-symbol" value={symbol} disabled={locked||!symbols.length} onChange={e=>{setSymbol(e.target.value);invalidateQuote();}}>{!symbols.length&&<option value="">Aguardando ativos disponíveis</option>}{symbols.map(s=><option key={s} value={s}>{s}</option>)}</select></label><label htmlFor="pro-timeframe">Intervalo do gráfico<select id="pro-timeframe" value={timeframe} disabled={locked||!timeframes.length} onChange={e=>{setTimeframe(e.target.value);invalidateQuote();}}>{!timeframes.length&&<option value="">Aguardando intervalos disponíveis</option>}{timeframes.map(t=><option key={t} value={t}>{PRO_TIMEFRAME_LABELS[t]}</option>)}</select></label></div>}
@@ -254,14 +289,12 @@ export default function GeniosPro(){
     {account.kind==='ready'&&error&&<p role="alert" className={styles.error}>{error}</p>}{notice&&<p role="status" className={styles.notice}>{notice}</p>}
     <div className={styles.actions}><button type="submit" className={styles.primary} disabled={!canPrepare}>{busy==='quote'?'Conferindo limite…':'Preparar consulta avançada'}</button><p className={styles.small}>O sistema controla o orçamento de IA internamente.</p></div>
    </form>
-   {quote&&<section className={styles.confirmation} aria-labelledby="pro-confirm-title"><h3 id="pro-confirm-title">Confira antes de enviar</h3><p>Consulta incluída no seu plano ativo, sujeita à franquia interna do serviço. Nenhuma compra adicional é necessária.</p><p className={styles.small}>{quoteCurrent?'Estimativa válida até '+formatProDate(quote.expiresAt)+'.':'Esta estimativa venceu. Solicite um novo limite para continuar.'}</p><label className={styles.consent}><input type="checkbox" checked={consent} disabled={locked||!quoteCurrent} onChange={e=>setConsent(e.target.checked)}/><span>Autorizo enviar minha pergunta{attachment?' e esta imagem':''} à OpenAI para esta consulta do meu plano.</span></label><button type="button" className={styles.primary} disabled={!canSend} onClick={send}>{busy==='chat'?'Preparando sua resposta…':'Confirmar e perguntar a '+selectedPersona.name+' Pro'}</button></section>}
+   {quote&&<section className={styles.confirmation} aria-labelledby="pro-confirm-title"><h3 id="pro-confirm-title">{confirmationCopy.title}</h3><p>{confirmationCopy.description}</p><p className={styles.small}>Limite reservado no saldo escolhido: {source==='included'?formatProviderNanoUsd(quote.maxRetailNanoUsd/2)+' em custo de IA':formatNanoUsd(quote.maxRetailNanoUsd)+' em créditos adicionais'}. A diferença para o consumo confirmado será liberada. {quoteCurrent?'Estimativa válida até '+formatProDate(quote.expiresAt)+'.':'Esta estimativa venceu. Solicite um novo limite para continuar.'}</p><label className={styles.consent}><input type="checkbox" checked={consent} disabled={locked||!quoteCurrent} onChange={e=>setConsent(e.target.checked)}/><span>Autorizo enviar minha pergunta{attachment?' e esta imagem':''} à OpenAI para esta consulta {confirmationCopy.consent}.</span></label><button type="button" className={styles.primary} disabled={!canSend} onClick={send}>{busy==='chat'?'Preparando sua resposta…':'Confirmar e perguntar a '+selectedPersona.name+' Pro'}</button></section>}
    <p className={styles.small}>As análises são informativas. Leituras do momento exigem dados recentes verificados; as decisões e as operações permanecem com você.</p>
   </section>
   {busy==='chat'&&<div className={styles.panel} role="status"><p>Preparando sua resposta com o contexto autorizado…</p><button type="button" className={styles.secondary} onClick={()=>sendAbort.current?.abort(new DOMException('Espera interrompida.','AbortError'))}>Parar espera</button><p className={styles.small}>Interromper a espera não cancela uma geração que o provedor já iniciou.</p></div>}
   {!!visibleAnswers.length&&<section ref={answersRef} className={styles.panel} aria-label="Conversa avançada"><h2>Sua conversa</h2><div className={styles.answers} aria-live="polite">{visibleAnswers.map(result=><article key={result.turnId}><div className={styles.answerHeading}><strong>{PERSONAS.find(p=>p.id===(result.persona||memory.persona))?.name||'Gênio'} Pro</strong></div><p className={styles.question}>{result.question}</p><div className={styles.answer}>{settledTurn(result)?result.answer:result.notice||'Preparando ou conferindo a resposta…'}</div><VerifiedSource source={result.sourceInfo}/>{settledTurn(result)&&memory.conversation?.turns.some(t=>t.turnId===result.turnId)&&<div className={styles.answer}><AnswerFeedback memory={memory} turnId={result.turnId}/></div>}</article>)}</div></section>}
   {account.kind==='ready'&&<History state={history.kind} status={history.status} error={history.error} items={history.items} hasMore={history.hasMore} onRefresh={refreshLedger} busy={Boolean(busy)||imageReading} refreshing={busy==='refresh'} hasPending={hasPending}/>}
-
-  
-  
+  {account.kind==='ready'&&<ProCredits key={owner.current} userId={owner.current} eligible={consumption.eligible} offer={data.creditsOffer} request={requestCredits} onCredited={refreshLedger}/>}
  </div></main>;
 }

@@ -4,14 +4,15 @@ import {classifyVerifiedPlan,proPlanAccess,PLATFORM_PAID_TIERS,KNOWN_PLATFORM_PR
 const NOW=Date.parse('2026-10-20T12:00:00Z'),start=new Date(NOW-60000).toISOString(),end=new Date(NOW+60000).toISOString();
 const products=[{id:'p99',code:'platform-nacional',category:'platform'},{id:'p149',code:'platform-global-crypto',category:'platform'},{id:'p199',code:'platform-internacional-pro',category:'platform'}];
 const sub=(product_id,status='active',s=start,e=end)=>({id:product_id,product_id,status,current_period_start:s,current_period_end:e});
-test('B137 USD allowance is bounded and two higher-price plans include both University and Pro',()=>{
+test('G45 included ledger allowances match the approved provider budgets and higher plans include University and Pro',()=>{
  assert.deepEqual(PLATFORM_PAID_TIERS,['platform-global-crypto','platform-internacional-pro']);
  assert.deepEqual(KNOWN_PLATFORM_PRODUCTS,['platform-nacional',...PLATFORM_PAID_TIERS]);
+ assert.deepEqual(PRO_MONTHLY_INCLUDED_MICRO_USD,{'platform-global-crypto':4_000_000,'platform-internacional-pro':8_000_000});
  for(const code of PLATFORM_PAID_TIERS){
   const plan=classifyVerifiedPlan([sub(code==='platform-global-crypto'?'p149':'p199')],products,NOW);
   const right=proPlanAccess(plan,null,{});
   assert.equal(right.proIncluded,true);assert.equal(right.universityIncluded,true);
-  assert.ok(right.allowanceMicroUsd>0&&right.allowanceMicroUsd<=4_000_000);
+  assert.equal(right.allowanceMicroUsd,PRO_MONTHLY_INCLUDED_MICRO_USD[code]);
  }
 });
 test('B137 Nacional and unauthenticated users do not get paid Pro or University access',()=>{

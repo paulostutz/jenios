@@ -1,4 +1,5 @@
 /** Presentation-only contracts. Authorization and all amounts are verified by the server. */
+import {proQuotaSummary} from '../../lib/assistant/pro-quota-policy.mjs';
 export const PRO_UI_TASKS=Object.freeze([
  {id:'advanced_question',label:'Pergunta avançada',description:'Aprofunde uma dúvida e compare conceitos e cenários.',acceptsImage:false,requiresCurrentData:false},
  {id:'university_tutor',label:'Tutor da Universidade',description:'Peça uma explicação mais detalhada sobre o assunto que está estudando.',acceptsImage:false,requiresCurrentData:false},
@@ -31,6 +32,45 @@ export function formatNanoUsd(value){
  const n=BigInt(amount),whole=(n/1_000_000_000n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
  const fraction=(n%1_000_000_000n).toString().padStart(9,'0').replace(/0+$/,'').padEnd(2,'0');
  return 'US$\u00a0'+whole+','+fraction;
+}
+/** The provider equivalent can contain half a nanoUSD; preserve it exactly. */
+export function formatProviderNanoUsd(value){
+ if(typeof value!=='number'||!Number.isSafeInteger(value*2)||value<0)return 'Não disponível';
+ const halves=BigInt(value*2),whole=(halves/2_000_000_000n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+ const fraction=((halves%2_000_000_000n)*5n).toString().padStart(10,'0').replace(/0+$/,'').padEnd(2,'0');
+ return 'US$\u00a0'+whole+','+fraction;
+}
+export function eligibleProSubscriber(data){
+ return data?.proIncluded===true&&['platform-global-crypto','platform-internacional-pro'].includes(data.planCode);
+}
+export function insufficientProBalance(error){
+ return ['INSUFFICIENT_BALANCE','INCLUDED_ALLOWANCE_EXHAUSTED'].includes(error?.proBody?.code||error?.code);
+}
+export function proConsumptionOptions(data,{source='included',insufficientBalance=false}={}){
+ const eligible=eligibleProSubscriber(data),quota=proQuotaSummary(data?.allowance),wallet=verifiedWallet(data?.wallet);
+ const transitionPending=data?.allowance?.status==='pending_transition';
+ return {eligible,quota,wallet,transitionPending,
+  showRecovery:eligible&&!transitionPending&&(quota.state==='near_limit'||quota.state==='exhausted'||insufficientBalance===true),
+  includedInsufficient:eligible&&!transitionPending&&(quota.state==='exhausted'||source==='included'&&insufficientBalance===true),
+  prepaidInsufficient:eligible&&!transitionPending&&source==='prepaid'&&insufficientBalance===true,
+  canUsePrepaid:eligible&&Boolean(wallet&&wallet.available>0),
+  canUpgrade:eligible&&data.planCode==='platform-global-crypto'};
+}
+export function proConsultationCopy(source){
+ return source==='prepaid'?{
+  title:'Consulta com adicional',
+  description:'Esta consulta utilizará seu saldo adicional já confirmado. A franquia incluída no plano permanece separada.',
+  consent:'com meu saldo adicional confirmado'
+ }:{
+  title:'Consulta incluída no plano',
+  description:'Esta consulta utilizará a franquia disponível no seu plano ativo. Nenhuma compra adicional será aberta por esta confirmação.',
+  consent:'com a franquia incluída no meu plano'
+ };
+}
+export function proCreditActions({userId,eligible=false,offerReady=false,reconciliationEnabled=false,blocked=false}={}){
+ const authenticated=typeof userId==='string'&&userId.length>0;
+ return {canPurchase:authenticated&&eligible===true&&offerReady===true&&blocked!==true,
+  canReconcile:authenticated&&reconciliationEnabled===true};
 }
 export function formatProDate(value){
  const time=typeof value==='string'?Date.parse(value):NaN;

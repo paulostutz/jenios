@@ -190,9 +190,10 @@ test('G44 Pro replay preserves pending-context status when a completed legacy tu
  assert.deepEqual(data.conversation.summary,initialConversationSummary());assert.equal(data.answer,before.result_data.answer);
  assert.deepEqual(h.rows.get(TURN),before);assert.deepEqual(h.stats(),{calls:1,reserves:1});assert.deepEqual(h.repairStats(),{inspections:1,applications:1});
 });
-test('G43 prohibited Pro history injection and prepaid usage fail before provider dispatch',async()=>{
+test('G45 prohibited Pro history injection and prepaid usage without verified balance fail before provider dispatch',async()=>{
  const h=proHarness();assert.throws(()=>normalizeProInput({...h.input,history:[prior]}));assert.throws(()=>normalizeProInput({...h.input,lessonId:'mercado'}));
- const response=await handlePro(request({...h.input,source:'prepaid'}),{...h.options,action:'quote'});assert.equal((await response.json()).code,'ADVANCED_PLAN_REQUIRED');assert.deepEqual(h.stats(),{calls:0,reserves:0});
+ const response=await handlePro(request({...h.input,source:'prepaid'}),{...h.options,action:'quote'});assert.equal((await response.json()).code,'INSUFFICIENT_BALANCE');assert.deepEqual(h.stats(),{calls:0,reserves:0});
+ const inactive=await handlePro(request({...h.input,source:'prepaid'}),{...h.options,action:'quote',planResolver:async()=>null});assert.equal((await inactive.json()).code,'ADVANCED_PLAN_REQUIRED');assert.deepEqual(h.stats(),{calls:0,reserves:0});
 });
 test('G43 official lessons require an entitled user and an unlocked curriculum, with active exams respected',async()=>{
  const state=initialState(),options={db:{},user:actor.user,rights:{universityIncluded:true},lessonId:'mercado',now,repository:()=>({read:async()=>({state})})};

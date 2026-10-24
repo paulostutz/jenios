@@ -3,6 +3,7 @@ import Link from 'next/link';
 import PlatformRobotAcceptanceConsole from '../../../components/platform/PlatformRobotAcceptanceConsole';
 import { isRobotR61QaEnabled } from '../../../../lib/platform/research/robot-r61-qa-access.mjs';
 import { isRobotR63EvolutionEnabled } from '../../../../lib/platform/research/robot-r63-admin-access.mjs';
+import { isRobotR64QaEnabled } from '../../../../lib/platform/research/robot-r64-access.mjs';
 
 export const dynamic = 'force-dynamic';
 export const metadata = {
@@ -12,5 +13,7 @@ export const metadata = {
 
 export default function RobotAcceptancePage() {
   if (!isRobotR61QaEnabled(process.env)) notFound();
-  return <>{isRobotR63EvolutionEnabled(process.env)?<nav style={{padding:'14px 24px',background:'#f5f3ff'}}><Link href="/platform/homologacao/robos/evolucao">Observação e melhoria contínua · prévia administrativa</Link></nav>:null}<PlatformRobotAcceptanceConsole /></>;
+  return <>{isRobotR63EvolutionEnabled(process.env)?<nav style={{padding:'14px 24px',background:'#f5f3ff'}}><Link href="/platform/homologacao/robos/evolucao">Observação e melhoria contínua · prévia administrativa</Link></nav>:null}
+    {isRobotR64QaEnabled(process.env)?<nav style={{padding:'14px 24px',background:'#f5f3ff'}}><Link href="/platform/homologacao/robos/observacao">Observação com registro durável · homologação</Link></nav>:null}
+    <PlatformRobotAcceptanceConsole /></>;
 }

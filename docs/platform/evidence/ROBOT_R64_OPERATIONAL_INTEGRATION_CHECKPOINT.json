@@ -1,0 +1,116 @@
+{
+  "schema": "JENIOS_ROBOT_R64_OPERATIONAL_INTEGRATION_CHECKPOINT_V1",
+  "revision": "R64",
+  "classification": "IMPLEMENTED_PENDING_CI",
+  "createdAt": "2026-10-24T15:50:36Z",
+  "base": {
+    "branch": "backup/jenios-robot-r63-continuous-improvement-certified-20261024",
+    "commit": "a5a42b9e67b56786d1f0aeeddc5cd7f348a2275c",
+    "validationRun": 40106514889
+  },
+  "branch": "research/jenios-robot-r64-operational-integration-20261024",
+  "backup": {
+    "branch": "backup/jenios-robot-r64-operational-integration-certified-20261024",
+    "creationRule": "Create only after complete CI on the consolidated commit succeeds; backup Git ref and matching Actions run identify the final SHA."
+  },
+  "scope": "SIGNED_QA_REPLAY_OPERATIONAL_INTEGRATION_PREPARATION",
+  "authorization": {
+    "ownerAutomaticImprovementPreapprovalPreserved": "OWNER_PREAPPROVAL_20261024",
+    "productionChangeAuthorized": false,
+    "paidProviderActivationAuthorized": false
+  },
+  "implemented": {
+    "signedIntakeEndpoint": true,
+    "serverPinnedScopeAndSource": true,
+    "closedDailyObservationStudy": true,
+    "incrementalPostgresStore": true,
+    "immutableCycleSnapshot": true,
+    "leaseGenerationFencing": true,
+    "idempotentBudgetAndDispatch": true,
+    "internalBudgetWithoutClientWallet": true,
+    "confirmedUsageAudit": true,
+    "ambiguousResultHeldForReconciliation": true,
+    "adminReadEndpoint": true,
+    "adminReportComponent": true,
+    "persistedQaPreview": true,
+    "explicitHostWorkerEntry": true,
+    "authenticatedSchedulerEndpoint": true
+  },
+  "reportSchedule": {
+    "cadence": "DAILY_09",
+    "timeZone": "America/Sao_Paulo",
+    "period": "previous closed local day",
+    "backfill": false,
+    "productionSchedulerActive": false
+  },
+  "generative": {
+    "transportPrepared": "OpenAI Responses API with input-token preflight",
+    "productionProviderCalled": false,
+    "paidProviderCalls": 0,
+    "maxInputTokens": 8000,
+    "maxOutputTokens": 700,
+    "oneInferenceAttemptPerCycle": true,
+    "automaticRetries": false,
+    "tariffSource": "Existing explicitly approved pricing snapshot; no assertion of current public tariff",
+    "customerWalletDebited": false,
+    "hypothesesCanPromote": false
+  },
+  "database": {
+    "schema": "db/schema/robot-r64-operational-store.sql",
+    "status": "REVIEW_ONLY_NOT_APPLIED_TO_SUPABASE",
+    "intendedClient": "Existing dedicated JENIOS Platform admin client",
+    "realSupabaseDatabasesChanged": 0,
+    "ciPostgres": "Disposable local service only",
+    "leaseClock": "Database wall clock",
+    "role": "service_role-only RPCs, SECURITY INVOKER, RLS and explicit revocations",
+    "tenantIsolation": "Server-pinned scope plus scoped SQL predicates; service_role bypasses RLS, so RLS is not claimed as its tenant isolation"
+  },
+  "invariants": {
+    "r12r63ResearchAlgorithmsChanged": false,
+    "r15ProspectiveBackfill": false,
+    "alignmentGuardThreshold": 0.65,
+    "manualOperatorControlPreserved": true,
+    "losseshometroSyntheticOnly": true,
+    "r63SyntheticPromotionUnchanged": true,
+    "r64AutomaticPromotionAllowed": false,
+    "r64AutonomousChangesApplied": 0,
+    "actualBrokerPnl": null,
+    "actualLossesAvoided": null,
+    "realTradeAccuracy": null,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "customerMonitoringActive": false,
+    "productionConfigurationChanged": false,
+    "productionDeployPerformed": false,
+    "mergePerformed": false,
+    "commercialPerformanceCertified": false
+  },
+  "validation": {
+    "status": "PENDING_CI",
+    "local": {
+      "tests": 77,
+      "passed": 77,
+      "failed": 0,
+      "skipped": 0,
+      "runtime": "v24.22.1"
+    },
+    "preservedBrowserCases": 52,
+    "realAdminIdentityTested": false,
+    "realProviderConnectionTested": false,
+    "realPostgresAcceptance": "PENDING_CI",
+    "nextHttpAndBrowserAcceptance": "PENDING_CI"
+  },
+  "limitations": [
+    "Only SIGNED_QA_REPLAY is accepted. No customer or broker operations were observed.",
+    "Configured-source Ed25519 verification is not independent broker attestation or independent customer-consent evidence.",
+    "Occurrence may precede capture by up to 24 hours for explicit QA replay; this is not prospective live collection.",
+    "A daily snapshot is immutable. Later replay events do not silently rewrite an already completed period.",
+    "Studies aggregate at most 5000 receipts and show an explicitly bounded latest-48 sample to the analyst.",
+    "Paid generation requires both explicit environment activation and a fresh approved database policy with funded internal limits.",
+    "Unknown provider outcomes hold their reservation without retry. Human reconciliation and archival operations are not auto-enabled.",
+    "SQL is a review-only schema; no Supabase deployment, production scheduler or application deployment was performed.",
+    "HTTP authentication and PostgREST integration will be exercised using an explicitly simulated Supabase boundary against real disposable PostgreSQL.",
+    "The existing real Platform account session, provider account and deployed-host integration remain unverified.",
+    "R64 hypotheses never promote robot configuration; the separate R63 synthetic approval domain remains unchanged."
+  ]
+}

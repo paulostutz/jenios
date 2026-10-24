@@ -95,8 +95,8 @@ function database(){
   }
  };return db;
 }
-const request=(action,body)=>new Request('https://qa.invalid/api/assistant/pro/credits/'+action+(action==='status'?'?orderId='+encodeURIComponent(body.orderId):''),{method:action==='status'?'GET':'POST',headers:{authorization:'Bearer test-only-token',...(action==='status'?{}:{'content-type':'application/json'})},...(action==='status'?{}:{body:JSON.stringify(body)})});
-async function call(db,action,body,options={}){const response=await handleProTopups(request(action,body),{action,db,env,now:db.now,fxLoader:async()=>fx,...options});return {status:response.status,body:await response.json(),headers:response.headers};}
+const request=(action,body)=>new Request('https://qa.invalid/api/assistant/pro/credits/'+action+(action==='status'?body.orderId?'?orderId='+encodeURIComponent(body.orderId):'?quoteId='+encodeURIComponent(body.quoteId)+'&requestKey='+encodeURIComponent(body.requestKey):''),{method:action==='status'?'GET':'POST',headers:{authorization:'Bearer test-only-token',...(action==='status'?{}:{'content-type':'application/json'})},...(action==='status'?{}:{body:JSON.stringify(body)})});
+async function call(db,action,body,options={}){const response=await handleProTopups(request(action,body),{action,db,env,now:db.now,fxLoader:async()=>fx,planResolver:async()=>({code:'platform-global-crypto',periodStart:new Date(NOW-86400_000).toISOString(),periodEnd:new Date(NOW+30*86400_000).toISOString()}),...options});return {status:response.status,body:await response.json(),headers:response.headers};}
 async function getQuote(db,options={}){const result=await call(db,'quote',{requestKey:KEY},options);assert.equal(result.status,200,JSON.stringify(result.body));return result.body.quote;}
 const consent=quote=>({quoteId:quote.id,requestKey:ORDER_KEY,acceptTerms:true,amountCents:quote.amountCents,currency:quote.currency,termsVersion:quote.termsVersion});
 function bank({loseFirstPut=false}={}){
@@ -140,6 +140,102 @@ test('B146 disabled environment stops every route before authentication, DB, FX 
  assert.equal(calls,0);
  assert.equal((await proTopupAvailability(db,proWalletConfig(config(),NOW),{})).enabled,false);
  assert.equal(calls,0);
+});
+
+test('G45 additional purchase requires a currently eligible plan before FX, quote or order writes',async()=>{
+ const empty=null,national={code:'platform-nacional',periodStart:new Date(NOW-1000).toISOString(),periodEnd:new Date(NOW+60000).toISOString()},expired={...national,code:'platform-global-crypto',periodEnd:new Date(NOW-1).toISOString()};
+ for(const plan of [empty,national,expired]){
+  const db=database();let fxCalls=0,gatewayCalls=0;
+  const result=await call(db,'quote',{requestKey:KEY},{planResolver:async()=>plan,fxLoader:async()=>{fxCalls++;return fx;},gateway:async()=>{gatewayCalls++;}});
+  assert.equal(result.status,402);assert.equal(result.body.code,'ADVANCED_PLAN_REQUIRED');
+  assert.equal(db.writes,0);assert.equal(db.rpcs.length,0);assert.equal(fxCalls,0);assert.equal(gatewayCalls,0);
+ }
+ const db=database(),quote=await getQuote(db),before=db.writes;
+ const result=await call(db,'checkout',consent(quote),{planResolver:async()=>null,gateway:async()=>{throw Error('No bank call for expired subscription');}});
+ assert.equal(result.status,402);assert.equal(db.writes,before);assert.equal(db.tables.jenios_pay_orders.length,0);
+});
+
+test('G45 the owner can reconcile a paid additional order after the subscription expires',async()=>{
+ const db=database(),quote=await getQuote(db),fakeBank=bank();
+ const checkout=await call(db,'checkout',consent(quote),{gateway:fakeBank.gateway});
+ assert.equal(checkout.status,200);fakeBank.pay(checkout.body.orderId);
+ const result=await call(db,'status',{orderId:checkout.body.orderId},{planResolver:async()=>{throw Error('Historical status must not require a current plan');},pixClientFactory:()=>fakeBank.client});
+ assert.equal(result.status,200);assert.equal(result.body.state,'credited');assert.equal(db.balance,quote.retailNanoUsd);
+ const repeated=await call(db,'status',{orderId:checkout.body.orderId},{planResolver:async()=>null,pixClientFactory:()=>fakeBank.client});
+ assert.equal(repeated.body.credited,true);assert.equal(db.balance,quote.retailNanoUsd);
+});
+
+test('G45 explicit uncapped topups respect all price and payment gates without inventing a monthly ceiling',async()=>{
+ const db=database();Object.assign(db.tables[T.config][0],{monthly_budget_mode:'uncapped',monthly_provider_limit_nano_usd:0});
+ const policy=proWalletConfig(db.tables[T.config][0],NOW);
+ assert.equal(policy.monthlyProviderLimitNanoUsd,null);assert.equal(policy.topupsEnabled,true);
+ const offer=await proTopupAvailability(db,policy,env);assert.equal(offer.enabled,true);
+ const quoted=await getQuote(db);assert.equal(quoted.amountCents,2500);assert.equal(quoted.baseCurrency,'BRL');
+ for(const patch of [{payments_enabled:false},{pricing_approved:false},{topup_currency:null},{topup_amount_minor:null},
+  {commercial_terms_version:null},{requires_reconciliation:true},{allowed_models:[]}]){
+  const config=proWalletConfig({...db.tables[T.config][0],...patch},NOW);assert.equal(config.topupsEnabled,false,JSON.stringify(patch));
+ }
+ const capped=proWalletConfig({...db.tables[T.config][0],monthly_budget_mode:'capped'},NOW);assert.equal(capped.topupsEnabled,false);
+ assert.throws(()=>proWalletConfig({...db.tables[T.config][0],monthly_budget_mode:'unknown'},NOW));
+});
+
+test('G45 status recovers only the existing paid order by original quote and key after subscription expiry',async()=>{
+ const db=database(),quote=await getQuote(db),fakeBank=bank();
+ const checkout=await call(db,'checkout',consent(quote),{gateway:fakeBank.gateway});
+ assert.equal(checkout.status,200);fakeBank.pay(checkout.body.orderId);
+ const before=db.tables.jenios_pay_orders.length,bankPuts=fakeBank.calls.filter(c=>c.method==='PUT').length;
+ const response=await call(db,'status',{quoteId:quote.id,requestKey:ORDER_KEY},{
+  planResolver:async()=>{throw Error('Expired plan does not block historical reconciliation');},
+  fxLoader:async()=>{throw Error('A reference lookup must not fetch FX');},gateway:async()=>{throw Error('A reference lookup must not create a charge');},pixClientFactory:()=>fakeBank.client});
+ assert.equal(response.status,200);assert.equal(response.body.state,'credited');assert.equal(response.body.orderId,checkout.body.orderId);
+ assert.equal(response.body.quoteId,quote.id);assert.equal(response.body.requestKey,ORDER_KEY);assert.equal(response.body.resolvedExistingOrder,true);
+ assert.equal(db.balance,quote.retailNanoUsd);assert.equal(db.tables.jenios_pay_orders.length,before);
+ assert.equal(fakeBank.calls.filter(c=>c.method==='PUT').length,bankPuts);
+ const again=await call(db,'status',{quoteId:quote.id,requestKey:ORDER_KEY},{planResolver:async()=>null,pixClientFactory:()=>fakeBank.client});
+ assert.equal(again.body.replayed,true);assert.equal(db.balance,quote.retailNanoUsd);
+});
+
+test('G45 status without a binding preserves the quote reference and never prepares another order',async()=>{
+ const db=database(),quote=await getQuote(db),writes=db.writes,rpcs=db.rpcs.length;let external=0;
+ const forbidden=async()=>{external++;throw Error('External call prohibited for an unknown order');};
+ const response=await call(db,'status',{quoteId:quote.id,requestKey:ORDER_KEY},{planResolver:forbidden,fxLoader:forbidden,gateway:forbidden,paymentStatus:forbidden,pixClientFactory:forbidden});
+ assert.equal(response.status,404);assert.equal(response.body.code,'ORDER_REFERENCE_NOT_FOUND');
+ assert.equal(response.body.state,'order_unconfirmed');assert.equal(response.body.quoteId,quote.id);assert.equal(response.body.requestKey,ORDER_KEY);
+ assert.equal(response.body.referencePreserved,true);assert.equal(response.body.retrySameOrder,false);
+ assert.equal(response.body.credited,false);assert.equal(response.body.orderId,undefined);
+ assert.equal(db.writes,writes);assert.equal(db.rpcs.length,rpcs);assert.equal(external,0);assert.equal(db.balance,0);
+});
+
+test('G45 recovered references must match owner, quote, order key and amount before inspecting a payment',async()=>{
+ for(const variant of ['owner','key','quote','amount']){
+  const db=database(),quote=await getQuote(db),fakeBank=bank();
+  const checkout=await call(db,'checkout',consent(quote),{gateway:fakeBank.gateway});
+  assert.equal(checkout.status,200);
+  let quoteId=quote.id,key=ORDER_KEY;
+  if(variant==='owner')db.viewer=B;
+  if(variant==='key')key='another-order-key-0001';
+  if(variant==='quote')quoteId=B;
+  if(variant==='amount')db.tables.jenios_pay_orders[0].amount_cents++;
+  const before=db.writes,rpcs=db.rpcs.length;let calls=0;
+  const forbidden=async()=>{calls++;throw Error('Do not contact bank for unmatched reference');};
+  const result=await call(db,'status',{quoteId,requestKey:key},{planResolver:forbidden,fxLoader:forbidden,gateway:forbidden,paymentStatus:forbidden,pixClientFactory:forbidden});
+  assert.equal(result.body.ok,false);assert.ok([404,503].includes(result.status),variant);assert.equal(result.body.credited,false);
+  assert.equal(result.body.orderId,undefined);assert.equal(result.body.referencePreserved,true);assert.equal(result.body.retrySameOrder,false);
+  assert.equal(db.writes,before);assert.equal(db.rpcs.length,rpcs);assert.equal(db.balance,0);assert.equal(calls,0);
+ }
+});
+
+test('G45 lost preparation response can resolve a pending order without authorizing a charge or funding',async()=>{
+ const db=database(),quote=await getQuote(db);db.failAfterPrepare=true;
+ const attempt=await call(db,'checkout',consent(quote),{gateway:async()=>{throw Error('A lost prepare response must not dispatch');}});
+ assert.equal(attempt.status,503);assert.equal(attempt.body.orderId,undefined);assert.equal(db.tables.jenios_pay_orders.length,1);
+ const existing=db.tables.jenios_pay_orders[0],writes=db.writes,rpcs=db.rpcs.length;
+ const result=await call(db,'status',{quoteId:quote.id,requestKey:ORDER_KEY},{planResolver:async()=>null,
+  pixClientFactory:()=>({}),paymentStatus:async({id})=>({orderId:id,currency:'BRL',amount_cents:quote.amountCents,status:'pending'}),
+  gateway:async()=>{throw Error('Status cannot dispatch a pending charge');},fxLoader:async()=>{throw Error('Status cannot refresh FX');}});
+ assert.equal(result.status,200);assert.equal(result.body.orderId,existing.id);assert.equal(result.body.state,'awaiting_payment');
+ assert.equal(result.body.resolvedExistingOrder,true);assert.equal(result.body.requestKey,ORDER_KEY);assert.equal(result.body.credited,false);
+ assert.equal(db.writes,writes);assert.equal(db.rpcs.length,rpcs);assert.equal(db.balance,0);
 });
 
 test('B146 every policy, pricing, budget and SKU gate is required before a quote can write or fetch FX',async()=>{

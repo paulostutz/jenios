@@ -1,0 +1,41 @@
+{
+  "baseCommit": "dd2e6ce9d2beeea64bc63e42557da8357f0cce94",
+  "approvedProviderBudgetNanoUsd": {
+    "platform-global-crypto": 2000000000,
+    "platform-internacional-pro": 4000000000
+  },
+  "reviewedBlobs": {
+    ".github/workflows/jenios-genios-quota-g45.yml": "196b75eb1bb069ef88ff5d389770fadff6530230",
+    "app/api/assistant/pro/credits/checkout/route.js": "236256cbb73db062f9e0399e8126386865f9b7f9",
+    "app/api/assistant/pro/credits/quote/route.js": "791702b5de9b0a1fcd16cffbc6a656467ac2072f",
+    "app/api/assistant/pro/credits/status/route.js": "645cd67440137f7431e619ffc898839f5b1fe133",
+    "app/genios-pro/ProCredits.js": "6d464bdadea10dff7de212e03d38832a643061ff",
+    "app/genios-pro/credits-client.mjs": "f401a2baf88e1deb3d73d1fe16ea366b41a1013d",
+    "app/genios-pro/page.js": "0230970024daed332d4fa52dd55498674d404336",
+    "app/genios-pro/pro-client.mjs": "ff7a2523fa27e5c83c2bca32955be9a4180aa003",
+    "app/genios-pro/pro.module.css": "0e1f3ba420e99641ff6ee24691dd7d288c05eb88",
+    "docs/assistant/G45-CHECKPOINT.md": "3d2a9869753c62df6b71ba46817125a1f07b4002",
+    "docs/assistant/G45-INTEGRATION-BASELINE.json": "578bd50d25d296f6cb14ce0c1a3b0ffa659068ea",
+    "lib/assistant/pro-access.mjs": "e5b998a1f99514ca383aff1ea82334b34d09b593",
+    "lib/assistant/pro-quota-activation.mjs": "762184c428caa547f907f96ce4782e453797adaf",
+    "lib/assistant/pro-quota-policy.mjs": "4767dd2f8a0316cc443fa6ea4a3626613739db1b",
+    "lib/assistant/pro-repository.mjs": "9ade6d3e49f74e36238384e1978fb633032c7862",
+    "lib/assistant/pro-service.mjs": "8063146090b17d9b9893e23988530895e09465fc",
+    "lib/assistant/pro-topups.mjs": "3a8db94b8f78de9cb7c480385f82e54ce03ee1a2",
+    "lib/assistant/pro-wallet-contract.mjs": "4237fae334032ca952184cd81f611e9e1df95e37",
+    "scripts/check-email-release-r42.mjs": "2f7279de8c5fd10ba43b92986bc93eee88f01f80",
+    "scripts/check-genios-activation-g44.mjs": "2f7279de8c5fd10ba43b92986bc93eee88f01f80",
+    "scripts/check-genios-quota-g45.mjs": "4111baecea0ae4c85220d87ee5556ea368d68011",
+    "scripts/test-genios-quota-g45-postgres.mjs": "aaf99d583d0d81480b98fb215ff214e739865ef6",
+    "supabase/migrations/20261024222440_jenios_pro_allowances_g45.sql": "8b1c525e3d1a2f08c0e8e6e869afb671886d7812",
+    "tests/jeniosGeniosAddonRecoveryUiG45.test.mjs": "063c70b9030f572a832b2fedbff2d5a5b484102b",
+    "tests/jeniosGeniosIntegration.test.mjs": "772aa6a2e567338e87a880507194075dc3997fae",
+    "tests/jeniosGeniosQuotaActivationG45.test.mjs": "c19420f1bb7dc46fe5a6ac82edefd8baf5990abc",
+    "tests/jeniosGeniosQuotaG45.test.mjs": "e7a9e944be72ebaace45ab6374702a910f637d36",
+    "tests/jeniosGeniosQuotaUiG45.test.mjs": "bf62f9febe5700752bd4934a456f18c039670c0b",
+    "tests/jeniosProAccessB139.test.mjs": "58550794b3b4dae5b4e2a8e6c8d4734239936db0",
+    "tests/jeniosProEntitlementsB137.test.mjs": "4bc3a60291185c4cdaefc2dd3c8e36119da3565d",
+    "tests/jeniosProTopupsB146.test.mjs": "6cfa6a70569e085885fd7156aa55ca69e02f1dee",
+    "tests/sql/jenios-pro-allowances-g45.sql": "4fd4f0001eb2eafc1117fe0b13861ef8cd6e763a"
+  }
+}

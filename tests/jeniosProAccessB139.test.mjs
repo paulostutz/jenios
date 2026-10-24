@@ -15,14 +15,19 @@ test('B139 Pro plan endpoint requires identity and never claims unpaid wallet cr
  response=await handlePro(request,{...options,authorize:async()=>({id:'guest',is_anonymous:true})});body=await response.json();
  assert.equal(response.status,401);assert.equal(body.wallet,undefined);assert.equal(body.answer,undefined);
 });
-test('B139 customer sees plan-only advanced access, preserved usage history and University access',()=>{
+test('G45 customer sees subscription-bound advanced access, optional paid additional usage and preserved history',()=>{
  const page=src('app/genios-pro/page.js');
- assert.doesNotMatch(page,/<ProCredits /);
+ assert.match(page,/<ProCredits /);
  assert.match(page,/Seu histórico de consumo/);
  assert.match(page,/account\.kind==='ready'&&<History/);
  assert.match(page,/items=\{history\.items\} hasMore=\{history\.hasMore\}/);
- assert.match(page,/149,90/);assert.match(page,/199,90/);
- for(const route of ['quote','checkout','status'])assert.match(src('app/api/assistant/pro/credits/'+route+'/route.js'),/AI_CREDITS_SALES_DISABLED/);
+ assert.match(page,/PRO_PLAN_LABELS/);
+ assert.match(src('app/genios-pro/pro-client.mjs'),/149,90/);assert.match(src('app/genios-pro/pro-client.mjs'),/199,90/);
+ for(const route of ['quote','checkout','status']){
+  const code=src('app/api/assistant/pro/credits/'+route+'/route.js');
+  assert.match(code,/assertProTopupEnvironment\(process\.env\)/);
+  assert.match(code,/requirePayToken\(request\)/);assert.match(code,/handleProTopups\(request/);
+ }
  assert.match(page,/href="\/platform\/aprender"/);
  assert.match(page,/sem cadastro/);
  assert.doesNotMatch(page,/fetch\('\/api\/jenios-pay\/checkout'/);

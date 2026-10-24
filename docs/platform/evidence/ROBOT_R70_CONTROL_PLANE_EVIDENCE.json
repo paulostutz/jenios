@@ -1,0 +1,137 @@
+{
+  "schema": "JENIOS_ROBOT_R70_CONTROL_PLANE_EVIDENCE_V1",
+  "scope": "JENIOS_ROBOTS_ONLY",
+  "classification": "READ_ONLY_EXTERNAL_METADATA_NO_OPERATIONAL_ACCEPTANCE",
+  "collectedAt": "2026-10-24T20:02:08Z",
+  "acquisition": {
+    "tool": "vercel_list_deployments",
+    "authenticatedConnector": true,
+    "readOnly": true,
+    "project": "jenios-ecossistem",
+    "request": {
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "sha": "151211d7c3c95c15fbb6650a53069657180d862c",
+      "limit": 100
+    },
+    "sourcePayloadTruncated": false,
+    "secretsRequested": false,
+    "secretValuesInspected": false,
+    "targetOrStateFilterUsed": false
+  },
+  "observedProviderResult": {
+    "pagination": {
+      "count": 0
+    },
+    "deployments": []
+  },
+  "providedSnapshot": {
+    "schema": "JENIOS_R70_PROVIDED_TARGET_SNAPSHOT_V1",
+    "observedAtMs": 1792872128000,
+    "expected": {
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "repositoryId": "1408041119",
+      "commitSha": "151211d7c3c95c15fbb6650a53069657180d862c",
+      "deploymentId": null,
+      "origin": null
+    },
+    "request": {
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "sha": "151211d7c3c95c15fbb6650a53069657180d862c",
+      "limit": 100
+    },
+    "listResponse": {
+      "pagination": {
+        "count": 0
+      },
+      "deployments": []
+    },
+    "deployment": null
+  },
+  "comparison": {
+    "schema": "JENIOS_R70_TARGET_SNAPSHOT_COMPARISON_V1",
+    "classification": "PROVIDED_SNAPSHOT_COMPARISON_ONLY",
+    "status": "BLOCKED_CERTIFIED_SHA_NOT_DEPLOYED",
+    "reasons": [
+      "COMPLETE_PROVIDED_LIST_HAS_NO_DEPLOYMENT_FOR_CERTIFIED_SHA"
+    ],
+    "providedSnapshotSha256": "a2046675bd622028aa3598697b3ed38f4e05c52abdf8510712c0ac11949a50e2",
+    "reportedObservationAtMs": 1792872128000,
+    "expected": {
+      "teamId": "team_yDZgXm0NnWvHwT6xUijH3xn0",
+      "projectId": "prj_44ipBY3R9sHlQDAXY7NUn1zDguw4",
+      "repositoryId": "1408041119",
+      "commitSha": "151211d7c3c95c15fbb6650a53069657180d862c",
+      "deploymentId": null,
+      "origin": null
+    },
+    "listQueryMatched": true,
+    "liveControlPlaneQueryPerformed": false,
+    "snapshotAcquisitionAuthenticatedByThisModule": false,
+    "remoteQaDeploymentVerified": false,
+    "independentRuntimeAttestation": false,
+    "hostedAuthenticationCertified": false,
+    "operationalReady": false,
+    "pendingOwnerOperationalAcceptance": true,
+    "targetPreflightExecuted": false,
+    "privateCaptureStarted": false,
+    "privatePayloadSent": false,
+    "customerMonitoringActive": false,
+    "privateOperationalSourceActive": false,
+    "deploymentsCreated": 0,
+    "hostedMigrationsApplied": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "listedDeploymentCount": 0,
+    "selectedDeployment": null
+  },
+  "findings": {
+    "certifiedCommit": "151211d7c3c95c15fbb6650a53069657180d862c",
+    "deploymentsReturned": 0,
+    "selectedDeployment": null,
+    "targetOrigin": null,
+    "status": "BLOCKED_CERTIFIED_SHA_NOT_DEPLOYED",
+    "targetPreflightExecuted": false,
+    "privateCaptureStarted": false,
+    "privatePayloadSent": false
+  },
+  "limits": {
+    "snapshotIsCryptographicProviderAttestation": false,
+    "providerMetadataIsRuntimeAttestation": false,
+    "ownerOperationalAcceptanceProvided": false,
+    "realAdminIdentityVerified": false,
+    "hostedDatabaseVerified": false,
+    "persistentHostCertified": false,
+    "operationalReady": false
+  },
+  "existingHostEvidence": {
+    "inventory": "docs/platform/evidence/ROBOT_R69_TARGET_INVENTORY.json",
+    "newRemoteHostProvisioned": false,
+    "externalFenceSelected": false,
+    "monotonicWitnessSelected": false,
+    "hostRecoveryAuthorized": false,
+    "localCollectorImplementedInThisBlock": false
+  },
+  "actions": {
+    "deploymentsCreated": 0,
+    "hostedMigrationsApplied": 0,
+    "realOrdersSent": 0,
+    "externalPaperOrdersSent": 0,
+    "paidProviderCalls": 0,
+    "customerMonitoringActive": false,
+    "productionChanged": false
+  },
+  "comparisonExecution": {
+    "offline": true,
+    "exitCode": 2,
+    "source": "scripts/platform/research/r70-target-snapshot.mjs",
+    "implementationSha256": {
+      "lib/platform/research/robot-r70-target-snapshot.mjs": "1598b8e1aac988255472144e40c26c329f5cd7423b6458c211fc0e5a07107a9c",
+      "scripts/platform/research/r70-target-snapshot.mjs": "ef86950888502e8e7f112aa1df5857dcb652b0c0b58cc98e286b1c60651bef8c"
+    },
+    "newProviderQueryByComparator": false
+  }
+}

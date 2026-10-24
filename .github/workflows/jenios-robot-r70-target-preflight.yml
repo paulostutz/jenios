@@ -1,0 +1,48 @@
+name: JENIOS ROBOT R70 target preflight (no deploy)
+on:
+  push:
+    branches: [research/jenios-robot-r70-target-preflight-20261024]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      JENIOS_R70_INPUT_MODE: PUBLIC_PROTOCOL_FIXTURE
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: 'qa'
+      NEXT_PUBLIC_SUPABASE_URL: 'https://social.invalid'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'qa'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: R70 source-authenticated target preflight and host barriers
+        run: node --test tests/platformRobotR70*.test.mjs
+      - name: Preserve R65 R66 R67 R68 R69 contracts and no-deploy guard
+        run: node --test tests/platformRobotR65*.test.mjs tests/platformRobotR66*.test.mjs tests/platformRobotR67*.test.mjs tests/platformRobotR68*.test.mjs tests/platformRobotR69*.test.mjs tests/platformRobotR60NoDeployGuard.test.mjs
+      - name: Ensure local TLS fixture tool
+        run: command -v openssl
+      - name: Preserve complete application test and build gates
+        run: npm run build
+      - name: R70 real Next preflight with explicitly simulated deployment metadata
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r70-evidence
+        run: node scripts/platform/research/r70-preflight-acceptance.mjs
+      - name: Retain sanitized public R70 preflight evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r70-public-preflight-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/jenios-r70-evidence
+          if-no-files-found: warn
+          retention-days: 14

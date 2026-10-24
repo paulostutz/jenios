@@ -66,7 +66,10 @@
       "backup/jenios-robot-r68-private-host-readiness-certified-20261024": false,
       "research/jenios-robot-r69-https-integration-20261024": false,
       "backup/jenios-robot-r69-https-integration-progress-20261024": false,
-      "backup/jenios-robot-r69-https-integration-certified-20261024": false
+      "backup/jenios-robot-r69-https-integration-certified-20261024": false,
+      "research/jenios-robot-r70-target-preflight-20261024": false,
+      "backup/jenios-robot-r70-target-preflight-progress-20261024": false,
+      "backup/jenios-robot-r70-target-preflight-certified-20261024": false
     }
   },
   "ignoreCommand": "node scripts/vercel-ignore-research.mjs"

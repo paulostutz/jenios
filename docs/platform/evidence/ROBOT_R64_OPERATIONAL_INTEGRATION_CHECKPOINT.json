@@ -98,7 +98,16 @@
     "realAdminIdentityTested": false,
     "realProviderConnectionTested": false,
     "realPostgresAcceptance": "PENDING_CI",
-    "nextHttpAndBrowserAcceptance": "PENDING_CI"
+    "nextHttpAndBrowserAcceptance": "PENDING_CI",
+    "attempts": [
+      {
+        "commit": "8ebac5727c74be7131b0ca2443963475061ed4aa",
+        "runId": 40109540039,
+        "conclusion": "FAILURE",
+        "stage": "WORKFLOW_VALIDATION_BEFORE_ANY_JOB",
+        "fix": "Move runner.temp artifact directory context from job-level env to step-level env."
+      }
+    ]
   },
   "limitations": [
     "Only SIGNED_QA_REPLAY is accepted. No customer or broker operations were observed.",
@@ -112,5 +121,6 @@
     "HTTP authentication and PostgREST integration will be exercised using an explicitly simulated Supabase boundary against real disposable PostgreSQL.",
     "The existing real Platform account session, provider account and deployed-host integration remain unverified.",
     "R64 hypotheses never promote robot configuration; the separate R63 synthetic approval domain remains unchanged."
-  ]
+  ],
+  "updatedAt": "2026-10-24T16:00:57.756984Z"
 }

@@ -24,7 +24,6 @@ jobs:
     env:
       JENIOS_R64_TEST_DATABASE_URL: 'postgresql://postgres:r64-test-only@127.0.0.1:5432/jenios_r64_qa'
       JENIOS_R64_DISPOSABLE_DB: 'true'
-      ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r64-evidence
       NEXT_TELEMETRY_DISABLED: '1'
       NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
       NEXT_PUBLIC_PLATFORM_SUPABASE_URL: 'https://qa.invalid'
@@ -49,6 +48,8 @@ jobs:
             sudo apt-get install -y postgresql-client
           fi
       - name: R64 durable SQL and concurrency acceptance in disposable PostgreSQL
+        env:
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r64-evidence
         run: node scripts/platform/research/r64-postgres-acceptance.mjs
       - run: npm run build
       - name: Capture bounded continuous improvement evidence
@@ -68,6 +69,7 @@ jobs:
       - name: R64 signed intake, durable scheduler, admin and browser integration on loopback
         env:
           JENIOS_ROBOT_QA_PLAYWRIGHT_MODULE: ${{ runner.temp }}/jenios-r64-browser/node_modules/@playwright/test/index.mjs
+          ROBOT_QA_ARTIFACT_DIR: ${{ runner.temp }}/jenios-r64-evidence
         run: node scripts/platform/research/r64-runtime-acceptance.mjs
       - name: Retain R64 operational integration evidence
         if: always()

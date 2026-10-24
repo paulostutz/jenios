@@ -2,7 +2,21 @@
 
 ## Escopo e estado
 
-**Candidato em validação.** O R61 acrescenta um console de homologação que chama as políticas de pesquisa existentes por controles reais de interface. A certificação depende da bateria completa, build e aceitação Chromium no mesmo commit. Não representa instalação dos robôs em produção, execução em corretora ou prova de rentabilidade.
+**Homologação sintética validada.** O R61 acrescenta um console de homologação que chama as políticas de pesquisa existentes por controles reais de interface. A CI de referência `40096367549`, no commit `d4cfc222c3303f222323b5c29d27a08a1d5afe5d`, concluiu todas as etapas com sucesso. O commit que consolida esta evidência deve passar novamente pela CI completa antes da criação do backup final. Esta certificação não representa instalação dos robôs em produção, execução em corretora ou prova de rentabilidade.
+
+| Evidência observada na CI de referência | Resultado |
+|---|---:|
+| Direcionados R12–R61 | 307/307 PASS |
+| Testes gerais | 2.113/2.113 PASS |
+| Social | 94/94 PASS |
+| Build | PASS |
+| Páginas estáticas geradas | 76/76 |
+| Aceitação Chromium | 33/33 PASS |
+| Falhas ou casos ignorados | 0 |
+
+A rota R61 é dinâmica; a contagem de 76 páginas é a geração estática informada pelo Next. O browser verificou desktop de 1.440 px e mobile de 375/320 px, com largura do documento igual à viewport nas duas medidas móveis. Os 33 casos incluíram 50 verificações visíveis de ordens reais/Paper externo em zero. Houve zero tentativas externas, de API, de métodos mutantes e de WebSocket, e zero erros JavaScript. As duas mensagens de console HTTP 404 correspondem aos gates negativos esperados. Screenshots de desktop/celular e os logs dos três servidores locais foram revisados; o checksum do arquivo de evidência foi conferido.
+
+[Abrir a CI de referência](https://github.com/paulostutz/jenios/actions/runs/40096367549).
 
 Base consultada: `backup/jenios-robot-r60-operational-closeout-certified-20261024`, commit `ac496719858df8f5d0fccb219b3109231e2091b7`, CI `40094125957` concluída com sucesso. A base mantém R59 certificado e R60 com 264 testes direcionados, 2.070 gerais, 94 Social e build aprovado.
 
@@ -61,6 +75,8 @@ Ele executa a bateria direcionada preservada, os testes novos R61, `npm run buil
 Resultados locais já observados: 9/9 testes dos assistidos, 30/30 do UltraFast e 4/4 dos gates. Os subprocessos locais têm restrição de ambiente; build e browser são verificados pelo workflow completo, sem substituir essa etapa pelo resultado local.
 
 Checkpoint: `docs/platform/evidence/ROBOT_R61_QA_POLICY_INTEGRATION_CHECKPOINT.json`.
+
+Relatório completo preservado no Git: `docs/platform/evidence/ROBOT_R61_BROWSER_ACCEPTANCE_EVIDENCE.json`. Ele mantém os 33 resultados individuais, runtime, gates, tentativas de rede, contagens e identificação/checksum do artefato da CI. Os arquivos de imagem e logs também constam do artefato, sujeito à retenção de 14 dias configurada no workflow.
 
 Guia de aceite: `docs/platform/ROBOT_R61_SYNTHETIC_ACCEPTANCE.md`.
 

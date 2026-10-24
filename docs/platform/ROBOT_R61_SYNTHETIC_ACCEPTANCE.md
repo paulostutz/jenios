@@ -31,7 +31,7 @@ Todos os valores são fictícios. Uma decisão permitida não envia ordens. Alte
 
 ## Registro dos resultados
 
-Estado automatizado inicial: **PENDENTE DA CI**. Os resultados observados serão registrados no checkpoint R61, no ledger e no artefato da execução. Casos automatizados não contam como aceite manual do proprietário.
+Estado automatizado observado: **PASS — 33/33 casos Chromium**, CI `40096367549`, commit `d4cfc222c3303f222323b5c29d27a08a1d5afe5d`. Os resultados individuais estão em `docs/platform/evidence/ROBOT_R61_BROWSER_ACCEPTANCE_EVIDENCE.json`; o checkpoint R61 e o ledger contêm o resumo. Os gates completos também têm testes de unidade, e os testes negativos de browser demonstraram 404 em ambiente production e sem a flag específica de robôs. Screenshots de desktop e celular foram conferidos. Casos automatizados não contam como aceite manual do proprietário. O backup final exige revalidação do commit consolidado.
 
 Aceite manual do usuário: **NOT_EXECUTED**. Para cada observação futura, registrar commit, data, ambiente de QA, caso, parâmetros e comportamento visto. Não inserir resultado real em registro sintético nem preencher retroativamente R15.
 

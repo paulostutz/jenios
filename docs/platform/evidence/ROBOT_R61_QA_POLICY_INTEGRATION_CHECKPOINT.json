@@ -1,7 +1,7 @@
 {
   "schema": "JENIOS_ROBOT_R61_QA_POLICY_INTEGRATION_CHECKPOINT_V1",
   "block": "R61",
-  "classification": "SYNTHETIC_QA_INTEGRATION_CANDIDATE",
+  "classification": "SYNTHETIC_QA_POLICY_INTEGRATION_CERTIFIED",
   "scope": "browser UI connected to existing research policies using explicit synthetic fixtures only",
   "base": {
     "branch": "backup/jenios-robot-r60-operational-closeout-certified-20261024",
@@ -46,19 +46,84 @@
       "R30"
     ],
     "allUltrafastResearchModulesIntegrated": false,
-    "syntheticUiIntegrationVerified": false,
+    "syntheticUiIntegrationVerified": true,
     "productionIntegrationVerified": false,
     "manualAcceptanceCompleted": false
   },
   "validation": {
-    "status": "PENDING_CI",
+    "status": "PASS",
     "localTests": {
       "assisted": "9/9",
       "ultrafast": "30/30",
       "qaGate": "4/4"
     },
-    "evidence": null,
-    "browserAcceptance": null
+    "evidence": {
+      "validationRun": 40096367549,
+      "validatedCommit": "d4cfc222c3303f222323b5c29d27a08a1d5afe5d",
+      "directed": "307/307",
+      "general": "2113/2113",
+      "social": "94/94",
+      "build": "PASS",
+      "pages": "76/76",
+      "browser": "33/33",
+      "failures": 0,
+      "skipped": 0
+    },
+    "browserAcceptance": {
+      "status": "PASS",
+      "reportFile": "docs/platform/evidence/ROBOT_R61_BROWSER_ACCEPTANCE_EVIDENCE.json",
+      "total": 33,
+      "passed": 33,
+      "failed": 0,
+      "notRun": 0,
+      "playwright": "1.56.1",
+      "chromium": "141.0.7390.37",
+      "viewportWidths": [
+        1440,
+        375,
+        320
+      ],
+      "horizontalOverflow": false,
+      "renderedZeroOrderChecks": 50,
+      "gateResults": [
+        {
+          "scenario": "preview_all_required_flags",
+          "expectedStatus": 200,
+          "status": 200,
+          "consoleRendered": true
+        },
+        {
+          "scenario": "production_is_404_even_with_qa_flags",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false
+        },
+        {
+          "scenario": "missing_robot_qa_flag_is_404",
+          "expectedStatus": 404,
+          "status": 404,
+          "consoleRendered": false,
+          "parentLinkAbsent": true
+        }
+      ],
+      "attempts": {
+        "externalRequests": 0,
+        "apiRequests": 0,
+        "mutations": 0,
+        "webSockets": 0
+      },
+      "pageErrors": 0,
+      "expectedHttp404ConsoleMessages": 2,
+      "screenshotsReviewed": true,
+      "serverLogsReviewed": true,
+      "humanOwnerAcceptanceCompleted": false
+    },
+    "deploymentIsolation": {
+      "checkedAt": "2026-10-24T13:05:33Z",
+      "commit": "d4cfc222c3303f222323b5c29d27a08a1d5afe5d",
+      "automaticVercelDeploymentAttempts": 0
+    },
+    "consolidatedCommitRule": "Re-run complete CI on the consolidated commit, then create backup only on success. The backup ref and its Actions run identify that final commit."
   },
   "acceptanceGuide": "docs/platform/ROBOT_R61_SYNTHETIC_ACCEPTANCE.md",
   "limitations": [
@@ -71,5 +136,6 @@
   "backup": {
     "branch": "backup/jenios-robot-r61-qa-policy-integration-certified-20261024",
     "creationRule": "Create only after the consolidated commit passes complete CI and browser acceptance; the Git ref is authoritative for its final SHA."
-  }
+  },
+  "validatedAt": "2026-10-24T13:05:33Z"
 }

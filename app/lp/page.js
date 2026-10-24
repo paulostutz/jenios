@@ -142,7 +142,7 @@ export default function LandingPagePro() {
         {/* RODAPÉ */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '30px' }}>
           <div style={{ fontSize: '12px', fontWeight: '900', color: '#a78bfa', letterSpacing: '2px', textTransform: 'uppercase' }}>{PLATFORM_SLOGAN}</div>
-          <div style={{ fontSize: '11px', color: '#64748b' }}>Estudo e simulação ajudam a revisar decisões, mas não garantem resultado financeiro. Operações reais podem gerar perdas.</div>
+          <div style={{ fontSize: '11px', color: '#64748b' }}>Estudo e simulação ajudam a revisar decisões, mas não garantem resultado financeiro. Operações podem gerar perdas.</div>
           <BrandFooter tone="dark" scope="Platform"/>
         </div>
 

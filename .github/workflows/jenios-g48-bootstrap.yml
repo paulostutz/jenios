@@ -56,13 +56,14 @@ jobs:
               assert '..' not in p.parts, raw
               assert '.git' not in p.parts, raw
           print(f'payload_paths_safe={len(paths)}')
+          print('\n'.join(paths))
           PY
           if tar -tvJf /tmp/jenios-g48-payload.tar.xz | awk '$1 ~ /^[lh]/ {found=1} END {exit found?0:1}'; then
             echo 'Payload contém link e foi recusado' >&2
             exit 1
           fi
 
-      - name: Install exact reviewed G48 tree
+      - name: Diagnose exact reviewed G48 tree
         shell: bash
         run: |
           set -euo pipefail
@@ -70,7 +71,16 @@ jobs:
           rm -rf .g48-bootstrap
           rm -f .github/workflows/jenios-g48-bootstrap.yml
           git add -A
-          test "$(git write-tree)" = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
+          actual_tree=$(git write-tree)
+          echo "expected_tree=c425df0cf0edd2c652212e0f2991a13d3dba9809"
+          echo "actual_tree=$actual_tree"
+          echo '--- status ---'
+          git status --short
+          echo '--- name-status ---'
+          git diff --cached --name-status
+          echo '--- stat ---'
+          git diff --cached --stat
+          test "$actual_tree" = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
           node scripts/check-inter-vault-g48.mjs
           git diff --cached --check
 

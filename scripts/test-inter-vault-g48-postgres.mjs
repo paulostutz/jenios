@@ -39,10 +39,10 @@ CREATE TABLE vault.secrets(
  created_at timestamptz NOT NULL DEFAULT now(),updated_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE VIEW vault.decrypted_secrets AS SELECT id,secret AS decrypted_secret,name,description FROM vault.secrets;
-CREATE FUNCTION vault.create_secret(new_secret text,new_name text DEFAULT NULL,new_description text DEFAULT '') RETURNS uuid
+CREATE FUNCTION vault.create_secret(new_secret text,new_name text DEFAULT NULL,new_description text DEFAULT '',new_key_id uuid DEFAULT NULL) RETURNS uuid
  LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
  DECLARE sid uuid;BEGIN INSERT INTO vault.secrets(secret,name,description) VALUES(new_secret,new_name,new_description) RETURNING id INTO sid;RETURN sid;END $$;
-CREATE FUNCTION vault.update_secret(secret_id uuid,new_secret text DEFAULT NULL,new_name text DEFAULT NULL,new_description text DEFAULT '') RETURNS void
+CREATE FUNCTION vault.update_secret(secret_id uuid,new_secret text DEFAULT NULL,new_name text DEFAULT NULL,new_description text DEFAULT '',new_key_id uuid DEFAULT NULL) RETURNS void
  LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
  BEGIN UPDATE vault.secrets SET secret=coalesce(new_secret,secret),name=coalesce(new_name,name),description=coalesce(new_description,description),updated_at=now() WHERE id=secret_id;
  IF NOT FOUND THEN RAISE EXCEPTION 'secret not found';END IF;END $$;

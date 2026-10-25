@@ -1,0 +1,72 @@
+name: JENIOS G48 one-time bootstrap
+
+on:
+  push:
+    branches: [fix/jenios-g48-inter-vault-20261025]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: jenios-g48-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  install-certified-tree:
+    if: ${{ hashFiles('.g48-bootstrap/chunk00') != '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Validate certified bootstrap payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "ad0a86eee09aa8fb63235f736650819df64b07e7"
+          test "$(git hash-object .g48-bootstrap/chunk00)" = "8439d7dce85cec965412143f6ea29954631713e1"
+          rm -rf /tmp/jenios-g48-payload
+          mkdir -p /tmp/jenios-g48-payload
+          base64 --decode .g48-bootstrap/chunk00 > /tmp/jenios-g48-payload/payload.tar.xz
+          xz --test /tmp/jenios-g48-payload/payload.tar.xz
+          tar -tJf /tmp/jenios-g48-payload/payload.tar.xz > /tmp/jenios-g48-payload/files.txt
+          python - <<'PY'
+          from pathlib import PurePosixPath
+          paths=open('/tmp/jenios-g48-payload/files.txt',encoding='utf-8').read().splitlines()
+          assert paths, 'payload vazio'
+          for raw in paths:
+              p=PurePosixPath(raw)
+              assert not p.is_absolute(), raw
+              assert '..' not in p.parts, raw
+              assert '.git' not in p.parts, raw
+          print(f'payload_paths_safe={len(paths)}')
+          PY
+          if tar -tvJf /tmp/jenios-g48-payload/payload.tar.xz | awk '$1 ~ /^[lh]/ {found=1} END {exit found?0:1}'; then
+            echo 'Payload contém link e foi recusado' >&2
+            exit 1
+          fi
+
+      - name: Install exact reviewed G48 tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -xJf /tmp/jenios-g48-payload/payload.tar.xz -C . --no-same-owner --no-same-permissions
+          rm -rf .g48-bootstrap
+          rm -f .github/workflows/jenios-g48-bootstrap.yml
+          git add -A
+          test "$(git write-tree)" = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
+          node scripts/check-inter-vault-g48.mjs
+          git diff --cached --check
+
+      - name: Commit certified source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "jenios-release-bot"
+          git config user.email "jenios-release-bot@users.noreply.github.com"
+          git commit -m "fix(jenios): G48 install isolated Inter Vault and Master setup"
+          test "$(git rev-parse HEAD^{tree})" = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
+          git push origin HEAD:fix/jenios-g48-inter-vault-20261025

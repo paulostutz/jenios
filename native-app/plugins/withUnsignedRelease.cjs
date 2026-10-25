@@ -1,5 +1,10 @@
-const {withAppBuildGradle}=require('expo/config-plugins');
-module.exports=config=>withAppBuildGradle(config,config=>{
+const {withAppBuildGradle,withAndroidManifest,AndroidConfig}=require('expo/config-plugins');
+module.exports=config=>{
+ config=withAndroidManifest(config,config=>{
+  AndroidConfig.Manifest.getMainApplicationOrThrow(config.modResults).$['android:usesCleartextTraffic']='false';
+  return config;
+ });
+ return withAppBuildGradle(config,config=>{
  const original=config.modResults.contents;
  const start=original.indexOf('release {',original.indexOf('buildTypes'));
  if(start<0)throw Error('Review generated release configuration');
@@ -8,4 +13,5 @@ module.exports=config=>withAppBuildGradle(config,config=>{
  if(!tail.includes(marker)&&!tail.includes('signingConfig signingConfigs.debug'))throw Error('Review Expo signing template');
  config.modResults.contents=head+tail.replace('signingConfig signingConfigs.debug',marker);
  return config;
-});
+ });
+};

@@ -29,7 +29,7 @@
     "native-app/index.ts": "1d6e981ef6c4ea336e6fe8f3fbce9487221a075c",
     "native-app/package-lock.json": "e8d02daf0f19089020f785ef44370d7016f40c51",
     "native-app/package.json": "ea53ba6cf65cd6afc428cbb5059cfa743dfcf84a",
-    "native-app/plugins/withUnsignedRelease.cjs": "889fab2d5d32e8d58b3ef66434274b6762264db7",
+    "native-app/plugins/withUnsignedRelease.cjs": "df845e37b7d4b8284d7f4bb7054136054739d52e",
     "native-app/src/Portal.tsx": "8b8dacea480201f39818a246ed79941dd079ec39",
     "native-app/src/Portal.web.tsx": "b3522f37b5f35357f9752fec5b186eb1e386f52e",
     "native-app/src/file-bridge.ts": "0400b01f682db7f705338ec003e1437bab1c8d71",

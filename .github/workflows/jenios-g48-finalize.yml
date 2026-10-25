@@ -29,3 +29,5 @@ jobs:
 # publish functional source only; connector performs exact workflow/cleanup commit
 
 # certified tree-first finalization 20261025 v3
+
+# exact 26 file certification v4

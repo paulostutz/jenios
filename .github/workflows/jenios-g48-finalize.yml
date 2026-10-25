@@ -26,4 +26,4 @@ jobs:
           python-version: '3.13'
       - name: Reconstruct, verify and publish certified G48 source
         run: python .g48-bootstrap/finalize.py
-# rerun with exact certified manifest archive
+# rerun with exact Git blob and extracted manifest validation

@@ -24,11 +24,14 @@ test('R35 public: API defaults cannot give proof of availability',()=>{
  assert.equal(classifyPlatformPlan(product,{...catalogue,subscriptionLifecycleReady:true,catalogStatus:'defaults'}).canCheckout,false);
  assert.deepEqual(projectPlatformCatalog({}),[]);
 });
-test('R35 public: Platform UI does not render a charge control when canCheckout is false',()=>{
+test('G47 public: charge control requires authenticated server billing readiness and explicit consent',()=>{
  const src=readFileSync('app/checkout/page.js','utf8');
  assert.match(src,/projectPlatformCatalog\(catalog\)/);
- assert.match(src,/chosen\.canCheckout\?<\>/);
- assert.match(src,/SocialChargeButton productCode=\{chosen.code\}/);
- assert.match(src,/Assinaturas em preparação/);
+ assert.match(src,/MonthlyPix plan=\{chosen\}/);
+ assert.doesNotMatch(src,/SocialChargeButton/);
+ const billing=readFileSync('app/checkout/MonthlyPix.js','utf8');
+ assert.match(billing,/state\?\.canPurchase&&platform&&plan&&selectedMatches/);
+ assert.match(billing,/disabled=\{busy\|\|!accepted\}/);
+ assert.match(billing,/termsVersion:PLATFORM_MONTHLY_TERMS,acceptTerms:true/);
  assert.doesNotMatch(src,/process\.env\.|SUPABASE_SERVICE_ROLE_KEY/);
 });

@@ -97,7 +97,7 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Preserve the integrated production baseline outside reviewed G45 changes
-        run: node scripts/check-genios-addon-g46.mjs
+        run: node scripts/check-platform-monthly-g47.mjs
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify inherited tests, release safeguards and production build

@@ -68,7 +68,7 @@ const rate=await sql("SELECT to_char(now() at time zone 'UTC','YYYY-MM-DD\"T\"HH
 const callSql=(code,key='g46_addon_quote_0001',owner=A,fx=5123456)=>`public.jenios_pro_create_addon_quote_g46('${owner}',${literal(key)},${literal(code)},${fx},'BCB:PTAX_USD_VENDA','${rate}')`;
 const call=(...a)=>json('SET ROLE service_role; SELECT '+callSql(...a));
 assert.equal((await call('ia-500')).code,'PAYMENTS_NOT_APPROVED');
-await sql('UPDATE public.jenios_pro_config_b143 SET payments_enabled=true;');
+await sql('UPDATE public.jenios_pro_config_b143 SET payments_enabled=true,monthly_budget_mode='uncapped';');
 await assert.rejects(file(migration),/G46_REQUIRES_PAYMENTS_PAUSED/);
 assert.equal((await call('ia-500','g46_no_plan_quote_01',B)).code,'ADVANCED_PLAN_REQUIRED');
 assert.equal((await call('ia-invalid')).code,'INVALID_QUOTE');

@@ -12,7 +12,7 @@
     "scripts/check-email-release-r42.mjs": "76cdf15bad3b9035a05085077ba37d85b8931bbc",
     "scripts/check-genios-activation-g44.mjs": "76cdf15bad3b9035a05085077ba37d85b8931bbc",
     "scripts/check-genios-addon-g46.mjs": "155fb823ab77c1f367785134c3799ec724b57ca8",
-    "scripts/test-genios-addon-g46-postgres.mjs": "4ef5118b977e51ec92b43d25ee29ba882cd85955",
+    "scripts/test-genios-addon-g46-postgres.mjs": "0cc33a541f85a1b40087f2c7bc6c98699331efc9",
     "supabase/migrations/20261025000128_jenios_pro_addon_catalog_g46.sql": "68f79641da427da3da3a2ed908614030beb5745a",
     "tests/jeniosGeniosAddonG46.test.mjs": "ef9f2d604940939285b798305b42928a21f1f6fa",
     "tests/jeniosGeniosQuotaG45.test.mjs": "9b87229c07e489aba6a9e549a4f49d238181a06f",

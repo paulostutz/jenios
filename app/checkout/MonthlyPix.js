@@ -65,13 +65,14 @@ export default function MonthlyPix({plan,onState}){
  async function checkout(){
   if(!plan||!accepted)throw Error('Confira e aceite o valor da mensalidade.');
   const {a,b}=await sessions();if(!b?.access_token)throw Error('Confirme o acesso da Platform antes de gerar o Pix.');
-  const fingerprint=JSON.stringify([a?.user?.id,b.user.id,plan.code,plan.price_cents]);
+  const amountCents=state?.pending?.amountCents||plan.price_cents;
+  const fingerprint=JSON.stringify([a?.user?.id,b.user.id,plan.code,amountCents]);
   if(attempt.current?.fingerprint!==fingerprint)attempt.current={fingerprint,key:state?.pending?.requestKey||crypto.randomUUID()};
-  const result=await api('checkout',{productCode:plan.code,amountCents:plan.price_cents,currency:'BRL',termsVersion:PLATFORM_MONTHLY_TERMS,acceptTerms:true,requestKey:attempt.current.key});
+  const result=await api('checkout',{productCode:plan.code,amountCents,currency:'BRL',termsVersion:PLATFORM_MONTHLY_TERMS,acceptTerms:true,requestKey:attempt.current.key});
   setPayment(result);await status(result.orderId);
  }
  const pending=state?.pending;
- const selectedMatches=!pending||(plan?.code===pending.productCode&&plan?.price_cents===pending.amountCents);
+ const selectedMatches=!pending||plan?.code===pending.productCode;
  return <section style={{display:'grid',gap:14}}>
   <h2>Pix mensal, renovação por você</h2>
   <p>Você paga um mês por vez. O próximo Pix fica disponível no vencimento, pelo preço apresentado naquele momento. Não há débito automático. Se deixar vencer, o acesso pago termina; sua conta permanece.</p>

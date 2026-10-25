@@ -2,9 +2,9 @@
   "baseCommit": "9c8493ebbdb99002271ae6292d475facfa1ad4bf",
   "reviewedBlobs": {
     ".github/workflows/jenios-genios-addon-g46.yml": "c5dd8720d94c31907c1d7d46241783ef2740abc2",
-    ".github/workflows/jenios-platform-monthly-g47.yml": "08874389e8856df069521338eaf55e8f5f05e5a3",
+    ".github/workflows/jenios-platform-monthly-g47.yml": "33eb4b2c0e196d8c78b7e92b7434aa19d68dd02c",
     "app/api/platform/subscription/[action]/route.js": "789dc29f7ffa2b0f0d3d77ffd6faccd327c39a6d",
-    "app/checkout/MonthlyPix.js": "e606edaafe1bcf51eb379ca5d3d93a7bfd3b5250",
+    "app/checkout/MonthlyPix.js": "71ca4611921f687d68bce18cb7905915eced85b1",
     "app/checkout/page.js": "6c5240da4531ea360e672ba2422c68fe7013bd15",
     "app/components/platform/PlatformBillingStatus.js": "3ba1e44445d034f378761e0c2236be2fb8fa2792",
     "app/dashboard-logado/page.js": "39decf876ae8806cf2071a536c44c352d877e52c",
@@ -18,8 +18,8 @@
     "scripts/check-email-release-r42.mjs": "1c7877ff143d128b35196256fb2ea7cb97f825d7",
     "scripts/check-genios-activation-g44.mjs": "1c7877ff143d128b35196256fb2ea7cb97f825d7",
     "scripts/check-platform-monthly-g47.mjs": "df3d6eafc3da8a9ea293dd071243f895b3ed7885",
-    "scripts/test-platform-monthly-g47-postgres.mjs": "c99697ce5aa4b6c2e98ff34e57e09db977876674",
-    "supabase/migrations/20261025003623_jenios_platform_monthly_pix_g47.sql": "b6f5371bdfb7885cf96124649a1aeee2dbb08c50",
+    "scripts/test-platform-monthly-g47-postgres.mjs": "cf8526590517ee4cae0d4130d6a07de76d5094d0",
+    "supabase/migrations/20261025003623_jenios_platform_monthly_pix_g47.sql": "5790ef34485f2576105d532b297342dc5e19e4ce",
     "tests/platformMonthlyG47.test.mjs": "78074708fd813117a2efdf5b389f7e9404f81e68",
     "tests/platformR35PublicCheckoutSafety.test.mjs": "f01e234b2fa5dd2dc6dab70ef2886710509bf97e"
   }

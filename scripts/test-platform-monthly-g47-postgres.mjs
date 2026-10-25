@@ -74,6 +74,7 @@ await assert.rejects(json(confirm(orderId,14990,"now()+interval '1 minute'")),/P
 const confirmed=await Promise.all([1,2].map(()=>json(confirm())));
 assert.ok(confirmed.every(x=>x.ok));assert.equal(confirmed.filter(x=>x.replayed).length,1);
 assert.equal(await sql(`SELECT current_period_end AT TIME ZONE 'UTC' FROM public.jenios_pay_subscriptions WHERE id='${first.invoice.subscription_id}'`),'2024-02-29 13:00:00');
+assert.equal(await sql(`SELECT status FROM public.jenios_pay_entitlements WHERE order_id='${orderId}'`),'active');
 await assert.rejects(json(confirm(orderId,14990,"'2024-01-31T13:00:00Z'",'E'+'8'.repeat(31))),/Platform receipt mismatch/);
 await assert.rejects(sql(`SET ROLE service_role; UPDATE public.jenios_platform_invoices_g47 SET period_end=now() WHERE id='${invoiceId}'`),/Immutable Platform invoice/);
 const second=await json(prepareSql('g47_second_month_0001','platform-global-crypto',15000));assert.equal(second.ok,true);assert.equal(second.invoice.subscription_id,first.invoice.subscription_id);
@@ -86,6 +87,7 @@ assert.equal((await json(prepareSql('g47_early_renewal_001','platform-global-cry
 assert.equal(await sql('SELECT count(*) FROM public.jenios_pay_subscriptions'),'1','Renewal does not create a second subscription/allowance identity');
 await sql(`SET ROLE service_role; UPDATE public.jenios_pay_orders SET status='refunded' WHERE id='${sid}';`);
 assert.equal(await sql(`SELECT status FROM public.jenios_pay_subscriptions WHERE id='${first.invoice.subscription_id}'`),'cancelled');
+assert.equal(await sql(`SELECT status FROM public.jenios_pay_entitlements WHERE order_id='${sid}'`),'revoked');
 console.log('G47_MONTHLY_OWNER_CONSENT_CONCURRENCY_RECEIPT_CALENDAR_RENEWAL_REFUND_PASS');
 // An expired unpaid invoice permits a new request. A late receipt is not lost.
 const third=await json(prepareSql('g47_expired_pending_1','platform-nacional',9990));assert.equal(third.ok,true);

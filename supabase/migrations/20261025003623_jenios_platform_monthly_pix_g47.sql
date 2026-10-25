@@ -44,6 +44,7 @@ GRANT SELECT,INSERT ON public.jenios_platform_payers_g47 TO service_role;
 GRANT SELECT,INSERT,UPDATE ON public.jenios_platform_invoices_g47 TO service_role;
 GRANT SELECT ON public.jenios_pay_products TO service_role;
 GRANT SELECT,INSERT,UPDATE ON public.jenios_pay_subscriptions TO service_role;
+GRANT SELECT,INSERT,UPDATE ON public.jenios_pay_entitlements TO service_role;
 
 INSERT INTO public.jenios_pay_products(code,name,category,price_cents,currency,billing_type,active) VALUES
  ('platform-nacional','Nacional — B3','platform',9990,'BRL','monthly',true),
@@ -182,6 +183,8 @@ BEGIN
  last_day:=extract(day FROM month_start+interval '1 month'-interval '1 day');
  end_at:=(month_start::date+(least(extract(day FROM local_paid)::integer,last_day)-1)+local_paid::time) AT TIME ZONE 'America/Sao_Paulo';
  UPDATE public.jenios_platform_invoices_g47 SET status='active',receipt_id=r.id,paid_at=p_paid_at,period_start=p_paid_at,period_end=end_at WHERE id=i.id;
+ INSERT INTO public.jenios_pay_entitlements(user_id,product_id,order_id,status,granted_at,expires_at)
+ VALUES(i.user_id,i.product_id,o.id,'active',p_paid_at,end_at);
  UPDATE public.jenios_pay_subscriptions SET product_id=i.product_id,latest_order_id=o.id,status='active',current_period_start=p_paid_at,
  current_period_end=end_at,cancel_at_period_end=false,updated_at=now() WHERE id=s.id;
  RETURN jsonb_build_object('ok',true,'code','ACTIVE','periodEnd',end_at);
@@ -192,9 +195,13 @@ CREATE FUNCTION public.jenios_platform_revoke_g47() RETURNS trigger
 LANGUAGE plpgsql SECURITY INVOKER SET search_path='' AS $$
 BEGIN
  IF (TG_TABLE_NAME='jenios_pay_orders' AND NEW.status IN ('refunded','cancelled','expired')) THEN
+  UPDATE public.jenios_pay_entitlements SET status='revoked'
+  WHERE order_id=NEW.id AND EXISTS(SELECT 1 FROM public.jenios_platform_invoices_g47 WHERE order_id=NEW.id);
   UPDATE public.jenios_pay_subscriptions SET status='cancelled',updated_at=now()
   WHERE latest_order_id=NEW.id AND EXISTS(SELECT 1 FROM public.jenios_platform_invoices_g47 WHERE order_id=NEW.id);
  ELSIF TG_TABLE_NAME='jenios_pay_payments' AND OLD.status='confirmed' AND NEW.status<>'confirmed' THEN
+  UPDATE public.jenios_pay_entitlements SET status='revoked'
+  WHERE order_id=NEW.order_id AND EXISTS(SELECT 1 FROM public.jenios_platform_invoices_g47 WHERE receipt_id=NEW.id);
   UPDATE public.jenios_pay_subscriptions SET status='cancelled',updated_at=now()
   WHERE latest_order_id=NEW.order_id AND EXISTS(SELECT 1 FROM public.jenios_platform_invoices_g47 WHERE receipt_id=NEW.id);
  END IF;

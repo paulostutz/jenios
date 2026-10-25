@@ -3,7 +3,7 @@ name: JENIOS G48 one-time bootstrap
 on:
   push:
     branches: [fix/jenios-g48-inter-vault-20261025]
-    paths: [.g48-bootstrap/READY]
+    paths: [.github/workflows/jenios-g48-bootstrap.yml]
   workflow_dispatch:
 
 permissions:
@@ -22,26 +22,51 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate certified patch payload
+      - name: Validate certified multipart payload
         shell: bash
         run: |
           set -euo pipefail
           git merge-base --is-ancestor ad0a86eee09aa8fb63235f736650819df64b07e7 HEAD
-          test -f .g48-bootstrap/READY
-          test "$(cat .g48-bootstrap/READY)" = "ceb5fd6a4fe417bdf473573dc8685a88602cc9d5204d927bd01f70702d693234"
-          test "$(find .g48-bootstrap -maxdepth 1 -type f -name 'patch[0-9][0-9]' | wc -l | tr -d ' ')" = "9"
-          cat .g48-bootstrap/patch?? | base64 --decode > /tmp/jenios-g48.patch.xz
-          test "$(sha256sum /tmp/jenios-g48.patch.xz | cut -d' ' -f1)" = "ceb5fd6a4fe417bdf473573dc8685a88602cc9d5204d927bd01f70702d693234"
-          xz --test /tmp/jenios-g48.patch.xz
-          xz --decompress --stdout /tmp/jenios-g48.patch.xz > /tmp/jenios-g48.patch
-          test "$(sha256sum /tmp/jenios-g48.patch | cut -d' ' -f1)" = "e4bca0886cf5bc5df6cb75987610357ca8a63d31377f5dfb8d3029bf411bcb52"
-          git apply --check /tmp/jenios-g48.patch
+          source_ref=origin/fix/jenios-g48-inter-vault-final-20261025
+          expected=(
+            6a95d16a503056e82d69d682b53f16298fa4895d
+            84f41748072e560bf8d929b0c4b682013a8ab6e3
+            33378a7a5154b9603a506a1616eaff29d78f8711
+            2ad88c84ea46a50d6e40b9b20ba3d77308d612cd
+            812a4a9682e839d742a24e614d915349f5f0f2cb
+            72ec3ad1c820909f04cc6aa3761f51133e999540
+            dd7a6560c9d1361df6bface18abacbca7878a4f7
+          )
+          : > /tmp/jenios-g48-payload.b64
+          for index in 0 1 2 3 4 5 6; do
+            part=$(printf '%02d' "$index")
+            test "$(git rev-parse "$source_ref:.g48-bootstrap/chunk$part")" = "${expected[$index]}"
+            git show "$source_ref:.g48-bootstrap/chunk$part" >> /tmp/jenios-g48-payload.b64
+          done
+          base64 --decode /tmp/jenios-g48-payload.b64 > /tmp/jenios-g48-payload.tar.xz
+          xz --test /tmp/jenios-g48-payload.tar.xz
+          tar -tJf /tmp/jenios-g48-payload.tar.xz > /tmp/jenios-g48-files.txt
+          python - <<'PY'
+          from pathlib import PurePosixPath
+          paths=open('/tmp/jenios-g48-files.txt',encoding='utf-8').read().splitlines()
+          assert paths, 'payload vazio'
+          for raw in paths:
+              p=PurePosixPath(raw)
+              assert not p.is_absolute(), raw
+              assert '..' not in p.parts, raw
+              assert '.git' not in p.parts, raw
+          print(f'payload_paths_safe={len(paths)}')
+          PY
+          if tar -tvJf /tmp/jenios-g48-payload.tar.xz | awk '$1 ~ /^[lh]/ {found=1} END {exit found?0:1}'; then
+            echo 'Payload contém link e foi recusado' >&2
+            exit 1
+          fi
 
       - name: Install exact reviewed G48 tree
         shell: bash
         run: |
           set -euo pipefail
-          git apply --index /tmp/jenios-g48.patch
+          tar -xJf /tmp/jenios-g48-payload.tar.xz -C . --no-same-owner --no-same-permissions
           rm -rf .g48-bootstrap
           rm -f .github/workflows/jenios-g48-bootstrap.yml
           git add -A

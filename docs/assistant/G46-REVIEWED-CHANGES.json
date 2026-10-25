@@ -2,7 +2,7 @@
   "baseCommit": "cbd528d66ae82b19ac3ddf0b0584babb505eede1",
   "reviewedBlobs": {
     ".github/workflows/jenios-genios-addon-g46.yml": "cebac4c3bd7c21228eb23e8e5c76a3e768ed9180",
-    "app/genios-pro/ProCredits.js": "c079d32e05322466bc1eca7716df802a0683bb2f",
+    "app/genios-pro/ProCredits.js": "78026ceefe6ebb59f904707ae6a32de29f745427",
     "app/genios-pro/credits-client.mjs": "74c4d7ff4435231e85682badb92322a2fc0706a4",
     "docs/assistant/G46-CHECKPOINT.md": "47e1e905a161ecf04c0d71c6c05a71fdc96f3332",
     "docs/assistant/G46-INTEGRATION-BASELINE.json": "ee21c49058e4d67dcb045bbe9bd5358aaefc7d8c",

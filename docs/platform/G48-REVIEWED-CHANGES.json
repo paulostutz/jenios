@@ -1,0 +1,31 @@
+{
+  "baseCommit": "dec6ae5965b443ed0b8baabf05f750e33b403067",
+  "reviewedBlobs": {
+    ".github/workflows/jenios-inter-vault-g48.yml": "482d651d38500316027fc3ef12a8f9a2dcfe55f9",
+    "app/admin/cobrancas/page.js": "45c69c3fba052e47fe685081566c394078765d65",
+    "app/api/admin/inter/setup/route.js": "1d5b59c81399439a795f45bc727539209661a797",
+    "app/components/InterAdminPanel.js": "17c519a10ba0d173d3e4a48c3df5040a7a8ac361",
+    "app/components/InterSetupForm.js": "fd5c37ee0a374d9f9ad45eed6d6e291b445f69de",
+    "docs/platform/G48-INTEGRATION-BASELINE.json": "d98099421ca03db6f6f101c37271c23050dc4631",
+    "docs/platform/G48-INTER-VAULT-CHECKPOINT.md": "d799ad80e2449d0951a820efd52e114ee059ff05",
+    "lib/assistant/pro-topups.mjs": "4a64f1937161dbdec2d5aa10a4492e1687266adc",
+    "lib/assistant/university-subscription.mjs": "bf806c88374a201415cddcad477743b3219dea0f",
+    "lib/pay/gateway.mjs": "3ecc0153641d26653f6961a80f5cb7550dbc4822",
+    "lib/pay/inter-material.mjs": "436cc0116ab13727bd89d36cd2414f085a44632b",
+    "lib/pay/inter-pix.mjs": "972e844bd114da995fe0694670aad0965e68dda2",
+    "lib/pay/inter-vault.mjs": "8d3c4756dd105ec69b7e67cf94d4f5359863aad3",
+    "lib/pay/pix-status.mjs": "5e349b067aaf95c099c5126f06321c152b2f73e6",
+    "lib/platform/monthly-billing.mjs": "18fb19799830c9297d86560bc7e22b7fc9d68f6a",
+    "scripts/check-inter-vault-g48.mjs": "4f1634f1bb22dbf5aaeaf5c50b1f4df701f1f3aa",
+    "scripts/test-inter-vault-g48-postgres.mjs": "949063166be0e65deeb385df41b5533b06b58a88",
+    "supabase/migrations/20261025013000_jenios_g48_inter_vault_setup.sql": "8ff1086741429699317364a83f1730e16073d5b4",
+    "tests/interPix.test.mjs": "d959c2654ee1f95bb390f5bc5e67742a484de935",
+    "tests/jeniosGeniosQuotaG45.test.mjs": "e1e033574b2617f6335c7bbf8888f244d02a893d",
+    "tests/jeniosInterSetupG48.test.mjs": "edff2ca614dfdf12b6851a927ce1cd0c17d6a3c8",
+    "tests/jeniosProTopupsB146.test.mjs": "4915e0abf2dcbe0454de3fe9d914d1083987b429",
+    "tests/jeniosUniversityMonthlyB147.test.mjs": "71387498e809063a818fee5f18eb714bc6d0822a",
+    "tests/paymentActivationR44.test.mjs": "f47358a4349d82cc4938d4789ffbd63c0c8bb9f5",
+    "tests/platformMonthlyG47.test.mjs": "a31a2d0079a2146f8fbbc29e966d633a32b51a4f",
+    "tests/sql/jenios_inter_setup_g48_regression.sql": "087ec6d6c6a17eef25c59a0adccbbf0c9db79a1a"
+  }
+}

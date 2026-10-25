@@ -1,6 +1,6 @@
 # G46 additional credits and integrated release
 
-Prepared locally after Paulo requested this chat to finish the integration. Base cbd528d preserves G45, R44, PR6 and the University payment guard. The other chat did not retain a recoverable G46 patch; this implementation is new and has its own evidence. Do not reuse its unverified test count.
+Prepared locally after Paulo requested this chat to finish the integration. Base e3411c4 preserves the already published G45, R44, PR6, University payment guard and its exact hosted release gate. G45 was confirmed installed in production as migration 20261024235145; do not apply it again. Only G46 remains to install. The other chat did not retain a recoverable G46 patch; this implementation is new and has its own evidence. Do not reuse its unverified test count.
 
 Approved commercial table: provider capacity equivalent to BRL 5/10/20/50/100, sold for BRL 15/30/60/150/300. Official BCB PTAX converts capacity to integer nanoUSD; round down provider capacity before representing it as twice that amount in the historical ledger. The consumption multiplier remains 2x; the sale markup is 3x. No fixed number of tokens is promised.
 

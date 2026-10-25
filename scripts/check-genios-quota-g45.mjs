@@ -1,4 +1,4 @@
-/** G45 integrated certification: preserve PR5, PR6 payment gates and the later University guard. */
+/** G45 integrated certification: preserve PR5, PR6, University and the exact hosted release gate. */
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
@@ -20,8 +20,9 @@ export function verifyGeniosQuotaG45(){
   assert.equal(review.g45SourceCommit,'a82dca08e7847eabe3fb31f79a39de93c4c80a00');
   assert.equal(review.paymentGateCommit,'42fcda845fcba17bbe27175749eae8251f54925c');
   assert.equal(review.universityGuardCommit,'bc0433cd4348490faedb95a59c37e7e750927b42');
+  assert.equal(review.hostedReleaseGateBaseCommit,'cbd528d66ae82b19ac3ddf0b0584babb505eede1');
   assert.equal(Object.keys(base.blobs).length,1019);
-  assert.equal(Object.keys(review.reviewedBlobs).length,46);
+  assert.equal(Object.keys(review.reviewedBlobs).length,48);
   assert.deepEqual(review.approvedProviderBudgetNanoUsd,{
     'platform-global-crypto':2000000000,
     'platform-internacional-pro':4000000000
@@ -46,14 +47,21 @@ export function verifyGeniosQuotaG45(){
     'lib/assistant/university-subscription.mjs',
     'tests/jeniosUniversityMonthlyB147.test.mjs'
   ]);
+  const allowedHostedReleaseGate=new Set([
+    'lib/release/environment-scope.mjs',
+    'tests/jeniosGeniosReleaseGateG45.test.mjs'
+  ]);
 
   for(const path of Object.keys(review.reviewedBlobs)){
-    assert.ok(allowedG45.test(path)||allowedPr6.has(path)||allowedUniversity.has(path),'Unapproved G45/PR6/University scope: '+path);
+    assert.ok(
+      allowedG45.test(path)||allowedPr6.has(path)||allowedUniversity.has(path)||allowedHostedReleaseGate.has(path),
+      'Unapproved G45/PR6/University/hosted-release scope: '+path
+    );
   }
 
   const gitBlob=body=>createHash('sha1').update(Buffer.from('blob '+body.byteLength+'\0')).update(body).digest('hex');
   for(const [path,expected] of Object.entries({...base.blobs,...review.reviewedBlobs})){
-    assert.equal(gitBlob(readFileSync(path)),expected,'File changed outside exact reviewed G45/PR6/University scope: '+path);
+    assert.equal(gitBlob(readFileSync(path)),expected,'File changed outside exact reviewed G45 integration scope: '+path);
   }
 
   const expectedFiles=new Set([
@@ -67,7 +75,7 @@ export function verifyGeniosQuotaG45(){
   console.log(
     'G45_INTEGRATED_BASELINE_PASS='+Object.keys(base.blobs).length+
     ' PR5 files; '+Object.keys(review.reviewedBlobs).length+
-    ' exact G45+PR6+University changes; payment and generation gates preserved.'
+    ' exact G45+PR6+University+hosted-release changes; payment and generation gates preserved.'
   );
 }
 

@@ -4,6 +4,7 @@
   "g45SourceCommit": "a82dca08e7847eabe3fb31f79a39de93c4c80a00",
   "paymentGateCommit": "42fcda845fcba17bbe27175749eae8251f54925c",
   "universityGuardCommit": "bc0433cd4348490faedb95a59c37e7e750927b42",
+  "hostedReleaseGateBaseCommit": "cbd528d66ae82b19ac3ddf0b0584babb505eede1",
   "approvedProviderBudgetNanoUsd": {
     "platform-global-crypto": 2000000000,
     "platform-internacional-pro": 4000000000
@@ -19,7 +20,7 @@
     "app/genios-pro/page.js": "0230970024daed332d4fa52dd55498674d404336",
     "app/genios-pro/pro-client.mjs": "ff7a2523fa27e5c83c2bca32955be9a4180aa003",
     "app/genios-pro/pro.module.css": "0e1f3ba420e99641ff6ee24691dd7d288c05eb88",
-    "docs/assistant/G45-CHECKPOINT.md": "0277d9d7aae858fe8e1f9f0eb502a560d921cdb7",
+    "docs/assistant/G45-CHECKPOINT.md": "1ce8914fe17d5e6747ff6333241842f566269b19",
     "docs/assistant/G45-INTEGRATION-BASELINE.json": "578bd50d25d296f6cb14ce0c1a3b0ffa659068ea",
     "docs/platform/R44-PAYMENT-ACTIVATION-BASELINE.json": "1465881c6a4a0513174d8a51b8470acc31168fa6",
     "docs/platform/R44-PAYMENT-ACTIVATION.md": "0e2df2593da04e4a5b15f243aa7715cbeb60d000",
@@ -37,7 +38,7 @@
     "scripts/check-client-experience-r44.mjs": "919f7ced10c19021a9063863dc08ed3f0dd14321",
     "scripts/check-email-release-r42.mjs": "2f7279de8c5fd10ba43b92986bc93eee88f01f80",
     "scripts/check-genios-activation-g44.mjs": "2f7279de8c5fd10ba43b92986bc93eee88f01f80",
-    "scripts/check-genios-quota-g45.mjs": "2c7042f312c03ac24f98fdce2e091ea4e0bc5d7c",
+    "scripts/check-genios-quota-g45.mjs": "17ea314f90f7825ee960f0a34dfd852f7ab0e872",
     "scripts/test-genios-quota-g45-postgres.mjs": "aaf99d583d0d81480b98fb215ff214e739865ef6",
     "supabase/migrations/20261024222440_jenios_pro_allowances_g45.sql": "8b1c525e3d1a2f08c0e8e6e869afb671886d7812",
     "tests/interPix.test.mjs": "beb5e4c3a09627ddd623885d351dc9091966d7cc",
@@ -54,6 +55,8 @@
     "tests/payAccess.test.mjs": "dd703d7775d65549be2599c6eed7f8ae7f89846d",
     "tests/payCatalog.test.mjs": "334149a919494157242db57a265aaec76e244180",
     "tests/paymentActivationR44.test.mjs": "8b07c4e71f0e4786a3f820002f7d839b956991e1",
-    "tests/sql/jenios-pro-allowances-g45.sql": "4fd4f0001eb2eafc1117fe0b13861ef8cd6e763a"
+    "tests/sql/jenios-pro-allowances-g45.sql": "4fd4f0001eb2eafc1117fe0b13861ef8cd6e763a",
+    "lib/release/environment-scope.mjs": "379335e949d1ac4f605448c13b3b228bff6e7571",
+    "tests/jeniosGeniosReleaseGateG45.test.mjs": "e9956c1a18812a2d0f77ac574236577423304854"
   }
 }

@@ -58,11 +58,11 @@ run("git", "restore", "--source=HEAD", "--staged", "--worktree", "--", ".g48-boo
 (REPO / FINAL_WORKFLOW).unlink(missing_ok=True)
 run("git", "add", "-A", capture=False)
 changed = run("git", "diff", "--cached", "--name-only").splitlines()
-if len(changed) != 25 or any(x.startswith(".github/workflows/") or x.startswith(".g48-bootstrap/") for x in changed):
+if len(changed) != 26 or any(x.startswith(".github/workflows/") or x.startswith(".g48-bootstrap/") for x in changed):
     raise RuntimeError(f"unexpected staged changes: {changed}")
 run("git", "diff", "--cached", "--check", capture=False)
 run("git", "config", "user.name", "jenios-release-bot", capture=False)
 run("git", "config", "user.email", "jenios-release-bot@users.noreply.github.com", capture=False)
-run("git", "commit", "-m", "fix(jenios): stage 25 G48 certified non-workflow files", capture=False)
+run("git", "commit", "-m", "fix(jenios): stage 26 G48 certified non-workflow files", capture=False)
 run("git", "push", "origin", "HEAD:fix/jenios-g48-inter-vault-20261025", capture=False)
-print("G48_CERTIFIED_25_BLOBS_ON_REMOTE")
+print("G48_CERTIFIED_26_BLOBS_ON_REMOTE")

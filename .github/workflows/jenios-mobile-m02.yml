@@ -1,0 +1,73 @@
+name: JENIOS M02 Android and iOS test builds
+on:
+  push:
+    branches: [feat/jenios-mobile-m02-20261024]
+    paths: ['native-app/**', '.github/workflows/jenios-mobile-m02.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: jenios-mobile-m02-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run: {working-directory: native-app}
+    env: {CI: '1', EXPO_NO_TELEMETRY: '1'}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '24'}
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with: {distribution: temurin, java-version: '21'}
+      - run: npm ci --no-fund
+      - run: npm run typecheck && npm run lint && npm test
+      - run: npx expo prebuild --no-install --platform android
+      - name: Build bundled release without signing credentials
+        run: |
+          cd android
+          ./gradlew --no-daemon assembleRelease bundleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a,x86_64
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-M02-Android-unsigned
+          retention-days: 30
+          if-no-files-found: error
+          path: |
+            native-app/android/app/build/outputs/apk/release/*unsigned.apk
+            native-app/android/app/build/outputs/bundle/release/*.aab
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 60
+    defaults:
+      run: {working-directory: native-app}
+    env:
+      CI: '1'
+      EXPO_NO_TELEMETRY: '1'
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '24'}
+      - run: npm ci --no-fund
+      - run: npm run typecheck && npm run lint && npm test
+      - run: npx expo prebuild --platform ios
+      - name: Archive without signing credentials
+        run: |
+          set -o pipefail
+          xcodebuild -workspace ios/JENIOS.xcworkspace -scheme JENIOS -configuration Release -destination 'generic/platform=iOS' -archivePath build/JENIOS.xcarchive CODE_SIGNING_ALLOWED=NO archive > build-ios.log 2>&1 || { tail -120 build-ios.log; exit 1; }
+          ditto -c -k --sequesterRsrc --keepParent build/JENIOS.xcarchive build/JENIOS-M02-iOS-unsigned.zip
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS-M02-iOS-unsigned
+          retention-days: 30
+          if-no-files-found: error
+          path: native-app/build/JENIOS-M02-iOS-unsigned.zip
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: JENIOS-M02-iOS-build-log
+          retention-days: 7
+          path: native-app/build-ios.log

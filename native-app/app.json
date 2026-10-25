@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "JENIOS",
+    "slug": "jenios-mobile",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/jenios-j.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.jenios.app",
+      "buildNumber": "2",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "A JENIOS usa a câmera quando você escolhe fotografar ou gravar para uma publicação.",
+        "NSMicrophoneUsageDescription": "A JENIOS usa o microfone quando você escolhe gravar áudio ou vídeo.",
+        "NSPhotoLibraryUsageDescription": "A JENIOS acessa as fotos que você seleciona para publicar ou compartilhar."
+      },
+      "appleTeamId": "JTJS54L3SK"
+    },
+    "android": {
+      "package": "br.com.jenios.app",
+      "versionCode": 2,
+      "allowBackup": false,
+      "usesCleartextTraffic": false,
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO"
+      ],
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/jenios-icon.png"
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-sharing",
+      "./plugins/withUnsignedRelease.cjs"
+    ],
+    "extra": {
+      "checkpoint": "M02",
+      "websiteBaseline": "dec6ae5965b443ed0b8baabf05f750e33b403067",
+      "distribution": "internal-development",
+      "publisher": "Same Apple Developer and Google Play accounts as CHEFE; store registration pending"
+    }
+  }
+}

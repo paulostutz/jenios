@@ -1,7 +1,7 @@
 name: JENIOS G47 monthly Pix verification
 on:
   push:
-    branches: [fix/jenios-platform-pix-monthly-20261024, release/jenios-genios-g44-20261024]
+    branches: [feat/jenios-mobile-m02-20261024, fix/jenios-platform-pix-monthly-20261024, release/jenios-genios-g44-20261024]
   workflow_dispatch:
 permissions:
   contents: read
@@ -101,7 +101,7 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Preserve the integrated production baseline outside reviewed G45 changes
-        run: node scripts/check-platform-monthly-g47.mjs
+        run: node scripts/check-mobile-m02.mjs
       - name: Install locked dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify inherited tests, release safeguards and production build

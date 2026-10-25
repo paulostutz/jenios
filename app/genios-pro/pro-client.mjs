@@ -3,10 +3,10 @@ import {proQuotaSummary} from '../../lib/assistant/pro-quota-policy.mjs';
 export const PRO_UI_TASKS=Object.freeze([
  {id:'advanced_question',label:'Pergunta avançada',description:'Aprofunde uma dúvida e compare conceitos e cenários.',acceptsImage:false,requiresCurrentData:false},
  {id:'university_tutor',label:'Tutor da Universidade',description:'Peça uma explicação mais detalhada sobre o assunto que está estudando.',acceptsImage:false,requiresCurrentData:false},
- {id:'chart_screenshot',label:'Gráfico por imagem',description:'Interprete uma captura do gráfico, seus padrões e os limites da leitura.',acceptsImage:true,requiresCurrentData:false},
- {id:'market_moment',label:'Momento de um ativo',description:'Estude o ativo com os candles recentes e a fonte verificada pelo serviço.',acceptsImage:false,requiresCurrentData:true},
- {id:'opportunities',label:'Cenários sob observação',description:'Compare cenários e pontos de atenção do ativo selecionado.',acceptsImage:false,requiresCurrentData:true},
- {id:'manual_support',label:'Apoio à operação manual',description:'Organize hipóteses e riscos para a sua própria decisão.',acceptsImage:true,requiresCurrentData:true}
+ {id:'chart_screenshot',label:'Gráfico por imagem',description:'Envie uma foto ou print para identificar padrões, regiões de preço e limites da leitura.',acceptsImage:true,requiresImage:true,requiresCurrentData:false},
+ {id:'market_moment',label:'Cenário do gráfico enviado',description:'Estude o cenário registrado na imagem, com hipóteses de continuidade e reversão.',acceptsImage:true,requiresImage:true,requiresCurrentData:false},
+ {id:'opportunities',label:'Cenários na imagem',description:'Compare cenários condicionais, seus sinais de confirmação e invalidação no gráfico enviado.',acceptsImage:true,requiresImage:true,requiresCurrentData:false},
+ {id:'manual_support',label:'Apoio à leitura do gráfico',description:'Organize observações e riscos da imagem para apoiar sua própria decisão. Nenhuma ordem é enviada.',acceptsImage:true,requiresImage:true,requiresCurrentData:false}
 ]);
 export const PRO_PLAN_LABELS=Object.freeze({
  'platform-nacional':'Nacional · R$ 99,90/mês',
@@ -111,7 +111,7 @@ export function canPrepareQuote({data,taskId,source,prompt,image,hasPending=fals
  if(locked||hasPending||!task?.available||typeof prompt!=='string'||!prompt.trim()||prompt.length>2500)return false;
  const balance=source==='included'?verifiedAllowance(data?.allowance):source==='prepaid'?verifiedWallet(data?.wallet):null;
  if(!balance||balance.available<=0)return false;
- if(taskId==='chart_screenshot'&&!image)return false;
+ if(task.requiresImage&&!image)return false;
  if(image&&!task.acceptsImage)return false;
  return true;
 }

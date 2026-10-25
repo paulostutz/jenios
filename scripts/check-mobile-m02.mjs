@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {readFileSync,existsSync} from 'node:fs';
+import {verifyProImageG49} from './check-pro-image-g49.mjs';
 export function verifyMobileM02(){
+ if(existsSync('docs/assistant/G49-REVIEWED-CHANGES.json')){verifyProImageG49();return;}
  const raw=readFileSync('docs/mobile/M02-INTEGRATION-BASELINE.json');
  assert.equal(createHash('sha256').update(raw).digest('hex'),"809c4629a0a78cefdd59d26ca9dae52e5c590fe44e01356b6ff4291524169787");
  const base=JSON.parse(raw),review=JSON.parse(readFileSync('docs/mobile/M02-REVIEWED-CHANGES.json','utf8'));

@@ -1,0 +1,24 @@
+{
+  "baseCommit": "319ce764682e388772989657eb33f4ae102ee304",
+  "reviewedBlobs": {
+    ".github/workflows/jenios-pro-image-g49.yml": "91de4ee9d36c13455b81d5b41c0160ab4b74a5a4",
+    "app/genios-pro/page.js": "461fd10d027fb0fc49474bf2638490e34b9374c7",
+    "app/genios-pro/pro-client.mjs": "974efb4ebab5f2ecdc15c2985b4d602759e2e039",
+    "docs/assistant/G49-CHECKPOINT.md": "2fc961f2aada39ab6589a8a5aaeb97b5225ecbd2",
+    "docs/assistant/G49-INTEGRATION-BASELINE.json": "82c4084325555794aa52bd9880b88c9f573fd144",
+    "lib/assistant/pro-input.mjs": "83336c26206d2137e01ec687b7db8bf05ad46396",
+    "lib/assistant/pro-pricing.mjs": "73e0e99619dde3028e793f6684c96713ea45c86d",
+    "lib/assistant/pro-provider.mjs": "d11547900c032fc4ff152358d5733768783c6ac0",
+    "lib/assistant/pro-service.mjs": "0f9e5a339fe929846ee8cc7d5816804661d88a2c",
+    "scripts/check-inter-vault-g48.mjs": "25b021a9ad7a6ec50fa19ba6864aeac01d3f6cb9",
+    "scripts/check-mobile-m02.mjs": "1c95219e6d8bba7ee5a3aa9677b66ff3f1028db3",
+    "scripts/check-pro-image-g49.mjs": "08dc427fb721df4b36ecffbca052a7a90d287fe8",
+    "scripts/pro-image-g49-harness.mjs": "40a113ac8bb1b7d03453066a8a568beff0d36787",
+    "scripts/verify-pro-image-g49.mjs": "1308371efd39bbf2ec3620995011fdabf08e2fdf",
+    "tests/fixtures/g49/chart.png": "1a081fefdb917829975773bd0996797e3cc47dab",
+    "tests/fixtures/g49/not-a-chart.png": "258b98441025697e3f9d1fdb9dee51241b9b4525",
+    "tests/jeniosProImageG49.test.mjs": "cde8e1b48cbd53df201d8f97a9c1c92e6c3c3dc9",
+    "tests/jeniosProLifecycleB144.test.mjs": "8a22daf4e120c4e812eda732fda480ba4c179f73",
+    "tests/jeniosProPricingB135.test.mjs": "573b08e3df2b3f6176b368dab6a7917156ebc3e8"
+  }
+}

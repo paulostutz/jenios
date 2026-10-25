@@ -7,7 +7,10 @@ import {readFileSync,existsSync} from 'node:fs';
 const read=path=>readFileSync(path,'utf8');
 const blob=body=>createHash('sha1').update(Buffer.from(`blob ${body.byteLength}\0`)).update(body).digest('hex');
 
+import {verifyProImageG49} from './check-pro-image-g49.mjs';
 export function verifyInterVaultG48(){
+ if(existsSync('docs/assistant/G49-REVIEWED-CHANGES.json'))verifyProImageG49();
+ else{
  const baselineRaw=readFileSync('docs/platform/G48-INTEGRATION-BASELINE.json');
  assert.equal(createHash('sha256').update(baselineRaw).digest('hex'),'c24d88a6f829585687d06bff5629496c81a468148ab0633c6e6a4decb575de5b');
  const baseline=JSON.parse(baselineRaw),review=JSON.parse(read('docs/platform/G48-REVIEWED-CHANGES.json'));
@@ -23,6 +26,7 @@ export function verifyInterVaultG48(){
  const tracked=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(tracked.sort(),[...new Set([...Object.keys(baseline.blobs),...allowed,'docs/platform/G48-REVIEWED-CHANGES.json',...(mobileReview?[...Object.keys(mobileReview.reviewedBlobs),'docs/mobile/M02-REVIEWED-CHANGES.json']:[])])].sort());
 
+ }
  const migration=read('supabase/migrations/20261025013000_jenios_g48_inter_vault_setup.sql');
  const vault=read('lib/pay/inter-vault.mjs'),inter=read('lib/pay/inter-pix.mjs');
  const gateway=read('lib/pay/gateway.mjs'),route=read('app/api/admin/inter/setup/route.js');
@@ -46,6 +50,6 @@ export function verifyInterVaultG48(){
   assert.doesNotMatch(source,/-----BEGIN (?:RSA |EC )?PRIVATE KEY-----[A-Za-z0-9+/=]{16}/);
   assert.doesNotMatch(source,/clientSecret\s*:\s*['"][^'"]{16,}['"]/);
  }
- console.log(`G48_INTER_VAULT_SOURCE_PASS: ${Object.keys(baseline.blobs).length} inherited files, ${allowed.size} reviewed changes.`);
+ console.log('G48_INTER_VAULT_SOURCE_PASS: exact source and financial safeguards verified.');
 }
 if(process.argv[1]?.endsWith('/check-inter-vault-g48.mjs'))verifyInterVaultG48();

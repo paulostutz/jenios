@@ -82,6 +82,9 @@ jobs:
           with open(os.environ['GITHUB_ENV'],'a') as f:f.write('JENIOS_IPA_PATH='+str(p)+'\n')
           (root/'SHA256SUMS.txt').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n')
           PY
+      - name: Check exported native signature
+        run: |
+          set -euo pipefail
           ditto -x -k "$JENIOS_IPA_PATH" "$RUNNER_TEMP/jenios/verified"
           codesign --verify --deep --strict "$RUNNER_TEMP/jenios/verified/Payload/JENIOS.app"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

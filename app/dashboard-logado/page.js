@@ -150,9 +150,9 @@ export default function DashboardLogado() {
         </>}
         {tab==='pagamentos' && <section className={styles.panel}>
           <h2>Pagamentos e histórico</h2>
-          <p>O vínculo entre esta conta da Platform e a conta pagadora da JENIOS PAY ainda não foi homologado. Nenhum pedido da Social será apresentado como assinatura da Platform.</p>
+          <p>Consulte seu plano e confirme o vínculo entre a conta da Platform e sua conta pagadora. Cada mensalidade exige um novo pagamento Pix autorizado por você.</p>
+          <Link className={styles.button} href="/checkout">Minha assinatura e renovação por Pix →</Link>
           {!socialSession && <PlatformBillingStatus />}
-          {socialSession && <p role="status">Sem vínculo de assinatura da Platform confirmado. O acesso com a Social não concede planos nem cobranças da Platform.</p>}
         </section>}
         {tab==='integracoes' && <section className={styles.panel}>
           <h2>Conexões com corretoras</h2>

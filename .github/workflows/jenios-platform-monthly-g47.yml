@@ -1,0 +1,130 @@
+name: JENIOS G47 monthly Pix verification
+on:
+  push:
+    branches: [fix/jenios-platform-pix-monthly-20261024, release/jenios-genios-g44-20261024]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-postgres:
+    name: PostgreSQL 17 - ${{ matrix.suite }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: g43-memory
+            database: jenios_genios_g43_ci
+            database_env: JENIOS_G43_TEST_DATABASE_URL
+            runner: scripts/test-genios-conversations-postgres.mjs
+          - suite: g44-repair
+            database: jenios_genios_g44_repair_ci
+            database_env: JENIOS_G44_REPAIR_TEST_DATABASE_URL
+            runner: scripts/test-genios-repair-g44-postgres.mjs
+          - suite: g44-budget
+            database: jenios_genios_g44_budget_ci
+            database_env: JENIOS_G44_BUDGET_TEST_DATABASE_URL
+            runner: scripts/test-genios-budget-g44-postgres.mjs
+          - suite: g45-quota
+            database: jenios_genios_g45_quota_ci
+            database_env: JENIOS_G45_QUOTA_TEST_DATABASE_URL
+            runner: scripts/test-genios-quota-g45-postgres.mjs
+          - suite: g46-addon
+            database: jenios_genios_g46_addon_ci
+            database_env: JENIOS_G47_ADDON_TEST_DATABASE_URL
+            runner: scripts/test-genios-addon-g46-postgres.mjs
+          - suite: g47-monthly
+            database: jenios_platform_g47_monthly_ci
+            database_env: JENIOS_G47_MONTHLY_TEST_DATABASE_URL
+            runner: scripts/test-platform-monthly-g47-postgres.mjs
+    env:
+      JENIOS_CI_DATABASE: ${{ matrix.database }}
+      JENIOS_CI_DATABASE_ENV: ${{ matrix.database_env }}
+      JENIOS_CI_DATABASE_URL: postgresql://postgres:disposable_g45_test_password@127.0.0.1:55443/${{ matrix.database }}
+      JENIOS_CI_RUNNER: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Start a fresh disposable PostgreSQL 17 on loopback
+        shell: bash
+        run: |
+          docker run --detach --name jenios-genios-g45-postgres --network host \
+            -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=disposable_g45_test_password \
+            -e POSTGRES_DB="$JENIOS_CI_DATABASE" postgres:17-bookworm \
+            -p 55443 -c listen_addresses=127.0.0.1
+          for attempt in {1..30}; do
+            if docker exec jenios-genios-g45-postgres pg_isready -h 127.0.0.1 -p 55443 -U postgres -d "$JENIOS_CI_DATABASE"; then
+              exit 0
+            fi
+            sleep 1
+          done
+          exit 1
+      - name: Verify the original assertions against an empty isolated database
+        shell: bash
+        run: |
+          set -o pipefail
+          env "$JENIOS_CI_DATABASE_ENV=$JENIOS_CI_DATABASE_URL" node "$JENIOS_CI_RUNNER" 2>&1 | tee /tmp/jenios-genios-g45-postgres.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: JENIOS_GENIOS_G47_POSTGRES_${{ matrix.suite }}_20261024
+          path: /tmp/jenios-genios-g45-postgres.log
+          retention-days: 30
+          if-no-files-found: error
+      - name: Remove disposable PostgreSQL
+        if: always()
+        run: docker rm --force jenios-genios-g45-postgres
+  verify-source-and-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: fixture-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fixture-public-key
+      JENIOS_ASSISTANT_MEMORY_ENABLED: 'false'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Preserve the integrated production baseline outside reviewed G45 changes
+        run: node scripts/check-platform-monthly-g47.mjs
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify inherited tests, release safeguards and production build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee /tmp/jenios-genios-g45-build.log
+      - name: Preserve exact source and activation checkpoint
+        shell: bash
+        run: |
+          mkdir -p .jenios-platform-g47-evidence
+          git archive --format=zip --output=.jenios-platform-g47-evidence/JENIOS_GENIOS_G47_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-platform-g47-evidence/COMMIT.txt
+          (
+            cd .jenios-platform-g47-evidence
+            sha256sum JENIOS_GENIOS_G47_SOURCE.zip > SHA256SUMS.txt
+          )
+          cp /tmp/jenios-genios-g45-build.log .jenios-platform-g47-evidence/
+          cp docs/platform/G47-CHECKPOINT.md docs/platform/G47-INTEGRATION-BASELINE.json docs/platform/G47-REVIEWED-CHANGES.json .jenios-platform-g47-evidence/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_GENIOS_G47_BACKUP_20261024
+          path: .jenios-platform-g47-evidence/
+          retention-days: 30
+          if-no-files-found: error
+          include-hidden-files: true

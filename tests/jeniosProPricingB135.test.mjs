@@ -37,18 +37,20 @@ test('B135 missing usage and unquoted models/tools fail closed',()=>{
 });
 test('B135 free functions remain separate from Pro and no client can request order execution',()=>{
  assert.ok(PRO_TASKS.chart_screenshot.acceptsImage);
- assert.ok(PRO_TASKS.opportunities.requiresCurrentData);
+ assert.ok(PRO_TASKS.opportunities.requiresImage);
  assert.throws(()=>validateProTask({task:'execute_trade',prompt:'Execute uma ordem.'}));
  assert.throws(()=>validateProTask({task:'advanced_question',prompt:'Olá',admin:true}));
  const valid=validateProTask({task:'advanced_question',prompt:'Explique a metodologia da JENIOS'});
  assert.equal(valid.executionEnabled,false);assert.equal(valid.autoTrading,false);
 });
-test('B135 market opportunities require verifiable fresh candles (client claims are not an authorization)',()=>{
- const now=Date.parse('2026-10-20T12:00:00Z');
- assert.throws(()=>validateProTask({task:'opportunities',prompt:'Mostre cenários'}, {now}),{status:422});
- assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura',marketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-20T12:00:00Z'}},{now}),{status:400});
- assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura'},{now,verifiedMarketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-18T12:00:00Z'}}),{status:422});
- assert.equal(validateProTask({task:'market_moment',prompt:'Quero uma leitura'},{now,verifiedMarketData:{verified:true,candles:Array(30).fill(1),sourceAt:'2026-10-20T11:59:00Z'}}).requiresCurrentData,true);
+test('G49 market reading requires the uploaded chart even if a caller claims fresh candles',()=>{
+ const image={mime:'image/png',byteLength:400000,width:1080,height:720,storageId:'11111111-1111-4111-8111-111111111111'};
+ for(const task of ['chart_screenshot','opportunities','market_moment','manual_support']){
+  assert.throws(()=>validateProTask({task,prompt:'Mostre cenários'}),{status:400});
+  assert.throws(()=>validateProTask({task,prompt:'Quero uma leitura'},{verifiedMarketData:{verified:true,candles:Array(30).fill(1),sourceAt:new Date().toISOString()}}),{status:400});
+  assert.equal(validateProTask({task,prompt:'Quero uma leitura',image}).requiresCurrentData,false);
+ }
+ assert.throws(()=>validateProTask({task:'market_moment',prompt:'Quero uma leitura',image,marketData:{verified:true}}),{status:400});
 });
 test('B135 photos are bounded to one private owner-held JPG, PNG or WebP, not an arbitrary URL',()=>{
  const image={mime:'image/png',byteLength:400000,width:1080,height:720,storageId:'11111111-1111-4111-8111-111111111111'};

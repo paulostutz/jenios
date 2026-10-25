@@ -118,7 +118,8 @@ test('B144 unpriced provider tier or billed tool output is held for reconciliati
  assert.equal(r.kind,'unknown');
 });
 test('B144 market adapter refuses stale or missing candles without inventing a series',async()=>{
- const n=normalizeProInput({...input,task:'market_moment',symbol:'BTC-USD',timeframe:'1m'});
+ // Adapter remains guarded for historical integrations; G49 image tasks never request it.
+ const n={requiresCurrentData:true,symbol:'BTC-USD',timeframe:'1m'};
  await assert.rejects(loadProMarket(n,{now,fetcher:async()=>Response.json([])}),{code:'MARKET_UNAVAILABLE'});
  assert.equal(await loadProMarket(normalizeProInput(input),{now,fetcher:()=>{throw Error('not used');}}),null);
 });

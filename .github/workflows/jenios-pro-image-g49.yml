@@ -1,0 +1,36 @@
+name: JENIOS G49 image analysis verification
+on:
+  push:
+    branches: [fix/jenios-pro-scenarios-g49-20261025, release/jenios-genios-g44-20261024]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-source-and-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: fixture-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fixture-public-key
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_PRO_PAYMENTS_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_ASSISTANT_MEMORY_ENABLED: 'false'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - name: Verify exact source, mobile preservation and Inter safeguards
+        run: node scripts/check-pro-image-g49.mjs && node scripts/check-mobile-m02.mjs && node scripts/check-inter-vault-g48.mjs
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Unit, release and application build without external calls
+        run: npm run build

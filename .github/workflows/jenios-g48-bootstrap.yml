@@ -14,7 +14,6 @@ concurrency:
 
 jobs:
   install-certified-tree:
-    if: ${{ hashFiles('.g48-bootstrap/chunk00') != '' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -26,7 +25,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "ad0a86eee09aa8fb63235f736650819df64b07e7"
+          git merge-base --is-ancestor ad0a86eee09aa8fb63235f736650819df64b07e7 HEAD
+          test -f .g48-bootstrap/chunk00
           test "$(git hash-object .g48-bootstrap/chunk00)" = "8439d7dce85cec965412143f6ea29954631713e1"
           rm -rf /tmp/jenios-g48-payload
           mkdir -p /tmp/jenios-g48-payload

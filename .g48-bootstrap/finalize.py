@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import json
 import lzma
 import os
 from pathlib import Path, PurePosixPath
@@ -10,6 +11,7 @@ import tarfile
 
 REPO = Path.cwd()
 BASE_COMMIT = "dec6ae5965b443ed0b8baabf05f750e33b403067"
+BASE_TREE = "1adba07a869ecd798455bd0805e50a9d5500b58d"
 EXPECTED_TREE = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
 SOURCE_REF = "origin/fix/jenios-g48-inter-vault-final-20261025"
 CHUNK_SHAS = [
@@ -21,8 +23,8 @@ CHUNK_SHAS = [
     "72ec3ad1c820909f04cc6aa3761f51133e999540",
     "dd7a6560c9d1361df6bface18abacbca7878a4f7",
 ]
-MANIFEST_ARCHIVE = Path(".g48-bootstrap/manifests.tar.xz")
-EXPECTED_MANIFEST_ARCHIVE_BLOB = "dc9d8d7f111db28423a27d9bc915d955b63a60eb"
+BASELINE_PATH = Path("docs/platform/G48-INTEGRATION-BASELINE.json")
+REVIEWED_PATH = Path("docs/platform/G48-REVIEWED-CHANGES.json")
 EXPECTED_BASELINE_BLOB = "d98099421ca03db6f6f101c37271c23050dc4631"
 EXPECTED_REVIEWED_BLOB = "30559b9ccb308e11bdf2cdf781fa34cc941efde9"
 
@@ -37,6 +39,15 @@ def run(*args: str, env: dict[str, str] | None = None, capture: bool = True) -> 
         stdout=subprocess.PIPE if capture else None,
     )
     return result.stdout.strip() if capture else ""
+
+
+def git_blob(path: str | Path) -> str:
+    return run("git", "hash-object", str(path))
+
+
+def write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def safe_extract(archive: tarfile.TarFile, expected_files: int) -> list[str]:
@@ -68,16 +79,25 @@ for index, expected_sha in enumerate(CHUNK_SHAS):
 functional_tar = Path("/tmp/jenios-g48-functional.tar")
 functional_tar.write_bytes(lzma.decompress(base64.b64decode(bytes(encoded))))
 with tarfile.open(functional_tar, "r:") as archive:
-    safe_extract(archive, 25)
+    payload_paths = safe_extract(archive, 25)
 
-if run("git", "hash-object", str(MANIFEST_ARCHIVE)) != EXPECTED_MANIFEST_ARCHIVE_BLOB:
-    raise RuntimeError("arquivo de manifestos divergente")
-with tarfile.open(MANIFEST_ARCHIVE, "r:xz") as archive:
-    safe_extract(archive, 2)
-
-if run("git", "hash-object", "docs/platform/G48-INTEGRATION-BASELINE.json") != EXPECTED_BASELINE_BLOB:
+base_blobs: dict[str, str] = {}
+for line in run("git", "ls-tree", "-r", "--full-tree", BASE_COMMIT).splitlines():
+    metadata, path = line.split("\t", 1)
+    _mode, kind, sha = metadata.split(" ", 2)
+    if kind == "blob" and path not in payload_paths:
+        base_blobs[path] = sha
+write_json(
+    BASELINE_PATH,
+    {"baseCommit": BASE_COMMIT, "baseTree": BASE_TREE, "blobs": base_blobs},
+)
+if git_blob(BASELINE_PATH) != EXPECTED_BASELINE_BLOB:
     raise RuntimeError("manifesto de baseline divergente")
-if run("git", "hash-object", "docs/platform/G48-REVIEWED-CHANGES.json") != EXPECTED_REVIEWED_BLOB:
+
+reviewed_paths = sorted(payload_paths + [str(BASELINE_PATH)])
+reviewed_blobs = {path: git_blob(path) for path in reviewed_paths}
+write_json(REVIEWED_PATH, {"baseCommit": BASE_COMMIT, "reviewedBlobs": reviewed_blobs})
+if git_blob(REVIEWED_PATH) != EXPECTED_REVIEWED_BLOB:
     raise RuntimeError("manifesto de mudanças divergente")
 
 shutil.rmtree(REPO / ".g48-bootstrap")

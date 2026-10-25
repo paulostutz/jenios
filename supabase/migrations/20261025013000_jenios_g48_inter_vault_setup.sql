@@ -5,8 +5,10 @@
 do $$
 begin
  if to_regnamespace('vault') is null
-  or to_regprocedure('vault.create_secret(text,text,text)') is null
-  or to_regprocedure('vault.update_secret(uuid,text,text,text)') is null then
+  or (to_regprocedure('vault.create_secret(text,text,text)') is null
+      and to_regprocedure('vault.create_secret(text,text,text,uuid)') is null)
+  or (to_regprocedure('vault.update_secret(uuid,text,text,text)') is null
+      and to_regprocedure('vault.update_secret(uuid,text,text,text,uuid)') is null) then
   raise exception 'JENIOS_G48_VAULT_EXTENSION_REQUIRED';
  end if;
 end $$;

@@ -145,7 +145,7 @@ test('G45 an expired subscriber can see payment reconciliation readiness without
  const product={code:'social-ai-pro-credits',active:true,category:'other',currency:'BRL',billing_type:'one_time'};
  let reads=0;
  f.options.db={from:()=>{const q={select:()=>q,eq:()=>q,maybeSingle:async()=>{reads++;return {data:product,error:null};}};return q;}};
- Object.assign(f.options.env,{JENIOS_PRO_PAYMENTS_ENABLED:'true',JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'fixture-id',INTER_CLIENT_SECRET:'fixture-secret',INTER_CERTIFICATE:'fixture-certificate',INTER_PRIVATE_KEY:'fixture-key',INTER_PIX_KEY:'fixture-pix'});
+ Object.assign(f.options.env,{JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_PRO_PAYMENTS_ENABLED:'true',JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'fixture-id',INTER_CLIENT_SECRET:'fixture-secret',INTER_CERTIFICATE:'fixture-certificate',INTER_PRIVATE_KEY:'fixture-key',INTER_PIX_KEY:'fixture-pix'});
  const response=await handlePro(req(null,'access'),{...f.options,action:'access'}),body=await response.json();
  assert.equal(response.status,200);assert.equal(body.proIncluded,false);assert.equal(body.paidGenerationEnabled,false);
  assert.equal(body.creditsOffer.enabled,false);assert.equal(body.creditsOffer.reconciliationEnabled,true);

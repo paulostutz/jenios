@@ -1,10 +1,11 @@
 /** Presentation checks only; the server authorizes every quote, order and credit. */
+import {PRO_ADDON_TERMS,proAddonAmounts,validProAddonCatalog} from '../../lib/assistant/pro-addon-catalog.mjs';
 import {nanoAmount} from './pro-client.mjs';
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const integer=(value,min,max)=>Number.isSafeInteger(value)&&value>=min&&value<=max;
 const knownStatuses=new Set(['pending','awaiting_payment','paid','cancelled','expired','refunded']);
 export function creditOfferReady(offer){
- return offer?.enabled===true&&['USD','BRL'].includes(offer.baseCurrency)&&integer(offer.baseAmountMinor,1,10_000_000)&&
+ return offer?.enabled===true&&(validProAddonCatalog(offer)||offer.termsVersion!==PRO_ADDON_TERMS&&['USD','BRL'].includes(offer.baseCurrency)&&integer(offer.baseAmountMinor,1,10_000_000))&&
   typeof offer.termsVersion==='string'&&offer.termsVersion.length>=3&&offer.termsVersion.length<=100&&offer.settlementCurrency==='BRL'&&offer.quoteRequired===true;
 }
 export function formatBrlCents(value){
@@ -25,7 +26,14 @@ export function validCreditQuote(quote,{offer,now=Date.now(),allowExpired=false}
   !integer(quote.fxBrlMicrosPerUsd,1_000_000,100_000_000)||quote.rateSource!=='BCB:PTAX_USD_VENDA')return false;
  const created=Date.parse(quote.createdAt),expires=Date.parse(quote.expiresAt),rate=Date.parse(quote.rateAt);
  if(!Number.isFinite(created)||!Number.isFinite(expires)||!Number.isFinite(rate)||created>now+5000||rate>created||created-rate>72*3600_000||expires<=created||expires-created>901000||!allowExpired&&expires<=now)return false;
- if(offer&&(!creditOfferReady(offer)||quote.baseCurrency!==offer.baseCurrency||quote.baseAmountMinor!==offer.baseAmountMinor||quote.termsVersion!==offer.termsVersion))return false;
+ if(offer&&(!creditOfferReady(offer)||quote.baseCurrency!==offer.baseCurrency||quote.termsVersion!==offer.termsVersion))return false;
+ if(quote.packCode!=null||quote.termsVersion===PRO_ADDON_TERMS){
+  if(quote.termsVersion!==PRO_ADDON_TERMS||quote.baseCurrency!=='BRL'||offer&&!validProAddonCatalog(offer))return false;
+  try{const pack=proAddonAmounts(quote.packCode,quote.fxBrlMicrosPerUsd);
+   return quote.baseAmountMinor===pack.providerCapacityBrlCents&&quote.providerCapacityBrlCents===pack.providerCapacityBrlCents&&quote.providerCapacityNanoUsd===pack.providerCapacityNanoUsd&&quote.amountCents===pack.priceCents&&quote.retailNanoUsd===pack.retailNanoUsd;
+  }catch{return false;}
+ }
+ if(offer&&quote.baseAmountMinor!==offer.baseAmountMinor)return false;
  const base=BigInt(quote.baseAmountMinor),fx=BigInt(quote.fxBrlMicrosPerUsd);
  const expectedCredit=quote.baseCurrency==='USD'?base*10_000_000n:base*10_000_000_000_000n/fx;
  const expectedCents=quote.baseCurrency==='BRL'?base:(expectedCredit*fx+9_999_999_999_999n)/10_000_000_000_000n;

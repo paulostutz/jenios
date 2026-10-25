@@ -49,7 +49,7 @@
     "public/mobile/offline.html": "f2ed7b4c375daddf5ea304ff4841f3fa51fa071f",
     "scripts/check-email-release-r42.mjs": "e542a0db7c5e9c76c63ca19557af6ab1ed72a363",
     "scripts/check-genios-activation-g44.mjs": "e542a0db7c5e9c76c63ca19557af6ab1ed72a363",
-    "scripts/check-mobile-m02.mjs": "42b48964ae54de3b1727019af9791d9467a51e6d",
+    "scripts/check-mobile-m02.mjs": "b1bb8dfbdd4f16bbabf75be0da7418e755ef0ffd",
     "tests/mobilePwaM02.test.mjs": "357a7f14b0050fb5c08356b6c42fc8636b2ffafa"
   }
 }

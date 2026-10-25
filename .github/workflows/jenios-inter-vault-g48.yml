@@ -1,0 +1,124 @@
+name: JENIOS G48 Inter Vault verification
+on:
+  push:
+    branches: [fix/jenios-g48-inter-vault-20261025, release/jenios-genios-g44-20261024]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-postgres:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      JENIOS_G48_INTER_VAULT_TEST_DATABASE_URL: postgresql://postgres:disposable_g48_test_password@127.0.0.1:55443/jenios_inter_g48_vault_ci
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - name: Start disposable PostgreSQL 17
+        run: |
+          docker run --detach --name jenios-g48-postgres --network host \
+            -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=disposable_g48_test_password \
+            -e POSTGRES_DB=jenios_inter_g48_vault_ci postgres:17-bookworm \
+            -p 55443 -c listen_addresses=127.0.0.1
+          for attempt in {1..30}; do
+            docker exec jenios-g48-postgres pg_isready -h 127.0.0.1 -p 55443 -U postgres -d jenios_inter_g48_vault_ci && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Verify Vault migration, grants, CAS, rotation and rollback
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/test-inter-vault-g48-postgres.mjs 2>&1 | tee /tmp/jenios-g48-postgres.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: JENIOS_G48_INTER_VAULT_POSTGRES_20261025
+          path: /tmp/jenios-g48-postgres.log
+          retention-days: 30
+          if-no-files-found: error
+      - name: Remove disposable PostgreSQL
+        if: always()
+        run: docker rm --force jenios-g48-postgres
+
+  verify-source-and-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: fixture-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fixture-public-key
+      JENIOS_PAY_PROVIDER: inter_pix
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_INTER_VAULT_REQUIRED: 'true'
+      JENIOS_PRO_PAYMENTS_ENABLED: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_ASSISTANT_MEMORY_ENABLED: 'false'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_EMAIL_PRODUCTION_ENABLED: 'false'
+      JENIOS_EMAIL_DISPATCHER_ENABLED: 'false'
+      JENIOS_PAYMENT_EMAILS_ENABLED: 'false'
+      JENIOS_TRANSACTIONAL_EMAILS_ENABLED: 'false'
+      JENIOS_MARKETING_EMAILS_ENABLED: 'false'
+      JENIOS_MARKETING_PLANNER_ENABLED: 'false'
+      JENIOS_SUBSCRIPTION_DUNNING_ENABLED: 'false'
+      JENIOS_RESEND_WEBHOOK_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify exact reviewed G48 source and safety gates
+        run: node scripts/check-inter-vault-g48.mjs
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify Inter, monthly Pix, Pro, University and activation controls
+        shell: bash
+        run: |
+          set -o pipefail
+          node --test \
+            tests/jeniosInterSetupG48.test.mjs \
+            tests/interPix.test.mjs \
+            tests/platformMonthlyG47.test.mjs \
+            tests/jeniosGeniosQuotaG45.test.mjs \
+            tests/jeniosProTopupsB146.test.mjs \
+            tests/jeniosUniversityMonthlyB147.test.mjs \
+            tests/paymentActivationR44.test.mjs \
+            2>&1 | tee /tmp/jenios-g48-targeted.log
+      - name: Run integral repository tests and production build with all external actions off
+        shell: bash
+        run: npm run build 2>&1 | tee /tmp/jenios-g48-build.log
+      - name: Preserve exact source, checkpoint and checksums
+        shell: bash
+        run: |
+          mkdir -p .jenios-g48-evidence
+          git archive --format=zip --output=.jenios-g48-evidence/JENIOS_G48_INTER_VAULT_SOURCE.zip HEAD
+          git rev-parse HEAD > .jenios-g48-evidence/COMMIT.txt
+          git rev-parse HEAD^{tree} > .jenios-g48-evidence/TREE.txt
+          (cd .jenios-g48-evidence && sha256sum JENIOS_G48_INTER_VAULT_SOURCE.zip > SHA256SUMS.txt)
+          cp /tmp/jenios-g48-targeted.log /tmp/jenios-g48-build.log .jenios-g48-evidence/
+          cp docs/platform/G48-INTER-VAULT-CHECKPOINT.md docs/platform/G48-INTEGRATION-BASELINE.json docs/platform/G48-REVIEWED-CHANGES.json .jenios-g48-evidence/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_G48_INTER_VAULT_BACKUP_20261025
+          path: .jenios-g48-evidence/
+          retention-days: 30
+          if-no-files-found: error
+          include-hidden-files: true

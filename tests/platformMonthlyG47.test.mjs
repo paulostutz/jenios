@@ -28,7 +28,7 @@ function dbState({enabled=false}={}){
 const body={productCode:'platform-nacional',amountCents:9990,currency:'BRL',termsVersion:PLATFORM_MONTHLY_TERMS,requestKey:'monthly_request_0001',acceptTerms:true};
 const req=(value=body)=>new Request('https://jenios.test/api',{method:'POST',headers:{authorization:'Bearer social','x-platform-authorization':'Bearer platform','content-type':'application/json'},body:JSON.stringify(value)});
 test('G47 paused database/global payment gates and missing consent cannot create an invoice or call bank',async()=>{
- const env={JENIOS_PAY_PROVIDER:'inter_pix',JENIOS_PAY_PAYMENTS_ENABLED:'true',INTER_CLIENT_ID:'fixture',INTER_CLIENT_SECRET:'fixture',INTER_CERTIFICATE:'fixture',INTER_PRIVATE_KEY:'fixture',INTER_PIX_KEY:'fixture'};
+ const env={JENIOS_PAY_PROVIDER:'inter_pix',JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:'true',INTER_CLIENT_ID:'fixture',INTER_CLIENT_SECRET:'fixture',INTER_CERTIFICATE:'fixture',INTER_PRIVATE_KEY:'fixture',INTER_PIX_KEY:'fixture'};
  for(const [enabled,global] of [[false,'true'],[true,'false']]){
   const db=dbState({enabled}),platformDb={};
   const result=await handlePlatformMonthly(req(),{action:'checkout',db,platformDb,env:{...env,JENIOS_PAY_PAYMENTS_ENABLED:global},authorize:async(r,d)=>({id:d===db?A:P}),clientFactory:()=>assert.fail('bank must not be touched')});

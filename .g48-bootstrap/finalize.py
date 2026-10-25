@@ -108,6 +108,10 @@ functional_tar = Path("/tmp/jenios-g48-functional.tar")
 functional_tar.write_bytes(lzma.decompress(base64.b64decode(bytes(encoded))))
 with tarfile.open(functional_tar, "r:") as archive:
     payload_paths = safe_extract(archive, 25)
+shutil.copyfile(
+    REPO / ".g48-bootstrap/exact-inter-workflow.yml",
+    REPO / ".github/workflows/jenios-inter-vault-g48.yml",
+)
 
 base_blobs: dict[str, str] = {}
 for line in run("git", "ls-tree", "-r", "--full-tree", BASE_COMMIT).splitlines():

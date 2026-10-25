@@ -1,5 +1,6 @@
 import './social/profile-grid.css';
 import './public-entry.css';
+import MobileAreaSwitcher from './components/MobileAreaSwitcher';
 
 export const metadata = {
   title: 'JENIOS - Ecossistema HFT',
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
    </head>
    <body style={{ margin: 0, padding: 0, backgroundColor: '#090d16', overflowX: 'hidden' }}>
     {children}
+    <MobileAreaSwitcher/>
    </body>
   </html>
  );

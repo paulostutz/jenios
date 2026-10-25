@@ -1,3 +1,3 @@
-// G47 preserves the full certified G46 source outside reviewed monthly billing changes.
-import {verifyPlatformMonthlyG47} from './check-platform-monthly-g47.mjs';
-verifyPlatformMonthlyG47();
+// Preserve the integrated G47 baseline plus the reviewed M02 mobile release.
+import {verifyMobileM02} from './check-mobile-m02.mjs';
+verifyMobileM02();

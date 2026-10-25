@@ -27,3 +27,5 @@ jobs:
       - name: Reconstruct, verify and publish certified G48 source
         run: python .g48-bootstrap/finalize.py
 # publish functional source only; connector performs exact workflow/cleanup commit
+
+# certified tree-first finalization 20261025 v3

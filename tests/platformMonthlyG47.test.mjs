@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {billingIdentities,verifyMonthlyBinding,handlePlatformMonthly,PLATFORM_MONTHLY_TERMS} from '../lib/platform/monthly-billing.mjs';
 import {subscriptionDunningEmail} from '../lib/email/subscription-dunning.mjs';
+import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
 const A='47000000-0000-4000-8000-000000000001',P='47000000-0000-4000-8000-000000000002',L='47000000-0000-4000-8000-000000000003',O='47000000-0000-4000-8000-000000000004';
 test('G47 independently verifies both providers and does not accept IDs/email claims from browser',async()=>{
  const social={name:'social'},platform={name:'platform'},calls=[];
@@ -48,4 +49,22 @@ test('G47 manual renewal notices never present non-renewal as a debt or promise 
   assert.doesNotMatch(message.text,/Pagamento em atraso|Regularize|continua ativo hoje|por falta de pagamento/);
   assert.match(message.text,/Pix|renova|Nenhuma cobrança/);
  }
+});
+test('G47 review branch is preview-only, on the exact project and isolated database with every external action explicitly off',()=>{
+ const actions=['JENIOS_PAY_PAYMENTS_ENABLED','JENIOS_PRO_PAYMENTS_ENABLED','JENIOS_INTER_CHARGES_ENABLED',
+ 'JENIOS_REAL_EXECUTION_ENABLED','JENIOS_PRIVATE_PAPER_EXECUTOR','JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED',
+ 'JENIOS_EMAIL_PRODUCTION_ENABLED','JENIOS_EMAIL_DISPATCHER_ENABLED','JENIOS_PAYMENT_EMAILS_ENABLED',
+ 'JENIOS_TRANSACTIONAL_EMAILS_ENABLED','JENIOS_MARKETING_EMAILS_ENABLED','JENIOS_MARKETING_PLANNER_ENABLED',
+ 'JENIOS_SUBSCRIPTION_DUNNING_ENABLED','JENIOS_RESEND_WEBHOOK_ENABLED','JENIOS_PRO_GENERATION_ENABLED',
+ 'JENIOS_SALES_GENERATIVE_ENABLED','JENIOS_ASSISTANT_MEMORY_ENABLED','NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED'];
+ const env={VERCEL_ENV:'preview',VERCEL_GIT_COMMIT_REF:'fix/jenios-platform-pix-monthly-20261024',VERCEL_PROJECT_ID:'prj_44ipBY3R9sHlQDAXY7NUn1zDguw4',
+ NEXT_PUBLIC_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',SOCIAL_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',
+ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:'fixture',PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+ NEXT_PUBLIC_PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:'fixture',
+ ...Object.fromEntries(actions.map(key=>[key,'false']))};
+ assert.equal(checkS05DeploymentScope(env).ok,true);
+ for(const key of actions)for(const value of ['true',undefined])assert.equal(checkS05DeploymentScope({...env,[key]:value}).ok,false,key);
+ assert.equal(checkS05DeploymentScope({...env,VERCEL_PROJECT_ID:'other'}).ok,false);
+ assert.equal(checkS05DeploymentScope({...env,NEXT_PUBLIC_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co'}).ok,false);
+ assert.equal(checkS05DeploymentScope({...env,VERCEL_ENV:'production',NEXT_PUBLIC_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',SOCIAL_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',SUPABASE_SECRET_KEY:'fixture'}).ok,false);
 });

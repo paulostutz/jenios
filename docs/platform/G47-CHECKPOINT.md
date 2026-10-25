@@ -18,4 +18,6 @@ Antes da ativação pública: conferir migração e gates, concluir homologaçã
 
 Validação: testes de unidade e segurança; PostgreSQL 17 descartável para concorrência, recibos, meses, renovação, reembolso e conflitos; compilação e verificação integral da fonte. Evidências finais ficam no checkpoint e backup G47 da tarefa.
 
+A prévia G47 aceita somente a branch exata de revisão no projeto correto, banco Social de homologação e todas as ações externas explicitamente desativadas. Usa apenas configuração pública; não recebeu chaves bancárias, IA ou banco privilegiado. A aprovação da branch vale apenas para Preview e não permite sua publicação direta em Production. A homologação financeira completa continua dependente do ambiente e das contas do titular.
+
 Documentação consultada: https://developers.inter.co/duvidas-frequentes e https://supabase.com/docs/reference/javascript/auth-getuser.

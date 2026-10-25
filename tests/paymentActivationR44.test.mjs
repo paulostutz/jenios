@@ -5,14 +5,18 @@ import {createInterPixClient,createInterCheckout,interPixConfigured} from '../li
 import {checkoutService} from '../lib/pay/checkout.mjs';
 const credentials={JENIOS_PAY_PROVIDER:'inter_pix',INTER_CLIENT_ID:'test-r44',INTER_CLIENT_SECRET:'fixture',INTER_CERTIFICATE:'fixture',INTER_PRIVATE_KEY:'fixture',INTER_PIX_KEY:'fixture@example.invalid'};
 const order={orderId:'11111111-1111-4111-8111-111111111111',amount_cents:990,scope:'social',billing_type:'one_time'};
-test('R44 configured credentials do not enable checkout without an exact activation flag',()=>{
+test('G48 checkout requires exact global and independent Inter charge gates',()=>{
  for(const value of [undefined,'','false','TRUE','1']){
-  const env={...credentials,JENIOS_PAY_PAYMENTS_ENABLED:value};
+  const env={...credentials,JENIOS_PAY_PAYMENTS_ENABLED:value,JENIOS_INTER_CHARGES_ENABLED:'true'};
   assert.equal(interPixConfigured(env),true);
   assert.equal(gatewayConfig(env),null);
  }
- assert.deepEqual(gatewayConfig({...credentials,JENIOS_PAY_PAYMENTS_ENABLED:'true'}),{provider:'inter_pix'});
- assert.equal(gatewayConfig({JENIOS_PAY_PAYMENTS_ENABLED:'true'}),null);
+ for(const value of [undefined,'','false','TRUE','1'])
+  assert.equal(gatewayConfig({...credentials,JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:value}),null);
+ assert.deepEqual(gatewayConfig({...credentials,JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:'true'}),{provider:'inter_pix'});
+ // Vault-backed deployments do not expose credential presence through this public readiness helper.
+ assert.deepEqual(gatewayConfig({JENIOS_PAY_PROVIDER:'inter_pix',JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:'true'}),{provider:'inter_pix'});
+ assert.equal(gatewayConfig({JENIOS_PAY_PAYMENTS_ENABLED:'true',JENIOS_INTER_CHARGES_ENABLED:'true'}),null);
 });
 test('R44 disabled checkout stops before order persistence and external requests',async()=>{
  const env={...credentials,JENIOS_PAY_PAYMENTS_ENABLED:'false'};

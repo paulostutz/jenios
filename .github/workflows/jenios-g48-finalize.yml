@@ -26,4 +26,4 @@ jobs:
           python-version: '3.13'
       - name: Reconstruct, verify and publish certified G48 source
         run: python .g48-bootstrap/finalize.py
-# execute after all nine exact certified patch segments were committed
+# publish functional source only; connector performs exact workflow/cleanup commit

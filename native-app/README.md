@@ -1,6 +1,6 @@
-# JENIOS Mobile — M01
+# JENIOS Mobile — M02
 
-Base inicial local para Android e iPhone. Decisões do titular em 24/10/2026: um único aplicativo, escolha inicial **Social / Platform**, mesmos fluxos existentes e mesmas contas de publicação Apple Developer e Google Play utilizadas pelo CHEFE. Cada abertura nova apresenta a escolha; voltar às áreas mantém a instância de navegação enquanto o app está aberto.
+Versão integrada para teste em Android e iPhone. Decisões do titular em 24/10/2026: um único aplicativo, escolha inicial **Social / Platform**, mesmos fluxos existentes e mesmas contas de publicação Apple Developer e Google Play utilizadas pelo CHEFE. Cada abertura nova apresenta a escolha; voltar às áreas mantém a instância de navegação enquanto o app está aberto.
 
 Este incremento é uma base de desenvolvimento, ainda **não é uma versão pronta para envio às lojas**. A interface inicial é React Native/Expo 58. Os fluxos existentes abrem em WebView no aparelho; a prévia web explica sua limitação e oferece acesso à versão web. Não foi feita uma reconstrução nativa completa da Social ou Platform.
 
@@ -22,7 +22,7 @@ Node 24.13 ou superior. `npm ci`, `npm test`, `npm run typecheck` e `npm run exp
 
 ## Referência de produção
 
-Site G47: `dec6ae5965b443ed0b8baabf05f750e33b403067`; deployment `dpl_GQC3o6CgWXZnPDVDwWwVycjPaZp9`. Nenhuma migração, configuração ou arquivo do site foi alterado por M01. Pix continua bloqueado, com teste bancário real adiado pelo titular. Não repetir a publicação G47.
+Site G47: `dec6ae5965b443ed0b8baabf05f750e33b403067`; deployment `dpl_GQC3o6CgWXZnPDVDwWwVycjPaZp9`. M02 acrescenta a entrada instalável /mobile.html e corrige o contato de suporte; não altera o banco. Pix continua bloqueado, com teste bancário real adiado pelo titular. Não repetir a publicação G47.
 
 ## Publicação e validações que faltam
 
@@ -43,3 +43,11 @@ Site G47: `dec6ae5965b443ed0b8baabf05f750e33b403067`; deployment `dpl_GQC3o6CgWX
 - Expo CLI: https://github.com/expo/expo/issues/51773.
 
 Não prometer aprovação automática nem tratar esta base como a entrega final do aplicativo integrado.
+
+## Execução M02
+
+Identificador Apple registrado: `br.com.jenios.app`, App Store Connect `6826729191`, equipe `JTJS54L3SK`, mesma conta CHEFE. Compilação via Expo prebuild + GitHub Actions, seguindo a infraestrutura CHEFE já autorizada; não há conta EAS adicional. Diretórios nativos são gerados pelos plugins, sem edição manual. Android release deliberadamente sem assinatura até conferência do artefato. Assinatura e upload são etapas separadas, sem executar dependências com os segredos.
+
+A tela inicial mantém a navegação M01 já validada, sem migrar o fluxo existente para Router neste incremento. Há compartilhamento de links sem query/hash, salvamento de PDFs oficiais com confirmação, cache privado limitado a cinco PDFs de até 20 MiB, limpeza após 24 horas na próxima exportação e contato explícito com o suporte. As permissões de mídia são pedidas pelo sistema quando usadas. Câmera, gravação, login persistente, PDFs e widgets devem receber aceite em aparelhos reais antes da distribuição pública.
+
+Validação: `npm run typecheck`, `npm run lint`, `npm test`. O wrapper `expo lint` apresentou incompatibilidade ao carregar a configuração ESM; usamos diretamente o ESLint recomendado pelo Expo com configuração CJS. Os avisos conhecidos do Expo CLI permanecem registrados acima.

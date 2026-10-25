@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, BackHandler, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Linking, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import { useNetworkState } from 'expo-network';
@@ -11,9 +11,11 @@ import { AREAS, areaUrl, navigationDecision, type AreaId } from './navigation';
 
 export type PortalProps = { area: AreaId; active: boolean; onChoose: () => void };
 export default function Portal({ area, active, onChoose }: PortalProps) {
-  // Explicit empty generic avoids upstream WebView 14's default P=undefined.
-  const ref = useRef<WebView<{}>>(null);
-  const [page, setPage] = useState(areaUrl(area));
+  // Explicit object generic avoids upstream WebView 14's default P=undefined.
+  const ref = useRef<WebView<object>>(null);
+  const [navigation, setNavigation] = useState({area, url:areaUrl(area)});
+  const page=navigation.url;
+  const setPage=(url:string)=>setNavigation({area,url});
   const [canGoBack, setCanGoBack] = useState(false);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -22,7 +24,9 @@ export default function Portal({ area, active, onChoose }: PortalProps) {
   const currentUrl = useRef(areaUrl(area));
   const network = useNetworkState();
   const offline = network.isConnected === false || network.isInternetReachable === false;
-  useEffect(() => { setPage(areaUrl(area)); setFailed(false); setLoading(true); setCanGoBack(false); }, [area]);
+  if(navigation.area!==area){
+    setNavigation({area,url:areaUrl(area)}); setFailed(false); setLoading(true); setCanGoBack(false);
+  }
   useEffect(() => {
     if (!active) return;
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -56,6 +60,12 @@ export default function Portal({ area, active, onChoose }: PortalProps) {
       void Share.share({title:'JENIOS '+AREAS[area].title,message:safe,url:safe}).catch(()=>{});
     } catch {}
   }
+  function contactSupport() {
+    Alert.alert('Falar com o suporte', 'Abrir seu aplicativo de e-mail para sac@jenios.com.br?', [
+      {text:'Cancelar',style:'cancel'},
+      {text:'Abrir e-mail',onPress:()=>void Linking.openURL('mailto:sac@jenios.com.br').catch(()=>Alert.alert('Contato do suporte','Envie sua mensagem para sac@jenios.com.br no aplicativo de e-mail de sua preferência.'))},
+    ]);
+  }
   function external(url: string) {
     if (pendingExternal.current || navigationDecision(url) !== 'external') return;
     pendingExternal.current = true;
@@ -73,20 +83,22 @@ export default function Portal({ area, active, onChoose }: PortalProps) {
     </View>
     {offline && <Text accessibilityRole="alert" style={s.notice}>Sem conexão. Reconecte-se para continuar.</Text>}
     <View style={s.content}>
-      <WebView<{}> ref={ref} source={{ uri: page }} style={s.webview}
+      <WebView<object> ref={ref} source={{ uri: page }} style={s.webview}
         applicationNameForUserAgent="JENIOS-Mobile-M02" javaScriptEnabled domStorageEnabled
         originWhitelist={['*']} mixedContentMode="never" allowFileAccess={false}
         allowFileAccessFromFileURLs={false} allowUniversalAccessFromFileURLs={false}
         webviewDebuggingEnabled={false} sharedCookiesEnabled thirdPartyCookiesEnabled={false}
         allowsInlineMediaPlayback mediaPlaybackRequiresUserAction setSupportMultipleWindows
         onShouldStartLoadWithRequest={request => {
-          if (request.isTopFrame === false) return true;
+          if (request.isTopFrame === false) return request.url.startsWith('https:') || request.url === 'about:blank';
+          if (request.url === 'mailto:sac@jenios.com.br') { contactSupport(); return false; }
           const decision = navigationDecision(request.url);
           if (decision === 'external') external(request.url);
           return decision === 'internal';
         }}
         onOpenWindow={event => {
           const url = event.nativeEvent.targetUrl;
+          if(url === 'mailto:sac@jenios.com.br') { contactSupport(); return; }
           if (navigationDecision(url) === 'external') external(url);
           else if (navigationDecision(url) === 'internal') setPage(url);
         }}

@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
         with: {distribution: temurin, java-version: '21'}
       - run: npm ci --no-fund
-      - run: npm run typecheck && npm test
+      - run: npm run typecheck && npm run lint && npm test
       - run: npx expo prebuild --no-install --platform android
       - name: Build bundled release without signing credentials
         run: |
@@ -52,7 +52,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with: {node-version: '24'}
       - run: npm ci --no-fund
-      - run: npm run typecheck && npm test
+      - run: npm run typecheck && npm run lint && npm test
       - run: npx expo prebuild --platform ios
       - name: Archive without signing credentials
         run: |

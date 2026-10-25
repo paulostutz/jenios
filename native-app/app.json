@@ -4,7 +4,7 @@
     "slug": "jenios-mobile",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/jenios-j.webp",
+    "icon": "./assets/jenios-j.png",
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,

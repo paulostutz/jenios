@@ -1,4 +1,5 @@
 'use client';
+import {PRO_ADDON_PACKS,validProAddonCatalog} from '../../lib/assistant/pro-addon-catalog.mjs';
 import {useEffect,useRef,useState} from 'react';
 import {formatNanoUsd,formatProviderNanoUsd,formatProDate,proCreditActions} from './pro-client.mjs';
 import {creditOfferReady,formatBrlCents,formatFxMicros,validCreditQuote,creditAttemptStorageKey,restoreCreditAttempt,creditStatusPath,projectCreditCheckout,projectCreditStatus,preserveCreditAttempt} from './credits-client.mjs';
@@ -6,6 +7,8 @@ import styles from './pro.module.css';
 import credits from './credits.module.css';
 
 export default function ProCredits({userId,eligible=false,offer,request,onCredited}){
+ const [packCode,setPackCode]=useState(PRO_ADDON_PACKS[0].code);
+ const catalog=validProAddonCatalog(offer);
  const [quote,setQuote]=useState(null),[consent,setConsent]=useState(false),[attempt,setAttempt]=useState(null);
  const [busy,setBusy]=useState(''),[error,setError]=useState(''),[copied,setCopied]=useState(false),[clock,setClock]=useState(Date.now()),[salesBlocked,setSalesBlocked]=useState(false);
  const live=useRef(true),busyRef=useRef(false),quoteKey=useRef(null),attemptRef=useRef(null);
@@ -43,9 +46,9 @@ export default function ProCredits({userId,eligible=false,offer,request,onCredit
   busyRef.current=true;setBusy('quote');setError('');setConsent(false);
   if(!quoteKey.current||quote&&Date.parse(quote.expiresAt)<=Date.now())quoteKey.current=crypto.randomUUID();
   try{
-   const result=await request('quote',{requestKey:quoteKey.current});
+   const result=await request('quote',{requestKey:quoteKey.current,...(catalog?{packCode}:{})});
    if(!live.current)return;
-   if(result?.ok!==true||!validCreditQuote(result?.quote,{offer}))throw Error('Não foi possível conferir os valores desta cotação. Nenhum pedido foi aberto.');
+   if(result?.ok!==true||!validCreditQuote(result?.quote,{offer})||catalog&&result.quote.packCode!==packCode)throw Error('Não foi possível conferir os valores desta cotação. Nenhum pedido foi aberto.');
    setClock(Date.now());setQuote(result.quote);
   }catch(e){if(live.current&&e.name!=='AbortError'){
    if(e.proBody?.code==='QUOTE_EXPIRED'){quoteKey.current=null;setQuote(null);}
@@ -103,6 +106,10 @@ export default function ProCredits({userId,eligible=false,offer,request,onCredit
    report(e.message+' Continue acompanhando este pedido antes de iniciar outro.');
   }}finally{if(live.current){busyRef.current=false;setBusy('');}}
  }
+ function choosePack(value){
+  if(busyRef.current||attemptRef.current)return;
+  setPackCode(value);quoteKey.current=null;setQuote(null);setConsent(false);setError('');
+ }
  function reset(){
   if(busyRef.current||!final)return;
   try{if(storageKey)sessionStorage.removeItem(storageKey);}catch{}
@@ -115,7 +122,8 @@ export default function ProCredits({userId,eligible=false,offer,request,onCredit
 
  if(!eligible&&!attempt)return null;
  return <section className={styles.panel} aria-labelledby="pro-credits-title">
-  <div className={styles.sectionHeading}><div><h2 id="pro-credits-title">Contratação adicional de IA</h2><p>O adicional permite continuar as consultas com um saldo próprio. O débito em créditos corresponde a <strong>duas vezes o custo efetivo da IA</strong>, preservando frações de centavo. Confira o preço e a capacidade antes de confirmar.</p></div>{!attempt&&<button type="button" className={styles.secondary} disabled={!enabled||Boolean(busy)} onClick={getQuote}>{busy==='quote'?'Conferindo valor…':quote?'Atualizar cotação':'Consultar adicional'}</button>}</div>
+  <div className={styles.sectionHeading}><div><h2 id="pro-credits-title">Contratação adicional de IA</h2><p>Continue suas consultas com um saldo adicional. Escolha o valor, confira a capacidade de IA e confirme somente depois de revisar a cotação. A quantidade de consultas varia conforme o modelo e o tamanho das respostas.</p></div>{!attempt&&<button type="button" className={styles.secondary} disabled={!enabled||Boolean(busy)} onClick={getQuote}>{busy==='quote'?'Conferindo valor…':quote?'Atualizar cotação':'Consultar adicional'}</button>}</div>
+  {catalog&&!attempt&&<label className={styles.small} htmlFor="pro-addon-pack">Escolha seu adicional <select id="pro-addon-pack" value={packCode} disabled={!enabled||Boolean(busy)} onChange={e=>choosePack(e.target.value)}>{offer.packs.map(pack=><option key={pack.code} value={pack.code}>{formatBrlCents(pack.priceCents)} · capacidade de IA equivalente a {formatBrlCents(pack.providerCapacityBrlCents)}</option>)}</select><span> A capacidade é convertida em dólares pela PTAX apresentada na cotação; não representa saldo para saque.</span></label>}
   {!enabled&&eligible&&<p className={styles.small}><strong>Contratação adicional ainda não habilitada.</strong> O preço e a disponibilidade do pagamento precisam ser confirmados. Nenhum valor de pacote foi presumido. {attempt?'A referência do seu pedido foi preservada.':''}</p>}
   {!eligible&&attempt&&<p className={styles.availability}>A referência do seu pedido anterior foi preservada. {canReconcile?'Você pode conferir esse pedido abaixo.':'A conferência aguarda disponibilidade do serviço.'} Novas contratações e consultas avançadas exigem um plano Global Crypto ou Internacional Pro ativo.</p>}
   {enabled&&!activeQuote&&<p className={styles.small}>Confira a cotação antes de confirmar a compra. Consultar o valor não abre um pedido de pagamento.</p>}

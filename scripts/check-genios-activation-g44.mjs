@@ -1,4 +1,3 @@
-// R44 is based on the complete, published G44 tree, which includes R42/R43.
-// The shared checker pins all inherited files and every reviewed change.
-import {verifyGeniosQuotaG45} from './check-genios-quota-g45.mjs';
-verifyGeniosQuotaG45();
+// G46 integrates the complete certified G45/PR6/University tree.
+import {verifyGeniosAddonG46} from './check-genios-addon-g46.mjs';
+verifyGeniosAddonG46();

@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 import https from 'node:https';
 import {DEFAULT_PRODUCTS,normalizePurchase,priceUpdate} from '../lib/pay/catalog.mjs';
 import {createInterPixClient,createInterCheckout,pixTxid} from '../lib/pay/inter-pix.mjs';
+import {PRO_ADDON_TERMS,PRO_ADDON_PACKS} from '../lib/assistant/pro-addon-catalog.mjs';
+import {validCreditQuote,creditOfferReady,restoreCreditAttempt} from '../app/genios-pro/credits-client.mjs';
 import {PRO_PRICING_VERSION} from '../lib/assistant/pro-pricing.mjs';
-import {PRO_WALLET_TABLES as T,PRO_WALLET_RPC as R,proWalletConfig,approvedProTopupQuote} from '../lib/assistant/pro-wallet-contract.mjs';
+import {PRO_WALLET_TABLES as T,PRO_WALLET_RPC as R,proWalletConfig,approvedProTopupQuote,approvedProAddonQuote} from '../lib/assistant/pro-wallet-contract.mjs';
 import {PRO_TOPUP_PRODUCT,handleProTopups,loadOfficialProFx,projectProTopupQuote,proTopupAvailability} from '../lib/assistant/pro-topups.mjs';
 
 const NOW=Date.now(),A='11111111-1111-4111-8111-111111111111',B='22222222-2222-4222-8222-222222222222';
@@ -47,11 +49,12 @@ function database(){
   async rpc(name,args){
    db.rpcs.push({name,args:copy(args)});
    const okay=data=>({data:{ok:true,...copy(data)},error:null}),no=code=>({data:{ok:false,code},error:null});
-   if(name===R.quote){
+   if(name===R.quote||name===R.addonQuote){
     const previous=tables[T.quotes].find(row=>row.user_id===args.p_user_id&&row.quote_key===args.p_quote_key);
     if(previous)return previous.fx_brl_micros_per_usd!==args.p_fx_brl_micros_per_usd?no('IDEMPOTENCY_CONFLICT'):okay({quote:previous,replayed:true});
-    const c=tables[T.config][0],calculated=approvedProTopupQuote({enabled:true,baseCurrency:c.topup_currency,amountMinor:c.topup_amount_minor,termsVersion:c.commercial_terms_version},{brlMicrosPerUsd:args.p_fx_brl_micros_per_usd,source:args.p_rate_source,sourceAt:args.p_rate_at},db.now);
-    const quote={id:uuid('50000000',tables[T.quotes].length+1),user_id:args.p_user_id,quote_key:args.p_quote_key,currency:'BRL',amount_cents:calculated.amountCents,retail_nano_usd:calculated.retailNanoUsd,base_currency:c.topup_currency,base_amount_minor:c.topup_amount_minor,fx_brl_micros_per_usd:args.p_fx_brl_micros_per_usd,rate_source:args.p_rate_source,rate_at:args.p_rate_at,terms_version:c.commercial_terms_version,pricing_version:PRO_PRICING_VERSION,created_at:new Date(db.now).toISOString(),expires_at:calculated.expiresAt};
+    const c=tables[T.config][0],quoteFx={brlMicrosPerUsd:args.p_fx_brl_micros_per_usd,source:args.p_rate_source,sourceAt:args.p_rate_at};
+    const calculated=name===R.addonQuote?approvedProAddonQuote({enabled:true,baseCurrency:c.topup_currency,amountMinor:c.topup_amount_minor,termsVersion:c.commercial_terms_version},args.p_pack_code,quoteFx,db.now):approvedProTopupQuote({enabled:true,baseCurrency:c.topup_currency,amountMinor:c.topup_amount_minor,termsVersion:c.commercial_terms_version},{brlMicrosPerUsd:args.p_fx_brl_micros_per_usd,source:args.p_rate_source,sourceAt:args.p_rate_at},db.now);
+    const quote={id:uuid('50000000',tables[T.quotes].length+1),user_id:args.p_user_id,quote_key:args.p_quote_key,currency:'BRL',amount_cents:calculated.amountCents,retail_nano_usd:calculated.retailNanoUsd,...(name===R.addonQuote?{addon_pack_code:args.p_pack_code}:{}),base_currency:calculated.baseCurrency,base_amount_minor:calculated.baseAmountMinor,fx_brl_micros_per_usd:args.p_fx_brl_micros_per_usd,rate_source:args.p_rate_source,rate_at:args.p_rate_at,terms_version:c.commercial_terms_version,pricing_version:PRO_PRICING_VERSION,created_at:new Date(db.now).toISOString(),expires_at:calculated.expiresAt};
     tables[T.quotes].push(quote);db.writes++;
     if(db.failAfterQuote){db.failAfterQuote=false;return {data:null,error:{code:'LOST_RESPONSE'}};}
     return okay({quote,replayed:false});
@@ -339,4 +342,39 @@ test('B146 mismatched bank receipts and paid-without-receipt states cannot relea
  const pending=await call(db,'status',{orderId},{pixClientFactory:()=>provider.client});assert.equal(pending.status,202);assert.equal(pending.body.state,'paid_pending_credit');assert.equal(pending.body.credited,false);assert.equal(db.balance,0);
  const reads=db.reads,calls=provider.calls.length,rpcs=db.rpcs.length;
  const paused=await call(db,'status',{orderId},{env:{...env,JENIOS_PRO_PAYMENTS_ENABLED:'false'},pixClientFactory:()=>provider.client});assert.equal(paused.status,503);assert.equal(paused.body.credited,false);assert.equal(db.reads,reads);assert.equal(provider.calls.length,calls);assert.equal(db.rpcs.length,rpcs);
+});
+
+
+function catalogDatabase(){const db=database();Object.assign(db.tables[T.config][0],{commercial_terms_version:PRO_ADDON_TERMS,topup_amount_minor:null,monthly_budget_mode:'uncapped',monthly_provider_limit_nano_usd:0});return db;}
+for(const pack of PRO_ADDON_PACKS)test('G46 approved '+pack.code+' quote, receipt, wallet and recovery use the same capacity',async()=>{
+ const db=catalogDatabase(),transport=bank();
+ const offer=await proTopupAvailability(db,proWalletConfig(db.tables[T.config][0],NOW),env);assert.equal(creditOfferReady(offer),true);
+ const got=await call(db,'quote',{requestKey:KEY,packCode:pack.code});assert.equal(got.status,200,JSON.stringify(got.body));const q=got.body.quote;
+ assert.equal(q.amountCents,pack.priceCents);assert.equal(q.baseAmountMinor,pack.providerCapacityBrlCents);
+ assert.equal(q.retailNanoUsd,2*Number(BigInt(pack.providerCapacityBrlCents)*10000000000000n/BigInt(fx.brlMicrosPerUsd)));
+ assert.equal(validCreditQuote(q,{offer,now:NOW}),true);
+ for(const field of ['amountCents','retailNanoUsd','providerCapacityNanoUsd','providerCapacityBrlCents','baseAmountMinor'])assert.equal(validCreditQuote({...q,[field]:q[field]+1},{offer,now:NOW}),false,field);
+ assert.ok(restoreCreditAttempt({requestKey:'12345678-1234-4123-8123-123456789abc',quote:q,orderId:null},{userId:A,now:NOW}));
+ const created=await call(db,'checkout',consent(q),{gateway:transport.gateway});assert.equal(created.status,200,JSON.stringify(created.body));
+ assert.equal(db.balance,0);transport.pay(created.body.orderId);
+ const options={pixClientFactory:()=>transport.client};
+ const paid=await call(db,'status',{orderId:created.body.orderId},options);assert.equal(paid.body.credited,true,JSON.stringify(paid.body));
+ assert.equal(db.balance,q.retailNanoUsd);
+ await call(db,'status',{orderId:created.body.orderId},options);assert.equal(db.balance,q.retailNanoUsd);
+});
+test('G46 global payment pause blocks every endpoint and availability before DB, FX or bank',async()=>{
+ for(const gate of [undefined,'false','TRUE','1'])for(const action of ['quote','checkout','status']){
+  const db=catalogDatabase(),result=await call(db,action,{}, {env:{...env,JENIOS_PAY_PAYMENTS_ENABLED:gate},fxLoader:()=>{throw Error('FX must not run');},gateway:()=>{throw Error('Bank must not run');}});
+  assert.equal(result.status,503);assert.equal(result.body.code,'PRO_PAYMENTS_DISABLED');assert.equal(db.reads,0);assert.equal(db.writes,0);assert.equal(db.rpcs.length,0);
+  assert.equal((await proTopupAvailability(db,proWalletConfig(db.tables[T.config][0],NOW),{...env,JENIOS_PAY_PAYMENTS_ENABLED:gate})).enabled,false);assert.equal(db.reads,0);
+ }
+});
+test('G46 package choice is server-owned and an idempotency key cannot switch packages',async()=>{
+ const db=catalogDatabase();
+ for(const packCode of [undefined,null,'ia-1',{},'ia-500 '])assert.equal((await call(db,'quote',{requestKey:KEY,packCode})).status,400);
+ assert.equal(db.writes,0);
+ db.failAfterQuote=true;const first=await call(db,'quote',{requestKey:KEY,packCode:'ia-500'});assert.equal(first.status,200);assert.equal(first.body.replayed,true);
+ const again=await call(db,'quote',{requestKey:KEY,packCode:'ia-500'},{fxLoader:()=>{throw Error('immutable quote must not refetch FX');}});assert.deepEqual(again.body.quote,first.body.quote);
+ const conflict=await call(db,'quote',{requestKey:KEY,packCode:'ia-1000'});assert.equal(conflict.status,409);assert.equal(conflict.body.code,'IDEMPOTENCY_CONFLICT');assert.equal(db.tables[T.quotes].length,1);
+ const row=db.tables[T.quotes][0];for(const patch of [{addon_pack_code:null},{base_amount_minor:1000},{amount_cents:500},{retail_nano_usd:row.retail_nano_usd+1},{terms_version:'legacy-terms'}])assert.throws(()=>projectProTopupQuote({...row,...patch},A,NOW));
 });

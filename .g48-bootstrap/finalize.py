@@ -5,14 +5,13 @@ import hashlib
 import lzma
 import os
 from pathlib import Path
-import shutil
 import subprocess
 
 REPO = Path.cwd()
 BASE_COMMIT = "dec6ae5965b443ed0b8baabf05f750e33b403067"
-EXPECTED_TREE = "c425df0cf0edd2c652212e0f2991a13d3dba9809"
 EXPECTED_XZ_SHA256 = "ceb5fd6a4fe417bdf473573dc8685a88602cc9d5204d927bd01f70702d693234"
 EXPECTED_PATCH_SHA256 = "e4bca0886cf5bc5df6cb75987610357ca8a63d31377f5dfb8d3029bf411bcb52"
+TARGET_WORKFLOW = REPO / ".github/workflows/jenios-inter-vault-g48.yml"
 
 
 def run(*args: str, env: dict[str, str] | None = None, capture: bool = True) -> str:
@@ -43,30 +42,26 @@ patch_path.write_bytes(patch)
 
 run("git", "apply", "--check", str(patch_path), capture=False)
 run("git", "apply", "--index", str(patch_path), capture=False)
-shutil.rmtree(REPO / ".g48-bootstrap")
-for workflow in (
-    REPO / ".github/workflows/jenios-g48-bootstrap.yml",
-    REPO / ".github/workflows/jenios-g48-finalize.yml",
-):
-    workflow.unlink(missing_ok=True)
-run("git", "add", "-A", capture=False)
 
-actual_tree = run("git", "write-tree")
-print(f"expected_tree={EXPECTED_TREE}")
-print(f"actual_tree={actual_tree}")
-if actual_tree != EXPECTED_TREE:
-    raise RuntimeError("árvore final divergente")
-
+# Validate the exact certified source while the reviewed workflow is present.
 precommit_env = os.environ.copy()
 precommit_env["JENIOS_G48_SKIP_GIT_BASELINE"] = "true"
 run("node", "scripts/check-inter-vault-g48.mjs", env=precommit_env, capture=False)
+
+# GitHub's workflow token cannot publish a newly created workflow file. Leave all
+# bootstrap files unchanged and remove only that newly-added workflow from this
+# intermediate commit. The connector will add it and remove bootstrap artifacts
+# atomically in the final exact-tree commit.
+TARGET_WORKFLOW.unlink()
+run("git", "add", "-A", capture=False)
+changed = run("git", "diff", "--cached", "--name-only").splitlines()
+if any(path.startswith(".github/workflows/") for path in changed):
+    raise RuntimeError("o commit intermediário tentou alterar workflows")
+if len(changed) != 26:
+    raise RuntimeError(f"quantidade inesperada de arquivos funcionais: {len(changed)}")
 run("git", "diff", "--cached", "--check", capture=False)
 run("git", "config", "user.name", "jenios-release-bot", capture=False)
 run("git", "config", "user.email", "jenios-release-bot@users.noreply.github.com", capture=False)
-run("git", "commit", "-m", "fix(jenios): G48 install isolated Inter Vault and Master setup", capture=False)
-
-if run("git", "rev-parse", "HEAD^{tree}") != EXPECTED_TREE:
-    raise RuntimeError("commit final não aponta para a árvore certificada")
-run("node", "scripts/check-inter-vault-g48.mjs", capture=False)
+run("git", "commit", "-m", "fix(jenios): stage certified G48 source without workflow", capture=False)
 run("git", "push", "origin", "HEAD:fix/jenios-g48-inter-vault-20261025", capture=False)
-print("G48_CERTIFIED_SOURCE_PUBLISHED")
+print("G48_CERTIFIED_FUNCTIONAL_SOURCE_PUBLISHED")

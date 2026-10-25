@@ -1,4 +1,4 @@
-name: JENIOS G48 manifest diagnostics
+name: JENIOS G48 baseline inventory diagnostics
 
 on:
   push:
@@ -10,37 +10,19 @@ permissions:
   contents: read
 
 jobs:
-  diagnose-manifests:
+  export-inventory:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
-      - name: Rebuild payload and print exact hashes
+      - name: Generate inventory from certified base commit
         shell: bash
         run: |
           set -euo pipefail
-          source_ref=origin/fix/jenios-g48-inter-vault-final-20261025
-          expected=(
-            6a95d16a503056e82d69d682b53f16298fa4895d
-            84f41748072e560bf8d929b0c4b682013a8ab6e3
-            33378a7a5154b9603a506a1616eaff29d78f8711
-            2ad88c84ea46a50d6e40b9b20ba3d77308d612cd
-            812a4a9682e839d742a24e614d915349f5f0f2cb
-            72ec3ad1c820909f04cc6aa3761f51133e999540
-            dd7a6560c9d1361df6bface18abacbca7878a4f7
-          )
-          : > /tmp/payload.b64
-          for index in 0 1 2 3 4 5 6; do
-            part=$(printf '%02d' "$index")
-            test "$(git rev-parse "$source_ref:.g48-bootstrap/chunk$part")" = "${expected[$index]}"
-            git show "$source_ref:.g48-bootstrap/chunk$part" >> /tmp/payload.b64
-          done
-          base64 --decode /tmp/payload.b64 > /tmp/payload.tar.xz
-          xz --test /tmp/payload.tar.xz
-          tar -xJf /tmp/payload.tar.xz -C . --no-same-owner --no-same-permissions
-          mkdir -p docs/platform
+          mkdir -p /tmp/g48-inventory
+          git ls-tree -r --full-tree dec6ae5965b443ed0b8baabf05f750e33b403067 > /tmp/g48-inventory/ls-tree.txt
           python - <<'PY'
           import json, subprocess
           base='dec6ae5965b443ed0b8baabf05f750e33b403067'
@@ -51,50 +33,16 @@ jobs:
               meta,path=line.split('\t',1)
               _,kind,sha=meta.split(' ',2)
               if kind=='blob': blobs[path]=sha
-          payload={'baseCommit':base,'baseTree':tree,'blobs':blobs}
-          with open('docs/platform/G48-INTEGRATION-BASELINE.json','w',encoding='utf-8') as fh:
-              fh.write(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
-          reviewed={
-            '.github/workflows/jenios-inter-vault-g48.yml':'482d651d38500316027fc3ef12a8f9a2dcfe55f9',
-            'app/admin/cobrancas/page.js':'45c69c3fba052e47fe685081566c394078765d65',
-            'app/api/admin/inter/setup/route.js':'1d5b59c81399439a795f45bc727539209661a797',
-            'app/components/InterAdminPanel.js':'17c519a10ba0d173d3e4a48c3df5040a7a8ac361',
-            'app/components/InterSetupForm.js':'fd5c37ee0a374d9f9ad45eed6d6e291b445f69de',
-            'docs/platform/G48-INTEGRATION-BASELINE.json':'d98099421ca03db6f6f101c37271c23050dc4631',
-            'docs/platform/G48-INTER-VAULT-CHECKPOINT.md':'d799ad80e2449d0951a820efd52e114ee059ff05',
-            'lib/assistant/pro-topups.mjs':'4a64f1937161dbdec2d5aa10a4492e1687266adc',
-            'lib/assistant/university-subscription.mjs':'bf806c88374a201415cddcad477743b3219dea0f',
-            'lib/pay/gateway.mjs':'3ecc0153641d26653f6961a80f5cb7550dbc4822',
-            'lib/pay/inter-material.mjs':'436cc0116ab13727bd89d36cd2414f085a44632b',
-            'lib/pay/inter-pix.mjs':'972e844bd114da995fe0694670aad0965e68dda2',
-            'lib/pay/inter-vault.mjs':'8d3c4756dd105ec69b7e67cf94d4f5359863aad3',
-            'lib/pay/pix-status.mjs':'5e349b067aaf95c099c5126f06321c152b2f73e6',
-            'lib/platform/monthly-billing.mjs':'18fb19799830c9297d86560bc7e22b7fc9d68f6a',
-            'scripts/check-inter-vault-g48.mjs':'d028a12f3280f17e0122f6dbb8b2f6adff4349d0',
-            'scripts/test-inter-vault-g48-postgres.mjs':'f9e038ddb662d24d1ee4799b141e0e8f8778a88c',
-            'supabase/migrations/20261025013000_jenios_g48_inter_vault_setup.sql':'010398868d518a8551aaf0cbe5a9e1b05b0bc937',
-            'tests/interPix.test.mjs':'d959c2654ee1f95bb390f5bc5e67742a484de935',
-            'tests/jeniosGeniosQuotaG45.test.mjs':'e1e033574b2617f6335c7bbf8888f244d02a893d',
-            'tests/jeniosInterSetupG48.test.mjs':'edff2ca614dfdf12b6851a927ce1cd0c17d6a3c8',
-            'tests/jeniosProTopupsB146.test.mjs':'4915e0abf2dcbe0454de3fe9d914d1083987b429',
-            'tests/jeniosUniversityMonthlyB147.test.mjs':'71387498e809063a818fee5f18eb714bc6d0822a',
-            'tests/paymentActivationR44.test.mjs':'f47358a4349d82cc4938d4789ffbd63c0c8bb9f5',
-            'tests/platformMonthlyG47.test.mjs':'a31a2d0079a2146f8fbbc29e966d633a32b51a4f',
-            'tests/sql/jenios_inter_setup_g48_regression.sql':'087ec6d6c6a17eef25c59a0adccbbf0c9db79a1a'
-          }
-          with open('docs/platform/G48-REVIEWED-CHANGES.json','w',encoding='utf-8') as fh:
-              fh.write(json.dumps({'baseCommit':base,'reviewedBlobs':reviewed},ensure_ascii=False,indent=2)+'\n')
+          with open('/tmp/g48-inventory/generated-baseline.json','w',encoding='utf-8') as fh:
+              fh.write(json.dumps({'baseCommit':base,'baseTree':tree,'blobs':blobs},ensure_ascii=False,indent=2)+'\n')
+          print('blob_count='+str(len(blobs)))
           PY
-          baseline_hash=$(git hash-object docs/platform/G48-INTEGRATION-BASELINE.json)
-          reviewed_hash=$(git hash-object docs/platform/G48-REVIEWED-CHANGES.json)
-          echo "baseline_hash=$baseline_hash"
-          echo "reviewed_hash=$reviewed_hash"
-          echo "baseline_bytes=$(wc -c < docs/platform/G48-INTEGRATION-BASELINE.json)"
-          echo "reviewed_bytes=$(wc -c < docs/platform/G48-REVIEWED-CHANGES.json)"
-          rm -rf .g48-bootstrap
-          rm -f .github/workflows/jenios-g48-bootstrap.yml
-          git add -A
-          echo "tree_hash=$(git write-tree)"
-          test "$baseline_hash" = d98099421ca03db6f6f101c37271c23050dc4631
-          test "$reviewed_hash" = 30559b9ccb308e11bdf2cdf781fa34cc941efde9
-          test "$(git write-tree)" = c425df0cf0edd2c652212e0f2991a13d3dba9809
+          git hash-object /tmp/g48-inventory/generated-baseline.json | tee /tmp/g48-inventory/git-hash.txt
+          sha256sum /tmp/g48-inventory/generated-baseline.json | tee /tmp/g48-inventory/sha256.txt
+          wc -c /tmp/g48-inventory/generated-baseline.json | tee /tmp/g48-inventory/bytes.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_G48_BASELINE_DIAGNOSTIC
+          path: /tmp/g48-inventory/
+          retention-days: 2
+          if-no-files-found: error

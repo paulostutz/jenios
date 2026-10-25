@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import hashlib
 import lzma
 import os
 from pathlib import Path, PurePosixPath
@@ -24,7 +23,6 @@ CHUNK_SHAS = [
 ]
 MANIFEST_ARCHIVE = Path(".g48-bootstrap/manifests.tar.xz")
 EXPECTED_MANIFEST_ARCHIVE_BLOB = "dc9d8d7f111db28423a27d9bc915d955b63a60eb"
-EXPECTED_MANIFEST_ARCHIVE_SHA256 = "f530a1e411b619a1f7ec3cdc9dc26599cc15700b5e69ee512b4063ff16e9f9c7"
 EXPECTED_BASELINE_BLOB = "d98099421ca03db6f6f101c37271c23050dc4631"
 EXPECTED_REVIEWED_BLOB = "30559b9ccb308e11bdf2cdf781fa34cc941efde9"
 
@@ -74,8 +72,6 @@ with tarfile.open(functional_tar, "r:") as archive:
 
 if run("git", "hash-object", str(MANIFEST_ARCHIVE)) != EXPECTED_MANIFEST_ARCHIVE_BLOB:
     raise RuntimeError("arquivo de manifestos divergente")
-if hashlib.sha256(MANIFEST_ARCHIVE.read_bytes()).hexdigest() != EXPECTED_MANIFEST_ARCHIVE_SHA256:
-    raise RuntimeError("checksum do arquivo de manifestos divergente")
 with tarfile.open(MANIFEST_ARCHIVE, "r:xz") as archive:
     safe_extract(archive, 2)
 

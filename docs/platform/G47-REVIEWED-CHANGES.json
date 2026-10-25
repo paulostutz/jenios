@@ -18,7 +18,7 @@
     "scripts/check-email-release-r42.mjs": "1c7877ff143d128b35196256fb2ea7cb97f825d7",
     "scripts/check-genios-activation-g44.mjs": "1c7877ff143d128b35196256fb2ea7cb97f825d7",
     "scripts/check-platform-monthly-g47.mjs": "df3d6eafc3da8a9ea293dd071243f895b3ed7885",
-    "scripts/test-platform-monthly-g47-postgres.mjs": "cf8526590517ee4cae0d4130d6a07de76d5094d0",
+    "scripts/test-platform-monthly-g47-postgres.mjs": "a1a898d0a95f35bfc39daa878c8b313126f91246",
     "supabase/migrations/20261025003623_jenios_platform_monthly_pix_g47.sql": "5790ef34485f2576105d532b297342dc5e19e4ce",
     "tests/platformMonthlyG47.test.mjs": "78074708fd813117a2efdf5b389f7e9404f81e68",
     "tests/platformR35PublicCheckoutSafety.test.mjs": "f01e234b2fa5dd2dc6dab70ef2886710509bf97e"

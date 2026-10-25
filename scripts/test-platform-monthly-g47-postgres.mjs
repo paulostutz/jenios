@@ -33,7 +33,15 @@ const file=async path=>sql(await readFile(new URL('../'+path,import.meta.url),'u
 assert.ok([dbName+'|127.0.0.1',dbName+'|::1'].includes(await sql("SELECT current_database()||'|'||coalesce(host(inet_server_addr()),'')")));
 assert.equal(await sql("SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','auth') AND c.relkind IN ('r','p','v','m')"),'0','Refusing nonempty database');
 console.log('G47_POSTGRES_VERSION '+await sql('SHOW server_version'));
-for(const path of ['tests/sql/jenios-assistant-conversations-g43-fixture.sql','supabase/migrations/20261012_jenios_pay_v1.sql','supabase/migrations/20261015212117_inter_pix_confirmation_r21.sql'])await file(path);
+for(const path of ['tests/sql/jenios-email-r42-fixture.sql','supabase/migrations/20261012_jenios_pay_v1.sql','supabase/migrations/20261015212117_inter_pix_confirmation_r21.sql'])await file(path);
+await sql(`GRANT SELECT,INSERT,UPDATE ON public.jenios_pay_products,public.jenios_pay_orders,
+ public.jenios_pay_payments,public.jenios_pay_subscriptions,public.jenios_pay_entitlements TO service_role;`);
+const emailMigrations=(await readdir(new URL('../supabase/migrations/',import.meta.url)))
+ .filter(name=>/^202610(?:22|23)\d{6}_jenios_b305_.*\.sql$/.test(name)).sort();
+assert.equal(emailMigrations.length,15);
+for(const name of emailMigrations)await file('supabase/migrations/'+name);
+await file('supabase/migrations/20261024175918_jenios_email_newsletter_admin_r42.sql');
+await file('supabase/migrations/20261024180008_jenios_email_dispatch_safety_r42.sql');
 const original=await sql("SELECT pg_get_functiondef('public.jenios_confirm_inter_pix(uuid,text,integer,text,timestamptz)'::regprocedure)");
 const migration='supabase/migrations/'+(await readdir(new URL('../supabase/migrations/',import.meta.url))).find(n=>n.endsWith('_jenios_platform_monthly_pix_g47.sql'));
 await file(migration);
@@ -75,6 +83,7 @@ const confirmed=await Promise.all([1,2].map(()=>json(confirm())));
 assert.ok(confirmed.every(x=>x.ok));assert.equal(confirmed.filter(x=>x.replayed).length,1);
 assert.equal(await sql(`SELECT current_period_end AT TIME ZONE 'UTC' FROM public.jenios_pay_subscriptions WHERE id='${first.invoice.subscription_id}'`),'2024-02-29 13:00:00');
 assert.equal(await sql(`SELECT status FROM public.jenios_pay_entitlements WHERE order_id='${orderId}'`),'active');
+assert.equal(await sql(`SELECT count(*) FROM public.jenios_transactional_email_outbox_b305 WHERE subscription_id='${first.invoice.subscription_id}' AND event_kind='plan_activated'`),'1');
 await assert.rejects(json(confirm(orderId,14990,"'2024-01-31T13:00:00Z'",'E'+'8'.repeat(31))),/Platform receipt mismatch/);
 await assert.rejects(sql(`SET ROLE service_role; UPDATE public.jenios_platform_invoices_g47 SET period_end=now() WHERE id='${invoiceId}'`),/Immutable Platform invoice/);
 const second=await json(prepareSql('g47_second_month_0001','platform-global-crypto',15000));assert.equal(second.ok,true);assert.equal(second.invoice.subscription_id,first.invoice.subscription_id);

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHmac} from 'node:crypto';
 import {readFileSync} from 'node:fs';
-import {inspectR82AlpacaLiveReadOnly,requireR82LiveReadOnlyGate}
+import {inspectR82AlpacaLiveReadOnly,requireR82LiveReadOnlyGate,probeR82StagedAlpacaLiveAccount}
  from '../lib/platform/connections/alpaca-live-readonly-r82.mjs';
 
 const user='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7';
@@ -121,4 +121,48 @@ test('R82 never contains a network order method, mutable endpoint or public rout
  assert.doesNotMatch(source,/method:'POST'|method:'DELETE'|method:'PATCH'/);
  assert.doesNotMatch(source,/\/v2\/orders|\/v2\/positions|return\s+account\.id/);
  assert.match(source,/privateWorkerOnly:true/);
+});
+
+test('R83 staged Live GET probe binds account without exposing broker ID or enabling orders',async()=>{
+ const p=provider();
+ const r=await probeR82StagedAlpacaLiveAccount({
+  session:input.session,
+  stagedConnection:{...input.storedLiveConnection,status:'STAGED',
+   identity_verified:false,external_digest:null,source:'JENIOS_R83_PRIVATE_OWNER_AUTH'},
+  credentials:{kind:'ALPACA_API_KEY_PAIR',...input.credentials},nowMs:now
+ },{env,fetcher:p.fetcher});
+ assert.equal(r.brokerDigest,expected);
+ assert.equal(r.liveExecution,false);assert.equal(r.ordersSent,0);
+ assert.equal(Object.hasOwn(r,'accountId'),false);
+ assert.deepEqual(p.calls.map(x=>x.method),['GET','GET']);
+});
+test('R83 OAuth bearer token uses official Live GET only, no trading permission',async()=>{
+ const credential={kind:'ALPACA_OAUTH_ACCESS_TOKEN',
+  accessToken:'syntheticOAuthAccessTokenFromApprovedClient123'};
+ const calls=[];
+ const p=provider();
+ const fetcher=async(url,opt)=>{
+  calls.push({url,method:opt.method,auth:opt.headers.Authorization,
+   hasKey:Object.hasOwn(opt.headers,'APCA-API-KEY-ID')});
+  return p.fetcher(url,opt);
+ };
+ const r=await inspectR82AlpacaLiveReadOnly({...input,credentials:credential},
+  {env,fetcher});
+ assert.equal(r.liveOrdersEnabled,false);
+ assert.deepEqual(calls.map(x=>x.method),['GET','GET']);
+ assert.equal(calls.every(x=>x.auth==='Bearer '+credential.accessToken),true);
+ assert.equal(calls.every(x=>x.hasKey===false),true);
+});
+test('R83 staged Live probe rejects wrong owner and already verified row',async()=>{
+ for(const patch of [{user_id:conn},{status:'READ_VERIFIED'},
+  {source:'untrusted'},{external_digest:expected}]){
+  const p=provider();
+  await assert.rejects(probeR82StagedAlpacaLiveAccount({
+   session:input.session,stagedConnection:{
+    ...input.storedLiveConnection,status:'STAGED',identity_verified:false,
+    external_digest:null,source:'JENIOS_R83_PRIVATE_OWNER_AUTH',...patch
+   },credentials:input.credentials,nowMs:now
+  },{env,fetcher:p.fetcher}),/R82_STAGED_LIVE_SCOPE_DENIED/);
+  assert.equal(p.calls.length,0);
+ }
 });

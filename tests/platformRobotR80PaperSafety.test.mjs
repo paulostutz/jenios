@@ -4,7 +4,8 @@ import {requireR80PaperSafety} from '../lib/platform/connections/paper-safety-ga
 const ownerUserId='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7';
 const connectionId='50b85e9d-339c-4d32-b2bf-82c467673832';
 const clientOrderId='r80-paper-1',nowMs=1793091600000;
-const scope={ownerUserId,connectionId,clientOrderId,nowMs};
+const scope={ownerUserId,connectionId,clientOrderId,nowMs,
+ order:{clientOrderId,side:'buy',quantity:'1',entry:'100'}};
 const env={VERCEL_ENV:'preview',JENIOS_REAL_EXECUTION_ENABLED:'false',
  JENIOS_PRIVATE_PAPER_REHEARSAL:'true',JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'true',
  JENIOS_PRIVATE_PAPER_EXECUTOR:'true'};
@@ -21,7 +22,8 @@ test('R80 blocks missing, paused, killed, revoked, stale and mismatched safety s
   {...state,paperConsentEnabled:false},{...state,liveExecutionEnabled:true},
   {...state,checkedAtMs:nowMs-30001},{...state,ownerUserId:connectionId},
   {...state,connectionId:ownerUserId},{...state,riskExpiresAtMs:nowMs-1},
-  {...state,maxNotionalUnits:null},{...state,approvalSource:null}])
+  {...state,maxNotionalUnits:null},{...state,maxNotionalUnits:'100000000'},
+  {...state,approvalSource:null}])
   await assert.rejects(run(bad),/R80_PAPER_SAFETY_NOT_CONFIRMED/);
 });
 test('R80 fails closed on missing or failing durable repository',async()=>{

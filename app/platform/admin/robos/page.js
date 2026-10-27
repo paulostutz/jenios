@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PlatformRobotDefinitiveAdmin from '../../../components/platform/PlatformRobotDefinitiveAdmin';
+import PlatformRobotHostHealth from '../../../components/platform/PlatformRobotHostHealth';
 
 export const dynamic = 'force-dynamic';
 export const metadata = {
@@ -22,6 +23,7 @@ export default function RobotDefinitiveAdminPage() {
         </p>
       </header>
       <PlatformRobotDefinitiveAdmin/>
+      <PlatformRobotHostHealth/>
     </div>
   </main>;
 }

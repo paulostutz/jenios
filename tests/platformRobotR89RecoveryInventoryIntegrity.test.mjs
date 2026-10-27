@@ -36,3 +36,23 @@ test('R89 refuses forged recovery list before broker lookup',async()=>{
  }
  assert.equal(called,1);
 });
+
+test('R92 rejects missing durable inventory before any broker or credential access',async()=>{
+ let brokerCalls=0;
+ const ledger={snapshot(){return [];},event(){}};
+ await assert.rejects(recoverR80PaperAfterRestart({
+  session,storedConnection,credentials:null,orders,nowMs:now
+ },{ledger,safetyStore,env,recorder:async()=>{brokerCalls++;}}),
+ /R91_DURABLE_RECOVERY_INVENTORY_REQUIRED/);
+ assert.equal(brokerCalls,0);
+});
+test('R92 refuses tampered journal receipt and keeps external dispatch disabled',async()=>{
+ let brokerCalls=0;
+ const ledger={snapshot(){return [];},event(){},
+  pendingRecovery(){return [{...orders[0],symbol:'MSFT'}];}};
+ await assert.rejects(recoverR80PaperAfterRestart({
+  session,storedConnection,credentials:null,orders,nowMs:now
+ },{ledger,safetyStore,env,recorder:async()=>{brokerCalls++;}}),
+ /R89_RECOVERY_INVENTORY_MISMATCH/);
+ assert.equal(brokerCalls,0);
+});

@@ -1,4 +1,4 @@
-name: JENIOS R80-R95 private safeguards (NO LIVE / NO ORDERS)
+name: JENIOS R80-R96 private safeguards (NO LIVE / NO ORDERS)
 on:
   push:
     branches: [fix/jenios-r80-private-paper-safety-20261027]
@@ -55,6 +55,7 @@ jobs:
             tests/platformRobotR93PrivateCoordinator.test.mjs \
             tests/platformRobotR94PrivateHostPreflight.test.mjs \
             tests/platformRobotR95OfflineStorageProbe.test.mjs \
+            tests/platformRobotR96BinancePrivateReadOnly.test.mjs \
             tests/platformRobotR79AtomicClaim.test.mjs \
             tests/platformRobotR78SignedPaperAuth.test.mjs \
             tests/platformRobotR77AlpacaPrivateTransport.test.mjs \

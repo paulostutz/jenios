@@ -66,6 +66,8 @@ test('R76 user without Platform admin has no access to private host rows',async(
 });
 test('R76 stale, degraded, unexpected live flags and missing hosts never appear active',()=>{
  assert.equal(projectR76HostHealth({...current,last_heartbeat_at:'2026-10-27T09:45:00Z'},{now:moment}).state,'STALE');
+ assert.equal(projectR76HostHealth({...current,last_cycle_at:'2026-10-27T09:45:00Z'},{now:moment}).state,'STALE');
+ assert.equal(projectR76HostHealth({...current,last_cycle_at:null},{now:moment}).state,'UNVERIFIED');
  assert.equal(projectR76HostHealth({...current,status:'DEGRADED'},{now:moment}).state,'DEGRADED');
  assert.equal(projectR76HostHealth({...current,last_heartbeat_at:'2026-10-27T10:01:00Z'},{now:moment}).state,'UNVERIFIED');
  assert.equal(projectR76HostHealth({...current,live_execution_enabled:true},{now:moment}).state,'UNVERIFIED');

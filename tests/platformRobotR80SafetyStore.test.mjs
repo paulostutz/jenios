@@ -38,9 +38,9 @@ test('R80 schema is service-only, defaults paused, revokes pending and lock-seri
  for(const re of [/jenios_robot_paper_safety_r80/,/default 'PAUSED'/i,
   /kill_switch_engaged boolean not null default true/i,/paper_consent_enabled boolean not null default false/i,
   /live_execution_enabled boolean not null default false/i,/enable row level security/i,
-  /revoke all on table[\\s\\S]*from public,anon,authenticated,service_role/i,
-  /grant select,insert,update on table[\\s\\S]*to service_role/i,
-  /jenios_r80_engage_paper_kill/,/set status='REVOKED',revoked_at=statement_timestamp\\(\\)/i,
+  /revoke all on table[\s\S]*from public,anon,authenticated,service_role/i,
+  /grant select,insert,update on table[\s\S]*to service_role/i,
+  /jenios_r80_engage_paper_kill/,/set status='REVOKED',revoked_at=statement_timestamp\(\)/i,
   /for update of s/i,/if not found then return; end if/i,
   /jenios_r79_claim_paper_approval/]) assert.match(sql,re);
  assert.doesNotMatch(sql,/security definer/i);

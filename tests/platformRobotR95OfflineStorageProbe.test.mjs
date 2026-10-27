@@ -64,10 +64,15 @@ test('R95 CLI defaults to refusal, then returns only bounded nonsecret evidence'
   const disabled=spawnSync(process.execPath,[cli],{encoding:'utf8'});
   assert.notEqual(disabled.status,0);
   assert.match(disabled.stderr,/R95_EXPLICIT_OFFLINE_PREFLIGHT_REQUIRED/);
+  // Vercel injects deployment markers during web CI. The standalone child is
+  // deliberately isolated to model a private Node runtime, not the web build.
+  const privateNodeEnv={...process.env,...env,
+   JENIOS_R95_PRIVATE_VOLUME:f.volume,
+   JENIOS_R95_CANARY_CONNECTION_ID:id};
+  delete privateNodeEnv.VERCEL;
+  delete privateNodeEnv.VERCEL_ENV;
   const result=spawnSync(process.execPath,[cli,'--offline-preflight'],
-   {encoding:'utf8',env:{...process.env,...env,
-    JENIOS_R95_PRIVATE_VOLUME:f.volume,
-    JENIOS_R95_CANARY_CONNECTION_ID:id}});
+   {encoding:'utf8',env:privateNodeEnv});
   assert.equal(result.status,0,result.stderr);
   const output=JSON.parse(result.stdout);
   assert.equal(output.ordersSent,0);

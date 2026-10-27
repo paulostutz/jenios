@@ -101,7 +101,7 @@ test('R78 does not allow forged receipts or database errors to claim approval',a
 });
 test('R78 is private: no HTTP routes, credentials, orders Live or withdrawal paths',()=>{
  const text=readFileSync(new URL('../lib/platform/connections/paper-signed-authorization-r78.mjs',import.meta.url),'utf8');
- assert.doesNotMatch(text,/api\\.alpaca\\.markets|\\/v2\\/withdrawals|\\/v2\\/positions\\/close|SUPABASE_SERVICE_ROLE_KEY/);
+ for(const forbidden of ['api.alpaca.markets','/v2/withdrawals','/v2/positions/close','SUPABASE_SERVICE_ROLE_KEY']) assert.equal(text.includes(forbidden),false,forbidden);
  assert.match(text,/submitAlpacaPaperOnce/);
  assert.match(text,/Ed25519|ed25519/);
  assert.match(text,/R78_DURABLE_CONSENT_REQUIRED/);

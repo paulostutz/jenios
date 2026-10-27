@@ -42,6 +42,8 @@ jobs:
           cache: npm
       - name: Install pinned app packages, no install scripts
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify frozen G49 baseline plus explicit R75 source hashes
+        run: node scripts/check-pro-image-g49.mjs && node scripts/check-mobile-m02.mjs && node scripts/check-inter-vault-g48.mjs
       - name: Verify restored R73 permissions and R75 strict security gates
         shell: bash
         run: |

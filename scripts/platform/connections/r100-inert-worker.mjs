@@ -4,7 +4,8 @@ const safeWrite=message=>process.stdout.write(JSON.stringify(message)+'\n');
 try{
  if(process.argv.length!==2)throw Error('R100_ARGUMENTS_DENIED');
  const result=attestR100InertWorker();
- safeWrite({event:'R100_INERT_BOOT',...result});
+ // Install shutdown handling before advertising READY; SIGTERM may arrive
+ // immediately after the first stdout line during an automated deploy.
  const idle=setInterval(()=>{},60000);
  const stop=()=>{
   clearInterval(idle);
@@ -12,6 +13,7 @@ try{
  };
  process.once('SIGTERM',stop);
  process.once('SIGINT',stop);
+ safeWrite({event:'R100_INERT_BOOT',...result});
 }catch{
  // Never print filesystem paths, environment variables, secrets, or stack traces.
  process.stderr.write('R100_INERT_BOOT_REFUSED\n');

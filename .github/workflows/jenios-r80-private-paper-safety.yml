@@ -38,6 +38,7 @@ jobs:
           node --test tests/platformRobotR80PaperSafety.test.mjs \
             tests/platformRobotR80SafetyStore.test.mjs \
             tests/platformRobotR80Issuer.test.mjs \
+            tests/platformRobotR80Recovery.test.mjs \
             tests/platformRobotR80WorkerBoundary.test.mjs \
             tests/platformRobotR79AtomicClaim.test.mjs \
             tests/platformRobotR78SignedPaperAuth.test.mjs \

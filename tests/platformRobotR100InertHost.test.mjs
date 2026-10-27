@@ -80,6 +80,7 @@ test('R100 Blueprint is review-only, private worker with persistent disk and aut
  assert.match(yaml,/startCommand:\s*node scripts\/platform\/connections\/r100-inert-worker\.mjs/);
  assert.match(yaml,/mountPath:\s*\/var\/data\/jenios/);
  assert.match(yaml,/sizeGB:\s*1/);
+ assert.doesNotMatch(yaml,/maxShutdownDelaySeconds:/);
  assert.doesNotMatch(yaml,/type:\s*(?:web|cron|pserv)\s*$/m);
  assert.doesNotMatch(yaml,/JENIOS_REAL_EXECUTION_ENABLED\s*\n\s*value:\s*['"]?true/);
  assert.doesNotMatch(yaml,/(?:sk-proj-|service_role_key|SUPABASE_SERVICE_ROLE_KEY)/i);

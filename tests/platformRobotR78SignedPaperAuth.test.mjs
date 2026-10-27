@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {generateKeyPairSync,sign} from 'node:crypto';
 import {units} from '../lib/platform/pilot-prep/contracts.mjs';
+import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
 import {canonicalR78PaperPermit,verifyR78PaperPermit,submitSignedR78PaperOnce} from '../lib/platform/connections/paper-signed-authorization-r78.mjs';
 const {publicKey,privateKey}=generateKeyPairSync('ed25519');
 const user='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7',connection='50b85e9d-339c-4d32-b2bf-82c467673832';
@@ -105,4 +106,33 @@ test('R78 is private: no HTTP routes, credentials, orders Live or withdrawal pat
  assert.match(text,/submitAlpacaPaperOnce/);
  assert.match(text,/Ed25519|ed25519/);
  assert.match(text,/R78_DURABLE_CONSENT_REQUIRED/);
+});
+
+test('R78 QA preview keeps all 20 external actions explicitly disabled',()=>{
+ const flags=['JENIOS_REAL_EXECUTION_ENABLED','JENIOS_PRIVATE_PAPER_EXECUTOR',
+  'JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED','JENIOS_ROBOT_ANALYST_PAID_ENABLED',
+  'JENIOS_ROBOT_R73_ADMIN_ENABLED','JENIOS_PAY_PAYMENTS_ENABLED',
+  'JENIOS_PRO_PAYMENTS_ENABLED','JENIOS_INTER_CHARGES_ENABLED',
+  'JENIOS_EMAIL_PRODUCTION_ENABLED','JENIOS_EMAIL_DISPATCHER_ENABLED',
+  'JENIOS_PAYMENT_EMAILS_ENABLED','JENIOS_TRANSACTIONAL_EMAILS_ENABLED',
+  'JENIOS_MARKETING_EMAILS_ENABLED','JENIOS_MARKETING_PLANNER_ENABLED',
+  'JENIOS_SUBSCRIPTION_DUNNING_ENABLED','JENIOS_RESEND_WEBHOOK_ENABLED',
+  'JENIOS_PRO_GENERATION_ENABLED','JENIOS_SALES_GENERATIVE_ENABLED',
+  'JENIOS_ASSISTANT_MEMORY_ENABLED','NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED'];
+ const safe={VERCEL_ENV:'preview',
+  VERCEL_PROJECT_ID:'prj_44ipBY3R9sHlQDAXY7NUn1zDguw4',
+  VERCEL_GIT_COMMIT_REF:'fix/jenios-r78-signed-paper-authorization-20261027',
+  NEXT_PUBLIC_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',
+  SOCIAL_SUPABASE_URL:'https://rebzztxlzofxpfwjvbee.supabase.co',
+  NEXT_PUBLIC_SUPABASE_ANON_KEY:'test-public-placeholder',
+  PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+  NEXT_PUBLIC_PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',
+  NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:'test-platform-public-placeholder',
+  ...Object.fromEntries(flags.map(k=>[k,'false']))};
+ assert.deepEqual(checkS05DeploymentScope(safe),{ok:true,mode:'preview-isolated-robot-r75'});
+ for(const flag of flags){
+  assert.deepEqual(checkS05DeploymentScope({...safe,[flag]:'true'}),
+   {ok:false,reason:'R75_PREVIEW_EXTERNAL_ACTIONS_MUST_BE_DISABLED'});
+ }
+ assert.equal(checkS05DeploymentScope({...safe,VERCEL_ENV:'production'}).ok,false);
 });

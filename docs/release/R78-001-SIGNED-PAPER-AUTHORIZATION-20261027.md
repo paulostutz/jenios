@@ -19,3 +19,6 @@ Nenhuma chave de emissão, endpoint público, banco novo, cron, operação real,
 
 ## Aceite restante para piloto Paper real
 O serviço privado precisa emitir o aceite sob autenticação comprovada do proprietário, armazená-lo em relação durável auditada, executar leitura oficial com credenciais Paper inseridas em canal seguro pelo titular e utilizar este wrapper. Validar ainda o recibo oficial, a continuidade depois de reinício e a revisão humana de risco. Depois disso, implementar separadamente o executor Live e os limites aprovados por usuário e ativo. Nenhuma parceria genérica substitui os controles específicos da corretora/API.
+
+## R78.002 — Isolamento de Preview
+A branch R78 foi explicitamente incluída na whitelist de Preview do guard S05, sob o mesmo projeto JENIOS, banco Social QA, banco Platform dedicado e 20 recursos externos obrigatoriamente desativados. Teste automatizado recusa qualquer flag externa ativada ou tentativa de promover a branch R78 a production. A identidade administrativa R73 continua protegida e o runtime R74 permanece em ciclos sintéticos.

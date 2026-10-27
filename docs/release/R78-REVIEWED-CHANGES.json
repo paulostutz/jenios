@@ -4,10 +4,11 @@
   "source": "R77 private Paper transport + Ed25519 operator and durable server approval",
   "reviewedBlobs": {
     "lib/platform/connections/paper-signed-authorization-r78.mjs": "bc0f81b4443eb9dfe497f1c1b5a0e01f803ce8c9",
-    "tests/platformRobotR78SignedPaperAuth.test.mjs": "eeae820fb1bb4409d9ec35532bfcf747b909b7c9",
-    "docs/release/R78-001-SIGNED-PAPER-AUTHORIZATION-20261027.md": "85ddae3272839d288dde685367fcf724bd31337b",
+    "tests/platformRobotR78SignedPaperAuth.test.mjs": "3e19e8e40ba36768a9b9448ad7bdc44fc90a0ee9",
+    "docs/release/R78-001-SIGNED-PAPER-AUTHORIZATION-20261027.md": "80bdf520e437647bb659cbc564d2bbcfb21055e2",
     ".github/workflows/jenios-r78-paper-authorization.yml": "4ea5869cb82f39a865d55dc98e15bd4cf71b10e3",
-    "scripts/check-pro-image-g49.mjs": "cbf0f76a575583ac7b2bde9b18aab85b9496bcfd"
+    "scripts/check-pro-image-g49.mjs": "1f86b2630f6535bf271dc3dc12c348b2e3923123",
+    "lib/release/environment-scope.mjs": "5fedf86fe7a5b511a8b9b2aa4ca9611667a3a25e"
   },
   "restrictions": {
     "realOrdersEnabled": false,

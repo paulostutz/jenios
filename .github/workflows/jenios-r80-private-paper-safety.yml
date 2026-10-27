@@ -47,6 +47,9 @@ jobs:
             tests/platformRobotR83PrivateWorker.test.mjs \
             tests/platformRobotR80Recovery.test.mjs \
             tests/platformRobotR80WorkerBoundary.test.mjs \
+            tests/platformRobotR85Readiness.test.mjs \
+            tests/platformRobotR86LedgerRestart.test.mjs \
+            tests/platformRobotR87RecoveryInventory.test.mjs \
             tests/platformRobotR79AtomicClaim.test.mjs \
             tests/platformRobotR78SignedPaperAuth.test.mjs \
             tests/platformRobotR77AlpacaPrivateTransport.test.mjs \

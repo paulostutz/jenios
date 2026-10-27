@@ -1,0 +1,44 @@
+name: JENIOS R78 private PAPER approval security (NO ORDERS)
+on:
+  push:
+    branches: [fix/jenios-r78-persistent-paper-consent-20261027]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jenios-r78-consent-security
+  cancel-in-progress: false
+jobs:
+  test-approval:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22'}
+      - name: No external credentials or network; verify pure approval protocol
+        run: node --test tests/platformRobotR78Approval.test.mjs
+      - name: Confirm no new execution API and no public deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e app/api/platform/robots/execute/route.js
+          test ! -e app/api/platform/orders/live/route.js
+          git diff --quiet HEAD~4 HEAD -- native-app supabase/migrations app/api lib/platform/connections/alpaca-paper-private-transport-r77.mjs
+      - name: Save exact source commit for recovery
+        run: |
+          mkdir -p r78-evidence
+          git rev-parse HEAD > r78-evidence/COMMIT.txt
+          sha256sum lib/platform/connections/robot-r78-paper-approval.mjs > r78-evidence/SHA256SUMS.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_R78_CONSENT_TESTS
+          path: r78-evidence/
+          retention-days: 30
+          if-no-files-found: error

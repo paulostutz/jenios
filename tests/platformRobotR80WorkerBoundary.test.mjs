@@ -29,7 +29,9 @@ test('R80 verified safety alone never bypasses signed consent',async()=>{
  await assert.rejects(submitR80GuardedPaperOnce({...input,signature:'invalid'},{
   env,safetyStore:{readSafety:async()=>({ownerUserId:owner,connectionId:conn,
    status:'ACTIVE',killSwitchEngaged:false,paperConsentEnabled:true,
-   liveExecutionEnabled:false,checkedAtMs:now})},
+   liveExecutionEnabled:false,checkedAtMs:now,
+   riskApprovedAtMs:now-1000,riskExpiresAtMs:now+100000,maxNotionalUnits:'15000000000',
+   approvalSource:'PLATFORM_OWNER_SERVER_VERIFIED'})},
   paperExecutor:async()=>{attempts++;}
  }),/R78_INVALID_SIGNED_PERMIT/);
  assert.equal(attempts,0);

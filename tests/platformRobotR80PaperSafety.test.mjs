@@ -9,7 +9,9 @@ const env={VERCEL_ENV:'preview',JENIOS_REAL_EXECUTION_ENABLED:'false',
  JENIOS_PRIVATE_PAPER_REHEARSAL:'true',JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED:'true',
  JENIOS_PRIVATE_PAPER_EXECUTOR:'true'};
 const state={ownerUserId,connectionId,status:'ACTIVE',killSwitchEngaged:false,
- paperConsentEnabled:true,liveExecutionEnabled:false,checkedAtMs:nowMs};
+ paperConsentEnabled:true,liveExecutionEnabled:false,checkedAtMs:nowMs,
+ riskApprovedAtMs:nowMs-1000,riskExpiresAtMs:nowMs+100000,maxNotionalUnits:'15000000000',
+ approvalSource:'PLATFORM_OWNER_SERVER_VERIFIED'};
 const run=(s=state,e=env)=>requireR80PaperSafety(scope,{env:e,store:{readSafety:async()=>s}});
 test('R80 accepts only recent trusted private PAPER state',async()=>{
  const result=await run();assert.equal(result.paperOnly,true);assert.equal(result.liveExecution,false);
@@ -18,7 +20,8 @@ test('R80 blocks missing, paused, killed, revoked, stale and mismatched safety s
  for(const bad of [null,{...state,status:'PAUSED'},{...state,killSwitchEngaged:true},
   {...state,paperConsentEnabled:false},{...state,liveExecutionEnabled:true},
   {...state,checkedAtMs:nowMs-30001},{...state,ownerUserId:connectionId},
-  {...state,connectionId:ownerUserId}])
+  {...state,connectionId:ownerUserId},{...state,riskExpiresAtMs:nowMs-1},
+  {...state,maxNotionalUnits:null},{...state,approvalSource:null}])
   await assert.rejects(run(bad),/R80_PAPER_SAFETY_NOT_CONFIRMED/);
 });
 test('R80 fails closed on missing or failing durable repository',async()=>{

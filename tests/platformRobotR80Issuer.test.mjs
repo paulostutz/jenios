@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {generateKeyPairSync,createPublicKey,verify} from 'node:crypto';
+import {generateKeyPairSync,verify} from 'node:crypto';
 import {canonicalR78PaperPermit} from '../lib/platform/connections/paper-signed-authorization-r78.mjs';
 import {issueR80PaperPermit} from '../lib/platform/connections/paper-permit-issuer-r80.mjs';
 const user='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7',connection='50b85e9d-339c-4d32-b2bf-82c467673832';
@@ -52,7 +52,7 @@ test('R80 private issuer uses Platform Auth principal and signs canonical Ed2551
  assert.equal(result.permit.ownerUserId,user);assert.equal(result.permit.connectionId,connection);
  assert.equal(result.permit.environment,'paper');assert.equal(result.liveExecution,false);
  assert.equal(verify(null,Buffer.from(canonicalR78PaperPermit(result.permit)),
-  createPublicKey(publicKey),Buffer.from(result.signature,'base64')),true);
+  publicKey,Buffer.from(result.signature,'base64')),true);
 });
 test('R80 issuer refuses production, missing private key and missing consent',async()=>{
  for(const e of [{...env,VERCEL_ENV:'production'},

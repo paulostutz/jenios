@@ -11,6 +11,12 @@ const [mode,volumePath]=process.argv.slice(2);
 const dir=typeof volumePath==='string'?resolve(volumePath):'';
 const root=dirname(dir);
 if(process.env.JENIOS_R98_FIXTURE_ONLY!=='true'||
+   process.env.JENIOS_R98_OFFLINE_CRASH_PROBE_ONLY!=='true'||
+   process.env.JENIOS_PRIVATE_PAPER_REHEARSAL!=='true'||
+   process.env.JENIOS_REAL_EXECUTION_ENABLED!=='false'||
+   process.env.JENIOS_PRIVATE_PAPER_EXECUTOR!=='false'||
+   process.env.JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED!=='false'||
+   process.env.JENIOS_PAY_PAYMENTS_ENABLED!=='false'||
    process.env.VERCEL!==undefined||process.env.VERCEL_ENV!==undefined||
    !['seed','resume','verify'].includes(mode)||
    basename(dir)!=='private'||dirname(root)!==process.cwd()||

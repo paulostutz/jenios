@@ -33,19 +33,27 @@ function store({userId=user,confirmed=true,status='ACTIVE',killed=false,expiry=n
     };}
    };
   },
-  async rpc(name){asked++;assert.equal(name,'jenios_r80_read_paper_safety');
+  async rpc(name,vars){
+   if(name==='jenios_r81_register_signed_paper_permit'){
+    inserted++;
+    assert.equal(vars.p_owner_user_id,user);
+    assert.equal(vars.p_connection_id,connection);
+    return {data:!failInsert,error:null};
+   }
+   asked++;assert.equal(name,'jenios_r80_read_paper_safety');
    return {data:[{owner_user_id:user,connection_id:connection,status,
     kill_switch_engaged:killed,paper_consent_enabled:true,
     live_execution_enabled:false,max_notional_units:'15000000000',
     risk_approved_at:new Date(now-100000).toISOString(),
     risk_expires_at:new Date(expiry).toISOString(),
     approval_source:'PLATFORM_OWNER_SERVER_VERIFIED',
-    checked_at:new Date(now).toISOString()}],error:null};}
+    checked_at:new Date(now).toISOString()}],error:null};
+  }
  };
  return {db,get inserted(){return inserted;},get asked(){return asked;}};
 }
 const issue=(db,e=env,p=input)=>issueR80PaperPermit(p,{db,env:e,clock:()=>now,uuid:()=> '4528a72f-c988-45cc-a9f3-7a28d98b40ac'});
-test('R80 private issuer uses Platform Auth principal and signs canonical Ed25519 permit after persistence',async()=>{
+test('R81 signed Paper permit is atomically registered against owner risk before release',async()=>{
  const ctx=store();
  const result=await issue(ctx.db);
  assert.equal(ctx.inserted,1);assert.equal(ctx.asked,1);
@@ -71,7 +79,7 @@ test('R80 issuer rejects forged owner, unconfirmed email, revoked account and ex
   assert.equal(ctx.inserted,0);
  }
 });
-test('R80 issuer never returns a signed permit if durable insert fails',async()=>{
+test('R81 issuer never returns a signed permit if atomic consent registration fails',async()=>{
  const ctx=store({failInsert:true});
  await assert.rejects(issue(ctx.db),/R80_APPROVAL_PERSISTENCE_FAILED/);
 });

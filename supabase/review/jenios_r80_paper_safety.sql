@@ -75,7 +75,7 @@ begin
  where c.id=p_connection_id and c.user_id=p_owner_user_id
  on conflict (owner_user_id,connection_id) do update set
   status='PAUSED',kill_switch_engaged=true,paper_consent_enabled=false,
-  revision=public.jenios_robot_paper_safety_r80.revision+1,
+  revision=jenios_robot_paper_safety_r80.revision+1,
   updated_at=statement_timestamp();
  get diagnostics affected = row_count;
  if affected <> 1 then return false; end if;

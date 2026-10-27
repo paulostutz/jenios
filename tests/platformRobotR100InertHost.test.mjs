@@ -122,7 +122,11 @@ test('R100 inert CLI boot and SIGTERM shutdown remain zero-order without port or
   assert.equal(x.end.code,0);
   assert.equal(x.end.signal,null);
   assert.match(x.output,/R100_INERT_STOP/);
-  assert.equal(x.errorOutput,'');
+  // Node 22 may emit the built-in node:sqlite ExperimentalWarning merely
+  // from importing B152 via the existing R94 preflight. Reject all other stderr.
+  const expectedNodeSQLiteWarning=/^\\(node:\\d+\\) ExperimentalWarning: SQLite is an experimental feature and might change at any time\\n\\(Use \`node --trace-warnings \\.\\.\\.` to show where the warning was created\\)\\n$/;
+  assert.ok(x.errorOutput===''||expectedNodeSQLiteWarning.test(x.errorOutput),
+   'R100_UNEXPECTED_WORKER_STDERR');
   assert.doesNotMatch(x.output,/private|secret|apiKey|Bearer /i);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });

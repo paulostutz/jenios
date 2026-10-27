@@ -1,5 +1,5 @@
 /** R95 private Node offline probe. No listener, network, auth token or order dispatch. */
-import {runR95OfflineStorageProbe} from '../../lib/platform/connections/private-host-continuity-r95.mjs';
+import {runR95OfflineStorageProbe} from '../../../lib/platform/connections/private-host-continuity-r95.mjs';
 if(process.argv.length!==3||process.argv[2]!=='--offline-preflight'){
  process.stderr.write('R95_EXPLICIT_OFFLINE_PREFLIGHT_REQUIRED\n');
  process.exitCode=1;

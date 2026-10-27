@@ -117,7 +117,9 @@ test('R96 refuses changed account digest, revoked connection or wrong broker sco
  ]){
   const f=fixture({account:{...stored,...patch}});
   await assert.rejects(inspect(f));
-  assert.equal(f.apiGets,0);
+  // A syntactically valid but wrong digest is detected only after three
+  // signed official GETs; all structural scope errors must block before GET.
+  assert.equal(f.apiGets,Object.hasOwn(patch,'external_digest')?3:0);
  }
  const changed=fixture({serverUid:uid+1});
  await assert.rejects(inspect(changed),/R96_TESTNET_ACCOUNT_CHANGED/);

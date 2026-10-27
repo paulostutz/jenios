@@ -1,0 +1,64 @@
+# REVIEW-ONLY DRAFT — do not connect as a Render Blueprint without cost approval.
+# Applying it creates a PAID worker/disk. Auto-deploy OFF does not mean free.
+services:
+  - type: worker
+    name: jenios-r100-private-inert-review-only
+    runtime: node
+    repo: https://github.com/paulostutz/jenios
+    branch: fix/jenios-r80-private-paper-safety-20261027
+    region: virginia
+    plan: 0.5c-512mb
+    autoDeployTrigger: off
+    numInstances: 1
+    buildCommand: npm ci --ignore-scripts --no-audit --no-fund
+    startCommand: node scripts/platform/connections/r100-inert-worker.mjs
+    maxShutdownDelaySeconds: 30
+    disk:
+      name: jenios-private-ledger
+      mountPath: /var/data/jenios
+      sizeGB: 1
+    envVars:
+      - key: JENIOS_R100_RUNTIME_CLASS
+        value: isolated-node
+      - key: JENIOS_R100_HOST_KIND
+        value: background-worker
+      - key: JENIOS_R100_INERT_WORKER_ENABLED
+        value: "true"
+      - key: JENIOS_R100_NETWORK_DISABLED
+        value: "true"
+      - key: JENIOS_R100_PRIVATE_VOLUME
+        value: /var/data/jenios
+      - key: JENIOS_DEMO_CONNECTORS_ENABLED
+        value: "false"
+      - key: JENIOS_R93_PRIVATE_NODE_WORKER
+        value: "false"
+      - key: JENIOS_R93_READONLY_RECOVERY_ENABLED
+        value: "false"
+      - key: JENIOS_R95_OFFLINE_STORAGE_PROBE_ENABLED
+        value: "false"
+      - key: JENIOS_R96_PRIVATE_NODE_WORKER
+        value: "false"
+      - key: JENIOS_R96_BINANCE_PRIVATE_READ_ENABLED
+        value: "false"
+      - key: JENIOS_R98_OFFLINE_CRASH_PROBE_ONLY
+        value: "false"
+      - key: JENIOS_R94_PRIVATE_WORKER_ENABLED
+        value: "false"
+      - key: JENIOS_R94_READONLY_ONLY
+        value: "true"
+      - key: JENIOS_REAL_EXECUTION_ENABLED
+        value: "false"
+      - key: JENIOS_PRIVATE_PAPER_EXECUTOR
+        value: "false"
+      - key: JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED
+        value: "false"
+      - key: JENIOS_R80_PRIVATE_ISSUER_ENABLED
+        value: "false"
+      - key: JENIOS_R82_ALPACA_LIVE_ORDER_EXECUTION_ENABLED
+        value: "false"
+      - key: JENIOS_R83_PRIVATE_NODE_WORKER
+        value: "false"
+      - key: JENIOS_PAY_PAYMENTS_ENABLED
+        value: "false"
+      - key: JENIOS_INTER_CHARGES_ENABLED
+        value: "false"

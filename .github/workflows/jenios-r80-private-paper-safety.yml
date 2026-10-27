@@ -1,0 +1,54 @@
+name: JENIOS R80 private PAPER safety (NO LIVE / NO ORDERS)
+on:
+  push:
+    branches: [fix/jenios-r80-private-paper-safety-20261027]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jenios-r80-paper-safety
+  cancel-in-progress: false
+jobs:
+  verify-r80:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: synthetic-platform-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: synthetic-social-public-key
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - name: Install exact existing dependency graph
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify R80 safety, R79 atomic consent, R78 signatures and R77 transport
+        run: |
+          node --test tests/platformRobotR80PaperSafety.test.mjs \
+            tests/platformRobotR80WorkerBoundary.test.mjs \
+            tests/platformRobotR79AtomicClaim.test.mjs \
+            tests/platformRobotR78SignedPaperAuth.test.mjs \
+            tests/platformRobotR77AlpacaPrivateTransport.test.mjs \
+            tests/platformAlpacaPaperLedgerReconcile.test.mjs
+      - name: Full regression and Next.js compilation
+        run: npm run build
+      - name: Preserve existing app, public APIs and private R77 transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e app/api/platform/robots/execute/route.js
+          test ! -e app/api/platform/orders/live/route.js
+          test ! -e app/api/platform/brokers/submit/route.js
+          git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- native-app app/api public supabase/migrations
+          git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs

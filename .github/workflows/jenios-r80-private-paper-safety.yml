@@ -44,6 +44,7 @@ jobs:
             tests/platformRobotR82LiveReadOnly.test.mjs \
             tests/platformRobotR83LiveVault.test.mjs \
             tests/platformRobotR83VaultStore.test.mjs \
+            tests/platformRobotR83PrivateWorker.test.mjs \
             tests/platformRobotR80Recovery.test.mjs \
             tests/platformRobotR80WorkerBoundary.test.mjs \
             tests/platformRobotR79AtomicClaim.test.mjs \

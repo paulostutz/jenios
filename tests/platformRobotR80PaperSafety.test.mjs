@@ -31,6 +31,10 @@ test('R80 fails closed on missing or failing durable repository',async()=>{
  await assert.rejects(requireR80PaperSafety(scope,{env,store:{readSafety:async()=>{throw Error('db');}}}),
   /R80_DURABLE_SAFETY_UNAVAILABLE/);
 });
+test('R81 tolerates only bounded database clock skew',async()=>{
+ assert.equal((await run({...state,checkedAtMs:nowMs+4999})).paperOnly,true);
+ await assert.rejects(run({...state,checkedAtMs:nowMs+5001}),/R80_PAPER_SAFETY_NOT_CONFIRMED/);
+});
 test('R80 refuses production and live enabled regardless of trusted state',async()=>{
  for(const bad of [{...env,VERCEL_ENV:'production'},
   {...env,JENIOS_REAL_EXECUTION_ENABLED:'true'},

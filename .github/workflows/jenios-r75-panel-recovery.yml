@@ -1,0 +1,90 @@
+name: JENIOS R75 restore certified robot admin (NO LIVE)
+on:
+  push:
+    branches: [audit/jenios-r75-backups-reconciliation-20261026]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jenios-r75-backup-restore-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify-robot-admin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: fixture-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fixture-public-key
+      JENIOS_ASSISTANT_MEMORY_ENABLED: 'false'
+      JENIOS_SALES_GENERATIVE_ENABLED: 'false'
+      JENIOS_PRO_GENERATION_ENABLED: 'false'
+      JENIOS_PRO_PAYMENTS_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+      JENIOS_ROBOT_R73_ADMIN_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned app packages, no install scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify restored R73 permissions and R75 strict security gates
+        shell: bash
+        run: |
+          mkdir -p .jenios-r75-evidence
+          set -o pipefail
+          node --test tests/platformRobotR73DefinitiveStatus.test.mjs tests/platformRobotR75Restoration.test.mjs 2>&1 | tee .jenios-r75-evidence/robot-admin-tests.log
+      - name: Run complete tests + S05 regression + Next.js build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee .jenios-r75-evidence/build.log
+      - name: Validate anonymous static page and deny API without configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          node_modules/.bin/next start -H 127.0.0.1 -p 3127 > .jenios-r75-evidence/server.log 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do
+            if curl -fsS -o /dev/null http://127.0.0.1:3127/platform/admin/robos; then break; fi
+            sleep 1
+          done
+          PAGE=$(curl -sS -o /tmp/jenios-r75-robots.html -w '%{http_code}' http://127.0.0.1:3127/platform/admin/robos)
+          API=$(curl -sS -o /tmp/jenios-r75-api.txt -w '%{http_code}' http://127.0.0.1:3127/api/platform/admin/robots/status)
+          test "$PAGE" = "200"
+          test "$API" = "404"
+          grep -q 'Administração dos robôs' /tmp/jenios-r75-robots.html
+          printf 'staticPage=%s\nadminApiFailClosed=%s\n' "$PAGE" "$API" > .jenios-r75-evidence/smoke.txt
+      - name: Save source hash and checkpoint evidence
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .jenios-r75-evidence
+          git rev-parse HEAD > .jenios-r75-evidence/COMMIT.txt
+          git archive --format=zip --output=.jenios-r75-evidence/JENIOS_R75_RESTORE_SOURCE.zip HEAD
+          (cd .jenios-r75-evidence && sha256sum JENIOS_R75_RESTORE_SOURCE.zip > SHA256SUMS.txt)
+          cp docs/release/R75-001-BACKUPS-E-ESTADO-REAL-20261026.md .jenios-r75-evidence/
+          cp docs/release/R75-002-REGRESSAO-PAINEL-R73-20261026.md .jenios-r75-evidence/
+      - name: Upload preserved regression and source
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_R75_RECOVERY_CI
+          path: .jenios-r75-evidence/
+          retention-days: 30
+          if-no-files-found: warn

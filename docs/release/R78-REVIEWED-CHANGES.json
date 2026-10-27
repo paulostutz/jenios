@@ -1,0 +1,20 @@
+{
+  "schema": "JENIOS_R78_SIGNED_PAPER_PERMIT_SOURCE_V1",
+  "baseCommit": "691db9e5e27a44a03d3edf33b32260c88f7d0337",
+  "source": "R77 private Paper transport + Ed25519 operator and durable server approval",
+  "reviewedBlobs": {
+    "lib/platform/connections/paper-signed-authorization-r78.mjs": "bc0f81b4443eb9dfe497f1c1b5a0e01f803ce8c9",
+    "tests/platformRobotR78SignedPaperAuth.test.mjs": "9a69ca2bfc5aeb1e7be983a8ca614290988b14c9",
+    "docs/release/R78-001-SIGNED-PAPER-AUTHORIZATION-20261027.md": "85ddae3272839d288dde685367fcf724bd31337b",
+    ".github/workflows/jenios-r78-paper-authorization.yml": "4ea5869cb82f39a865d55dc98e15bd4cf71b10e3",
+    "scripts/check-pro-image-g49.mjs": "cbf0f76a575583ac7b2bde9b18aab85b9496bcfd"
+  },
+  "restrictions": {
+    "realOrdersEnabled": false,
+    "paperOrdersEnabledOnVercel": false,
+    "userFundsCustodied": false,
+    "paymentEnabled": false,
+    "privateEngineModified": false
+  },
+  "notes": "Source SHA1 Git blobs pinned; no signing private key, credentials, or public execute API."
+}

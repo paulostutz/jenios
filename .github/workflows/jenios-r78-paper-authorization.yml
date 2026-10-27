@@ -1,0 +1,62 @@
+name: JENIOS R78 signed PAPER owner authorization (NO LIVE)
+on:
+  push:
+    branches: [fix/jenios-r78-signed-paper-authorization-20261027]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jenios-r78-paper-consent
+  cancel-in-progress: false
+jobs:
+  verify-r78:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: synthetic-platform-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: synthetic-social-public-key
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install frozen dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Verify frozen G49 G48 M02 and R75–R78 source hashes
+        run: node scripts/check-pro-image-g49.mjs && node scripts/check-mobile-m02.mjs && node scripts/check-inter-vault-g48.mjs
+      - name: Test signed Paper consent and R77 durable once-only protocol
+        run: |
+          node --test tests/platformRobotR78SignedPaperAuth.test.mjs tests/platformRobotR77AlpacaPrivateTransport.test.mjs tests/platformAlpacaPaperLedgerReconcile.test.mjs
+      - name: Run all general and Social tests plus Next.js build
+        run: npm run build
+      - name: Preserve source archive with checksum
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .jenios-r78-ci
+          git rev-parse HEAD > .jenios-r78-ci/COMMIT.txt
+          git archive --format=zip --output=.jenios-r78-ci/JENIOS_R78_PUBLIC_SOURCE.zip HEAD
+          (cd .jenios-r78-ci && sha256sum JENIOS_R78_PUBLIC_SOURCE.zip > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: JENIOS_R78_SIGNED_PAPER_CONSENT_CI
+          path: .jenios-r78-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: warn

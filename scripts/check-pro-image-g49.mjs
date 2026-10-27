@@ -13,6 +13,8 @@ export function verifyProImageG49(){
  const r75ManifestPath='docs/release/R75-REVIEWED-CHANGES.json';
  const r76ManifestPath='docs/release/R76-REVIEWED-CHANGES.json';
  const r77ManifestPath='docs/release/R77-REVIEWED-CHANGES.json';
+ const r78ManifestPath='docs/release/R78-REVIEWED-CHANGES.json';
+ const r78Paths=[".github/workflows/jenios-r78-paper-authorization.yml","docs/release/R78-001-SIGNED-PAPER-AUTHORIZATION-20261027.md","lib/platform/connections/paper-signed-authorization-r78.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR78SignedPaperAuth.test.mjs"];
  const r77Paths=[".github/workflows/jenios-r77-private-paper.yml","docs/release/R77-001-ALPACA-PAPER-PRIVATE-TRANSPORT-20261027.md","lib/platform/connections/alpaca-paper-private-transport-r77.mjs","lib/release/environment-scope.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR77AlpacaPrivateTransport.test.mjs"];
  const r76Paths=[".github/workflows/jenios-r76-host-health.yml","app/api/platform/admin/robots/host-health/route.js","app/components/platform/PlatformRobotHostHealth.js","app/platform/admin/robos/page.js","docs/release/R76-001-SAUDE-HOST-R74-20261027.md","lib/platform/research/robot-r76-host-health.mjs","lib/release/environment-scope.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR76HostHealth.test.mjs"];
  const r75Paths=[".github/workflows/jenios-r75-panel-recovery.yml","app/api/platform/admin/robots/status/route.js","app/api/platform/internal/robots/deployment-status/route.js","app/components/platform/PlatformRobotDefinitiveAdmin.js","app/platform/admin/page.js","app/platform/admin/robos/page.js","app/platform/entrar/page.js","docs/release/R75-001-BACKUPS-E-ESTADO-REAL-20261026.md","docs/release/R75-002-REGRESSAO-PAINEL-R73-20261026.md","docs/release/R75-003-RECUPERACAO-CI-PREVIEW-20261026.md","lib/platform/research/b290-inversion-signal-contract.mjs","lib/platform/research/b297-private-readonly-audit.mjs","lib/platform/research/robot-r47-marketdata-freshness-fence.mjs","lib/platform/research/robot-r61-qa-access.mjs","lib/platform/research/robot-r63-admin-report.mjs","lib/platform/research/robot-r63-continuous-evolution.mjs","lib/platform/research/robot-r63-generative-analyst.mjs","lib/platform/research/robot-r63-observation-study.mjs","lib/platform/research/robot-r64-access.mjs","lib/platform/research/robot-r64-telemetry.mjs","lib/platform/research/robot-r65-cycle-access.mjs","lib/platform/research/robot-r67-access.mjs","lib/platform/research/robot-r67-private-protocol.mjs","lib/platform/research/robot-r71-access.mjs","lib/platform/research/robot-r73-definitive-status.mjs","lib/release/environment-scope.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR73DefinitiveStatus.test.mjs","tests/platformRobotR75PreviewScope.test.mjs","tests/platformRobotR75Restoration.test.mjs"];
@@ -37,10 +39,17 @@ export function verifyProImageG49(){
   assert.deepEqual(Object.keys(r77.reviewedBlobs||{}).sort(),r77Paths.slice().sort());
   assert.ok(Object.values(r77.reviewedBlobs).every(hash=>typeof hash==='string'&&/^[a-f0-9]{40}$/.test(hash)));
  }
+ const r78=existsSync(r78ManifestPath)?JSON.parse(readFileSync(r78ManifestPath)):null;
+ if(r78){
+  assert.equal(r78.schema,'JENIOS_R78_SIGNED_PAPER_PERMIT_SOURCE_V1');
+  assert.equal(r78.baseCommit,'691db9e5e27a44a03d3edf33b32260c88f7d0337');
+  assert.deepEqual(Object.keys(r78.reviewedBlobs||{}).sort(),r78Paths.slice().sort());
+  assert.ok(Object.values(r78.reviewedBlobs).every(hash=>typeof hash==='string'&&/^[a-f0-9]{40}$/.test(hash)));
+ }
  const blob=body=>createHash('sha1').update(Buffer.from('blob '+body.byteLength+'\0')).update(body).digest('hex');
- for(const [path,expected] of Object.entries({...base.blobs,...review.reviewedBlobs,...(r75?.reviewedBlobs||{}),...(r76?.reviewedBlobs||{}),...(r77?.reviewedBlobs||{})}))assert.equal(blob(readFileSync(path)),expected,'Unreviewed G49/R75 change: '+path);
+ for(const [path,expected] of Object.entries({...base.blobs,...review.reviewedBlobs,...(r75?.reviewedBlobs||{}),...(r76?.reviewedBlobs||{}),...(r77?.reviewedBlobs||{}),...(r78?.reviewedBlobs||{})}))assert.equal(blob(readFileSync(path)),expected,'Unreviewed G49/R75 change: '+path);
  const tracked=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
- assert.deepEqual(tracked.sort(),[...new Set([...Object.keys(base.blobs),...allowed,'docs/assistant/G49-REVIEWED-CHANGES.json',...(r75?[...r75Paths,r75ManifestPath]:[]),...(r76?[...r76Paths,r76ManifestPath]:[]),...(r77?[...r77Paths,r77ManifestPath]:[])])].sort());
+ assert.deepEqual(tracked.sort(),[...new Set([...Object.keys(base.blobs),...allowed,'docs/assistant/G49-REVIEWED-CHANGES.json',...(r75?[...r75Paths,r75ManifestPath]:[]),...(r76?[...r76Paths,r76ManifestPath]:[]),...(r77?[...r77Paths,r77ManifestPath]:[]),...(r78?[...r78Paths,r78ManifestPath]:[])])].sort());
  console.log('G49_IMAGE_SOURCE_PASS: '+Object.keys(base.blobs).length+' inherited files, '+allowed.size+' reviewed changes.');
 }
 if(process.argv[1]?.endsWith('/check-pro-image-g49.mjs'))verifyProImageG49();

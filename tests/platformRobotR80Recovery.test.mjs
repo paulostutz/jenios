@@ -11,7 +11,7 @@ const env={VERCEL_ENV:'preview',JENIOS_REAL_EXECUTION_ENABLED:'false',
  JENIOS_PRIVATE_PAPER_RECOVERY_ENABLED:'true',JENIOS_PRIVATE_PAPER_REHEARSAL:'true'};
 const safetyStore={readSafety:async()=>({ownerUserId:owner,connectionId:connection,
  status:'PAUSED',liveExecutionEnabled:false})};
-const ledger={snapshot:()=>[],event:()=>{}};
+const ledger={snapshot:()=>[],event:()=>{},pendingRecovery:()=>input.orders};
 test('R80 recovery can observe after restart while kill is engaged, without resubmitting',async()=>{
  let reads=0;
  const r=await recoverR80PaperAfterRestart(input,{env,safetyStore,ledger,

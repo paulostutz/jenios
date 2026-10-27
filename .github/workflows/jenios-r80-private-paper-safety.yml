@@ -24,6 +24,8 @@ jobs:
       JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
       JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
       JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_R80_PRIVATE_ISSUER_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_RECOVERY_ENABLED: 'false'
       JENIOS_PAY_PAYMENTS_ENABLED: 'false'
       JENIOS_INTER_CHARGES_ENABLED: 'false'
     steps:
@@ -33,7 +35,7 @@ jobs:
         with: {node-version: '22', cache: npm}
       - name: Install exact existing dependency graph
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: Verify R80 safety, R79 atomic consent, R78 signatures and R77 transport
+      - name: Verify R80 private safety, issuer, recovery and original R77-R79
         run: |
           node --test tests/platformRobotR80PaperSafety.test.mjs \
             tests/platformRobotR80SafetyStore.test.mjs \
@@ -46,7 +48,7 @@ jobs:
             tests/platformAlpacaPaperLedgerReconcile.test.mjs
       - name: Full regression and Next.js compilation
         run: npm run build
-      - name: Preserve existing app, public APIs and private R77 transport
+      - name: Preserve unrelated source and installed SQL version
         shell: bash
         run: |
           set -euo pipefail
@@ -54,8 +56,6 @@ jobs:
           test ! -e app/api/platform/orders/live/route.js
           test ! -e app/api/platform/brokers/submit/route.js
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- native-app app/api public
-          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -v '^supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql
-          git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs
- || true)"
+          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -v '^supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql$' || true)"
           cmp -s supabase/review/jenios_r80_paper_safety.sql supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs

@@ -57,6 +57,7 @@ jobs:
           test ! -e app/api/platform/orders/live/route.js
           test ! -e app/api/platform/brokers/submit/route.js
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- native-app app/api public
-          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -v '^supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql$' || true)"
+          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -Ev '^supabase/migrations/(20261027134227_jenios_robot_r80_private_paper_safety|20261027141752_jenios_robot_r81_paper_owner_risk)\.sql$' || true)"
           cmp -s supabase/review/jenios_r80_paper_safety.sql supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql
+          cmp -s supabase/review/jenios_r81_paper_owner_risk.sql supabase/migrations/20261027141752_jenios_robot_r81_paper_owner_risk.sql
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs

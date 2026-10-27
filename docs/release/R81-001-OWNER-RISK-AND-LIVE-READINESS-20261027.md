@@ -5,6 +5,7 @@ Branch `fix/jenios-r80-private-paper-safety-20261027`, PR #22 DRAFT, base de pro
 Esta entrega prepara a aprovação de **limites PAPER** e a transição futura, sem prometer homologação Live. Sem custódia, sem saques, sem Pix e sem mudança de CHEFE/LETTER, PAY, Social ou motor proprietário R74.
 
 ## Componentes R81
+- **Moeda obrigatória**: toda aprovação e assinatura Alpaca US-equity usa `USD` explicitamente; valores de risco são inteiros com escala `1e8`, jamais presumidos em BRL.
 - `lib/platform/connections/paper-owner-risk-r81.mjs`: serviço privado exige sessão real do titular validada em Supabase Auth Platform, e-mail confirmado, autorização PAPER explícita, conexão Alpaca Paper ativa, hash da conta, limites *não predefinidos* e expiração até 1 hora. Não aceita userId arbitrário enviado pelo cliente.
 - `supabase/review/jenios_r81_paper_owner_risk.sql`: proposta de migração aditiva, inicialmente em revisão; tabela de auditoria RLS service-only, inicialização em PAUSED, CAS de revisão para aprovar risco PAPER e registro atômico de autorizações assinadas. Pausas R80 e claim R79 compartilham locks sobre a mesma linha da conta.
 - `lib/platform/connections/paper-permit-issuer-r80.mjs`: registro de autorização muda de INSERT simples para RPC `jenios_r81_register_signed_paper_permit`; sem a migração instalada a emissão falha fechada. A assinatura Ed25519 permanece de emissão privada; nenhuma chave operacional foi gerada ou implantada.

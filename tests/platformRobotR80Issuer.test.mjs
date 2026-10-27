@@ -38,6 +38,7 @@ function store({userId=user,confirmed=true,status='ACTIVE',killed=false,expiry=n
     inserted++;
     assert.equal(vars.p_owner_user_id,user);
     assert.equal(vars.p_connection_id,connection);
+    assert.equal(vars.p_currency,'USD');
     return {data:!failInsert,error:null};
    }
    asked++;assert.equal(name,'jenios_r80_read_paper_safety');

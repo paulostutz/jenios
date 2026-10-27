@@ -8,7 +8,7 @@ const now=1793091600000,expiresAtMs=now+600000,limit='15000000000';
 const env={VERCEL_ENV:'preview',JENIOS_REAL_EXECUTION_ENABLED:'false',
  JENIOS_R81_PAPER_RISK_APPROVAL_ENABLED:'true'};
 const input={accessToken:'synthetic-platform-authentication-only-test-token',
- connectionId:conn,maxNotional:'150',expiresAtMs,
+ connectionId:conn,maxNotional:'150',currency:'USD',expiresAtMs,
  consent:'I_APPROVE_ALPACA_PAPER_RISK_FOR_MY_OWN_ACCOUNT',acceptsPaperRisk:true};
 function fake({rev=1,activated=true,ownerId=owner,connectionOwner=owner,expired=false}={}){
  const names=[];
@@ -38,6 +38,7 @@ test('R81 authenticates owner and stores explicit max-notional in atomic CAS',as
  const ctx=fake();
  const r=await run(ctx);
  assert.equal(r.riskApproved,true);assert.equal(r.liveExecution,false);assert.equal(r.maxNotionalUnits,limit);
+ assert.equal(r.currency,'USD');assert.equal(ctx.names[1].vars.p_currency,'USD');
  assert.deepEqual(ctx.names.map(n=>n.name),[
  'jenios_r81_initialize_paper_safety','jenios_r81_activate_paper_owner_risk',
  'jenios_r80_read_paper_safety']);
@@ -46,6 +47,7 @@ test('R81 authenticates owner and stores explicit max-notional in atomic CAS',as
 });
 test('R81 rejects missing consent, invalid expiry, zero risk and production',async()=>{
  for(const bad of [{...input,acceptsPaperRisk:false},{...input,consent:'YES'},
+  {...input,currency:'BRL'},{...input,currency:undefined},
   {...input,maxNotional:'0'},{...input,expiresAtMs:now+1000}]){
   const ctx=fake();await assert.rejects(run(ctx,bad));assert.equal(ctx.names.length,0);
  }
@@ -63,7 +65,8 @@ test('R81 SQL restricts owner activation and registration to service role and sh
   /grant execute on function public\.jenios_r81_activate_paper_owner_risk[\s\S]*to service_role/i,
   /s\.revision=p_expected_revision/i,/s\.status='PAUSED'/i,
   /for update of s/i,/jenios_r81_register_signed_paper_permit/,
-  /p_notional_units::numeric <= s\.max_notional_units::numeric/i])
+  /p_notional_units::numeric <= s\.max_notional_units::numeric/i,
+  /p_currency is distinct from 'USD'/i,/currency text not null check \(currency = 'USD'\)/i])
   assert.match(sql,pattern);
  assert.doesNotMatch(sql,/security definer/i);
 });

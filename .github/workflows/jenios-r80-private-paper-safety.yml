@@ -36,6 +36,8 @@ jobs:
       - name: Verify R80 safety, R79 atomic consent, R78 signatures and R77 transport
         run: |
           node --test tests/platformRobotR80PaperSafety.test.mjs \
+            tests/platformRobotR80SafetyStore.test.mjs \
+            tests/platformRobotR80Issuer.test.mjs \
             tests/platformRobotR80WorkerBoundary.test.mjs \
             tests/platformRobotR79AtomicClaim.test.mjs \
             tests/platformRobotR78SignedPaperAuth.test.mjs \

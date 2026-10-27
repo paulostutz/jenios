@@ -4,7 +4,7 @@ import {recoverR80PaperAfterRestart} from '../lib/platform/connections/paper-wor
 const owner='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7';
 const connection='50b85e9d-339c-4d32-b2bf-82c467673832',now=1793091600000;
 const input={session:{userId:owner,authenticated:true,diagnosticCompleted:true},
- storedConnection:{id:connection,user_id:owner,provider:'alpaca',environment:'paper',status:'active'},
+ storedConnection:{id:connection,user_id:owner,provider:'alpaca',environment:'paper',status:'active',identity_verified:true,external_digest:'a'.repeat(64),last_sync_at:new Date(now-1000).toISOString(),created_at:new Date(now-100000).toISOString()},
  credentials:null,nowMs:now,
  orders:[{clientOrderId:'order-a',symbol:'AAPL',previousState:'UNKNOWN'}]};
 const env={VERCEL_ENV:'preview',JENIOS_REAL_EXECUTION_ENABLED:'false',

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {approveR81OwnerPaperRisk} from '../lib/platform/connections/paper-owner-risk-r81.mjs';
+import {approveR81OwnerPaperRisk,pauseR81OwnerPaperAccount} from '../lib/platform/connections/paper-owner-risk-r81.mjs';
 const owner='4d238a7a-8c7b-4d8e-9a10-1c5c82db59a7';
 const conn='50b85e9d-339c-4d32-b2bf-82c467673832';
 const now=1793091600000,expiresAtMs=now+600000,limit='15000000000';
@@ -66,4 +66,28 @@ test('R81 SQL restricts owner activation and registration to service role and sh
   /p_notional_units::numeric <= s\.max_notional_units::numeric/i])
   assert.match(sql,pattern);
  assert.doesNotMatch(sql,/security definer/i);
+});
+
+test('R81 owner-authenticated emergency pause never claims broker orders were canceled',async()=>{
+ const calls=[];const db={auth:{getUser:async()=>({data:{user:{
+  id:owner,email_confirmed_at:'2026-10-01',is_anonymous:false
+ }},error:null})},rpc:async(name,args)=>{
+  calls.push({name,args});return {data:true,error:null};
+ }};
+ const r=await pauseR81OwnerPaperAccount({accessToken:input.accessToken,
+  connectionId:conn},{db});
+ assert.equal(r.paused,true);assert.equal(r.ordersCancelled,false);
+ assert.equal(r.positionsClosed,false);assert.equal(r.manualReconciliationRequired,true);
+ assert.equal(calls[0].name,'jenios_r80_engage_paper_kill');
+ assert.equal(calls[0].args.p_owner_user_id,owner);
+});
+test('R81 owner pause rejects spoofed identity and unknown connection',async()=>{
+ const db={auth:{getUser:async()=>({data:{user:{id:owner,is_anonymous:true,
+  email_confirmed_at:'2026-10-01'}},error:null})},rpc:async()=>({data:true})};
+ await assert.rejects(pauseR81OwnerPaperAccount({accessToken:input.accessToken,
+  connectionId:conn},{db}),/R81_KILL_AUTH_REQUIRED/);
+ const db2={auth:{getUser:async()=>({data:{user:{id:owner,is_anonymous:false,
+  email_confirmed_at:'2026-10-01'}},error:null})},rpc:async()=>({data:false,error:null})};
+ await assert.rejects(pauseR81OwnerPaperAccount({accessToken:input.accessToken,
+  connectionId:conn},{db:db2}),/R81_PAPER_ACCOUNT_NOT_FOUND/);
 });

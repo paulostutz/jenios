@@ -119,7 +119,7 @@ test('R79 a failed downstream transport cannot reuse a consumed consent',async()
  assert.equal(attempts,1);
 });
 test('R79 SQL proves RLS, service-only functions, unique owner/order and DB-time CAS',()=>{
- const sql=readFileSync(new URL('../supabase/migrations/20261027091500_jenios_robot_r79_atomic_paper_approval.sql',import.meta.url),'utf8');
+ const sql=readFileSync(new URL('../supabase/migrations/20261027121345_jenios_robot_r79_atomic_paper_approval.sql',import.meta.url),'utf8');
  for(const re of [
   /jenios_robot_paper_approvals_r79/,
   /unique\s*\(owner_user_id,connection_id,client_order_id\)/i,

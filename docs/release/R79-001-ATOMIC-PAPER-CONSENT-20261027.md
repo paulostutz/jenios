@@ -8,7 +8,7 @@ B152 implementou reserva de risco durável SQLite; B166 GET da API oficial; B169
 A R78 anterior apenas executava findApprovedById, de modo que dois workers poderiam enxergar APPROVED simultaneamente. R79 troca o check por transição atômica única APPROVED -> CLAIMED **antes** de delegar qualquer execução Paper.
 
 Arquivos R79:
-- supabase/migrations/20261027091500_jenios_robot_r79_atomic_paper_approval.sql: tabela Paper de aprovação por usuário, conexão e ID de ordem, com unicidade do pedido, janela curta de cinco minutos, RLS, privilégio de tabela somente service_role. Não insere contas nem aprovações.
+- supabase/migrations/20261027121345_jenios_robot_r79_atomic_paper_approval.sql: tabela Paper de aprovação por usuário, conexão e ID de ordem, com unicidade do pedido, janela curta de cinco minutos, RLS, privilégio de tabela somente service_role. Não insere contas nem aprovações.
 - RPC jenios_r79_claim_paper_approval: invoker com search_path vazio, grant service_role somente. UPDATE atômico usando relógio do banco, Owner + connection + digest da assinatura Ed25519 verificada no worker, não-revogado/não-consumido e confirmação de associação ativa à conta Paper do titular. Um único resultado possível entre dois workers concorrentes.
 - RPC jenios_r79_revoke_paper_approval: revoga autorização apenas se ainda APPROVED; não cancela posições ou ordens externas.
 - lib/platform/connections/paper-approval-store-r79.mjs: adaptador server-only, valida parâmetros e recibo do banco, não expõe credenciais nem rotas HTTP.

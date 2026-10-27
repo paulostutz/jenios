@@ -23,14 +23,19 @@ export default function PlatformLogin(){
  const [message,setMessage]=useState('');
  useEffect(()=>{
   let mounted=true;
-  const next=new URLSearchParams(window.location.search).get('next');
+  const params=new URLSearchParams(window.location.search);
+  const dedicatedRequested=params.get('dedicated')==='1';
+  if(dedicatedRequested)setDedicated(true);
+  const next=params.get('next');
   const target=next?socialAuthReturnPath(next):'/dashboard-logado';
   setDestination(target);
   async function routeExistingSession(){
    try{
-    const social=await resolveSocialPortalEntry();
-    if(!mounted)return;
-    if(social){router.replace(target);return;}
+    if(!dedicatedRequested){
+     const social=await resolveSocialPortalEntry();
+     if(!mounted)return;
+     if(social){router.replace(target);return;}
+    }
     const {data}=platformSupabase?.auth ? await platformSupabase.auth.getUser():{data:null};
     if(!mounted)return;
     if(data?.user?.id && !data.user.is_anonymous){

@@ -1,0 +1,21 @@
+{
+  "schema": "JENIOS_R77_PRIVATE_PAPER_SOURCE_V1",
+  "baseCommit": "7ef18860276e220041c89b7a6094eeae6c856e72",
+  "source": "R76 + B152/B169/B174/B175/B176 immutable public modules",
+  "reviewedBlobs": {
+    ".github/workflows/jenios-r77-private-paper.yml": "c40e8c129f42ee6c2de2983a52eac770df7a16ec",
+    "docs/release/R77-001-ALPACA-PAPER-PRIVATE-TRANSPORT-20261027.md": "cca0c79d207bf8adaa9128f888e1d862e2105598",
+    "lib/platform/connections/alpaca-paper-private-transport-r77.mjs": "b8f962193b5e87bec2ee4535734ccbd530637d6e",
+    "lib/release/environment-scope.mjs": "7a8c8a2430c6f0c579dba9d6bcb8830c2a339a48",
+    "scripts/check-pro-image-g49.mjs": "38c3dbe5065cc4dfe70669d0dea1e69bb9358763",
+    "tests/platformRobotR77AlpacaPrivateTransport.test.mjs": "ce16778c75e69a77fe4e6403a7ba65136a37bef0"
+  },
+  "restrictions": {
+    "realOrdersEnabled": false,
+    "paperOrdersEnabledOnVercel": false,
+    "userFundsCustodied": false,
+    "privateEngineModified": false,
+    "paymentEnabled": false
+  },
+  "ci": "Frozen G49/G48/M02/R75/R76 source verified, plus exact six R77 blobs; never expose credentials or engine"
+}

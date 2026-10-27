@@ -1,4 +1,4 @@
-name: JENIOS R80 private PAPER safety (NO LIVE / NO ORDERS)
+name: JENIOS R80-R83 private safeguards (NO LIVE / NO ORDERS)
 on:
   push:
     branches: [fix/jenios-r80-private-paper-safety-20261027]
@@ -61,7 +61,30 @@ jobs:
           test ! -e app/api/platform/orders/live/route.js
           test ! -e app/api/platform/brokers/submit/route.js
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- native-app app/api public
-          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -Ev '^supabase/migrations/(20261027134227_jenios_robot_r80_private_paper_safety|20261027141752_jenios_robot_r81_paper_owner_risk)\.sql$' || true)"
+          test -z "$(git diff --name-only a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- supabase/migrations | grep -Ev '^supabase/migrations/(20261027134227_jenios_robot_r80_private_paper_safety|20261027141752_jenios_robot_r81_paper_owner_risk|20261027151211_jenios_robot_r83_private_live_vault)\.sql$' || true)"
           cmp -s supabase/review/jenios_r80_paper_safety.sql supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql
           cmp -s supabase/review/jenios_r81_paper_owner_risk.sql supabase/migrations/20261027141752_jenios_robot_r81_paper_owner_risk.sql
+          cmp -s supabase/review/jenios_r83_live_private_vault.sql supabase/migrations/20261027151211_jenios_robot_r83_private_live_vault.sql
           git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs
+
+      - name: Preserve reviewed source SHA and nonsecret checkpoint
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .jenios-r83-ci
+          git rev-parse HEAD > .jenios-r83-ci/COMMIT.txt
+          git archive --format=zip --output=.jenios-r83-ci/JENIOS_R83_PUBLIC_SOURCE.zip HEAD
+          (cd .jenios-r83-ci && sha256sum JENIOS_R83_PUBLIC_SOURCE.zip > SHA256SUMS.txt)
+          if test -f docs/release/R83-001-PRIVATE-LIVE-VAULT-20261027.md; then
+            cp docs/release/R83-001-PRIVATE-LIVE-VAULT-20261027.md .jenios-r83-ci/
+          fi
+      - name: Upload nonsecret JENIOS R83 checkpoint
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: JENIOS_R83_PRIVATE_LIVE_VAULT_CI
+          path: .jenios-r83-ci/
+          include-hidden-files: true
+          retention-days: 30
+          if-no-files-found: error

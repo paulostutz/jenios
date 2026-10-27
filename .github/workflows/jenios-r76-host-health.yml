@@ -1,0 +1,74 @@
+name: JENIOS R76 host health (NO TRADING)
+on:
+  push:
+    branches: [fix/jenios-r76-host-health-20261027]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: jenios-r76-host-health
+  cancel-in-progress: false
+jobs:
+  verify-r76:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: synthetic-platform-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: synthetic-social-public-key
+      JENIOS_ROBOT_R73_ADMIN_ENABLED: 'false'
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_ROBOT_ANALYST_PAID_ENABLED: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned dependency versions
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Check approved G49/G48/M02 and R75/R76 source hashes
+        run: node scripts/check-pro-image-g49.mjs && node scripts/check-mobile-m02.mjs && node scripts/check-inter-vault-g48.mjs
+      - name: Test authorization, stale heartbeat and no-trade boundaries
+        run: node --test tests/platformRobotR76HostHealth.test.mjs tests/platformRobotR75Restoration.test.mjs tests/platformRobotR73DefinitiveStatus.test.mjs
+      - name: Full regression plus S05 and Next.js compilation
+        run: npm run build
+      - name: Local GET shell and fail-closed API
+        shell: bash
+        run: |
+          set -euo pipefail
+          node_modules/.bin/next start -H 127.0.0.1 -p 3146 >/tmp/jenios-r76-next.log 2>&1 &
+          trap 'kill $! 2>/dev/null || true' EXIT
+          for i in $(seq 1 50); do
+            if curl -fsS http://127.0.0.1:3146/platform/admin/robos -o /tmp/jenios-r76-admin.html; then break; fi
+            sleep 1
+          done
+          grep -q 'Administração dos robôs' /tmp/jenios-r76-admin.html
+          status=$(curl -sS -o /tmp/jenios-r76-api.json -w '%{http_code}' http://127.0.0.1:3146/api/platform/admin/robots/host-health)
+          test "$status" = '404'
+      - name: Save checkpoint and source
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .jenios-r76-ci
+          git rev-parse HEAD > .jenios-r76-ci/COMMIT.txt
+          git archive --format=zip --output=.jenios-r76-ci/R76_SOURCE.zip HEAD
+          (cd .jenios-r76-ci && sha256sum R76_SOURCE.zip > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: JENIOS_R76_HOST_HEALTH_CI
+          path: .jenios-r76-ci/
+          retention-days: 30
+          if-no-files-found: warn

@@ -1,0 +1,24 @@
+{
+  "schema": "JENIOS_R76_APPROVED_HOST_HEALTH_BLOBS_V1",
+  "baseCommit": "05f622b249c0d41814a0af47a9fff050005293d8",
+  "source": "release/jenios-genios-g44-20261024",
+  "reviewedBlobs": {
+    ".github/workflows/jenios-r76-host-health.yml": "c4d933137cae740e44d9d04a487110354f7763da",
+    "app/api/platform/admin/robots/host-health/route.js": "1374428cee8e55f750e9acc0ad4ca590a3594207",
+    "app/components/platform/PlatformRobotHostHealth.js": "2db110b2b652ca6a6f30ae530f78a9e8cdaaa9fe",
+    "app/platform/admin/robos/page.js": "f77282b0237da4d2ce885733ca244576ee210bae",
+    "docs/release/R76-001-SAUDE-HOST-R74-20261027.md": "1735e819afba82474c98f913f204c54015477049",
+    "lib/platform/research/robot-r76-host-health.mjs": "a8d9591be007116e1d0ee8e2f681241781cf3340",
+    "lib/release/environment-scope.mjs": "7a22f36b930475e4c08537a87b971efa152d2d2c",
+    "scripts/check-pro-image-g49.mjs": "7d1674e0edf681a4e684a5dab6d69cc42cbcd97c",
+    "tests/platformRobotR76HostHealth.test.mjs": "c06761054ef2fa74241c6c4a77617f94f103fd43"
+  },
+  "restrictions": {
+    "liveOrders": false,
+    "paperOrders": false,
+    "brokerCredentials": false,
+    "custody": false,
+    "publicAdminData": false
+  },
+  "notes": "Only an authenticated administrative GET and a visual status card; all inherited G49/G48/M02/R75 blobs remain frozen."
+}

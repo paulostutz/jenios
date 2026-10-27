@@ -8,7 +8,7 @@
     "app/api/platform/internal/robots/deployment-status/route.js": "0262d3f7259cce32859895263178c79ef85e5fbc",
     "app/components/platform/PlatformRobotDefinitiveAdmin.js": "9a786f7f1344e5491be806d3d3e55a1f5e7d7474",
     "app/platform/admin/page.js": "75e4780ad6ab2d90f883bafc8c2fc69a11d33952",
-    "app/platform/admin/robos/page.js": "8dbd56c9c7b7134ef2106d230066705a8815846d",
+    "app/platform/admin/robos/page.js": "f77282b0237da4d2ce885733ca244576ee210bae",
     "app/platform/entrar/page.js": "e5ff8970e6f2d4f5d554ed94efd3320f511e709f",
     "docs/release/R75-001-BACKUPS-E-ESTADO-REAL-20261026.md": "586561911bc8b4fc57c2a4d602c411e7e972d7bf",
     "docs/release/R75-002-REGRESSAO-PAINEL-R73-20261026.md": "b7477d3924af63d924fd0eb87cef4e014734b2f5",
@@ -28,8 +28,8 @@
     "lib/platform/research/robot-r67-private-protocol.mjs": "f3ce92c473a1ddd3fcb4d596ae163d71b7575020",
     "lib/platform/research/robot-r71-access.mjs": "76b20416893706a21cce3890f052b7a62988a708",
     "lib/platform/research/robot-r73-definitive-status.mjs": "6908cc45c8abecc711dddde350c8a01df928298d",
-    "lib/release/environment-scope.mjs": "e310c75cf99b488561226690910d617852297ef7",
-    "scripts/check-pro-image-g49.mjs": "1096cf71c070332201167627fefcc10be2757a67",
+    "lib/release/environment-scope.mjs": "7a22f36b930475e4c08537a87b971efa152d2d2c",
+    "scripts/check-pro-image-g49.mjs": "7d1674e0edf681a4e684a5dab6d69cc42cbcd97c",
     "tests/platformRobotR73DefinitiveStatus.test.mjs": "1f38d6e9fcc0de3efd2c09b4605739a9ccf8b9fb",
     "tests/platformRobotR75PreviewScope.test.mjs": "0e1cc75df32812977f115ddd9cc5a027ad273bac",
     "tests/platformRobotR75Restoration.test.mjs": "ace6d26ffb1d5da0d6156b236695895901b68dfc"
@@ -41,5 +41,5 @@
     "paymentsEnabled": false,
     "ownerFundsCustodied": false
   },
-  "notes": "Explicit review of exactly 30 R75 sources; baseline G49 hashes remain verified; the manifest file is an inventory container and is included in git tracked-set verification."
+  "notes": "R75 exact approved restoration retained; three additive R76 edits are independently checked in the R76 manifest. No trading flags enabled."
 }

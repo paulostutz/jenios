@@ -14,6 +14,8 @@ export function verifyProImageG49(){
  const r76ManifestPath='docs/release/R76-REVIEWED-CHANGES.json';
  const r77ManifestPath='docs/release/R77-REVIEWED-CHANGES.json';
  const r78ManifestPath='docs/release/R78-REVIEWED-CHANGES.json';
+ const r79ManifestPath='docs/release/R79-REVIEWED-CHANGES.json';
+ const r79Paths=[".github/workflows/jenios-r79-atomic-approval.yml","docs/release/R79-001-ATOMIC-PAPER-CONSENT-20261027.md","lib/platform/connections/paper-approval-store-r79.mjs","lib/platform/connections/paper-signed-authorization-r78.mjs","scripts/check-pro-image-g49.mjs","supabase/migrations/20261027091500_jenios_robot_r79_atomic_paper_approval.sql","tests/platformRobotR78SignedPaperAuth.test.mjs","tests/platformRobotR79AtomicClaim.test.mjs"];
  const r78Paths=["lib/release/environment-scope.mjs",".github/workflows/jenios-r78-paper-authorization.yml","docs/release/R78-001-SIGNED-PAPER-AUTHORIZATION-20261027.md","lib/platform/connections/paper-signed-authorization-r78.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR78SignedPaperAuth.test.mjs"];
  const r77Paths=[".github/workflows/jenios-r77-private-paper.yml","docs/release/R77-001-ALPACA-PAPER-PRIVATE-TRANSPORT-20261027.md","lib/platform/connections/alpaca-paper-private-transport-r77.mjs","lib/release/environment-scope.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR77AlpacaPrivateTransport.test.mjs"];
  const r76Paths=[".github/workflows/jenios-r76-host-health.yml","app/api/platform/admin/robots/host-health/route.js","app/components/platform/PlatformRobotHostHealth.js","app/platform/admin/robos/page.js","docs/release/R76-001-SAUDE-HOST-R74-20261027.md","lib/platform/research/robot-r76-host-health.mjs","lib/release/environment-scope.mjs","scripts/check-pro-image-g49.mjs","tests/platformRobotR76HostHealth.test.mjs"];
@@ -46,10 +48,17 @@ export function verifyProImageG49(){
   assert.deepEqual(Object.keys(r78.reviewedBlobs||{}).sort(),r78Paths.slice().sort());
   assert.ok(Object.values(r78.reviewedBlobs).every(hash=>typeof hash==='string'&&/^[a-f0-9]{40}$/.test(hash)));
  }
+ const r79=existsSync(r79ManifestPath)?JSON.parse(readFileSync(r79ManifestPath)):null;
+ if(r79){
+  assert.equal(r79.schema,'JENIOS_R79_ATOMIC_PAPER_CONSENT_SOURCE_V1');
+  assert.equal(r79.baseCommit,'b8f246ec007e11074a78ba03820040a105bb9c07');
+  assert.deepEqual(Object.keys(r79.reviewedBlobs||{}).sort(),r79Paths.slice().sort());
+  assert.ok(Object.values(r79.reviewedBlobs).every(hash=>typeof hash==='string'&&/^[a-f0-9]{40}$/.test(hash)));
+ }
  const blob=body=>createHash('sha1').update(Buffer.from('blob '+body.byteLength+'\0')).update(body).digest('hex');
- for(const [path,expected] of Object.entries({...base.blobs,...review.reviewedBlobs,...(r75?.reviewedBlobs||{}),...(r76?.reviewedBlobs||{}),...(r77?.reviewedBlobs||{}),...(r78?.reviewedBlobs||{})}))assert.equal(blob(readFileSync(path)),expected,'Unreviewed G49/R75 change: '+path);
+ for(const [path,expected] of Object.entries({...base.blobs,...review.reviewedBlobs,...(r75?.reviewedBlobs||{}),...(r76?.reviewedBlobs||{}),...(r77?.reviewedBlobs||{}),...(r78?.reviewedBlobs||{}),...(r79?.reviewedBlobs||{})}))assert.equal(blob(readFileSync(path)),expected,'Unreviewed G49/R75 change: '+path);
  const tracked=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
- assert.deepEqual(tracked.sort(),[...new Set([...Object.keys(base.blobs),...allowed,'docs/assistant/G49-REVIEWED-CHANGES.json',...(r75?[...r75Paths,r75ManifestPath]:[]),...(r76?[...r76Paths,r76ManifestPath]:[]),...(r77?[...r77Paths,r77ManifestPath]:[]),...(r78?[...r78Paths,r78ManifestPath]:[])])].sort());
+ assert.deepEqual(tracked.sort(),[...new Set([...Object.keys(base.blobs),...allowed,'docs/assistant/G49-REVIEWED-CHANGES.json',...(r75?[...r75Paths,r75ManifestPath]:[]),...(r76?[...r76Paths,r76ManifestPath]:[]),...(r77?[...r77Paths,r77ManifestPath]:[]),...(r78?[...r78Paths,r78ManifestPath]:[]),...(r79?[...r79Paths,r79ManifestPath]:[])])].sort());
  console.log('G49_IMAGE_SOURCE_PASS: '+Object.keys(base.blobs).length+' inherited files, '+allowed.size+' reviewed changes.');
 }
 if(process.argv[1]?.endsWith('/check-pro-image-g49.mjs'))verifyProImageG49();

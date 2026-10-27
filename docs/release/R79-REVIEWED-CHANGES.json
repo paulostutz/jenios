@@ -1,0 +1,24 @@
+{
+  "schema": "JENIOS_R79_ATOMIC_PAPER_CONSENT_SOURCE_V1",
+  "baseCommit": "b8f246ec007e11074a78ba03820040a105bb9c07",
+  "reviewedBlobs": {
+    ".github/workflows/jenios-r79-atomic-approval.yml": "d63f8d1aadd52a6aae33d7cf433be142f9263ea2",
+    "docs/release/R79-001-ATOMIC-PAPER-CONSENT-20261027.md": "6b9139740ecf3b97eda115cdb488186d32d6a3bb",
+    "lib/platform/connections/paper-approval-store-r79.mjs": "2656b3ca31468f587e58101f665092e337590879",
+    "lib/platform/connections/paper-signed-authorization-r78.mjs": "a84c4e1029abb213480efed8b08361a9f797cb14",
+    "scripts/check-pro-image-g49.mjs": "026d11d4c275847feb98739160ed509918928e2a",
+    "supabase/migrations/20261027091500_jenios_robot_r79_atomic_paper_approval.sql": "6606597dfa675fff9476e947ce73750304d64760",
+    "tests/platformRobotR78SignedPaperAuth.test.mjs": "1c440d9a64a635d0fa608632ca6a0a720c573d72",
+    "tests/platformRobotR79AtomicClaim.test.mjs": "01eaacca7449b3fbf06b09a949abf408f96c90bf"
+  },
+  "scope": "dedicated Platform service-role only; no public trading routes",
+  "restrictions": {
+    "liveExecutionEnabled": false,
+    "websitePaperExecutorEnabled": false,
+    "custody": false,
+    "paymentsEnabled": false,
+    "privateEngineModified": false,
+    "externalOrdersSent": 0
+  },
+  "notes": "Original G49/G48/M02 and R75-R78 source SHA1 pins preserved; R79 overrides precisely eight reviewed blobs. SQL remains additive and empty until issued consent exists."
+}

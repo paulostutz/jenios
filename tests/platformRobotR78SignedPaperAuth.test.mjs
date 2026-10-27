@@ -28,7 +28,7 @@ const validated=p=>({permit:p,signature:signature(p),session,storedConnection,or
 const authRecord=p=>({approvalId:p.approvalId,ownerUserId:p.ownerUserId,
  connectionId:p.connectionId,clientOrderId:p.clientOrderId,
  permitSha256:verifyR78PaperPermit(validated(p),{env}).permitSha256,
- expiresAtMs:p.expiresAtMs,status:'APPROVED',revokedAt:null,usedAt:null,
+ expiresAtMs:p.expiresAtMs,status:'CLAIMED',revokedAt:null,usedAtMs:now,
  source:'PLATFORM_AUTH_SERVER_VERIFIED'});
 test('R78 signs exact field order and validates cryptography, owner, consent and notional',()=>{
  const proof=verifyR78PaperPermit(validated(permit),{env});
@@ -69,7 +69,7 @@ test('R78 refuses all Paper submits without a server-owned durable record',async
  const req={...validated(permit)};
  await assert.rejects(submitSignedR78PaperOnce(req,{env,paperExecutor:fake}),/R78_DURABLE_CONSENT_REQUIRED/);
  for(const state of ['REVOKED','PENDING','APPROVED']){
-  const approvalStore={async findApprovedById(){reads++;return {...authRecord(permit),status:state,
+  const approvalStore={async claimApprovedForExecution(){reads++;return {...authRecord(permit),status:state,
    ...(state==='APPROVED'?{permitSha256:'f'.repeat(64)}:{})};}};
   await assert.rejects(submitSignedR78PaperOnce(req,{env,approvalStore,paperExecutor:fake}),/R78_DURABLE_CONSENT_MISMATCH/);
  }
@@ -77,8 +77,8 @@ test('R78 refuses all Paper submits without a server-owned durable record',async
 });
 test('R78 durable server record + valid Ed25519 permit delegates one approved Paper attempt',async()=>{
  let reads=0,posts=0;
- const approvalStore={async findApprovedById(id,owner){
-  reads++;assert.equal(id,permit.approvalId);assert.equal(owner,user);
+ const approvalStore={async claimApprovedForExecution(checked){
+  reads++;assert.equal(checked.approvalId,permit.approvalId);assert.equal(checked.ownerUserId,user);
   return authRecord(permit);
  }};
  const paperExecutor=async(req)=>{
@@ -94,11 +94,11 @@ test('R78 durable server record + valid Ed25519 permit delegates one approved Pa
  assert.equal(outcome.state,'ACK');
 });
 test('R78 does not allow forged receipts or database errors to claim approval',async()=>{
- const approvalStore={async findApprovedById(){return authRecord(permit);}};
+ const approvalStore={async claimApprovedForExecution(){return authRecord(permit);}};
  await assert.rejects(submitSignedR78PaperOnce(validated(permit),{env,approvalStore,
   paperExecutor:async()=>({liveExecution:true,paperOnly:true,autoResubmitAllowed:false})}),/R78_INVALID_PAPER_RECEIPT/);
  await assert.rejects(submitSignedR78PaperOnce(validated(permit),{env,
-  approvalStore:{async findApprovedById(){throw Error('user data secret')}}}),/R78_DURABLE_CONSENT_UNAVAILABLE/);
+  approvalStore:{async claimApprovedForExecution(){throw Error('user data secret')}}}),/R78_DURABLE_CONSENT_UNAVAILABLE/);
 });
 test('R78 is private: no HTTP routes, credentials, orders Live or withdrawal paths',()=>{
  const text=readFileSync(new URL('../lib/platform/connections/paper-signed-authorization-r78.mjs',import.meta.url),'utf8');

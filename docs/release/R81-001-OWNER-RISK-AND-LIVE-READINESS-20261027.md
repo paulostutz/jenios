@@ -25,3 +25,17 @@ Esta entrega prepara a aprovação de **limites PAPER** e a transição futura, 
 Não basta retirar uma flag para ligar Live. `submitRealBrokerOrder()` no contrato B174 deve continuar recusando. R81 não cria rota HTTP pública de ordens nem assina aceites reais.
 Backup de referência: docs/release/R80-001-TRUSTED-PAPER-SAFETY-20261027.md e issue #15.
 Rollback de código preserva release R79; não apagar tabelas ou aprovações; manter funções privadas e motor externo desligados até homologação.
+
+## R81.002 — Migração aplicada, CI e evidências (27/10/2026)
+
+- A CI da branch no commit pré-moeda `356ee76117b1a5ff7f7b1db7c968d0f855fafbdf`, run `40518080249`, concluiu SUCCESS.
+- A CI depois da exigência de USD, correção da geração SQL e regressões do commit `ccc8e0ee4e8ea8e02426fcfad0ba8f5bd9983394`, run `40519388010`, concluiu SUCCESS.
+- Migração aplicada somente em Supabase JENIOS Platform `xaicvhagftzjkqphnbgx` com versão `20261027141752`, nome `jenios_robot_r81_paper_owner_risk`.
+- O arquivo instalado foi salvo integralmente em `supabase/migrations/20261027141752_jenios_robot_r81_paper_owner_risk.sql`, com cópia idêntica em `supabase/review/jenios_r81_paper_owner_risk.sql`.
+- Conferência pós-migração: 3 RPCs R81 com EXECUTE **false** para anon/authenticated e **true** para service_role. A tabela `jenios_robot_paper_risk_audit_r81` tem RLS habilitada, SELECT de anon/authenticated false e service_role true.
+- Contagens verificadas no banco: **0 auditorias R81, 0 linhas safety R80, 0 approvals R79, 0 conexões demonstrativas**. Não há usuário ou ordem operacional.
+- O contrato R81 exige moeda `USD` explícita na autorização e no registro de assinatura. Limites financeiros não são predefinidos e não foram cadastrados.
+- O workflow foi atualizado depois do commit de migração para verificar a versão R81 exata, além da R80. Exigir **CI verde do SHA final** antes de aprovar PR #22.
+- Nenhuma chave Ed25519 foi implantada, serviço emissor não está rodando, não há worker de execução conectado ao host R74 e nenhum trade PAPER/Live foi enviado.
+
+**R81 é um componente backend privado preparado e protegido; não é uma autorização para operar Live nem certificação de operação Paper externa.** A release publicada R79 permanece intocada, assim como JENIOS PAY, CHEFE e LETTER.

@@ -17,6 +17,8 @@ services:
       mountPath: /var/data/jenios
       sizeGB: 1
     envVars:
+      - key: JENIOS_R102_RENDER_VOLUME_BOOTSTRAP
+        value: "true"
       - key: JENIOS_R100_RUNTIME_CLASS
         value: isolated-node
       - key: JENIOS_R100_HOST_KIND

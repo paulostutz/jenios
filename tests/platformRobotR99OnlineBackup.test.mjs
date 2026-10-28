@@ -149,3 +149,21 @@ test('R99 refuses public Vercel, Live, weak-volume permissions, and same-destina
   await assert.rejects(back(f),/R94_VOLUME_OWNERSHIP_REQUIRED/);
  }finally{f.cleanup();}
 });
+test('R103 cancellation claim survives WAL backup and cold restore without permitting a repeat',async()=>{
+ const f=fixture();
+ try{
+  const ledger=f.open(),bound=seed(ledger);
+  ledger.event(session,bound,order.clientOrderId,{id:'found-before-cancel',kind:'RECONCILED',reconciledState:'ACK',atMs:now+2,cumulativeQuantity:'0'});
+  const details=ledger.orderDetails(session,bound,order.clientOrderId);
+  const claim={fingerprint:details.fingerprint,updatedAtMs:details.updatedAtMs,brokerDigest:'b'.repeat(64),nowMs:now+3};
+  assert.equal(ledger.claimCancellation(session,bound,order.clientOrderId,claim).claimed,true);
+  const proof=await back(f);await recover(f,proof);f.close();
+  const restored=new PaperLedger(join(f.restore,'paper-'+id+'.sqlite'));
+  try{
+   assert.equal(restored.orderDetails(session,bound,order.clientOrderId).cancellationAttempted,true);
+   assert.equal(restored.snapshot(session,bound)[0].state,'UNKNOWN');
+   assert.notEqual(restored.snapshot(session,bound)[0].held,'0');
+   assert.equal(restored.claimCancellation(session,bound,order.clientOrderId,claim).claimed,false);
+  }finally{restored.close();}
+ }finally{f.cleanup();}
+});

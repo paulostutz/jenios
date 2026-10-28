@@ -31,13 +31,15 @@ cookies adulterados, origens indevidas, reconexão e destruição local da crede
 
 `scripts/test-r107-connect-session-postgres.mjs` exige banco PostgreSQL vazio,
 descartável e em loopback. Verifica privilégios, expiração, titularidade e logout.
-Foi preparado no CI, junto da regressão completa e compilação Next.js. O CI
-remoto R107 ainda não foi executado: a publicação desse novo módulo no repositório
-público foi bloqueada pela revisão automática de aprovação.
+O CI remoto R107 foi concluído com sucesso no commit
+`1372be70238aae83aed07425af49b49dc30bffce`, execução
+[`40781271061`](https://github.com/paulostutz/jenios/actions/runs/40781271061),
+após autorização explícita da publicação. Incluiu PostgreSQL 16, regressão
+completa e compilação Next.js.
 
 A validação local concluiu 1.913 testes gerais + 94 Social/S05 e compilou 81
 páginas. A mesma verificação SQL passou em PostgreSQL 18.6 embarcado (PGlite
-0.5.11); o servidor PostgreSQL 16 do CI continua pendente. A migração foi aplicada
+0.5.11) e, posteriormente, no PostgreSQL 16 do CI. A migração foi aplicada
 na Platform, com versão registrada `20261028222707`, e as verificações posteriores
 confirmaram: anon/authenticated sem EXECUTE; service_role com EXECUTE; tabela de
 sessões sem acesso direto; sessão inexistente recusada. Nenhum aviso novo R107
@@ -47,6 +49,11 @@ Esses testes não são homologação de conta real. A interface continua desativ
 até o serviço, domínio, aplicação aprovada e retorno real serem verificados.
 
 ## Implantação do serviço dedicado
+
+O arquivo `render-alpaca-connect.yaml` descreve esta implantação. Ele ainda
+precisa dos dados do aplicativo Alpaca no gerenciador do Render; preparar o
+arquivo não cria o serviço. Estado verificado e próximos passos em
+`R108-ALPACA-DEPLOYMENT-20261028.md`.
 
 1. Usar serviço HTTP Node 22 em Render, em instância única com disco persistente
    de 1 GB em `/var/data/jenios-connect`. Não substituir o worker R100 existente.
@@ -124,10 +131,11 @@ protegem contra prejuízo. Nenhum teste desta entrega envia ordem a uma corretor
 
 ## Estado de publicação
 
-Código R107 concluído para revisão privada; sem publicação no GitHub público e
-sem implantação HTTP. A revisão automática bloqueou especificamente o upload
-desse módulo, detalhes internos e implementação de segurança no repositório
-público. A produção web permanece em `8f1b8e4827814d7efe42dc5b91226def2ea42ad5`,
-READY; nenhuma flag de interface ou execução foi ativada. O deploy do serviço
+Código R107 publicado no commit `1372be70238aae83aed07425af49b49dc30bffce`, após
+autorização explícita do usuário para a publicação antes bloqueada pela revisão
+automática. O CI remoto concluiu com sucesso. O serviço HTTP ainda não foi
+implantado. A última produção web verificada é
+`8f1b8e4827814d7efe42dc5b91226def2ea42ad5`, READY; nenhuma flag de interface ou
+execução foi ativada nesta etapa. O deploy do serviço
 ainda exige aplicativo Alpaca aprovado/configurado, domínio/TLS e credenciais
 no gerenciador seguro. Este pacote não é certificado de prontidão Live.

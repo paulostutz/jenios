@@ -165,3 +165,26 @@ test('R107 Node socket preserves both cookies, checks Host and provides no order
  assert.equal((await send('/connections',{headers:{host:'evil.example'}})).status,400);
  assert.equal((await send('/orders',{method:'POST',body:'{}'})).status,404);assert.equal(f.calls.length,0);
 });
+test('R107 incomplete encryption configuration cannot report healthy or consume OAuth codes',async t=>{
+ for(const key of ['JENIOS_R83_LIVE_VAULT_KEY_B64','JENIOS_R82_LIVE_ACCOUNT_DIGEST_KEY_B64',
+  'JENIOS_R107_BROWSER_SESSION_KEY_B64','JENIOS_R83_LIVE_VAULT_KEY_ID']){
+  const f=fixture(t),start=await f.start();delete f.env[key];
+  assert.throws(()=>createR107ConnectServer(f.deps),{code:'R107_CRYPTO_CONFIGURATION_REQUIRED'});
+  assert.equal((await f.call('/healthz')).status,503);
+  await f.callback(start);assert.equal(f.calls.length,0);assert.equal(f.row,null);
+ }
+});
+test('R107 rejects malformed, noncanonical and reused encryption keys before startup',t=>{
+ for(const change of [
+  f=>{f.env.JENIOS_R83_LIVE_VAULT_KEY_B64='invalid';},
+  f=>{f.env.JENIOS_R82_LIVE_ACCOUNT_DIGEST_KEY_B64=Buffer.alloc(31,12).toString('base64');},
+  f=>{f.env.JENIOS_R107_BROWSER_SESSION_KEY_B64='A'.repeat(42)+'B=';},
+  f=>{f.env.JENIOS_R82_LIVE_ACCOUNT_DIGEST_KEY_B64=f.env.JENIOS_R83_LIVE_VAULT_KEY_B64;},
+  f=>{f.env.JENIOS_DEMO_VAULT_KEY_B64=f.env.JENIOS_R83_LIVE_VAULT_KEY_B64;},
+  f=>{f.env.JENIOS_R83_LIVE_VAULT_KEY_ID='INVALID KEY ID';}
+ ]){
+  const f=fixture(t);change(f);
+  assert.throws(()=>createR107ConnectServer(f.deps),{code:'R107_CRYPTO_CONFIGURATION_REQUIRED'});
+  assert.equal(f.calls.length,0);
+ }
+});

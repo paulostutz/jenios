@@ -1,0 +1,35 @@
+name: JENIOS R101 Binance timing regression
+on:
+  push:
+    branches: [fix/jenios-r101-binance-clock-20261028]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'
+      NEXT_PUBLIC_PLATFORM_SUPABASE_URL: https://platform-test.invalid
+      NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY: synthetic-platform-public-key
+      NEXT_PUBLIC_SUPABASE_URL: https://social-test.invalid
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: synthetic-social-public-key
+      JENIOS_REAL_EXECUTION_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED: 'false'
+      JENIOS_PRIVATE_PAPER_EXECUTOR: 'false'
+      JENIOS_PRIVATE_PAPER_REHEARSAL: 'false'
+      JENIOS_PAY_PAYMENTS_ENABLED: 'false'
+      JENIOS_INTER_CHARGES_ENABLED: 'false'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false, fetch-depth: 0}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: node --test tests/platformDemoBrokerReader.test.mjs
+      - run: npm run build
+      - name: Preserve public routes, finance gates and proprietary core
+        run: git diff --exit-code a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- app/api public native-app supabase lib/platform/connections/native-broker-bridge.mjs

@@ -1,0 +1,6 @@
+# JENIOS R97 — critérios de implantação privada sem custos nem ordens
+Base auditada R96 b1d210aa22efe4309f638595afca3339726b81a4 com GitHub Actions 40561836427 SUCCESS, Preview principal dpl_CtFWYoSfZ9akHG9PGg8ArE8g9anW READY. Checkpoints B152, B165–B169, B171–B173, R74, R93–R96 preservados.
+
+A R97 implementa um gate INERTE de verificação dos pré-requisitos de um host Node isolado, com volume durável, recuperação após reinicialização, backups, segregação, cofre, revisão do kill switch, conta de simulação voluntária e teto de custos. Um checklist marcado como concluído nunca substitui verificação independente; resultado `deployAuthorized=false` é invariável. Reutiliza o preflight R94, sem servidor, cron, deploy, migração, ordem ou credencial.
+
+Pendências reais: escolher e aprovar infraestrutura/custo, provisionar host e volume durável com recuperação comprovada, conectar conta Binance Spot Testnet autorizada e homologar ordens simuladas com recibos, depois auditar Live separadamente. Produção R79 intocada, PR #22 DRAFT, CHEFE e LETTER intactos.

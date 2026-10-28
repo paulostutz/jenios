@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import SocialFreeLauncher from '../components/assistant/SocialFreeLauncher';
 import DemoBrokerConnector from '../components/platform/DemoBrokerConnector';
+import AlpacaConnectR107 from '../components/platform/AlpacaConnectR107';
 import {CONNECTION_GUIDES,CONNECTION_SAFETY,connectionGuide,guideHref,guideSources} from '../../lib/platform/connections/catalog.mjs';
 import {preparationChecklist} from '../../lib/platform/connections/support.mjs';
 import s from './connections.module.css';
@@ -21,6 +22,7 @@ export default function IntegracoesPage(){
    <div className={s.safety} role="note"><strong>Antes de começar</strong><p>{CONNECTION_SAFETY}</p></div>
    <div className={s.safety} role="status"><strong>Estado das APIs de corretoras</strong><p>Binance Spot Testnet e Alpaca Paper: leitores de consulta demonstrativa implementados, aguardando homologação autenticada de contas externas. Os outros 10 fornecedores possuem guias, mas não conectores instalados. Nenhuma integração desta página autoriza ordens reais, custódia ou saques.</p></div>
    {process.env.NEXT_PUBLIC_JENIOS_DEMO_CONNECTORS_UI==='true'&&<DemoBrokerConnector provider={guide.id}/>}
+   {guide.id==='alpaca'&&process.env.NEXT_PUBLIC_JENIOS_R107_ALPACA_CONNECT_UI==='true'&&<AlpacaConnectR107/>}
    <div className={s.workspace}>
     <aside className={s.selector} aria-label="Escolha uma corretora ou plataforma">
      <label className={s.field}>Pesquisar corretora ou plataforma<input type="search" maxLength={80} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Binance, Profit, XP, MT5…"/></label>

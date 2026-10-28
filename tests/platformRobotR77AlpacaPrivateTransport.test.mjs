@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {generateKeyPairSync,sign} from 'node:crypto';
+import {canonicalR78PaperPermit} from '../lib/platform/connections/paper-signed-authorization-r78.mjs';
+import {submitR80GuardedPaperOnce} from '../lib/platform/connections/paper-worker-boundary-r80.mjs';
+import {paperExecutionClock} from '../lib/platform/connections/paper-execution-freshness-r105.mjs';
 import {PaperLedger} from '../lib/platform/pilot-prep/paper-ledger.mjs';
 import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
 import {CORE_SHA,units} from '../lib/platform/pilot-prep/contracts.mjs';
@@ -195,6 +199,80 @@ test('R77 concurrent duplicate submissions use durable intent, never two POSTs',
   submitAlpacaPaperOnce(input,{ledger,env,fetcher:b.fetcher})]);
  assert.equal(b.posts().length,1);
  assert.equal(results.filter(r=>r.duplicate).length,1);
+}));
+test('R105 delayed preflight must not submit using a quote that expired during GETs',()=>withLedger(async(ledger,c)=>{
+ const b=broker();let elapsed=0;
+ const fetcher=async(url,options)=>{
+  const response=await b.fetcher(url,options);
+  if(options.method==='GET')elapsed+=1000;
+  return response;
+ };
+ await assert.rejects(submitAlpacaPaperOnce(input,{ledger,env,fetcher,
+  executionClock:()=>now+elapsed}),/STALE_OR_FUTURE_QUOTE/);
+ assert.equal(b.posts().length,0);
+ assert.deepEqual(ledger.snapshot(session,c),[]);
+}));
+test('R105 invalid or backwards execution clock cannot reach a broker POST',()=>withLedger(async ledger=>{
+ for(const value of [NaN,Infinity,now-1,now+0.5]){
+  const b=broker();await assert.rejects(submitAlpacaPaperOnce(input,{ledger,env,fetcher:b.fetcher,executionClock:()=>value}),/PAPER_CLOCK_INVALID/);
+  assert.equal(b.posts().length,0);
+ }
+}));
+test('R105 default clock advances across an asynchronous wait without changing the source timestamp',async()=>{
+ const tick=paperExecutionClock(now);const before=tick();
+ await new Promise(resolve=>setTimeout(resolve,25));
+ assert.ok(tick()>=before+15);assert.equal(input.nowMs,now);assert.equal(input.quote.receivedAtMs,now-250);
+});
+test('R105 receipt time reflects response latency rather than request-start time',()=>withLedger(async(ledger,c)=>{
+ const b=broker();let elapsed=0;
+ const r=await submitAlpacaPaperOnce(input,{ledger,env,executionClock:()=>now+elapsed,
+  fetcher:async(url,options)=>{const result=await b.fetcher(url,options);if(options.method==='POST')elapsed=2300;return result;}});
+ assert.equal(r.state,'ACK');assert.equal(ledger.orderDetails(session,c,order.clientOrderId).updatedAtMs,now+2300);
+}));
+const signing=generateKeyPairSync('ed25519');
+async function guardedScenario(ledger,opts={}){
+ const b=broker(opts.broker);let elapsed=0,reads=0,claims=0;
+ const signedEnv={...env,JENIOS_R78_PAPER_APPROVAL_VERIFY_KEY:signing.publicKey.export({format:'der',type:'spki'}).toString('base64')};
+ const permit={schema:'JENIOS_R78_SIGNED_PAPER_PERMIT_V1',approvalId:'4528a72f-c988-45cc-a9f3-7a28d98b40ac',
+  ownerUserId:user,connectionId:storedConnection.id,accountDigest:storedConnection.external_digest,
+  clientOrderId:order.clientOrderId,mode:order.mode,side:order.side,symbol:order.symbol,
+  maxNotionalUnits:units('150').toString(),issuedAtMs:now-1000,expiresAtMs:now+(opts.permitLife??120000),environment:'paper'};
+ const signedInput={...input,permit,signature:sign(null,Buffer.from(canonicalR78PaperPermit(permit)),signing.privateKey).toString('base64')};
+ const approvalStore={async claimApprovedForExecution(checked){claims++;elapsed+=opts.claimDelay??0;return {
+  ...checked,status:'CLAIMED',revokedAt:null,usedAtMs:now+elapsed,source:'PLATFORM_AUTH_SERVER_VERIFIED'};}};
+ const safetyStore={async readSafety(){
+  reads++;const checkedAtMs=now+elapsed;if(reads===3)elapsed+=opts.finalSafetyDelay??0;
+  return {ownerUserId:user,connectionId:storedConnection.id,status:opts.pause&&reads===3?'PAUSED':'ACTIVE',
+   killSwitchEngaged:opts.pause===true&&reads===3,paperConsentEnabled:true,liveExecutionEnabled:false,checkedAtMs,
+   riskApprovedAtMs:now-1000,riskExpiresAtMs:now+(opts.riskLife??240000),maxNotionalUnits:units('150').toString(),
+   approvalSource:'PLATFORM_OWNER_SERVER_VERIFIED'};
+ }};
+ try{
+  const result=await submitR80GuardedPaperOnce(signedInput,{ledger,env:signedEnv,clock:()=>now+elapsed,
+   approvalStore,safetyStore,fetcher:b.fetcher});
+  return {result,b,reads,claims};
+ }catch(error){return {error,b,reads,claims};}
+}
+test('R105 signed consent, durable claim, safety and real Paper modules compose to one ACK',()=>withLedger(async(ledger,c)=>{
+ const r=await guardedScenario(ledger);assert.ifError(r.error);assert.equal(r.result.state,'ACK');
+ assert.equal(r.result.signedOwnerConsentVerified,true);assert.equal(r.b.posts().length,1);
+ assert.equal(r.reads,3);assert.equal(r.claims,1);assert.equal(ledger.snapshot(session,c)[0].held,units('2').toString());
+}));
+test('R105 consent expiring during durable claim blocks the executor',()=>withLedger(async(ledger,c)=>{
+ const r=await guardedScenario(ledger,{permitLife:1000,claimDelay:1000});
+ assert.match(r.error?.message||'',/R78_WRONG_OWNER_ORDER_OR_EXPIRED/);
+ assert.equal(r.b.calls.length,0);assert.equal(r.claims,1);assert.deepEqual(ledger.snapshot(session,c),[]);
+}));
+for(const opts of [
+ {name:'quote expires during final safety RPC',finalSafetyDelay:6000},
+ {name:'signed permit expires during final safety RPC',permitLife:1000,finalSafetyDelay:1000},
+ {name:'risk approval expires during final safety RPC',riskLife:1000,finalSafetyDelay:1000},
+ {name:'kill switch engages during final safety RPC',pause:true}
+])test('R105 '+opts.name+' prevents POST and conservatively holds the reservation',()=>withLedger(async(ledger,c)=>{
+ const r=await guardedScenario(ledger,opts);assert.ifError(r.error);
+ assert.equal(r.result.state,'UNKNOWN');assert.equal(r.result.autoResubmitAllowed,false);
+ assert.equal(r.b.posts().length,0);assert.equal(r.reads,3);assert.equal(r.claims,1);
+ assert.equal(ledger.snapshot(session,c)[0].held,units('2').toString());
 }));
 test('R77 module remains private and has no website route, live endpoint or withdrawal',()=>{
  const path=new URL('../lib/platform/connections/alpaca-paper-private-transport-r77.mjs',import.meta.url);

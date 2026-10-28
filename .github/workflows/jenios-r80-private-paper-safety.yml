@@ -1,4 +1,4 @@
-name: JENIOS R80-R104 private safeguards (NO LIVE / NO ORDERS)
+name: JENIOS R80-R105 private safeguards (NO LIVE / NO ORDERS)
 on:
   push:
     branches: [fix/jenios-r80-private-paper-safety-20261027]
@@ -81,7 +81,9 @@ jobs:
           cmp -s supabase/review/jenios_r80_paper_safety.sql supabase/migrations/20261027134227_jenios_robot_r80_private_paper_safety.sql
           cmp -s supabase/review/jenios_r81_paper_owner_risk.sql supabase/migrations/20261027141752_jenios_robot_r81_paper_owner_risk.sql
           cmp -s supabase/review/jenios_r83_live_private_vault.sql supabase/migrations/20261027151211_jenios_robot_r83_private_live_vault.sql
-          git diff --quiet a24922cc829dd1b45b87a719e9fd57ab45e6d79b HEAD -- lib/platform/connections/alpaca-paper-private-transport-r77.mjs
+          # R105 intentionally repairs async freshness in R77. Pin the reviewed
+          # replacement instead of freezing the known stale-clock implementation.
+          test "$(sha256sum lib/platform/connections/alpaca-paper-private-transport-r77.mjs | cut -d ' ' -f 1)" = f5f722f6b57b2d8f0073d10c62551c035155fda72077ff2565870dc05a52d703
 
       - name: Preserve reviewed source SHA and nonsecret checkpoint
         if: always()

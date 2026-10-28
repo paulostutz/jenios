@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {readFileSync,existsSync} from 'node:fs';
+import {verifyR106PublicGuidance} from './check-authentication-r106.mjs';
 export function verifyProImageG49(){
+ // Later public guidance release preserves every inherited byte outside its exact reviewed inventory.
+ if(existsSync('docs/release/R106-PUBLIC-GUIDANCE-BASELINE.json'))return verifyR106PublicGuidance();
  const raw=readFileSync('docs/assistant/G49-INTEGRATION-BASELINE.json');
  assert.equal(createHash('sha256').update(raw).digest('hex'),'df3678a81e40678ccf30bbe33cf9c7c30ed112dfae4614aacedd3aed47201da8');
  const base=JSON.parse(raw),review=JSON.parse(readFileSync('docs/assistant/G49-REVIEWED-CHANGES.json'));

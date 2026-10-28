@@ -5,6 +5,41 @@ const bin={...creds,provider:'binance',environment:'testnet'},alp={...creds,prov
 const account={accountType:'SPOT',uid:777,balances:[{asset:'BTC',free:'1.5',locked:'0.25'},{asset:'USDT',free:'0',locked:'0'}]};
 const openOrders=[{symbol:'BTCUSDT',orderId:123,origQty:'2',executedQty:'0.5',side:'BUY',status:'PARTIALLY_FILLED'}];
 const j=x=>Response.json(x);
+test('R101 Binance refreshes each signature after a six-second account response with a pinned snapshot clock',async()=>{
+ let elapsed=0;const signedTimes=[];
+ const fetcher=async(raw,options)=>{
+  const url=new URL(raw);assert.equal(options.method,'GET');
+  if(url.pathname==='/api/v3/time')return j({serverTime:now});
+  const signed=Number(url.searchParams.get('timestamp'));
+  const query=new URLSearchParams(url.searchParams);const signature=query.get('signature');query.delete('signature');
+  assert.equal(signature,createHmac('sha256',creds.secret).update(query.toString()).digest('hex'));
+  assert.equal(url.searchParams.get('recvWindow'),'5000');
+  signedTimes.push(signed);
+  if(now+elapsed-signed>5000)return Response.json({code:-1021},{status:400});
+  if(url.pathname==='/api/v3/account'){elapsed=6000;return j(account);}
+  return j(openOrders);
+ };
+ const result=await readDemoBroker(bin,{fetcher,now:()=>now,monotonicNow:()=>elapsed});
+ assert.deepEqual(signedTimes,[now,now+6000]);
+ assert.equal(result.snapshot.observedAtMs,now);
+ assert.equal(result.snapshot.openOrders.length,1);
+});
+for(const after of [-1,30001,NaN,Infinity])test('R101 Binance refuses invalid/stale monotonic clock '+after,async()=>{
+ let elapsed=0,calls=0;
+ const fetcher=async raw=>{
+  calls++;const path=new URL(raw).pathname;
+  if(path==='/api/v3/time')return j({serverTime:now});
+  elapsed=after;return j(account);
+ };
+ await assert.rejects(readDemoBroker(bin,{fetcher,now:()=>now,monotonicNow:()=>elapsed}),/CLOCK_NOT_VERIFIED/);
+ assert.equal(calls,2);
+});
+test('R101 Binance refuses an uncertain slow clock sample before signed requests',async()=>{
+ let elapsed=0,calls=0;
+ await assert.rejects(readDemoBroker(bin,{now:()=>now,monotonicNow:()=>elapsed,
+  fetcher:async()=>{calls++;elapsed=2001;return j({serverTime:now});}}),/CLOCK_NOT_VERIFIED/);
+ assert.equal(calls,1);
+});
 test('B166 Binance Testnet only three GETs, timestamps signed, spot balances not derivatives',async()=>{
  const urls=[];const fetcher=async(url,options)=>{
   assert.equal(options.method,'GET');assert.equal(options.redirect,'error');urls.push(url);

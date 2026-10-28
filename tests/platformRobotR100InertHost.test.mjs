@@ -2,12 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,rmSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {attestR100InertWorker} from '../lib/platform/connections/inert-private-host-r100.mjs';
 
 const root=new URL('../',import.meta.url);
 const cli=new URL('../scripts/platform/connections/r100-inert-worker.mjs',import.meta.url).pathname;
 const manifest=new URL('../infra/render/r100-inert-worker.blueprint.yaml',import.meta.url);
+test('R101 failed boot reports a safe actionable code without credentials or paths',()=>{
+ const child=spawnSync(process.execPath,[cli],{encoding:'utf8',env:{
+  PATH:process.env.PATH,JENIOS_R100_PRIVATE_VOLUME:'/private/sensitive/path',
+  API_SECRET:'synthetic-do-not-log'
+ }});
+ assert.equal(child.status,1);
+ const event=child.stderr.split('\n').find(line=>line.startsWith('{'));
+ assert.deepEqual(JSON.parse(event),{event:'R100_INERT_BOOT_REFUSED',code:'R100_INERT_PRIVATE_WORKER_ONLY'});
+ assert.doesNotMatch(child.stdout+child.stderr,/synthetic-do-not-log|sensitive\/path|API_SECRET/);
+});
 const env={
  JENIOS_R100_RUNTIME_CLASS:'isolated-node',
  JENIOS_R100_HOST_KIND:'background-worker',

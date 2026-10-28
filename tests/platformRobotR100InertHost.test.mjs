@@ -68,6 +68,7 @@ test('R100 refuses Vercel, missing disk, enabled brokers, real trades or payment
    {JENIOS_R100_INERT_WORKER_ENABLED:'false'},
    {JENIOS_R100_NETWORK_DISABLED:'false'},
    {JENIOS_R103_PRIVATE_PAPER_CANCEL_ENABLED:'true'},
+   {JENIOS_R104_PRIVATE_OPERATOR_ENABLED:'true'},
    {JENIOS_R100_HOST_KIND:'public-web'},
    {JENIOS_R96_BINANCE_PRIVATE_READ_ENABLED:'true'},
    {JENIOS_PRIVATE_PAPER_EXECUTOR:'true'},

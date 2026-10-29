@@ -1,0 +1,28 @@
+name: JENIOS Profit protocol R109
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/platform-profit-r109.yml'
+      - 'lib/platform/connections/profit-protocol-r109.mjs'
+      - 'tests/platformRobotR109ProfitProtocol.test.mjs'
+      - 'docs/release/R109-PROFIT-PROTOCOL-20261028.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocol:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Profit protocol and existing connection guide compatibility
+        run: node --test tests/platformRobotR109ProfitProtocol.test.mjs tests/platformConnectionGuides.test.mjs
+      - run: git diff --check

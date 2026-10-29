@@ -1,0 +1,49 @@
+name: JENIOS Binance real-account preflight R110
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/platform-binance-r110.yml'
+      - 'lib/platform/connections/binance-real-preflight-r110.mjs'
+      - 'scripts/platform/connections/r110-*.mjs'
+      - 'tests/platformRobotR110BinanceRealPreflight.test.mjs'
+      - 'docs/release/R110-BINANCE-TESTE-CONTA-REAL-20261028.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  operator:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Operator protocol and hidden input tests (mock provider)
+        run: node --test tests/platformRobotR110BinanceRealPreflight.test.mjs
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Compatibility with existing providers and guides
+        run: node --test tests/platformRobotR110BinanceRealPreflight.test.mjs tests/platformRobotR109ProfitProtocol.test.mjs tests/platformRobotR96BinancePrivateReadOnly.test.mjs tests/platformConnectionGuides.test.mjs
+      - run: node scripts/platform/connections/r110-package.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JENIOS-Binance-R110
+          path: dist/jenios-binance-r110/
+          if-no-files-found: error
+          retention-days: 30

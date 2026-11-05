@@ -1,0 +1,41 @@
+name: JENIOS R111 UltraFast V2 Research
+
+on:
+  pull_request:
+    paths:
+      - 'lib/platform/research/ultrafast-v2-*.mjs'
+      - 'tests/platformUltraV2*.test.mjs'
+      - 'scripts/platform/research/r111-ultra-v2-smoke.mjs'
+      - 'docs/release/R111-ULTRAFAST-V2-3-BLOCOS-20261105.md'
+      - '.github/workflows/jenios-r111-ultra-v2-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ultra-v2-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: UltraFast V2 focused tests
+        run: node --test tests/platformUltraV2*.test.mjs
+      - name: Preserve recovered UltraFast legacy regression gates
+        run: |
+          node --test tests/platformRobotR18UltrafastFoundation.test.mjs \
+            tests/platformRobotR21OosUltrafastRanking.test.mjs \
+            tests/platformRobotR22PublicRankingHoldout.test.mjs \
+            tests/platformRobotR23MultiwindowUltrafast.test.mjs \
+            tests/platformRobotR27DynamicBreakeven.test.mjs \
+            tests/platformRobotR28BreakevenRecall.test.mjs \
+            tests/platformRobotR30RegimeAdaptiveGate.test.mjs \
+            tests/platformRobotR53DynamicAssetSelection.test.mjs \
+            tests/platformRobotR55LongSessionStress.test.mjs
+      - name: Offline no-order smoke
+        run: node scripts/platform/research/r111-ultra-v2-smoke.mjs
+      - name: Diff check
+        run: git diff --check

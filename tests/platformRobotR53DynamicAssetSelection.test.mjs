@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {rankR53Assets,runR53Battery} from '../lib/platform/research/robot-r53-dynamic-asset-selection.mjs';
+test('R53 ranking is deterministic',()=>{const rows=[{symbol:'A-USD',volatilityBps:20,spreadBps:1,depthUsd:1000000,fillProbability:.8,roundTripCostBps:3,adverseSelectionBps:1,stabilityRatio:.9},{symbol:'B-USD',volatilityBps:30,spreadBps:2,depthUsd:800000,fillProbability:.7,roundTripCostBps:5,adverseSelectionBps:2,stabilityRatio:.8}];assert.deepEqual(rankR53Assets(rows),rankR53Assets(rows));});
+test('R53 shock removes economically poor asset',()=>{const x=runR53Battery();assert.equal(x.pass,true);assert.equal(x.shockedSolIneligible,true);});

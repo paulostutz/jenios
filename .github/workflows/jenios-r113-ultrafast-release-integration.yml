@@ -1,0 +1,39 @@
+name: JENIOS R113 UltraFast V2-V3 integrated research
+on:
+  push:
+    branches:
+      - work/jenios-r113-ultrafast-release-integracao-20261105
+  pull_request:
+    paths:
+      - '.github/workflows/jenios-r113-ultrafast-release-integration.yml'
+      - 'app/platform/admin/robos/**'
+      - 'app/api/platform/admin/robots/ultrafast/**'
+      - 'app/components/platform/PlatformUltraResearchLab.js'
+      - 'lib/platform/research/ultrafast-*.mjs'
+      - 'tests/platformRobotR113UltraRelease.test.mjs'
+      - 'docs/release/R113-ULTRAFAST-INTEGRATION-20261105.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  integration:
+    name: full-build-no-order-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci --ignore-scripts --no-audit
+      - name: R111 + R112 + R113 targeted regression
+        run: node --test tests/platformUltraV2*.test.mjs tests/platformUltraV3*.test.mjs tests/platformRobotR113UltraRelease.test.mjs
+      - name: Full Next and Social build (financial transports remain disabled)
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: npm run build
+      - name: Verify no whitespace errors
+        run: git diff --check

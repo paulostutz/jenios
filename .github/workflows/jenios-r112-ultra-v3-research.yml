@@ -1,0 +1,32 @@
+name: JENIOS R112 UltraFast V3 Research
+
+on:
+  pull_request:
+    paths:
+      - 'lib/platform/research/ultrafast-v3-*.mjs'
+      - 'tests/platformUltraV3*.test.mjs'
+      - 'scripts/platform/research/r112-ultrafast-v3-smoke.mjs'
+      - 'docs/release/R112-ULTRAFAST-V3-3-BLOCOS-20261105.md'
+      - '.github/workflows/jenios-r112-ultra-v3-research.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ultra-v3-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate all R112 block modules (no external trading)
+        run: node --test tests/platformUltraV3*.test.mjs
+      - name: Reuse R111 V2 focused regressions
+        run: node --test tests/platformUltraV2*.test.mjs
+      - name: Run integrated no-order smoke
+        run: node scripts/platform/research/r112-ultrafast-v3-smoke.mjs
+      - name: Ensure modifications have no whitespace errors
+        run: git diff --check

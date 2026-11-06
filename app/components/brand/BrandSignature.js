@@ -36,5 +36,6 @@ export function BrandFooter({tone='light',scope='Ecossistema'}){
    <span className={styles.scope}>{scope}</span>
   </span>
   <small>© JENIOS · Todos os direitos reservados.</small>
+  <span className={styles.footerCredit}>Kivoryn Technologies © 2026</span>
  </footer>;
 }

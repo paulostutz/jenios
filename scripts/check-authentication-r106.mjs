@@ -12,6 +12,8 @@ const extensionManifestPath='docs/release/R113-ULTRAFAST-SOURCE-EXTENSION.json';
 const extensionManifestSha1='668de7824825beb675f69003cac4f34e322a0478';
 const helperPath='scripts/check-authentication-r106.mjs';
 const testPath='tests/platformAuthenticationReleaseR106.test.mjs';
+const footerManifestPath='docs/release/KIVORYN-TEXT-FOOTER-20261106.json';
+const footerManifestSha1='d7bb9e98eb86677826ea489d8a827ee79edbb192';
 const blob=body=>createHash('sha1').update(Buffer.from('blob '+body.byteLength+'\0')).update(body).digest('hex');
 export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  const raw=read(manifestPath);
@@ -21,8 +23,19 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  assert.equal(baseline.baseCommit,'6c7b4e69d6a82523714c63d1e64ecbcf5ec465cc');
  assert.equal(baseline.previousProductionCommit,'3dec421bfb9ef1e85d0083a55f63223d3491a256');
  const expected={...baseline.blobs,'scripts/check-pro-image-g49.mjs':'16bfc99c1916fe010f0ad1768cdd17ea1fe9af17',[testPath]:'d2313397603bf89f5fce23dcd59aa5ce2129163d'};
- // R106 immutable predecessor: every reviewed inherited byte is still checked.
- for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),sha,'Unreviewed R106 public release change: '+path);
+ // Only the two reviewed attribution files may differ from the immutable predecessor.
+ // Every other inherited byte, including all auth/financial/native code, stays pinned.
+ const footerRaw=read(footerManifestPath);
+ assert.equal(blob(footerRaw),footerManifestSha1,'Kivoryn footer manifest changed');
+ const footer=JSON.parse(footerRaw);
+ assert.equal(footer.schema,'JENIOS_KIVORYN_TEXT_FOOTER_V1');
+ assert.equal(footer.baseCommit,'006a58dbb94b957c30c2ff370b7a705f1cdb467e');
+ assert.deepEqual(Object.keys(footer.replacements).sort(),['app/components/brand/BrandSignature.js','app/components/brand/BrandSignature.module.css']);
+ for(const [path,entry] of Object.entries(footer.replacements)){
+   assert.equal(entry.baseline,expected[path],'Kivoryn replacement baseline mismatch');
+   assert.match(entry.target,/^[a-f0-9]{40}$/);
+ }
+ for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
  // R113 extension is append-only, explicitly pinned, and cannot replace R106 files.
  const extensionRaw=read(extensionManifestPath);
  assert.equal(blob(extensionRaw),extensionManifestSha1,'R113 extension manifest changed');
@@ -40,7 +53,13 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.equal(blob(read(path)),sha,'Unreviewed R113 release change: '+path);
  }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
- const accepted=[...Object.keys(expected),...Object.keys(extension.blobs),manifestPath,helperPath,extensionManifestPath];
+ assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
+ for(const [path,sha] of Object.entries(footer.additions)){
+   assert.ok(!Object.hasOwn(expected,path)&&!Object.hasOwn(extension.blobs,path));
+   assert.match(sha,/^[a-f0-9]{40}$/);
+   assert.equal(blob(read(path)),sha,'Unreviewed Kivoryn validation file: '+path);
+ }
+ const accepted=[...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),manifestPath,helperPath,extensionManifestPath,footerManifestPath];
  assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false});

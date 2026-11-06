@@ -1,0 +1,19 @@
+{
+  "schema": "JENIOS_KIVORYN_TEXT_FOOTER_V1",
+  "baseCommit": "006a58dbb94b957c30c2ff370b7a705f1cdb467e",
+  "scope": "Only Kivoryn text attribution; no auth, financial, native or product identity changes.",
+  "replacements": {
+    "app/components/brand/BrandSignature.js": {
+      "baseline": "ae7765da8fdab64f8b27126822dc3483865ae050",
+      "target": "5f0b987c4e4109e346d54523fb4dc7594e1732dc"
+    },
+    "app/components/brand/BrandSignature.module.css": {
+      "baseline": "17b8a04f229f5992461191b3cb55236f9f2576a3",
+      "target": "d95d3f58542036dc1bd7a97de59cf279327a1906"
+    }
+  },
+  "additions": {
+    ".github/workflows/kivoryn-footer-validation.yml": "7877d3d081f9fd660c4ae08373668031ebe3ad82",
+    "tests/brandFooterText.test.mjs": "f92b413842bc292a6fdbb6c7c160d38e1598cba0"
+  }
+}

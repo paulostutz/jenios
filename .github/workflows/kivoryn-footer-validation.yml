@@ -1,0 +1,24 @@
+name: JENIOS Kivoryn footer validation
+on:
+  push:
+    branches: [style/kivoryn-text-footer-20261106]
+  pull_request:
+    paths:
+      - 'app/components/brand/**'
+      - '.github/workflows/kivoryn-footer-validation.yml'
+permissions: {contents: read}
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with: {node-version: '22', cache: npm}
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Full build with existing S05 safety checks
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: npm run build
+      - run: git diff --check

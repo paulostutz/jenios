@@ -10,6 +10,8 @@ import {readFileSync} from 'node:fs';
 const manifestPath='docs/release/R106-PUBLIC-GUIDANCE-BASELINE.json';
 const extensionManifestPath='docs/release/R113-ULTRAFAST-SOURCE-EXTENSION.json';
 const extensionManifestSha1='668de7824825beb675f69003cac4f34e322a0478';
+const flowManifestPath='docs/release/R114-FLOW-SOURCE-EXTENSION.json';
+const flowManifestSha1='c7f6c89c825f8c22c9cafeadaebcb8b5910f7f73';
 const helperPath='scripts/check-authentication-r106.mjs';
 const testPath='tests/platformAuthenticationReleaseR106.test.mjs';
 const footerManifestPath='docs/release/KIVORYN-TEXT-FOOTER-20261106.json';
@@ -40,6 +42,21 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  const extensionRaw=read(extensionManifestPath);
  assert.equal(blob(extensionRaw),extensionManifestSha1,'R113 extension manifest changed');
  const extension=JSON.parse(extensionRaw);
+ const flowRaw=read(flowManifestPath);
+ assert.equal(blob(flowRaw),flowManifestSha1,'R114 flow manifest changed');
+ const flow=JSON.parse(flowRaw);
+ assert.equal(flow.schema,'JENIOS_R114_FLOW_SOURCE_EXTENSION_V1');
+ assert.equal(flow.baseCommit,'bcf678c7ce6644e078fbd9bd0c159c69199fe033');
+ assert.equal(flow.liveExecutionAllowed,false);
+ assert.deepEqual(Object.keys(flow.replacements).sort(),[
+   'app/api/platform/admin/robots/ultrafast/route.js',
+   'app/components/platform/PlatformUltraResearchLab.js',
+   'lib/platform/research/ultrafast-v2-pipeline.mjs']);
+ for(const [path,entry] of Object.entries(flow.replacements)){
+   assert.equal(entry.baseline,extension.blobs[path],'R114 replacement baseline mismatch');
+   assert.match(entry.target,/^[a-f0-9]{40}$/);
+ }
+
  assert.equal(extension.schema,'JENIOS_R113_APPEND_ONLY_SOURCE_EXTENSION_V1');
  assert.equal(extension.baseCommit,'8f1b8e4827814d7efe42dc5b91226def2ea42ad5');
  assert.equal(extension.financialLiveAllowed,false);
@@ -50,7 +67,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.ok(!Object.hasOwn(expected,path) && path!==manifestPath && path!==helperPath && path!==extensionManifestPath,
      'R113 extension must not replace reviewed R106 source: '+path);
    assert.match(sha,/^[a-f0-9]{40}$/);
-   assert.equal(blob(read(path)),sha,'Unreviewed R113 release change: '+path);
+   assert.equal(blob(read(path)),flow.replacements[path]?.target||sha,'Unreviewed R113/R114 release change: '+path);
  }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
@@ -59,7 +76,12 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.match(sha,/^[a-f0-9]{40}$/);
    assert.equal(blob(read(path)),sha,'Unreviewed Kivoryn validation file: '+path);
  }
- const accepted=[...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),manifestPath,helperPath,extensionManifestPath,footerManifestPath];
+ for(const [path,sha] of Object.entries(flow.additions)){
+   assert.ok(!Object.hasOwn(expected,path)&&!Object.hasOwn(extension.blobs,path)&&!Object.hasOwn(footer.additions,path));
+   assert.match(sha,/^[a-f0-9]{40}$/);
+   assert.equal(blob(read(path)),sha,'Unreviewed R114 addition: '+path);
+ }
+ const accepted=[...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
  assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false});

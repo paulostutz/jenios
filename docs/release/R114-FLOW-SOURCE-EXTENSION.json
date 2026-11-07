@@ -1,0 +1,29 @@
+{
+  "schema": "JENIOS_R114_FLOW_SOURCE_EXTENSION_V1",
+  "baseCommit": "bcf678c7ce6644e078fbd9bd0c159c69199fe033",
+  "liveExecutionAllowed": false,
+  "replacements": {
+    "app/api/platform/admin/robots/ultrafast/route.js": {
+      "baseline": "bddde604dc5df3ac368df4944747d9ff070474c4",
+      "target": "d8249fe065d1b61f4a7b5c5cbec6295631a82f05"
+    },
+    "app/components/platform/PlatformUltraResearchLab.js": {
+      "baseline": "6260f39a1443f11117189d3c2a5a04c385c2ab73",
+      "target": "fe0c26dbcfd4d38b37663f5809ddb93de26cb165"
+    },
+    "lib/platform/research/ultrafast-v2-pipeline.mjs": {
+      "baseline": "70fbfbbc8ef5fc8fba737448956bd0f866ea30d4",
+      "target": "b7e1c758cf90cfe16f3f9d55f399b37f1eae455f"
+    }
+  },
+  "additions": {
+    "lib/platform/research/market-flow-context.mjs": "4116dd90cc1e1371e9528ed455581bf0fc31bf28",
+    "lib/platform/research/market-flow-provider.mjs": "77a4189927fe91497820aca9bb53b6374bf39541",
+    "tests/platformRobotR114MarketFlow.test.mjs": "efd1e9b18bb727d85f7740f50f289a13ce482579",
+    "tests/platformRobotR114UltraComparison.test.mjs": "fd0306b36f5ecbf9eb6b2b8b627066c6477ce443",
+    "tests/platformRobotR114Inventory.test.mjs": "4e7e13fe257b27afa443f809a3ac85547bdb2375",
+    "scripts/platform/research/r114-flow-benchmark.mjs": "0dcd26db41b6113f823bb655a8feccf42afac456",
+    "docs/release/R114-REVERSE-MARKET-FLOW-20261107.md": "dfdb5d3ff6a507ebd53b2a8e067822f3a82de164",
+    ".github/workflows/jenios-r114-flow-context.yml": "6bce3ed6ae4dfc24205a8d319c9805cd30223818"
+  }
+}

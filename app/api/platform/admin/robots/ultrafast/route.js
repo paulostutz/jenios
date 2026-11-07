@@ -3,6 +3,7 @@ import {getJeniosPlatformAdmin} from '../../../../../../lib/platform/admin-db.mj
 import {requirePlatformAdmin} from '../../../../../../lib/platform/admin-permissions.mjs';
 import {analyzeUltraV2WithCertifiedHistory} from '../../../../../../lib/platform/research/ultrafast-v2-certified-bridge.mjs';
 import {runUltraR113Laboratory} from '../../../../../../lib/platform/research/ultrafast-r113-laboratory.mjs';
+import {marketFlowProvider} from '../../../../../../lib/platform/research/market-flow-provider.mjs';
 
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
@@ -54,6 +55,7 @@ export async function GET(request){
   if(request.method!=='GET')return reply({ok:false,error:'Método não permitido.'},405);
   await authorize(request);
   if(new URL(request.url).search)return reply({ok:false,error:'Sem parâmetros de consulta.'},400);
+  const flowRead=marketFlowProvider.refresh();
   const response=await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD,ETHUSD,SOLUSD',
     {cache:'no-store',headers:{Accept:'application/json'},signal:AbortSignal.timeout(6500)});
   if(!response.ok)return reply({ok:false,error:'Cotações públicas indisponíveis no momento.'},503);
@@ -79,6 +81,7 @@ export async function GET(request){
   return reply({ok:true,schema:'JENIOS_R113_PUBLIC_TICKER_OBSERVATION_V1',
     dataType:'PUBLIC_REST_TICKER_NOT_L2_NOT_REALTIME_TRADE_SIGNAL',
     source:'KRAKEN_PUBLIC_REST_READONLY',observedAt:new Date().toISOString(),markets,
+    marketFlow:await flowRead,
     marketDataIsSampled:true,authenticatedExchangeConnection:false,
     externalPaperEnabled:false,liveExecutionEnabled:false,ordersSent:0});
  }catch(e){return errorReply(e);}

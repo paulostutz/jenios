@@ -133,6 +133,12 @@ export default function PlatformUltraResearchLab(){
      <strong>{row.symbol}</strong><span>Último: US$ {fmt(row.last,5)}</span><span>Spread: {fmt(row.spreadBps,2)} bps</span>
     </div>)}
     <p style={{fontSize:11,color:'#64748b',margin:0}}>Consultado em {new Date(quote.observedAt).toLocaleString('pt-BR')} · Fonte pública, sem verificação de conta e sem ordens.</p>
+    {quote.marketFlow&&<div style={{padding:14,background:'#f8fafc',borderRadius:10,fontSize:13,lineHeight:1.6}}>
+      <strong>Contexto de fluxo · Bitcoin</strong>
+      <p style={{margin:'6px 0'}}>Negócios na Binance BTC/USDT: {quote.marketFlow.usable?'amostra disponível':'amostra insuficiente ou indisponível'}.</p>
+      <p style={{margin:'6px 0'}}>Grandes transferências: {quote.marketFlow.whales?.status==='UNAVAILABLE'?'consulta atual não confirmada':quote.marketFlow.whales?.recentTransfers+' na cobertura consultada'}.</p>
+      <p style={{margin:0,color:'#64748b'}}>Transferências não identificam compra ou venda. O Ultra compara esse contexto em observação; suas regras de entrada permanecem ativas.</p>
+    </div>}
    </div>}
   </section>
  </div>;

@@ -1,0 +1,31 @@
+name: JENIOS Letter CB006 verification
+on:
+  push:
+    branches: [feature/jenios-letter-billing-cb006-20261108, release/jenios-genios-g44-20261024]
+    paths: ['lib/pay/*cb006*', 'lib/pay/central-billing-client.mjs', 'db/letter-billing-cb006.sql', 'tests/letter-cb006/**', 'tests/letterBillingCb006.test.mjs', '.github/workflows/jenios-letter-cb006.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: billing_test
+          POSTGRES_DB: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ['55440:5432']
+        options: >-
+          --health-cmd "pg_isready -U billing_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq php-pgsql
+      - run: php tests/letter-cb006/database.php
+      - run: node --test tests/letterBillingCb006.test.mjs

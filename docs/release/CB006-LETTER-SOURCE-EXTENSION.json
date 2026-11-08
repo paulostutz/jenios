@@ -1,0 +1,51 @@
+{
+  "schema": "JENIOS_CB006_LETTER_SOURCE_EXTENSION_V1",
+  "baseCommit": "c9944b88a03f2f572166f686e2ebac8b614dd3ef",
+  "liveIssuanceAllowed": false,
+  "replacements": {
+    "package.json": {
+      "baseline": "ddf8b356bd3bc7de1fee080abad983d9301c809b",
+      "target": "5448f4d5cc5138c56deabe781efd8c2f7131721f"
+    },
+    "lib/assistant/university-monthly-access.mjs": {
+      "baseline": "c5b24c2424301bdbf1b83a0c20dac139014c7520",
+      "target": "5a695227510480e0aa06dd123c1198394b82c166"
+    },
+    "lib/assistant/university-subscription.mjs": {
+      "baseline": "bf806c88374a201415cddcad477743b3219dea0f",
+      "target": "1a8b6340bde5a4dd53a7eac3c3c48c86287462f6"
+    },
+    "lib/release/environment-scope.mjs": {
+      "baseline": "5fedf86fe7a5b511a8b9b2aa4ca9611667a3a25e",
+      "target": "b6454500932f9c631713f4859f5d206889958bf3"
+    },
+    "lib/platform/monthly-billing.mjs": {
+      "baseline": "18fb19799830c9297d86560bc7e22b7fc9d68f6a",
+      "target": "f44dee0b3195a781218cee9eafd4e6d93be89f92"
+    },
+    "app/billing/page.js": {
+      "baseline": "488fee33fe1bc5738a00e97b5ff623ce603b87c5",
+      "target": "5b4fc9257ed604e7a1b98d5e2921e70d1441eaba"
+    },
+    "app/checkout/page.js": {
+      "baseline": "6c5240da4531ea360e672ba2422c68fe7013bd15",
+      "target": "3ce66ee7c5aabb4b9f8011407a29c82b9053c98a"
+    },
+    "app/universidade/UniversitySubscription.js": {
+      "baseline": "b11f40f26b40d1f313d21d8a3e883f964e8f109d",
+      "target": "df6034272398bfec15cb0f1745eceec62e6226e7"
+    }
+  },
+  "additions": {
+    "tests/letterBillingCb006.test.mjs": "fa48a705b06fe6abf5026d036042f22cb7f884eb",
+    "docs/CB006_LETTER_BILLING.md": "b832f5b12247de264e18d5ac2064028974105cfa",
+    "db/letter-billing-cb006.sql": "9dcfbb1e4080cb58ac2c42d3bcf2063544e27b7b",
+    "tests/letter-cb006/fixture.sql": "ad1b62410dfd33174a976d226d691090d6752485",
+    "tests/letter-cb006/database.php": "f2b909b170bbae2c63a3c3e39442a366ac3f678a",
+    ".github/workflows/jenios-letter-cb006.yml": "08755903bd6d12ea39e4adf56308c1c4be0e28df",
+    "lib/pay/letter-billing-cb006.mjs": "b166c75c01111339ee00b1c06afd96b6b34a9588",
+    "lib/pay/central-billing-client.mjs": "273421d2ac3b23914dbcdb8f077d3c3c3aa37d8d",
+    "app/checkout/LetterBilling.js": "b962a8c468b134a35e2bf0b2ccbd71ebff033a25",
+    "app/api/jenios-pay/letter-billing/route.js": "626799bc7079cdcc4f339e5b9651ac1e4e7ae592"
+  }
+}

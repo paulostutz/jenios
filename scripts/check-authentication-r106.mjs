@@ -24,6 +24,12 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  assert.equal(baseline.schema,'JENIOS_R106_PUBLIC_GUIDANCE_BASELINE_V1');
  assert.equal(baseline.baseCommit,'6c7b4e69d6a82523714c63d1e64ecbcf5ec465cc');
  assert.equal(baseline.previousProductionCommit,'3dec421bfb9ef1e85d0083a55f63223d3491a256');
+ const cbRaw=read('docs/release/CB006-LETTER-SOURCE-EXTENSION.json');
+ assert.equal(blob(cbRaw),'ab6147dc2a27e4904d15e0384f9734eb722317ff','CB006 manifest changed');
+ const cb=JSON.parse(cbRaw);
+ assert.equal(cb.schema,'JENIOS_CB006_LETTER_SOURCE_EXTENSION_V1');
+ assert.equal(cb.baseCommit,'c9944b88a03f2f572166f686e2ebac8b614dd3ef');
+ assert.equal(cb.liveIssuanceAllowed,false);
  const expected={...baseline.blobs,'scripts/check-pro-image-g49.mjs':'16bfc99c1916fe010f0ad1768cdd17ea1fe9af17',[testPath]:'d2313397603bf89f5fce23dcd59aa5ce2129163d'};
  // Only the two reviewed attribution files may differ from the immutable predecessor.
  // Every other inherited byte, including all auth/financial/native code, stays pinned.
@@ -37,7 +43,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.equal(entry.baseline,expected[path],'Kivoryn replacement baseline mismatch');
    assert.match(entry.target,/^[a-f0-9]{40}$/);
  }
- for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
+ for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),cb.replacements[path]?.target||footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
  // R113 extension is append-only, explicitly pinned, and cannot replace R106 files.
  const extensionRaw=read(extensionManifestPath);
  assert.equal(blob(extensionRaw),extensionManifestSha1,'R113 extension manifest changed');
@@ -67,7 +73,18 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.ok(!Object.hasOwn(expected,path) && path!==manifestPath && path!==helperPath && path!==extensionManifestPath,
      'R113 extension must not replace reviewed R106 source: '+path);
    assert.match(sha,/^[a-f0-9]{40}$/);
-   assert.equal(blob(read(path)),flow.replacements[path]?.target||sha,'Unreviewed R113/R114 release change: '+path);
+   assert.equal(blob(read(path)),cb.replacements[path]?.target||flow.replacements[path]?.target||sha,'Unreviewed R113/R114 release change: '+path);
+ }
+ const inherited={...expected,...extension.blobs,...footer.additions,...flow.additions};
+ for(const [path,entry] of Object.entries(cb.replacements)){
+  assert.equal(entry.baseline,footer.replacements[path]?.target||flow.replacements[path]?.target||inherited[path],'CB006 replacement baseline mismatch');
+  assert.match(entry.target,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),entry.target,'Unreviewed CB006 replacement: '+path);
+ }
+ for(const [path,sha] of Object.entries(cb.additions)){
+  assert.ok(!Object.hasOwn(inherited,path)&&path!==helperPath);
+  assert.match(sha,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),sha,'Unreviewed CB006 addition: '+path);
  }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
@@ -81,7 +98,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.match(sha,/^[a-f0-9]{40}$/);
    assert.equal(blob(read(path)),sha,'Unreviewed R114 addition: '+path);
  }
- const accepted=[...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
+ const accepted=['docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
  assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false});

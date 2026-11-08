@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import MonthlyPix from './MonthlyPix';
+import LetterBilling from './LetterBilling';
 import {projectPlatformCatalog} from '../../lib/platform/checkout-readiness.mjs';
 
 export default function PlatformCheckout() {
@@ -51,9 +52,10 @@ export default function PlatformCheckout() {
         </button>)}
       </div>
       {chosen&&<section style={{background:'white',padding:24,borderRadius:16}}>
-        <MonthlyPix plan={chosen} onState={updateBilling}/>
+        <MonthlyPix plan={chosen} onState={updateBilling}/><LetterBilling productCode={chosen.code}/>
         <p style={{fontSize:13,color:'#64748b'}}>Os preços iniciais aprovados são R$ 99,90, R$ 149,90 e R$ 199,90/mês. Alterações futuras são administradas no painel de preços.</p>
       </section>}
     </div>
   </main>;
 }
+

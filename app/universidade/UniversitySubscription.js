@@ -5,6 +5,7 @@ import {supabase} from '../../lib/supabase';
 import {UNIVERSITY_MONTHLY,validUniversityOffer,validUniversityAccess,validUniversityScheduled,canStartUniversityPurchase,projectUniversityOrder,restoreUniversityAttempt,
  preserveUniversityAttempt,universityAttemptReference,universityDate} from './university-client.mjs';
 import styles from './university.module.css';
+import LetterBilling from '../checkout/LetterBilling';
 
 function checkedAccess(value){
  if(value?.ok!==true||!validUniversityOffer(value.offer)||!validUniversityAccess(value.access)||typeof value.canPurchase!=='boolean'||typeof value.canRenew!=='boolean')throw Error('Não foi possível conferir as condições da sua conta. Atualize o acesso antes de contratar.');
@@ -146,5 +147,7 @@ export default function UniversitySubscription(){
    </div>}
   </>}
   {error&&<p className={styles.error} role="alert">{error}</p>}
+ <LetterBilling productCode="social-university-monthly"/>
  </section>;
 }
+

@@ -1,0 +1,13 @@
+CREATE ROLE anon;CREATE ROLE authenticated;CREATE ROLE service_role;
+CREATE SCHEMA auth;
+CREATE TABLE auth.users(id uuid PRIMARY KEY,deleted_at timestamptz,is_anonymous boolean DEFAULT false,banned_until timestamptz);
+CREATE TABLE public.jenios_pay_products(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),code text UNIQUE,name text,category text,price_cents bigint,currency text,billing_type text,active boolean);
+CREATE TABLE public.jenios_pay_orders(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid,product_id uuid,amount_cents bigint,currency text DEFAULT 'BRL',status text DEFAULT 'pending',provider text,external_reference text UNIQUE,idempotency_key text UNIQUE,created_at timestamptz DEFAULT now(),updated_at timestamptz DEFAULT now());
+CREATE TABLE public.jenios_pay_subscriptions(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid,product_id uuid,latest_order_id uuid,status text DEFAULT 'pending',current_period_start timestamptz,current_period_end timestamptz,cancel_at_period_end boolean DEFAULT false,created_at timestamptz DEFAULT now(),updated_at timestamptz DEFAULT now());
+CREATE TABLE public.jenios_pay_entitlements(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid,product_id uuid,order_id uuid UNIQUE,status text DEFAULT 'pending',granted_at timestamptz,expires_at timestamptz,created_at timestamptz DEFAULT now());
+CREATE TABLE public.jenios_platform_payers_g47(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid,platform_user_id uuid);
+CREATE TABLE public.jenios_platform_invoices_g47(user_id uuid,status text);
+CREATE TABLE public.jenios_university_invoices_b147(user_id uuid,status text);
+INSERT INTO auth.users(id) VALUES('a1111111-1111-4111-8111-111111111111'),('a2222222-2222-4222-8222-222222222222');
+INSERT INTO public.jenios_platform_payers_g47(user_id,platform_user_id) VALUES('a1111111-1111-4111-8111-111111111111','b1111111-1111-4111-8111-111111111111');
+INSERT INTO public.jenios_pay_products(code,name,category,price_cents,currency,billing_type,active) VALUES('platform-global-crypto','Fictício','platform',14990,'BRL','monthly',true),('social-university-monthly','Fictício','other',4990,'BRL','monthly',true),('third-party-report','Fictício','specialist',9990,'BRL','monthly',true);

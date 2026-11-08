@@ -7,8 +7,8 @@
     "build": "node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test tests/*.test.mjs",
-    "test:release-s05": "node --test tests/release-s05/*.test.mjs tests/social-s05/report-pdf-download.test.mjs",
+    "test": "JENIOS_LETTER_INTEGRATION_ENABLED=false node --test tests/*.test.mjs",
+    "test:release-s05": "JENIOS_LETTER_INTEGRATION_ENABLED=false node --test tests/release-s05/*.test.mjs tests/social-s05/report-pdf-download.test.mjs",
     "test:e2e:s05": "node scripts/check-s05-authenticated-e2e.mjs"
   },
   "dependencies": {

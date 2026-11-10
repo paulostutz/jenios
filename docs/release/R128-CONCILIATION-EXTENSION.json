@@ -1,0 +1,29 @@
+{
+  "schema": "JENIOS_R128_CONCILIATION_EXTENSION_V1",
+  "sessionCommit": "f19607c6d970211106908868e7dc5930a7b269ca",
+  "operationsCommit": "f0ec442f27b0a72bcf72fe512682c5c5653ee586",
+  "commonR126Commit": "02f547531d4e2353fa1c397d0a6cb2b8edb68b2c",
+  "recoveredR126Commit": "a9b6ecefc2a53374b1b17e0cce352020d3b0bda4",
+  "accountModel": "each_client_own_account",
+  "evidenceMode": "offline_fixture",
+  "nativeValidated": false,
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "billingAllowed": false,
+  "productionPublished": false,
+  "aliases": {
+    "scripts/platform/ultra/package-r127.py": "scripts/platform/ultra/package-operations-r127.py",
+    "tests/platformUltraR127Integrity.test.mjs": "tests/platformUltraR127OperationsIntegrity.test.mjs"
+  },
+  "packageSha256": "686449d250345ea692489fafc3436e5ae20e99d84fbf8fd6d154cd51cd7b0ac1",
+  "replacements": {},
+  "additions": {
+    "docs/release/R128-CONCILIACAO.md": "cb93f1656adf43447d0001d70335ff68c83d1169",
+    "lib/platform/ultra/client/session-runtime-r128.mjs": "c7ed0a7729d23e098a517c5daafa894c63bed01b",
+    "scripts/platform/ultra/package-r128.py": "a559ee4483e2abe0ae895ecc74190f29745d9291",
+    "scripts/platform/ultra/qualify-r128.mjs": "e7b21f66601f378f387b0555c5e2e1c9c7b90774",
+    "tests/platformUltraR128Conciliation.test.mjs": "5d6a89cc165076f2ab46bfaab9aed8475ea04671",
+    "tests/platformUltraR128Integrity.test.mjs": "b4ec984c23b97b08ec60785a45db0db26ba66d00",
+    "public/downloads/jenios-ultra-r128-conciliation.zip": "0f2badfe8d34eff5235c0d790e480bf3fe7e566b"
+  }
+}

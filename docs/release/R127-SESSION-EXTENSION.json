@@ -1,0 +1,20 @@
+{
+  "schema": "JENIOS_R127_DURABLE_SESSION_EXTENSION_V1",
+  "baseCommit": "02f547531d4e2353fa1c397d0a6cb2b8edb68b2c",
+  "accountModel": "each_client_own_account",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "billingAllowed": false,
+  "productionPublished": false,
+  "replacements": {},
+  "additions": {
+    "lib/platform/ultra/client/session-runtime-r127.mjs": "bb7a348d3e9fd6874e94feffc17ac50b87469f3b",
+    "scripts/platform/ultra/rehearse-session-r127.mjs": "3a9e8a921ad86dad10bf45bcaf96cfef45fc905b",
+    "scripts/platform/ultra/package-r127.py": "fd728ad9b43b70aca8f74bf3c896f9f913d250e8",
+    "tests/platformUltraR127Session.test.mjs": "b610e3ccba5450c0295aa2115bc55bebd27d2fc5",
+    "tests/platformUltraR127Integrity.test.mjs": "49120c9580d03c149d5b7a9cd34f1ff8625bc173",
+    "docs/release/R127-SESSAO-DURAVEL.md": "fe0619d83c40aeffc06ebaa269d261aaec3545a5",
+    "public/downloads/jenios-ultra-r127-session.zip": "679811c39e661dccef6cd31a1cd295f5985c8d74"
+  }
+}

@@ -261,22 +261,46 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
   assert.ok(!Object.hasOwn(inheritedR126,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R126 must not replace inherited source: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R126 addition: '+path);
  }
- const r127Path='docs/release/R127-EXECUTION-EXTENSION.json';
- const r127Raw=read(r127Path);
- assert.equal(blob(r127Raw),'ae8f160aa695b27d56651bc24fb57bc84d0aa02e','R127 manifest changed');
+ const r127Raw=read('docs/release/R127-SESSION-EXTENSION.json');
+ assert.equal(blob(r127Raw),'3609f25ceeb52ba20294ced98fa93d05d688f727','R127 manifest changed');
  const r127=JSON.parse(r127Raw);
- assert.equal(r127.schema,'JENIOS_R127_OFFLINE_EXECUTION_EXTENSION_V1');
- assert.equal(r127.basePublishedCommit,'d63f26ca9ddb9987f74cd62aabe0f42bc181ab63');
- assert.equal(r127.accountModel,'customer_own_account');
- assert.equal(r127.credentialLocation,'trader_device');
- assert.equal(r127.evidenceMode,'offline_fixture');
- for(const flag of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','productionPublished','billingAllowed'])assert.equal(r127[flag],false);
+ assert.equal(r127.schema,'JENIOS_R127_DURABLE_SESSION_EXTENSION_V1');
+ assert.equal(r127.baseCommit,'02f547531d4e2353fa1c397d0a6cb2b8edb68b2c');assert.equal(r127.accountModel,'each_client_own_account');
+ for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','billingAllowed','productionPublished'])assert.equal(r127[key],false);
  assert.deepEqual(r127.replacements,{});
  const inheritedR127={...inheritedR126,...r126.additions};
  for(const [path,sha] of Object.entries(r127.additions)){
-  assert.ok(!Object.hasOwn(inheritedR127,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R127 must remain additive: '+path);
-  assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),sha,'Unreviewed R127 candidate addition: '+path);
+  assert.ok(!Object.hasOwn(inheritedR127,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R127 must not replace inherited source: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R127 addition: '+path);
+ }
+ const r127opsRaw=read('docs/release/R127-EXECUTION-EXTENSION.json');
+ assert.equal(blob(r127opsRaw),'ae8f160aa695b27d56651bc24fb57bc84d0aa02e','R127 operations manifest changed');
+ const r127ops=JSON.parse(r127opsRaw);
+ assert.equal(r127ops.schema,'JENIOS_R127_OFFLINE_EXECUTION_EXTENSION_V1');
+ assert.equal(r127ops.originalR126Commit,'02f547531d4e2353fa1c397d0a6cb2b8edb68b2c');
+ assert.equal(r127ops.accountModel,'customer_own_account');assert.equal(r127ops.evidenceMode,'offline_fixture');
+ assert.deepEqual(r127ops.replacements,{});
+ for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','billingAllowed','productionPublished'])assert.equal(r127ops[key],false);
+ const r128Raw=read('docs/release/R128-CONCILIATION-EXTENSION.json');
+ assert.equal(blob(r128Raw),'52a1a0ac1a0169b83651c654ff12f31d388e4ca1','R128 manifest changed');
+ const r128=JSON.parse(r128Raw);
+ assert.equal(r128.schema,'JENIOS_R128_CONCILIATION_EXTENSION_V1');
+ assert.equal(r128.sessionCommit,'f19607c6d970211106908868e7dc5930a7b269ca');
+ assert.equal(r128.operationsCommit,'f0ec442f27b0a72bcf72fe512682c5c5653ee586');
+ assert.equal(r128.commonR126Commit,r127ops.originalR126Commit);assert.equal(r128.accountModel,'each_client_own_account');
+ assert.equal(r128.recoveredR126Commit,'a9b6ecefc2a53374b1b17e0cce352020d3b0bda4');
+ assert.equal(r128.evidenceMode,'offline_fixture');assert.deepEqual(r128.replacements,{});
+ for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','billingAllowed','productionPublished'])assert.equal(r128[key],false);
+ assert.deepEqual(r128.aliases,{'scripts/platform/ultra/package-r127.py':'scripts/platform/ultra/package-operations-r127.py','tests/platformUltraR127Integrity.test.mjs':'tests/platformUltraR127OperationsIntegrity.test.mjs'});
+ const inheritedR128={...inheritedR127,...r127.additions},mappedOps={};
+ for(const [path,sha] of Object.entries(r127ops.additions)){
+  const target=r128.aliases[path]||path;
+  assert.ok(!Object.hasOwn(inheritedR128,target)&&target!==helperPath&&!target.endsWith('-EXTENSION.json'),'R127 operations must remain additive: '+target);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(target)),sha,'Unreviewed R127 operations addition: '+target);mappedOps[target]=sha;
+ }
+ for(const [path,sha] of Object.entries(r128.additions)){
+  assert.ok(!Object.hasOwn(inheritedR128,path)&&!Object.hasOwn(mappedOps,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R128 must remain additive: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R128 addition: '+path);
  }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
@@ -290,8 +314,8 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.match(sha,/^[a-f0-9]{40}$/);
    assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R114 addition: '+path);
  }
- const accepted=['docs/release/R126-TEST-EXTENSION.json',...Object.keys(r126.additions),'docs/release/R125-ULTRA-CANDIDATE-EXTENSION.json',...Object.keys(r125.additions),'docs/release/R120-BINANCE-EVENTS-EXTENSION.json',...Object.keys(r120.additions),'docs/release/R119-BINANCE-PROTOCOL-EXTENSION.json',...Object.keys(r119.additions),'docs/release/R118-EXECUTION-CHECKPOINT-EXTENSION.json',...Object.keys(r118.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
- assert.deepEqual(files.slice().sort(),[...new Set([...accepted,r127Path,...Object.keys(r127.additions)])].sort(),'Unreviewed R106/R113/R118-R127 public release inventory');
+ const accepted=['docs/release/R128-CONCILIATION-EXTENSION.json',...Object.keys(r128.additions),'docs/release/R127-EXECUTION-EXTENSION.json',...Object.keys(mappedOps),'docs/release/R127-SESSION-EXTENSION.json',...Object.keys(r127.additions),'docs/release/R126-TEST-EXTENSION.json',...Object.keys(r126.additions),'docs/release/R125-ULTRA-CANDIDATE-EXTENSION.json',...Object.keys(r125.additions),'docs/release/R120-BINANCE-EVENTS-EXTENSION.json',...Object.keys(r120.additions),'docs/release/R119-BINANCE-PROTOCOL-EXTENSION.json',...Object.keys(r119.additions),'docs/release/R118-EXECUTION-CHECKPOINT-EXTENSION.json',...Object.keys(r118.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
+ assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113/R118-R128 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false,liveExecutionAllowed:false,candidateValidated:false});
 }

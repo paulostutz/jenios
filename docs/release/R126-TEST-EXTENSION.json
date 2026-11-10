@@ -1,0 +1,38 @@
+{
+  "schema": "JENIOS_R126_SAFE_REHEARSAL_EXTENSION_V1",
+  "baseCommit": "8cd35ab6caedac31ea327c72e037de43bc309c48",
+  "accountModel": "each_client_own_account",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "billingAllowed": false,
+  "replacements": {
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "ff3fae8c13d5debf7cb4796d5033b5a4d89e30a8",
+      "target": "6aa9be00c62c595d3c36aa7415c9fff96d84f47c"
+    },
+    "app/components/platform/PlatformUltraLocal.js": {
+      "baseline": "053fc642c62e76c3482b5d50f910c1f548c9b9cf",
+      "target": "34c5dd3b75e786a6ba7fb20ae245561e1569c3b1"
+    },
+    "app/components/social-auth-return.mjs": {
+      "baseline": "b4e3d2e72dc191b51a9c3ed74e5a6f5b48e39c1d",
+      "target": "f8c11f1e5ecc9a8e3773a00fdb218284ea08ed4f"
+    },
+    "app/platform/entrar/page.js": {
+      "baseline": "1b3ed41bec13cdfb210441f03c63fc2f88645feb",
+      "target": "e23b0d07c2c36a6050128f7be3844b059a14270f"
+    }
+  },
+  "additions": {
+    "app/components/platform/UltraRehearsalR126.js": "d7863837f5bf6ebbe90168e3d648149e90bbf523",
+    "app/platform/ultra/teste/page.js": "6c01f27754bce3984496c872b2a30c5ef7f63fd7",
+    "docs/release/R126-TESTE-SEGURO.md": "b2185fc52eedb0ae72530d747b5bee6057944c44",
+    "lib/platform/ultra/rehearsal-r126.mjs": "ab9e8f35e3748da421057d2d0382816cfa451875",
+    "scripts/platform/ultra/rehearse-r126.mjs": "0a80a74b0af9f079491eb8037ac792c5a879f644",
+    "scripts/platform/ultra/package-r126.py": "d27516f7b99db59d3707b7da3d89fa3c088ea836",
+    "tests/platformUltraR126Rehearsal.test.mjs": "718057e2e6bb70d957186c5401085561a896adf9",
+    "tests/platformUltraR126Integrity.test.mjs": "5cf597499e0d9340f7fb67352f3273694c558b1c",
+    "public/downloads/jenios-ultra-r126-rehearsal.zip": "3f6acd60430acdecdbc596831df4d4bbd6f72e0d"
+  }
+}

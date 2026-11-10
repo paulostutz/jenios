@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {parseWorkspaceReport,workspaceReportView,ULTRA_ACCESS_PREPARATION} from '../../../lib/platform/ultra/client/workspace-report.mjs';
+import {parseWorkspaceReportR125 as parseWorkspaceReport,workspaceReportViewR125 as workspaceReportView} from '../../../lib/platform/ultra/client/report-r125.mjs';
+import {ULTRA_ACCESS_PREPARATION} from '../../../lib/platform/ultra/client/workspace-report.mjs';
 import {OPERATION_STATES} from '../../../lib/platform/ultra/operation.mjs';
 import {formatFinancialAmount as money} from '../../../lib/platform/ultra/client/reporting.mjs';
 import {ULTRA_PERIODS} from '../../../lib/platform/ultra/reporting.mjs';

@@ -1,0 +1,28 @@
+{
+  "schema": "JENIOS_R119_BINANCE_PROTOCOL_EXTENSION_V1",
+  "baseCommit": "06654c7cfcb4b1d5c71a65c9f137b282f14a93ef",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "productionPublished": false,
+  "credentialLocation": "trader_device",
+  "replacements": {},
+  "additions": {
+    ".github/workflows/jenios-r119-binance-protocol.yml": "c65fc482989098132f9c979ae6e8f538eb616ab2",
+    "docs/release/R119-CHECKPOINT-README.md": "70574a9eafca455a0bbf128a2ff2ad17c9486dd2",
+    "docs/release/R119-FUTURES-PROTOCOL.md": "96d6e4b0361649246de0355153bf0cb043b091a3",
+    "docs/release/R119-SPOT-PROTOCOL.md": "4f001b1882308a7aaafc9d96d4bc83a42b471eeb",
+    "lib/platform/ultra/client/binance-action-journal-r119.mjs": "0749f529bae57158453a2cd1d43bfee02deb0063",
+    "lib/platform/ultra/client/binance-durable-adapter-r119.mjs": "80522714c83de22439970d467034151515c6afec",
+    "lib/platform/ultra/client/binance-futures-preflight-r119.mjs": "1b9881690869a933ecfea2a8ece4203491dad68d",
+    "lib/platform/ultra/client/binance-futures-protocol-r119.mjs": "8673cac5b0b0d6c7c0143732a501616623e33fbc",
+    "lib/platform/ultra/client/binance-protocol-sandbox-r119.mjs": "6884d7006d604b75de0142f81913e0786ff6a408",
+    "lib/platform/ultra/client/binance-spot-protocol-r119.mjs": "142fa65e38d41217023fd2594e3e58974612bf2a",
+    "public/downloads/jenios-ultra-r119-checkpoint.zip": "2edb1747561e598cc516eeb035abdd682d3aa8b8",
+    "scripts/platform/ultra/package-r119.py": "b826e1c041a89aa51aaac53467910aa6ff4199f2",
+    "tests/platformUltraR119DurableAdapter.test.mjs": "9c34b2a5101311a18361c2e37b6cceeaa62c3677",
+    "tests/platformUltraR119FuturesProtocol.test.mjs": "dd0c1bd173716bf79afed410ef5d73b2722e42f4",
+    "tests/platformUltraR119Integrity.test.mjs": "ba3be46da51d0fa4ea496b50154a64a9d9338470",
+    "tests/platformUltraR119SpotProtocol.test.mjs": "ff4dcbc391da718a539ce82ea987421929b5bb0b"
+  }
+}

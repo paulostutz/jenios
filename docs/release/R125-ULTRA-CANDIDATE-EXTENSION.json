@@ -1,0 +1,69 @@
+{
+  "schema": "JENIOS_R125_ULTRA_CANDIDATE_EXTENSION_V1",
+  "baseCommit": "d63f26ca9ddb9987f74cd62aabe0f42bc181ab63",
+  "integratedCheckpoint": "ccfca5dc3182da0ca5af8bf38992b1d811b77533",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "productionPublished": false,
+  "billingAllowed": false,
+  "credentialLocation": "trader_device",
+  "candidateStatus": "unvalidated_offline_candidate",
+  "brokerAccountEligibility": "pending",
+  "individualRobotApprovalAssumed": false,
+  "accountModelStatus": "requested_ultra_holder_account_not_implemented",
+  "individualAccountsScope": "other_jenios_robots_only",
+  "productScope": [
+    "genial_b3_win_wdo_mt5_or_profit",
+    "genial_crypto_integration_pending",
+    "optional_binance_crypto_spot",
+    "optional_binance_crypto_usds_m_futures_if_eligible"
+  ],
+  "replacements": {
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "05d3e8c5e8ba24a6e2e62eda39f9f8b6fc417d81",
+      "target": "ff3fae8c13d5debf7cb4796d5033b5a4d89e30a8"
+    },
+    "app/components/platform/PlatformUltraLocal.js": {
+      "baseline": "5ced218b09f304299b26f849ff357c2746d71b79",
+      "target": "053fc642c62e76c3482b5d50f910c1f548c9b9cf"
+    },
+    "app/components/platform/PlatformUltraOperations.js": {
+      "baseline": "61f2cb717ac1976fbdcb7d4cb21ca12763d85bf6",
+      "target": "f2a5e746745c18a22d9b9003de49217d0cd3828c"
+    },
+    "app/components/platform/UltraAccountReport.js": {
+      "baseline": "5d507fe64c9c19947eaccb8065dfc3caf7ff7a37",
+      "target": "48af497e3ad60248ec2b06cefa738078173d0e78"
+    },
+    "lib/platform/ultra/http.mjs": {
+      "baseline": "faf980f49ffc24d7cbb82f5e8d6a7e37f108cc75",
+      "target": "825bddce9d3b150c062f3e1ff5565dfe601cb080"
+    },
+    "lib/platform/ultra/operations-http.mjs": {
+      "baseline": "99694949bc9c79395e2942dfb5eb97558205324c",
+      "target": "43395af3999684c7a96b09a25f27fe5f035f8593"
+    },
+    "tests/platformUltraR115.test.mjs": {
+      "baseline": "3d7ceb58b01337e2b891ab5cacbb4a2d9ac918d0",
+      "target": "90a656b57ae616ea13c59fe100559af2352aa395"
+    }
+  },
+  "additions": {
+    "docs/release/R125-ACCOUNT-MODEL.md": "c021a1d3e91f58d754e0e9474c5ffd9874b0ff41",
+    "docs/release/R125-CHECKPOINT-README.md": "29f479d4d7c4dba5c8e6384031a6ff4cf9530457",
+    "docs/release/R125-GENIAL-MT5.md": "f9c089096348c06f2545ad7ac698caf144ccfea8",
+    "lib/platform/ultra/client/plan-r125.mjs": "f7b69115f05088860795671bca7f0854b86e7594",
+    "lib/platform/ultra/client/report-r125.mjs": "03868525e3a242a0c5ad163ffb976f752ef14d6d",
+    "lib/platform/ultra/policy-r125.mjs": "e132dbb90af449261fed63e7499092fa8ad71cab",
+    "lib/platform/ultra/routes-r125.mjs": "1ae62426459ae35d46a25c7ee74e732f61db61db",
+    "lib/platform/ultra/scope-r125.mjs": "d3a4567f6e97dfe655059da72189ed6438fce152",
+    "public/downloads/jenios-ultra-r125-candidate.zip": "c3c3def847d505bc992e9a2650b4cab6c6e9b740",
+    "scripts/platform/ultra/client-r125.mjs": "10005072f0d1e94c08ef78b412990b7f7025d511",
+    "scripts/platform/ultra/mt5_readiness_r125.py": "8a8097b5b4c6e2fa568147ce3c5628b39043b78e",
+    "scripts/platform/ultra/package-r125.py": "64d40a16c92932511079c34880a3e4432516d306",
+    "scripts/platform/ultra/test_mt5_readiness_r125.py": "7de140e249c8d9c52ae22e516f25902db8ed926e",
+    "tests/platformUltraR125Integrity.test.mjs": "c0bfda3d70ce5d985d72e66d2addebb29e0e0078",
+    "tests/platformUltraR125Routes.test.mjs": "adccbbbd5367f15fb6f1edde5fd407c50a559d1a"
+  }
+}

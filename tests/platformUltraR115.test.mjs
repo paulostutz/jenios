@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assessUltraLeverage,ultraOperationalBlockers} from '../lib/platform/ultra/policy.mjs';
+import {assessUltraLeverage as assessCurrentUltraLeverage} from '../lib/platform/ultra/policy-r125.mjs';
 import {rankUltraCandidates,sizeUltraPosition} from '../lib/platform/ultra/selection.mjs';
 import {ultraPeriodStart} from '../lib/platform/ultra/reporting.mjs';
 import {ultraHttp,ultraReviewDigest} from '../lib/platform/ultra/http.mjs';
@@ -67,7 +68,7 @@ function dbFixture(){
  return {writes,db:{auth:{getUser:async()=>({data:{user:{id:'server-owner'}}})},from:table=>({insert:row=>{writes.push({table,row});return {select:()=>({single:async()=>({data:{id:'plan-1',...row}})})};}})}};
 }
 test('authenticated save records the exact review and server identity; changed review must be revisited',async()=>{
- const f=dbFixture();const opts={getAdmin:()=>f.db};const assessment=assessUltraLeverage(config);
+ const f=dbFixture();const opts={getAdmin:()=>f.db};const assessment=assessCurrentUltraLeverage(config);
  const body={action:'save',config,reviewDigest:ultraReviewDigest(assessment),riskAcknowledged:true};
  assert.equal((await ultraHttp(request(body,false),opts)).status,401);
  assert.equal((await ultraHttp(request({...body,riskAcknowledged:false}),opts)).status,409);

@@ -1,0 +1,25 @@
+{
+  "schema": "JENIOS_R120_BINANCE_EVENTS_EXTENSION_V1",
+  "baseCommit": "0ab325a756bdb167c6b357dce52f2b603529a843",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "productionPublished": false,
+  "credentialLocation": "trader_device",
+  "replacements": {},
+  "additions": {
+    ".github/workflows/jenios-r120-binance-events.yml": "30f3754d82a27ac42d529b29a324832baa9ef420",
+    "docs/release/R120-CHECKPOINT-README.md": "b5da9fc7314fd677d0d45f995a175d6dbd368c6b",
+    "docs/release/R120-EVENT-PROTOCOL.md": "075e5d25c7d28697ad1827d514f7d5d1156afa7a",
+    "docs/release/R120-LOCAL-TRANSPORT.md": "ffa17d2336ef4275e1aa46e0d67d01865cb8c44d",
+    "lib/platform/ultra/client/binance-auth-fixture-r120.mjs": "b4b8c7f0f22ff4f65902ca6b657e030fb524b3c6",
+    "lib/platform/ultra/client/binance-event-inbox-r120.mjs": "ee393e58cf38dc7b736aa89be49e4a915e450a30",
+    "lib/platform/ultra/client/binance-events-r120.mjs": "adf25cea0ccaab1b343d02ab44ade73fbf98351c",
+    "public/downloads/jenios-ultra-r120-checkpoint.zip": "8c3202915509383bf2fa05d8693ff4e454b40059",
+    "scripts/platform/ultra/package-r120.py": "0a578f962136c60af22e0232c7b85e1c0c7d239e",
+    "tests/platformUltraR120AuthFixture.test.mjs": "41448b31ac0bfad4ac3eb97ba10e0c655932f49f",
+    "tests/platformUltraR120Events.test.mjs": "3451de5f9fdc92f3f1f0cd8e97702d3c1296e04a",
+    "tests/platformUltraR120Inbox.test.mjs": "992a277bb9f7e9fc126cd3384dadd0fb6b6a1171",
+    "tests/platformUltraR120Integrity.test.mjs": "377251938248138750c8d673714c3d5d15c29c86"
+  }
+}

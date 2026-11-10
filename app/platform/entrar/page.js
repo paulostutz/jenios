@@ -26,7 +26,7 @@ export default function PlatformLogin(){
   const params=new URLSearchParams(window.location.search);
   const next=params.get('next');
   const target=next?socialAuthReturnPath(next):'/dashboard-logado';
-  const dedicatedRequested=params.get('dedicated')==='1'||target==='/platform/ultra';
+  const dedicatedRequested=params.get('dedicated')==='1'||target==='/platform/ultra'||target==='/platform/ultra/teste';
   if(dedicatedRequested)setDedicated(true);
   setDestination(target);
   async function routeExistingSession(){
@@ -82,9 +82,9 @@ export default function PlatformLogin(){
  return <main style={{minHeight:'100vh',background:'linear-gradient(135deg,#0f172a,#251354)',padding:18,display:'grid',placeItems:'center',fontFamily:'system-ui'}}>
    <section style={{background:'#fff',color:'#0f172a',padding:'clamp(22px,4vw,35px)',maxWidth:460,width:'100%',borderRadius:18,boxSizing:'border-box'}}>
     <div style={{fontSize:11,color:'#6d28d9',fontWeight:900,letterSpacing:2}}>JENIOS PLATFORM</div>
-    <h1 style={{fontSize:26,margin:'10px 0'}}>{register?'Crie seu acesso':destination==='/platform/ultra'?'Entre para acessar o Ultra':'Acesso da Platform'}</h1>
-    <p style={{fontSize:13,lineHeight:1.6,color:'#64748b'}}>{destination==='/platform/ultra'?'Use seu acesso da JENIOS Platform para guardar as configurações do Ultra e consultar seus resultados.':'Este formulário é para contas exclusivas da Platform. Para sua conta da Social, use a entrada principal da JENIOS.'}</p>
-    {destination!=='/platform/ultra'&&<button type="button" disabled={busy} onClick={()=>{setDedicated(false);setPassword('');setConfirmation('');setError('');}} style={{border:0,background:'transparent',color:'#6d28d9',padding:'8px 0',cursor:'pointer'}}>Entrar com minha conta da JENIOS Social</button>}
+    <h1 style={{fontSize:26,margin:'10px 0'}}>{register?'Crie seu acesso':(destination==='/platform/ultra'||destination==='/platform/ultra/teste')?'Entre para acessar o Ultra':'Acesso da Platform'}</h1>
+    <p style={{fontSize:13,lineHeight:1.6,color:'#64748b'}}>{(destination==='/platform/ultra'||destination==='/platform/ultra/teste')?'Use seu acesso da JENIOS Platform para guardar as configurações do Ultra e consultar seus resultados.':'Este formulário é para contas exclusivas da Platform. Para sua conta da Social, use a entrada principal da JENIOS.'}</p>
+    {destination!=='/platform/ultra'&&destination!=='/platform/ultra/teste'&&<button type="button" disabled={busy} onClick={()=>{setDedicated(false);setPassword('');setConfirmation('');setError('');}} style={{border:0,background:'transparent',color:'#6d28d9',padding:'8px 0',cursor:'pointer'}}>Entrar com minha conta da JENIOS Social</button>}
     {error && <p role="alert" style={{padding:12,background:'#fef2f2',borderRadius:8,color:'#991b1b'}}>{error}</p>}
     {message && <p role="status" style={{padding:12,background:'#f0fdf4',borderRadius:8,color:'#166534'}}>{message}</p>}
     <form onSubmit={submit} style={{display:'grid',gap:14}}>

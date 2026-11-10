@@ -3,23 +3,26 @@ import {useEffect,useRef,useState} from 'react';
 import {OPERATION_STATES} from '../../../lib/platform/ultra/operation.mjs';
 import {formatFinancialAmount as money} from '../../../lib/platform/ultra/client/reporting.mjs';
 import {ULTRA_PERIODS} from '../../../lib/platform/ultra/reporting.mjs';
+import UltraMonthlyReport from './UltraMonthlyReport.js';
+import {monthInZone} from '../../../lib/platform/ultra/client/monthly-report-um001.mjs';
 import css from './PlatformUltraControl.module.css';
 const time=v=>v?new Date(v).toLocaleString('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}):'—';
 const states={idle:'Aguardando primeiro envio',monitoring:'Acompanhando',running:'Em operação',paused:'Pausado',reconciling:'Conferindo execuções',error:'Verifique o ambiente local'};
 function Totals({rows}){return !rows?.length?<p className={css.empty}>Ainda não há operações encerradas com custos completos.</p>:<div className={css.totals}>{rows.map(t=><section className={css.totalCard} key={t.currency}><strong>{t.currency} · {t.operations} operações</strong><dl>{[['gains','Ganhos após custos da corretora'],['losses','Perdas após custos da corretora'],['gross','Resultado bruto'],['fees','Taxas e rebates'],['financing','Funding / financiamento'],['net','Resultado após custos da corretora']].map(([key,label])=><div key={key}><dt>{label}</dt><dd className={key==='net'?(String(t.net).startsWith('-')?css.negative:css.positive):undefined}>{money(t[key],t.currency)}</dd></div>)}</dl></section>)}</div>;}
 export default function UltraOperations({call}){
  const [environment,setEnvironment]=useState('live'),[deviceId,setDeviceId]=useState(''),[period,setPeriod]=useState('30d'),[page,setPage]=useState(0),[data,setData]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[refresh,setRefresh]=useState(0),[checked,setChecked]=useState(null);
+ const [monthlyMonth,setMonthlyMonth]=useState(()=>monthInZone(Date.now(),'America/Bahia'));
  const [label,setLabel]=useState('Meu Ultra'),[provider,setProvider]=useState('mt5'),[mt5Market,setMt5Market]=useState('b3'),[token,setToken]=useState(null),[notice,setNotice]=useState('');
  const generation=useRef(0),mounted=useRef(true);
  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
  useEffect(()=>{let stopped=false,inFlight=false;const current=++generation.current;setData(null);setChecked(null);setError('');
   async function read(){if(stopped||inFlight||document.hidden)return;inFlight=true;
-   try{const result=await call('/api/platform/ultra/devices?environment='+environment+'&period='+period+'&page='+page+(deviceId?'&deviceId='+encodeURIComponent(deviceId):''));if(!stopped&&current===generation.current){setData(result);setChecked(new Date());setError('');}}
+   try{const result=await call('/api/platform/ultra/devices?environment='+environment+'&period='+period+'&page='+page+(deviceId?'&deviceId='+encodeURIComponent(deviceId)+'&month='+encodeURIComponent(monthlyMonth):''));if(!stopped&&current===generation.current){setData(result);setChecked(new Date());setError('');}}
    catch(e){if(!stopped&&current===generation.current)setError(e.message);}finally{inFlight=false;}
   }
   read();const timer=setInterval(read,15000);document.addEventListener('visibilitychange',read);
   return()=>{stopped=true;clearInterval(timer);document.removeEventListener('visibilitychange',read);};
- },[environment,deviceId,period,page,refresh,call]);
+ },[environment,deviceId,period,page,refresh,monthlyMonth,call]);
  async function create(e){e.preventDefault();setBusy(true);setError('');setNotice('');setToken(null);
   try{const result=await call('/api/platform/ultra/devices',{action:'create',label,provider,market:provider==='mt5'?mt5Market:{profit:'b3',binance:'crypto'}[provider],environment});if(mounted.current){setToken(result);setRefresh(x=>x+1);}}
   catch(e){if(mounted.current)setError(e.message);}finally{if(mounted.current)setBusy(false);}
@@ -34,8 +37,8 @@ export default function UltraOperations({call}){
   {error&&<p className={css.error} role="alert">{error}{checked?' Os dados abaixo são da última atualização bem-sucedida.':''}</p>}
   {notice&&<p role="status">{notice}</p>}
   {checked&&<p className={css.muted}>Consulta atualizada em {time(checked)}. O horário de cada conexão indica quando o robô enviou seus dados. Valores sem confirmação independente da plataforma; moedas e ambientes separados.</p>}
-  {r&&<><h3>No período</h3><Totals rows={r.totals}/><h3>Geral acumulado</h3><Totals rows={r.lifetime}/>
-   <p className={css.muted}>{r.openCount} posições abertas · {r.awaitingCosts} encerradas aguardando custos. Posições abertas e encerramentos incompletos não entram nos totais. Assinatura, abertura e performance da plataforma são custos separados, ainda não descontados; o resultado final permanece pendente.</p>
+  {r&&<>{r.monthly&&<UltraMonthlyReport preparedView={r.monthly} selectedMonth={monthlyMonth} onMonthChange={setMonthlyMonth} platform="jenios"/>}<h3>No período</h3><Totals rows={r.totals}/><h3>Geral acumulado</h3><Totals rows={r.lifetime}/>
+   <p className={css.muted}>{r.openCount} posições abertas · {r.awaitingCosts} encerradas aguardando custos. Posições abertas e encerramentos incompletos não entram nos totais. Assinatura, Start e performance da plataforma são custos separados, ainda não descontados; o resultado final permanece pendente.</p>
    <h3>Cada operação</h3>{!r.operations.length?<p className={css.empty}>Nenhum registro recebido neste período. O histórico aparecerá quando o conector enviar as execuções.</p>:<>
     <div className={css.tableWrap}><table><thead><tr><th>Operação / ativo</th><th>Estado</th><th>Direção</th><th>Quantidade executada</th><th>Bruto realizado</th><th>Custos</th><th>Resultado após custos da corretora</th><th>Detalhes</th></tr></thead><tbody>{r.operations.map(o=><tr key={o.deviceId+o.id}>
      <td><strong>{o.symbol}</strong><small>{o.deviceLabel} · {time(o.createdAt)}</small></td><td>{OPERATION_STATES[o.state]}</td><td>{o.side==='buy'?'Compra':'Venda'}</td><td>{o.entryQuantity}<small>Encerrada: {o.exitQuantity}</small></td><td>{o.gross===null?'Aguardando':money(o.gross,o.currency)}</td><td>{o.fees===null?'Aguardando':money(o.fees,o.currency)}<small>Financiamento: {o.financing===null?'aguardando':money(o.financing,o.currency)}</small></td><td className={o.net!==null?(String(o.net).startsWith('-')?css.negative:css.positive):undefined}>{o.net!==null?money(o.net,o.currency):o.state==='closed'?'Conferindo custos':'Ainda não consolidado'}</td>

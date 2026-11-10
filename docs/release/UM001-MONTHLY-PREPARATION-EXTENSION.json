@@ -1,0 +1,54 @@
+{
+  "schema": "JENIOS_UM001_MONTHLY_PREPARATION_EXTENSION_V1",
+  "baseCommit": "02f547531d4e2353fa1c397d0a6cb2b8edb68b2c",
+  "candidateStatus": "isolated_unpublished_preparation",
+  "financialPreparationSyntheticOnly": true,
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "productionPublished": false,
+  "billingAllowed": false,
+  "realDebitAllowed": false,
+  "visualQaPerformed": false,
+  "verifierPredecessor": {
+    "path": "scripts/check-authentication-r106.mjs",
+    "blob": "01daf8b080bd8f8b020fdb346b215ab6c1e09a8f",
+    "reviewMode": "reviewed_as_source"
+  },
+  "replacements": {
+    "app/components/platform/PlatformUltraLocal.js": {
+      "baseline": "34c5dd3b75e786a6ba7fb20ae245561e1569c3b1",
+      "target": "f9d01a3fa62cd6b603ac7192a31a3567840f1ae1"
+    },
+    "app/components/platform/PlatformUltraOperations.js": {
+      "baseline": "f2a5e746745c18a22d9b9003de49217d0cd3828c",
+      "target": "13874d333fba40e2bd07ceca2fdfb2201bdef85e"
+    },
+    "app/components/platform/UltraAccountReport.js": {
+      "baseline": "48af497e3ad60248ec2b06cefa738078173d0e78",
+      "target": "837258bcce9cfa931829d3b9dac6a24fa3f65f7e"
+    },
+    "app/components/platform/UltraAccountReport.module.css": {
+      "baseline": "df65a52d1d092b5699169aa25a7749fa4d71ab12",
+      "target": "1bbd18931f70904b5af8a368a0bacd133c32c1d2"
+    },
+    "app/components/platform/UltraRehearsalR126.js": {
+      "baseline": "d7863837f5bf6ebbe90168e3d648149e90bbf523",
+      "target": "0561382f5b732b0b18de06c81876d044732c7676"
+    },
+    "lib/platform/ultra/operations-http.mjs": {
+      "baseline": "43395af3999684c7a96b09a25f27fe5f035f8593",
+      "target": "1a15353a77d1c123eaf4609c22e13c248457e3ea"
+    }
+  },
+  "additions": {
+    "app/components/platform/UltraMonthlyReport.js": "4cc4ab7331586a8acdcc45ba6ae618908f502eb8",
+    "docs/UM001_START_FEE_PREPARATION.md": "0aecdce6bd7ba7b41d8fa9db385e17e9ff774e82",
+    "lib/platform/ultra/client/monthly-report-um001.mjs": "ced9638b326a7437e80b5068709b95d154241509",
+    "lib/platform/ultra/fees-um001.mjs": "80e9e362cc040966c16fe17261233764e509dc61",
+    "tests/platformUltraMonthlyHttpUM001.test.mjs": "17125a4288c9090c935d09fb9360981ca19336c3",
+    "tests/platformUltraMonthlyUM001.test.mjs": "0e0e03ff09247e6eaa5c2ca5ce6fb1a3e23e0cc8",
+    "tests/platformUltraUM001Integrity.test.mjs": "9509a255194ac3aeca57587e45aa4f32e6d5f1ff",
+    "tests/ultra-fees-um001.test.mjs": "24bf95f28cd6ff3d17aeabce70d401188018886f"
+  }
+}

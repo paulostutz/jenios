@@ -1,0 +1,53 @@
+{
+  "schema": "JENIOS_R129_MONTHLY_INTEGRATION_EXTENSION_V1",
+  "baseCommit": "ac3ea769faa89eff81f0942990a4370a73340e37",
+  "um001ManifestBlob": "621cb414a9eaf7c8e2d5146e9cd74ac9b9dd2def",
+  "candidateStatus": "isolated_unpublished_preparation",
+  "accountModel": "each_client_own_account",
+  "evidenceMode": "offline_fixture",
+  "liveExecutionAllowed": false,
+  "externalPaperAllowed": false,
+  "nativeValidated": false,
+  "billingAllowed": false,
+  "realDebitAllowed": false,
+  "productionPublished": false,
+  "visualQaPerformed": false,
+  "verifierPredecessor": {
+    "path": "scripts/check-authentication-r106.mjs",
+    "blob": "3e5caab5ae36843718ead34ced10454a288c7d1d",
+    "reviewMode": "reviewed_as_source"
+  },
+  "inputArtifacts": {
+    "r128": "1111d559ec955f6188a65e87b2029b6007496bcc9d7704cf3f3c3d96625097b3",
+    "um001": "4c6d40d296885ee3c2b7bdbb911fbf54ae7ac703fda336861d105c2e3b8b29d9",
+    "letterCb016": "963d6e02ede0be68251ac403457be84c1d0f15f50a96c36baa5959e9c027b4e1"
+  },
+  "replacements": {
+    "app/components/platform/UltraRehearsalR126.js": {
+      "baseline": "0561382f5b732b0b18de06c81876d044732c7676",
+      "target": "660f842eee5bc0f394c91d50d53bb3ac96827f05"
+    }
+  },
+  "additions": {
+    "docs/release/R129-INTEGRACAO-MENSAL.md": "7e2090c958f732576a06e36a01251ab7685734fe",
+    "docs/release/R129-LETTER-MONTHLY.md": "1b2fd6910a8ce8b3c9e0eabd5244ef1821c68f37",
+    "docs/release/R129-RECORDS-MONTHLY-INTERFACE.md": "adb958d8b964145844e987ae45d86cf20ada77f2",
+    "docs/release/R129-START-CYCLE.md": "8bd45b1ec6e8fb134b223c63994a632b9f1d5ba0",
+    "lib/platform/ultra/client/letter-monthly-r129.mjs": "58396b681de749aa8fafeabf4fce28197222965b",
+    "lib/platform/ultra/client/monthly-general-r129.mjs": "e5fbdab9e41023cf0bde811a986d39c96faba8a1",
+    "lib/platform/ultra/client/records-monthly-r129.mjs": "5c5958205333a43ae26ecb4b9d8fc5b53c9a437c",
+    "lib/platform/ultra/client/session-runtime-r129.mjs": "ef01738de8304a4ed1759b266e83d7644aaca0d4",
+    "lib/platform/ultra/client/start-cycle-r129.mjs": "e3b9be9f2f6c69dbc86b214de0c6f300219b4bc1",
+    "lib/platform/ultra/fixtures/letter-cb016/README-R129.md": "f3364e028a2d5ab222cd93edc679b3b278a2b941",
+    "lib/platform/ultra/fixtures/letter-cb016/packages/group-billing/candidates/ultra-monthly-um001/monthly-performance.mjs": "29de1cca668721ed07d9ebf2748bda410a268f79",
+    "lib/platform/ultra/fixtures/letter-cb016/packages/group-billing/clients/central-billing-client.mjs": "273421d2ac3b23914dbcdb8f077d3c3c3aa37d8d",
+    "public/downloads/jenios-ultra-r129-monthly.zip": "39149e2f819faac0845b537d998de9ec6af786fb",
+    "scripts/platform/ultra/package-r129.py": "c7828119fe6b94e8609ef1c101167ee4453e29c0",
+    "scripts/platform/ultra/qualify-r129.mjs": "03225cd3b795ed116034074704153e7767d26d11",
+    "tests/platformUltraLetterMonthlyR129.test.mjs": "b9e4a92d47ef4ca4a640722f14b8c0b0ae249794",
+    "tests/platformUltraR129Integrity.test.mjs": "c6c130a09b8f40c32d762c7c46850586ed66f153",
+    "tests/platformUltraR129MonthlyJourney.test.mjs": "2cd78b014362fac49edccfded28f60ed3ca269d1",
+    "tests/platformUltraR129StartCycle.test.mjs": "29fe95acd81fd796c50e4183003173a412cda171",
+    "tests/platformUltraRecordsMonthlyR129.test.mjs": "edf4ba0838b577f186130561952173470a75ceda"
+  }
+}

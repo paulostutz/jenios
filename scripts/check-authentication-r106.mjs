@@ -13,6 +13,10 @@ const extensionManifestSha1='668de7824825beb675f69003cac4f34e322a0478';
 const flowManifestPath='docs/release/R114-FLOW-SOURCE-EXTENSION.json';
 const flowManifestSha1='c7f6c89c825f8c22c9cafeadaebcb8b5910f7f73';
 const helperPath='scripts/check-authentication-r106.mjs';
+const um001ManifestPath='docs/release/UM001-MONTHLY-PREPARATION-EXTENSION.json';
+const um001ManifestSha1='621cb414a9eaf7c8e2d5146e9cd74ac9b9dd2def';
+const r129ManifestPath='docs/release/R129-MONTHLY-INTEGRATION-EXTENSION.json';
+const r129ManifestSha1='98f96aa6816979f03e7f0d862889d08f02e77c50';
 const testPath='tests/platformAuthenticationReleaseR106.test.mjs';
 const footerManifestPath='docs/release/KIVORYN-TEXT-FOOTER-20261106.json';
 const footerManifestSha1='d7bb9e98eb86677826ea489d8a827ee79edbb192';
@@ -108,11 +112,58 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  assert.equal(r126.baseCommit,'8cd35ab6caedac31ea327c72e037de43bc309c48');
  assert.equal(r126.accountModel,'each_client_own_account');
  for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','billingAllowed'])assert.equal(r126[key],false);
+ const um001Raw=read(um001ManifestPath);
+ assert.equal(blob(um001Raw),um001ManifestSha1,'UM001 manifest changed');
+ const um001=JSON.parse(um001Raw);
+ const r129Raw=read(r129ManifestPath);
+ assert.equal(blob(r129Raw),r129ManifestSha1,'R129 manifest changed');
+ const r129=JSON.parse(r129Raw);
+ assert.equal(r129.schema,'JENIOS_R129_MONTHLY_INTEGRATION_EXTENSION_V1');
+ assert.equal(r129.baseCommit,'ac3ea769faa89eff81f0942990a4370a73340e37');
+ assert.equal(r129.um001ManifestBlob,um001ManifestSha1);
+ assert.equal(r129.accountModel,'each_client_own_account');
+ assert.equal(r129.evidenceMode,'offline_fixture');
+ assert.equal(r129.candidateStatus,'isolated_unpublished_preparation');
+ for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','billingAllowed','realDebitAllowed','productionPublished','visualQaPerformed'])assert.equal(r129[key],false);
+ assert.deepEqual(r129.verifierPredecessor,{path:helperPath,blob:'3e5caab5ae36843718ead34ced10454a288c7d1d',reviewMode:'reviewed_as_source'});
+ assert.deepEqual(Object.keys(r129.replacements),['app/components/platform/UltraRehearsalR126.js'],'R129 exact replacement scope');
+ for(const [path,entry] of Object.entries(r129.replacements)){
+  assert.equal(entry.baseline,um001.replacements[path].target,'R129 UM001 predecessor mismatch');
+  assert.match(entry.target,/^[a-f0-9]{40}$/);assert.notEqual(entry.target,entry.baseline);
+  assert.equal(blob(read(path)),entry.target,'Unreviewed R129 journey replacement: '+path);
+ }
+
+ assert.equal(um001.schema,'JENIOS_UM001_MONTHLY_PREPARATION_EXTENSION_V1');
+ assert.equal(um001.baseCommit,'02f547531d4e2353fa1c397d0a6cb2b8edb68b2c');
+ assert.equal(um001.candidateStatus,'isolated_unpublished_preparation');
+ assert.equal(um001.financialPreparationSyntheticOnly,true);
+ for(const key of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','productionPublished','billingAllowed','realDebitAllowed','visualQaPerformed'])assert.equal(um001[key],false);
+ assert.deepEqual(um001.verifierPredecessor,{path:helperPath,blob:'01daf8b080bd8f8b020fdb346b215ab6c1e09a8f',reviewMode:'reviewed_as_source'});
+ // Exact predecessor chain: R126 where changed there, otherwise its preserved
+ // R125/R124 target. Historical manifests and packages remain immutable.
+ const um001Baselines={
+  'app/components/platform/PlatformUltraLocal.js':r126.replacements['app/components/platform/PlatformUltraLocal.js'].target,
+  'app/components/platform/PlatformUltraOperations.js':r125.replacements['app/components/platform/PlatformUltraOperations.js'].target,
+  'app/components/platform/UltraAccountReport.js':r125.replacements['app/components/platform/UltraAccountReport.js'].target,
+  'app/components/platform/UltraAccountReport.module.css':r124.additions['app/components/platform/UltraAccountReport.module.css'],
+  'app/components/platform/UltraRehearsalR126.js':r126.additions['app/components/platform/UltraRehearsalR126.js'],
+  'lib/platform/ultra/operations-http.mjs':r125.replacements['lib/platform/ultra/operations-http.mjs'].target,
+ };
+ assert.deepEqual(Object.keys(um001.replacements).sort(),Object.keys(um001Baselines).sort(),'UM001 exact replacement scope');
+ for(const [path,entry] of Object.entries(um001.replacements)){
+  assert.match(um001Baselines[path],/^[a-f0-9]{40}$/);
+  assert.equal(entry.baseline,um001Baselines[path],'UM001 predecessor mismatch: '+path);
+  assert.match(entry.target,/^[a-f0-9]{40}$/);
+  assert.notEqual(entry.target,entry.baseline,'UM001 replacement must identify its reviewed change: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||entry.target,'Unreviewed UM001 replacement: '+path);
+ }
+ const um001Added=["app/components/platform/UltraMonthlyReport.js","docs/UM001_START_FEE_PREPARATION.md","lib/platform/ultra/client/monthly-report-um001.mjs","lib/platform/ultra/fees-um001.mjs","tests/platformUltraMonthlyHttpUM001.test.mjs","tests/platformUltraMonthlyUM001.test.mjs","tests/platformUltraUM001Integrity.test.mjs","tests/ultra-fees-um001.test.mjs"];
+ assert.deepEqual(Object.keys(um001.additions).sort(),um001Added.slice().sort(),'UM001 exact addition scope');
  const r126Baselines={"app/components/platform/PlatformUltraControl.js": "ff3fae8c13d5debf7cb4796d5033b5a4d89e30a8", "app/components/platform/PlatformUltraLocal.js": "053fc642c62e76c3482b5d50f910c1f548c9b9cf", "app/components/social-auth-return.mjs": "b4e3d2e72dc191b51a9c3ed74e5a6f5b48e39c1d", "app/platform/entrar/page.js": "1b3ed41bec13cdfb210441f03c63fc2f88645feb"};
  assert.deepEqual(Object.keys(r126.replacements).sort(),Object.keys(r126Baselines).sort(),'R126 exact replacement scope');
  for(const [path,entry] of Object.entries(r126.replacements)){
   assert.equal(entry.baseline,r126Baselines[path],'R126 predecessor mismatch');assert.match(entry.target,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),entry.target,'Unreviewed R126 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||entry.target,'Unreviewed R126 replacement: '+path);
  }
  // These are published R124 git blobs, not hashes borrowed from a divergent checkpoint.
  const r125Baselines={
@@ -128,7 +179,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  for(const [path,entry] of Object.entries(r125.replacements)){
   assert.equal(entry.baseline,r125Baselines[path],'R125 published R124 predecessor mismatch: '+path);
   assert.match(entry.target,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||entry.target,'Unreviewed R125 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||entry.target,'Unreviewed R125 replacement: '+path);
  }
  assert.deepEqual(Object.keys(r124.replacements).sort(),['app/components/platform/PlatformUltraControl.js','app/components/platform/PlatformUltraOperations.js','lib/platform/ultra/operations-http.mjs']);
  for(const [path,entry] of Object.entries(r124.replacements)){
@@ -136,7 +187,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
   assert.match(entry.target,/^[a-f0-9]{40}$/);
  }
  for(const [path,sha] of Object.entries(r124.additions)){
-  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R124 addition: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R124 addition: '+path);
  }
  const expected={...baseline.blobs,'scripts/check-pro-image-g49.mjs':'16bfc99c1916fe010f0ad1768cdd17ea1fe9af17',[testPath]:'d2313397603bf89f5fce23dcd59aa5ce2129163d'};
  // Only the two reviewed attribution files may differ from the immutable predecessor.
@@ -151,7 +202,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.equal(entry.baseline,expected[path],'Kivoryn replacement baseline mismatch');
    assert.match(entry.target,/^[a-f0-9]{40}$/);
  }
- for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
+ for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
  // R113 extension is append-only, explicitly pinned, and cannot replace R106 files.
  const extensionRaw=read(extensionManifestPath);
  assert.equal(blob(extensionRaw),extensionManifestSha1,'R113 extension manifest changed');
@@ -181,85 +232,85 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.ok(!Object.hasOwn(expected,path) && path!==manifestPath && path!==helperPath && path!==extensionManifestPath,
      'R113 extension must not replace reviewed R106 source: '+path);
    assert.match(sha,/^[a-f0-9]{40}$/);
-   assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||flow.replacements[path]?.target||sha,'Unreviewed R113/R114 release change: '+path);
+   assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||flow.replacements[path]?.target||sha,'Unreviewed R113/R114 release change: '+path);
  }
  const inherited={...expected,...extension.blobs,...footer.additions,...flow.additions};
  for(const [path,entry] of Object.entries(cb.replacements)){
   assert.equal(entry.baseline,footer.replacements[path]?.target||flow.replacements[path]?.target||inherited[path],'CB006 replacement baseline mismatch');
   assert.match(entry.target,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||entry.target,'Unreviewed CB006 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||entry.target,'Unreviewed CB006 replacement: '+path);
  }
  for(const [path,sha] of Object.entries(cb.additions)){
   assert.ok(!Object.hasOwn(inherited,path)&&path!==helperPath);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed CB006 addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed CB006 addition: '+path);
  }
  const inheritedR115={...inherited,...cb.additions};
  assert.deepEqual(Object.keys(r115.replacements).sort(),['app/dashboard-logado/page.js','app/platform/admin/robos/page.js']);
  for(const [path,entry] of Object.entries(r115.replacements)){
   assert.equal(entry.baseline,cb.replacements[path]?.target||footer.replacements[path]?.target||flow.replacements[path]?.target||inheritedR115[path],'R115 replacement predecessor mismatch');
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||entry.target,'Unreviewed R115 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||entry.target,'Unreviewed R115 replacement: '+path);
  }
  for(const [path,sha] of Object.entries(r115.additions)){
   assert.ok(!Object.hasOwn(inheritedR115,path)&&path!==helperPath);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||sha,'Unreviewed R115 addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||sha,'Unreviewed R115 addition: '+path);
  }
  assert.deepEqual(Object.keys(r115a.replacements).sort(),["app/components/platform/PlatformAuthGuard.js", "app/components/social-auth-return.mjs", "app/platform/entrar/page.js", "app/platform/ultra/page.js", "tests/platformUltraR115.test.mjs"]);
  for(const [path,entry] of Object.entries(r115a.replacements)){
   assert.equal(entry.baseline,r115.additions[path]||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||flow.replacements[path]?.target||inheritedR115[path],'R115A predecessor mismatch');
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||entry.target,'Unreviewed R115A replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||entry.target,'Unreviewed R115A replacement: '+path);
  }
  const inheritedR116={...inheritedR115,...r115.additions};
  assert.deepEqual(Object.keys(r116.replacements).sort(),['app/components/platform/PlatformUltraControl.js','app/components/platform/PlatformUltraControl.module.css']);
  for(const [path,entry] of Object.entries(r116.replacements)){
   assert.equal(entry.baseline,r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||flow.replacements[path]?.target||inheritedR116[path],'R116 predecessor mismatch');
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||entry.target,'Unreviewed R116 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||entry.target,'Unreviewed R116 replacement: '+path);
  }
  for(const [path,sha] of Object.entries(r116.additions)){
   assert.ok(!Object.hasOwn(inheritedR116,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R116 must not replace inherited source: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||sha,'Unreviewed R116 addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||sha,'Unreviewed R116 addition: '+path);
  }
  const inheritedR117={...inheritedR116,...r116.additions};
  assert.deepEqual(Object.keys(r117.replacements).sort(),['app/components/platform/PlatformUltraControl.js','app/components/platform/PlatformUltraControl.module.css','app/components/platform/PlatformUltraLocal.js']);
  for(const [path,entry] of Object.entries(r117.replacements)){
   assert.equal(entry.baseline,r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||inheritedR117[path],'R117 predecessor mismatch');
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||entry.target,'Unreviewed R117 replacement: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||entry.target,'Unreviewed R117 replacement: '+path);
  }
  for(const [path,sha] of Object.entries(r117.additions)){
   assert.ok(!Object.hasOwn(inheritedR117,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R117 must not replace inherited source: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||sha,'Unreviewed R117 addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||r124.replacements[path]?.target||sha,'Unreviewed R117 addition: '+path);
  }
  const inheritedR118={...inheritedR117,...r117.additions,...r124.additions};
  for(const [path,sha] of Object.entries(r118.additions)){
   assert.ok(!Object.hasOwn(inheritedR118,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R118 must remain additive: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),sha,'Unreviewed R118 checkpoint addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||sha,'Unreviewed R118 checkpoint addition: '+path);
  }
  const inheritedR119={...inheritedR118,...r118.additions};
  for(const [path,sha] of Object.entries(r119.additions)){
   assert.ok(!Object.hasOwn(inheritedR119,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R119 must remain additive: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),sha,'Unreviewed R119 checkpoint addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||sha,'Unreviewed R119 checkpoint addition: '+path);
  }
  const inheritedR120={...inheritedR119,...r119.additions};
  for(const [path,sha] of Object.entries(r120.additions)){
   assert.ok(!Object.hasOwn(inheritedR120,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R120 must remain additive: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),sha,'Unreviewed R120 checkpoint addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||sha,'Unreviewed R120 checkpoint addition: '+path);
  }
  const inheritedR125={...inheritedR120,...r120.additions};
  for(const [path,sha] of Object.entries(r125.additions)){
   assert.ok(!Object.hasOwn(inheritedR125,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R125 must not replace inherited source: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);
-  assert.equal(blob(read(path)),sha,'Unreviewed R125 candidate addition: '+path);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||sha,'Unreviewed R125 candidate addition: '+path);
  }
  const inheritedR126={...inheritedR125,...r125.additions};
  for(const [path,sha] of Object.entries(r126.additions)){
   assert.ok(!Object.hasOwn(inheritedR126,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R126 must not replace inherited source: '+path);
-  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R126 addition: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||sha,'Unreviewed R126 addition: '+path);
  }
  const r127Raw=read('docs/release/R127-SESSION-EXTENSION.json');
  assert.equal(blob(r127Raw),'3609f25ceeb52ba20294ced98fa93d05d688f727','R127 manifest changed');
@@ -271,7 +322,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  const inheritedR127={...inheritedR126,...r126.additions};
  for(const [path,sha] of Object.entries(r127.additions)){
   assert.ok(!Object.hasOwn(inheritedR127,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R127 must not replace inherited source: '+path);
-  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R127 addition: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),r129.replacements[path]?.target||sha,'Unreviewed R127 addition: '+path);
  }
  const r127opsRaw=read('docs/release/R127-EXECUTION-EXTENSION.json');
  assert.equal(blob(r127opsRaw),'ae8f160aa695b27d56651bc24fb57bc84d0aa02e','R127 operations manifest changed');
@@ -300,23 +351,34 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  }
  for(const [path,sha] of Object.entries(r128.additions)){
   assert.ok(!Object.hasOwn(inheritedR128,path)&&!Object.hasOwn(mappedOps,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R128 must remain additive: '+path);
-  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R128 addition: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),r129.replacements[path]?.target||sha,'Unreviewed R128 addition: '+path);
+ }
+ const inheritedUM001={...inheritedR128,...mappedOps,...r128.additions};
+ for(const [path,sha] of Object.entries(um001.additions)){
+  assert.ok(!Object.hasOwn(inheritedUM001,path)&&path!==helperPath&&path!==um001ManifestPath&&!path.endsWith('-EXTENSION.json'),'UM001 additions cannot replace inherited source: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),r129.replacements[path]?.target||sha,'Unreviewed UM001 addition: '+path);
+ }
+ const inheritedR129={...inheritedUM001,...um001.additions};
+ for(const [path,sha] of Object.entries(r129.additions)){
+  assert.ok(!Object.hasOwn(inheritedR129,path)&&path!==helperPath&&path!==r129ManifestPath&&!path.endsWith('-EXTENSION.json'),'R129 additions cannot replace inherited source: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R129 addition: '+path);
  }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
  for(const [path,sha] of Object.entries(footer.additions)){
    assert.ok(!Object.hasOwn(expected,path)&&!Object.hasOwn(extension.blobs,path));
    assert.match(sha,/^[a-f0-9]{40}$/);
-   assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed Kivoryn validation file: '+path);
+   assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed Kivoryn validation file: '+path);
  }
  for(const [path,sha] of Object.entries(flow.additions)){
    assert.ok(!Object.hasOwn(expected,path)&&!Object.hasOwn(extension.blobs,path)&&!Object.hasOwn(footer.additions,path));
    assert.match(sha,/^[a-f0-9]{40}$/);
-   assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R114 addition: '+path);
+   assert.equal(blob(read(path)),r129.replacements[path]?.target||um001.replacements[path]?.target||r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R114 addition: '+path);
  }
- const accepted=['docs/release/R128-CONCILIATION-EXTENSION.json',...Object.keys(r128.additions),'docs/release/R127-EXECUTION-EXTENSION.json',...Object.keys(mappedOps),'docs/release/R127-SESSION-EXTENSION.json',...Object.keys(r127.additions),'docs/release/R126-TEST-EXTENSION.json',...Object.keys(r126.additions),'docs/release/R125-ULTRA-CANDIDATE-EXTENSION.json',...Object.keys(r125.additions),'docs/release/R120-BINANCE-EVENTS-EXTENSION.json',...Object.keys(r120.additions),'docs/release/R119-BINANCE-PROTOCOL-EXTENSION.json',...Object.keys(r119.additions),'docs/release/R118-EXECUTION-CHECKPOINT-EXTENSION.json',...Object.keys(r118.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
- assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113/R118-R128 public release inventory');
+ const accepted=[r129ManifestPath,...Object.keys(r129.additions),'docs/release/R128-CONCILIATION-EXTENSION.json',...Object.keys(r128.additions),'docs/release/R127-EXECUTION-EXTENSION.json',...Object.keys(mappedOps),'docs/release/R127-SESSION-EXTENSION.json',...Object.keys(r127.additions),um001ManifestPath,...Object.keys(um001.additions),'docs/release/R126-TEST-EXTENSION.json',...Object.keys(r126.additions),'docs/release/R125-ULTRA-CANDIDATE-EXTENSION.json',...Object.keys(r125.additions),'docs/release/R120-BINANCE-EVENTS-EXTENSION.json',...Object.keys(r120.additions),'docs/release/R119-BINANCE-PROTOCOL-EXTENSION.json',...Object.keys(r119.additions),'docs/release/R118-EXECUTION-CHECKPOINT-EXTENSION.json',...Object.keys(r118.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
+ assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113/R118-R129/UM001 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
-   exactSource:true,brokerPermissionsGranted:false,liveExecutionAllowed:false,candidateValidated:false});
+   exactSource:true,brokerPermissionsGranted:false,liveExecutionAllowed:false,candidateValidated:false,monthlyPreparationOnly:true,r129MonthlyIntegrationOnly:true,billingAllowed:false,realDebitAllowed:false});
 }
 if(process.argv[1]?.endsWith('/check-authentication-r106.mjs'))console.log('R106_PUBLIC_GUIDANCE_SOURCE_PASS',verifyR106PublicGuidance());

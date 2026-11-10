@@ -14,6 +14,7 @@ export function UltraClientSetup({plan,current}){
   <div className={css.actions}><a className={css.primary} href="/downloads/jenios-ultra-r126-rehearsal.zip" download>Baixar pacote de teste R126</a><button disabled={!plan||!current} onClick={configuration}>Baixar minha configuração</button></div>
   {!current&&plan&&<p className={css.muted}>Guarde as alterações antes de baixar a configuração atualizada.</p>}
   <p className={css.muted}>Disponível no pacote de teste: ensaio offline R126 e configuração B3 por MT5 ou Profit, diagnóstico MT5 somente leitura e relatórios por conexão, reaproveitando o diário e os componentes anteriores. O envio automático de ordens ainda depende da conclusão das pontes. Instalar este pacote não inicia operações. <a href="/downloads/jenios-ultra-r125-candidate.zip" download>Pacote histórico R125</a>.</p>
+  <p className={css.muted}>O pacote R126 preserva a documentação histórica do teste. A regra atual prepara performance mensal de 20% no Ultra individual ou 10% nos planos aplicáveis, sobre o lucro geral elegível, separada da assinatura. A orientação anterior de não cobrar performance foi substituída. A taxa de Start é de R$ 5 por ciclo até a pausa ou o encerramento; os nomes dos planos isentos aguardam confirmação. Nenhuma cobrança ou débito está ativado.</p>
   {error&&<p className={css.error} role="alert">{error}</p>}
  </div>;
 }

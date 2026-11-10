@@ -1,0 +1,26 @@
+name: JENIOS R116 Ultra local client
+on:
+  pull_request:
+    paths:
+      - 'lib/platform/ultra/**'
+      - 'app/components/platform/PlatformUltra*.js'
+      - 'scripts/platform/ultra/**'
+      - 'scripts/check-authentication-r106.mjs'
+      - 'public/downloads/jenios-ultra-r116.zip'
+      - 'docs/release/R116*'
+      - 'tests/platformUltraR116.test.mjs'
+      - '.github/workflows/jenios-r116-ultra-local.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test tests/platformUltraR115.test.mjs tests/platformUltraR116.test.mjs
+      - run: node scripts/check-authentication-r106.mjs
+      - run: python3 -m py_compile scripts/platform/ultra/terminal_diagnostic.py scripts/platform/ultra/package-client.py

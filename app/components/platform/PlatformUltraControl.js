@@ -2,13 +2,15 @@
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
-import {ULTRA_MARKETS,assessUltraLeverage} from '../../../lib/platform/ultra/policy.mjs';
+import {ULTRA_MARKETS,assessUltraLeverage,normalizeUltraConfig} from '../../../lib/platform/ultra/policy.mjs';
 import {ULTRA_PERIODS} from '../../../lib/platform/ultra/reporting.mjs';
 import {BrandLockup,BrandFooter} from '../brand/BrandSignature';
 import css from './PlatformUltraControl.module.css';
+import {UltraClientSetup,UltraLocalResults} from './PlatformUltraLocal';
+import {formatFinancialAmount} from '../../../lib/platform/ultra/client/reporting.mjs';
 
 const initial={markets:[],sessionMinutes:60,maxPositions:3,tradeRiskPct:0.25,dailyLossPct:2,maxAssetPct:20,excludedSymbols:[]};
-const amount=(v,currency)=>`${Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:8})} ${currency}`;
+const amount=formatFinancialAmount;
 const pct=v=>Number(v).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
 const time=v=>new Date(v).toLocaleString('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'});
 async function call(path,body){
@@ -66,7 +68,7 @@ export default function PlatformUltraControl(){
  async function save(assessment,reviewDigest,riskAcknowledged){
   if(JSON.stringify(latest.current)!==JSON.stringify(config))return;
   const result=await call('/api/platform/ultra',{action:'save',config:assessment.config,reviewDigest,riskAcknowledged});
-  setData(old=>({...old,plan:result.plan}));setNotice('Configuração guardada na sua conta. A execução aguardará a conexão validada da corretora.');closeReview();
+  setData(old=>({...old,plan:result.plan}));setNotice('Configuração guardada na sua conta. Baixe a configuração para o ambiente em que você instalará o robô.');closeReview();
  }
  async function prepare(){
   returnFocus.current=document.activeElement;setBusy(true);setError('');setNotice('');
@@ -80,6 +82,7 @@ export default function PlatformUltraControl(){
  }
  async function confirm(){if(!review||!accepted||busy)return;setBusy(true);setError('');try{await save(review.assessment,review.reviewDigest,true);}catch(e){setError(e.message);}finally{setBusy(false);}}
  const report=data?.report;
+ let planCurrent=false;try{planCurrent=JSON.stringify(normalizeUltraConfig(config))===JSON.stringify(data?.plan?.config);}catch{}
  return <main className={css.page}><div className={css.wrap}>
   <header className={css.top}><Link href="/dashboard-logado"><BrandLockup tone="light" context="Platform" compact/></Link><Link href="/dashboard">Voltar à negociação</Link></header>
   <section className={css.hero}><span className={css.kicker}>JENIOS ULTRA</span><h1>Seu capital. Suas escolhas.</h1><p>Prepare a seleção automática de ativos, defina a exposição e acompanhe os resultados em um só lugar.</p><span className={css.status}>Aguardando conexão operacional</span></section>
@@ -117,8 +120,9 @@ export default function PlatformUltraControl(){
     {!!report?.days?.length&&<details><summary>Resultado por dia</summary><div className={css.tableWrap}><table><thead><tr><th>Dia</th><th>Moeda</th><th>Operações</th><th>Ganhos</th><th>Perdas</th><th>Líquido</th></tr></thead><tbody>{report.days.map(d=><tr key={d.day+d.currency}><td>{d.day.split('-').reverse().join('/')}</td><td>{d.currency}</td><td>{d.operations}</td><td>{amount(d.gains,d.currency)}</td><td>{amount(d.losses,d.currency)}</td><td>{amount(d.net,d.currency)}</td></tr>)}</tbody></table></div></details>}
     <h3>Por operação</h3>{!report?.operations?.length?<p className={css.empty}>As operações aparecerão aqui após a confirmação da corretora.</p>:<><div className={css.tableWrap}><table><thead><tr><th>Encerramento</th><th>Ativo / mercado</th><th>Direção</th><th>Bruto</th><th>Taxas</th><th>Financiamento</th><th>Lucro / prejuízo líquido</th></tr></thead><tbody>{report.operations.map(t=><tr key={t.id}><td>{time(t.closed_at)}</td><td>{t.symbol}<small>{ULTRA_MARKETS.find(m=>m.id===t.market)?.label}</small></td><td>{t.side==='buy'?'Compra':'Venda'}</td><td>{amount(t.gross_realized,t.currency)}</td><td>{amount(t.fees,t.currency)}</td><td>{amount(t.financing,t.currency)}</td><td className={Number(t.net_realized)>=0?css.positive:css.negative}>{amount(t.net_realized,t.currency)}</td></tr>)}</tbody></table></div><div className={css.actions}><button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Anterior</button><span>Página {page+1} · {report.count} operações</span><button disabled={(page+1)*50>=report.count} onClick={()=>setPage(p=>p+1)}>Próxima</button></div></>}
    </>}
+   <UltraLocalResults/>
   </section>
-  <section className={css.panel} id="ultra-connections"><span className={css.kicker}>03 · CONEXÕES</span><h2>Suas corretoras</h2><p className={css.muted}>As integrações abaixo ainda precisam de validação operacional. Não há sessão de negociação ativa.</p><div className={css.markets}>{ULTRA_MARKETS.map(m=><article className={css.market} key={m.id}><h3>{m.label}</h3><span className={css.status}>Conexão pendente</span><ul>{m.requirements.map(s=><li key={s}>{s}</li>)}</ul><Link href={m.guide}>Ver preparação da conexão →</Link></article>)}</div></section>
+  <section className={css.panel} id="ultra-connections"><span className={css.kicker}>03 · CONEXÕES</span><h2>Você conecta. O capital fica com você.</h2><UltraClientSetup plan={data?.plan} current={planCurrent}/><p className={css.muted}>Cada trader utiliza sua própria conta e as permissões de sua corretora. Não é necessário fornecer acesso à JENIOS.</p><div className={css.markets}>{ULTRA_MARKETS.map(m=><article className={css.market} key={m.id}><h3>{m.label}</h3><span className={css.status}>Conexão pendente</span><ul>{m.requirements.map(s=><li key={s}>{s}</li>)}</ul><Link href={m.guide}>Ver preparação da conexão →</Link></article>)}</div></section>
   <BrandFooter tone="light" scope="Ultra"/>
   <dialog ref={dialog} className={css.dialog} onCancel={e=>{e.preventDefault();if(!busy)closeReview();}} aria-labelledby="ultra-risk-title">
    {review&&<><span className={css.kicker}>SUA DECISÃO</span><h2 id="ultra-risk-title">Essa exposição pode comprometer sua conta</h2><p>A alavancagem amplia ganhos e perdas. Um movimento contrário pode consumir todo o capital destinado ao Ultra; conforme o produto e as garantias, a perda pode ultrapassar esse valor.</p>

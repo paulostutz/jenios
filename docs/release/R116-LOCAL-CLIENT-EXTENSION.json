@@ -1,0 +1,32 @@
+{
+  "schema": "JENIOS_R116_LOCAL_CLIENT_EXTENSION_V1",
+  "baseCommit": "76b0021c018f05c337a0bb98961c21481ea7bdfa",
+  "liveExecutionAllowed": false,
+  "credentialLocation": "trader_device",
+  "replacements": {
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "d74d72b325c26f48e57c533a452279b9a9407da6",
+      "target": "5ffcf16b5b310fd413e1063e47d0e6a202b16947"
+    },
+    "app/components/platform/PlatformUltraControl.module.css": {
+      "baseline": "bdf1cae0aa85b238500c157f02bfed06f99b913c",
+      "target": "dc11984c7e26a723ff25bf641c72805bb8c65103"
+    }
+  },
+  "additions": {
+    ".github/workflows/jenios-r116-ultra-local.yml": "c135770d79ddf307be05b505c623bbc578dbbef8",
+    "app/components/platform/PlatformUltraLocal.js": "fbdc814f83dfb6c971f63fdbb73491a148877c64",
+    "docs/release/R116-LOCAL-CLIENT-README.md": "015dc5a25f46e2fc9069ccfe30b0031339b92da9",
+    "docs/release/R116-TRADER-OWNED-CLIENT.md": "df1544c237a5d9481db538ab441d9ce7f61b323b",
+    "lib/platform/ultra/client/diagnostics.mjs": "da6a291d6ce8ede7870d0fe6271bd2167fc68bc5",
+    "lib/platform/ultra/client/engine.mjs": "1f0f6a97948d2d7908ac59733df2a6eda973193b",
+    "lib/platform/ultra/client/journal.mjs": "60499e9a665d07ce0232a9d23c1217a44ef69509",
+    "lib/platform/ultra/client/plan.mjs": "86788fc47ab53ab7abc3f2490812c4602ce618ae",
+    "lib/platform/ultra/client/reporting.mjs": "8453055a1878d6605f1834acd9958dd6db6f6041",
+    "public/downloads/jenios-ultra-r116.zip": "998d84102183641424a1efe7506396e3af11fa23",
+    "scripts/platform/ultra/client.mjs": "44219f7211df4dac45248b13a50c62cd332a9917",
+    "scripts/platform/ultra/package-client.py": "298abd893e3a6238a7018c7a122daa1d3eb56785",
+    "scripts/platform/ultra/terminal_diagnostic.py": "d8fba543d21f3f7b03f0a85ed1fb86e1139a872e",
+    "tests/platformUltraR116.test.mjs": "a63191d65c853fe265303e51b95e0bcb60fafef6"
+  }
+}

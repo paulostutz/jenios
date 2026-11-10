@@ -10,9 +10,9 @@ export function UltraClientSetup({plan,current}){
  function configuration(){try{setError('');download(JSON.stringify(exportClientPlan(plan),null,2),'application/json','jenios-ultra-configuracao.json');}catch(e){setError(e.message);}}
  return <div><h3>O Ultra no seu computador ou VPS</h3><p>Você conecta o robô à sua própria corretora. A JENIOS não recebe sua senha, chave de negociação ou acesso à conta.</p>
   <ol><li>Baixe o pacote e extraia os arquivos no ambiente em que o robô ficará instalado.</li><li>Guarde sua configuração acima e baixe o arquivo para esse ambiente.</li><li>Siga o guia incluído para verificar sua conexão local com Binance, MT5 ou Profit.</li></ol>
-  <div className={css.actions}><a className={css.primary} href="/downloads/jenios-ultra-r116.zip" download>Baixar pacote local</a><button disabled={!plan||!current} onClick={configuration}>Baixar minha configuração</button></div>
+  <div className={css.actions}><a className={css.primary} href="/downloads/jenios-ultra-r117.zip" download>Baixar pacote local</a><button disabled={!plan||!current} onClick={configuration}>Baixar minha configuração</button></div>
   {!current&&plan&&<p className={css.muted}>Guarde as alterações antes de baixar a configuração atualizada.</p>}
-  <p className={css.muted}>Disponível nesta versão: preparação e diagnóstico local. A execução automática ainda aguarda a conclusão e validação das pontes dos três mercados. Instalar este pacote não inicia operações.</p>
+  <p className={css.muted}>Disponível nesta versão: diário persistente, sincronização dos resultados e coletor MT5 somente de leitura, além dos diagnósticos dos três mercados. O envio automático de ordens ainda depende da conclusão das pontes. Instalar este pacote não inicia operações.</p>
   {error&&<p className={css.error} role="alert">{error}</p>}
  </div>;
 }

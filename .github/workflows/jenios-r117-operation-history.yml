@@ -1,0 +1,31 @@
+name: JENIOS R117 operation history
+on:
+  pull_request:
+    paths:
+      - 'lib/platform/ultra/**'
+      - 'app/api/platform/ultra/**'
+      - 'app/components/platform/PlatformUltra*'
+      - 'scripts/platform/ultra/**'
+      - 'scripts/check-authentication-r106.mjs'
+      - 'public/downloads/jenios-ultra-r117.zip'
+      - 'docs/release/R117*'
+      - 'tests/platformUltraR117.test.mjs'
+      - '.github/workflows/jenios-r117-operation-history.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: node --test tests/platformUltraR115.test.mjs tests/platformUltraR116.test.mjs tests/platformUltraR117.test.mjs
+      - run: python3 scripts/platform/ultra/test_mt5_collector.py
+      - run: node scripts/check-authentication-r106.mjs
+      - run: npm install --prefix "$RUNNER_TEMP/r117-db" --no-audit --no-fund @electric-sql/pglite@0.3.14
+      - run: JENIOS_PGLITE_MODULE="$RUNNER_TEMP/r117-db/node_modules/@electric-sql/pglite/dist/index.js" node scripts/platform/ultra/test-operations-sql.mjs

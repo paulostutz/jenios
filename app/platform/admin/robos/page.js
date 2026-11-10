@@ -24,6 +24,7 @@ export default function RobotDefinitiveAdminPage() {
       </header>
       <PlatformRobotDefinitiveAdmin/>
       <PlatformRobotHostHealth/>
+      <Link href="/platform/ultra">Ultra · Configuração, alavancagem e resultados →</Link>
     </div>
   </main>;
 }

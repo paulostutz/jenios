@@ -1,0 +1,41 @@
+{
+  "schema": "JENIOS_R117_OPERATIONS_EXTENSION_V1",
+  "baseCommit": "b238ea569a522324ae33755d3f3ee25da417e56e",
+  "liveExecutionAllowed": false,
+  "credentialLocation": "trader_device",
+  "replacements": {
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "5ffcf16b5b310fd413e1063e47d0e6a202b16947",
+      "target": "3e2a17240e5810983e48a539d8d007dcc72cac05"
+    },
+    "app/components/platform/PlatformUltraControl.module.css": {
+      "baseline": "dc11984c7e26a723ff25bf641c72805bb8c65103",
+      "target": "c3a96146899b9bd3a09d4e7239476c5f1a8b1783"
+    },
+    "app/components/platform/PlatformUltraLocal.js": {
+      "baseline": "fbdc814f83dfb6c971f63fdbb73491a148877c64",
+      "target": "5ced218b09f304299b26f849ff357c2746d71b79"
+    }
+  },
+  "additions": {
+    ".github/workflows/jenios-r117-operation-history.yml": "38d8c2cdbe89bc87ec250b27d3f205b2038723ac",
+    "app/api/platform/ultra/devices/route.js": "4a7a1705c1f967fa16bedb1f08eb333c1159cb69",
+    "app/api/platform/ultra/telemetry/route.js": "8f5e9b6c876dc0f31335a5b3cbcece1dd7cf2805",
+    "app/components/platform/PlatformUltraOperations.js": "8e5d4cbe868e55fd123a66d29d26c6022beb3f75",
+    "docs/release/R117-OPERATIONS-README.md": "79df77fe077d31c320d1121e71b8f05679d51689",
+    "docs/release/R117-OPERATIONS-SCHEMA.sql": "e2c63fa7721fa897451d7e4143744ebb148a1ed4",
+    "lib/platform/ultra/client/mt5-adapter.mjs": "f8df33e61ce04546761adac8191bdd3ddc2df2f4",
+    "lib/platform/ultra/client/operation-export.mjs": "6893c11a6dab9b902a64523460885b047e938f7a",
+    "lib/platform/ultra/client/operation-ledger.mjs": "7dcf1ef3d5da9b45ad5e31b30bb93cdabe188f30",
+    "lib/platform/ultra/client/sync.mjs": "1198b8b8fb59eaca4296e82769f4d82b9fe7302e",
+    "lib/platform/ultra/operation.mjs": "e20fb50d0ec6fda49d1732dfc8c1cb2d1f956585",
+    "lib/platform/ultra/operations-http.mjs": "ed809dd13cb6d205cf2d487b08ef329d2689f589",
+    "public/downloads/jenios-ultra-r117.zip": "63f132a9e21a1e400a8a75ace7b4e11ee024f00b",
+    "scripts/platform/ultra/mt5_worker.py": "6dbfdc9f68927d1fe3b00bc95108867e030ecdab",
+    "scripts/platform/ultra/operations.mjs": "0d7ef5d93f0880822d17a58de92f8d479bd7b75a",
+    "scripts/platform/ultra/package-operations.py": "a250bb382c49cc7eff5b135073313308f3098070",
+    "scripts/platform/ultra/test-operations-sql.mjs": "7e42751b3be9cd6d2e24d816cd8caa174348773b",
+    "scripts/platform/ultra/test_mt5_collector.py": "0f69292d6174052a7b9aba6023f3879c3feb0268",
+    "tests/platformUltraR117.test.mjs": "35279034a3f98e084bea6e45dfba2b0fe8352bd5"
+  }
+}

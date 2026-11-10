@@ -14,19 +14,20 @@ export const usePlatformPortalEntry=()=>useContext(PlatformEntryContext);
  * The Platform Supabase token remains mandatory for dedicated diagnostic,
  * administrator, risk and subscription APIs.
  */
-export default function PlatformAuthGuard({children,returnTo='/dashboard-logado'}){
+export default function PlatformAuthGuard({children,returnTo='/dashboard-logado',requireDedicated=false}){
  const router=useRouter();
  const [state,setState]=useState({phase:'checking',access:null});
  useEffect(()=>{
   let live=true,seq=0,pendingTimer=null;
   function login(){
-   if(returnTo==='/dashboard-logado')router.replace('/platform/entrar');
+   if(requireDedicated)router.replace('/platform/entrar?dedicated=1&next='+encodeURIComponent(socialAuthReturnPath(returnTo)));
+   else if(returnTo==='/dashboard-logado')router.replace('/platform/entrar');
    else router.replace('/platform/entrar?next='+encodeURIComponent(socialAuthReturnPath(returnTo)));
   }
   async function validate(){
    const rev=++seq;
    setState({phase:'checking',access:null});
-   const social=await resolveSocialPortalEntry();
+   const social=requireDedicated?null:await resolveSocialPortalEntry();
    if(!live||rev!==seq)return;
    if(social){
     setState({phase:'authorized',access:social});
@@ -78,7 +79,7 @@ export default function PlatformAuthGuard({children,returnTo='/dashboard-logado'
    platformSub?.data?.subscription?.unsubscribe?.();
    socialSub?.data?.subscription?.unsubscribe?.();
   };
- },[router,returnTo]);
+ },[router,returnTo,requireDedicated]);
  if(state.phase==='authorized')return <PlatformEntryContext.Provider value={state.access}>{children}</PlatformEntryContext.Provider>;
  return <main style={{minHeight:'100vh',background:'#10162b',color:'#fff',display:'grid',placeItems:'center',padding:24,fontFamily:'system-ui'}}>
   <section role="status" style={{maxWidth:480,lineHeight:1.65,textAlign:'center'}}>

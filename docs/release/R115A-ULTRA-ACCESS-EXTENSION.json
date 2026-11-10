@@ -1,0 +1,27 @@
+{
+  "schema": "JENIOS_R115A_ULTRA_ACCESS_EXTENSION_V1",
+  "baseCommit": "fa5dbfa3a49e31c0752dce01e4211cb48e69d79d",
+  "liveExecutionAllowed": false,
+  "replacements": {
+    "app/components/platform/PlatformAuthGuard.js": {
+      "baseline": "70398a3d55366b4dd2de853c10f8f676181f03a7",
+      "target": "b07347ffcaddda271368ad86d09c579e3d75e2a8"
+    },
+    "app/components/social-auth-return.mjs": {
+      "baseline": "b015839be153f2dac7b04b090e08b9db01acc024",
+      "target": "b4e3d2e72dc191b51a9c3ed74e5a6f5b48e39c1d"
+    },
+    "app/platform/entrar/page.js": {
+      "baseline": "e5ff8970e6f2d4f5d554ed94efd3320f511e709f",
+      "target": "1b3ed41bec13cdfb210441f03c63fc2f88645feb"
+    },
+    "app/platform/ultra/page.js": {
+      "baseline": "9c8112ac0d55223619550426c91fc5d296741803",
+      "target": "8fe5d07bb60520b8fad5c9371488dd6fd5c03d26"
+    },
+    "tests/platformUltraR115.test.mjs": {
+      "baseline": "ccd98f49f04f2d5c30beae37fa544b147447ecb2",
+      "target": "3d7ceb58b01337e2b891ab5cacbb4a2d9ac918d0"
+    }
+  }
+}

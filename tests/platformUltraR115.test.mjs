@@ -5,7 +5,12 @@ import {rankUltraCandidates,sizeUltraPosition} from '../lib/platform/ultra/selec
 import {ultraPeriodStart} from '../lib/platform/ultra/reporting.mjs';
 import {ultraHttp,ultraReviewDigest} from '../lib/platform/ultra/http.mjs';
 import {reviewUltraOrder,authorizeUltraReview} from '../lib/platform/ultra/order-review.mjs';
+import {socialAuthReturnPath} from '../app/components/social-auth-return.mjs';
 const config={markets:[{id:'crypto',capital:1000,leverage:20,currency:'USDT'}],sessionMinutes:60,maxPositions:3,tradeRiskPct:.25,dailyLossPct:2,maxAssetPct:20,excludedSymbols:[]};
+test('Ultra login retains its exact internal destination without widening redirect scope',()=>{
+ assert.equal(socialAuthReturnPath('/platform/ultra'),'/platform/ultra');
+ for(const path of ['/platform/ultra?next=https://example.test','/platform/ultra/../admin','//example.test','https://example.test'])assert.equal(socialAuthReturnPath(path),'/social');
+});
 test('20x and 100x are advisory choices, with an explicit account-loss scenario',()=>{
  for(const leverage of [20,100]){
   const p=assessUltraLeverage({...config,markets:[{...config.markets[0],leverage}]});

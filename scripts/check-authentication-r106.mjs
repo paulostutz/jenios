@@ -261,6 +261,23 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
   assert.ok(!Object.hasOwn(inheritedR126,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R126 must not replace inherited source: '+path);
   assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R126 addition: '+path);
  }
+ const r127Path='docs/release/R127-EXECUTION-EXTENSION.json';
+ const r127Raw=read(r127Path);
+ assert.equal(blob(r127Raw),'ae8f160aa695b27d56651bc24fb57bc84d0aa02e','R127 manifest changed');
+ const r127=JSON.parse(r127Raw);
+ assert.equal(r127.schema,'JENIOS_R127_OFFLINE_EXECUTION_EXTENSION_V1');
+ assert.equal(r127.basePublishedCommit,'d63f26ca9ddb9987f74cd62aabe0f42bc181ab63');
+ assert.equal(r127.accountModel,'customer_own_account');
+ assert.equal(r127.credentialLocation,'trader_device');
+ assert.equal(r127.evidenceMode,'offline_fixture');
+ for(const flag of ['liveExecutionAllowed','externalPaperAllowed','nativeValidated','productionPublished','billingAllowed'])assert.equal(r127[flag],false);
+ assert.deepEqual(r127.replacements,{});
+ const inheritedR127={...inheritedR126,...r126.additions};
+ for(const [path,sha] of Object.entries(r127.additions)){
+  assert.ok(!Object.hasOwn(inheritedR127,path)&&path!==helperPath&&!path.endsWith('-EXTENSION.json'),'R127 must remain additive: '+path);
+  assert.match(sha,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),sha,'Unreviewed R127 candidate addition: '+path);
+ }
  const files=tracked||execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
  assert.deepEqual(Object.keys(footer.additions).sort(),['.github/workflows/kivoryn-footer-validation.yml','tests/brandFooterText.test.mjs']);
  for(const [path,sha] of Object.entries(footer.additions)){
@@ -274,7 +291,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.equal(blob(read(path)),r126.replacements[path]?.target||r125.replacements[path]?.target||sha,'Unreviewed R114 addition: '+path);
  }
  const accepted=['docs/release/R126-TEST-EXTENSION.json',...Object.keys(r126.additions),'docs/release/R125-ULTRA-CANDIDATE-EXTENSION.json',...Object.keys(r125.additions),'docs/release/R120-BINANCE-EVENTS-EXTENSION.json',...Object.keys(r120.additions),'docs/release/R119-BINANCE-PROTOCOL-EXTENSION.json',...Object.keys(r119.additions),'docs/release/R118-EXECUTION-CHECKPOINT-EXTENSION.json',...Object.keys(r118.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
- assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113/R118-R126 public release inventory');
+ assert.deepEqual(files.slice().sort(),[...new Set([...accepted,r127Path,...Object.keys(r127.additions)])].sort(),'Unreviewed R106/R113/R118-R127 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false,liveExecutionAllowed:false,candidateValidated:false});
 }

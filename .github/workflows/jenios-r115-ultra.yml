@@ -1,0 +1,33 @@
+name: JENIOS R115 Ultra client control
+on:
+  push:
+    branches: [feature/jenios-ultra-leverage-consent-r115-20261110]
+  pull_request:
+    paths:
+      - 'lib/platform/ultra/**'
+      - 'app/platform/ultra/**'
+      - 'app/api/platform/ultra/**'
+      - 'app/components/platform/PlatformUltraControl*'
+      - 'tests/platformUltraR115.test.mjs'
+      - 'docs/release/R115*'
+      - 'scripts/check-authentication-r106.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+      - run: git diff --check

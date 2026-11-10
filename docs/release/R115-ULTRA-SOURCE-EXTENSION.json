@@ -1,0 +1,30 @@
+{
+  "schema": "JENIOS_R115_ULTRA_SOURCE_EXTENSION_V1",
+  "baseCommit": "a17ff75b927e7c1671d81ec77e8de76546799ad8",
+  "liveExecutionAllowed": false,
+  "replacements": {
+    "app/dashboard-logado/page.js": {
+      "baseline": "39decf876ae8806cf2071a536c44c352d877e52c",
+      "target": "782fa762f91bcd7b415717ff2e54a4cc02fb11bf"
+    },
+    "app/platform/admin/robos/page.js": {
+      "baseline": "f77282b0237da4d2ce885733ca244576ee210bae",
+      "target": "24e7bf4f942ac9cbd2791421dcd28bf0930598d9"
+    }
+  },
+  "additions": {
+    ".github/workflows/jenios-r115-ultra.yml": "8d6867aff38059d2feb60f957f6c789add42d486",
+    "app/api/platform/ultra/route.js": "8c023dd0a6e03ddefc118a37d1828a733b824e93",
+    "app/components/platform/PlatformUltraControl.js": "d74d72b325c26f48e57c533a452279b9a9407da6",
+    "app/components/platform/PlatformUltraControl.module.css": "bdf1cae0aa85b238500c157f02bfed06f99b913c",
+    "app/platform/ultra/page.js": "9c8112ac0d55223619550426c91fc5d296741803",
+    "docs/release/R115-ULTRA-CLIENT-CONTROL.md": "b3d02bd4f66847c9eb7f3497b65d303f624191fc",
+    "docs/release/R115-ULTRA-SCHEMA.sql": "da10443b7463bc7197ff3f76a470466c5c94991e",
+    "lib/platform/ultra/http.mjs": "faf980f49ffc24d7cbb82f5e8d6a7e37f108cc75",
+    "lib/platform/ultra/order-review.mjs": "b2560310aae6b0a0759e22ba54d0bb02d72bf3ff",
+    "lib/platform/ultra/policy.mjs": "33d110085d19a4dd72d803df594722d52b3e0a30",
+    "lib/platform/ultra/reporting.mjs": "d450a7114e687f619faeee3ff130c596915c65c6",
+    "lib/platform/ultra/selection.mjs": "c862839ae59e390a8a40cf38cf063228b57feb9b",
+    "tests/platformUltraR115.test.mjs": "ccd98f49f04f2d5c30beae37fa544b147447ecb2"
+  }
+}

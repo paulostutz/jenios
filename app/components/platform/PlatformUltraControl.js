@@ -8,6 +8,7 @@ import {BrandLockup,BrandFooter} from '../brand/BrandSignature';
 import css from './PlatformUltraControl.module.css';
 import {UltraClientSetup,UltraLocalResults} from './PlatformUltraLocal';
 import UltraOperations from './PlatformUltraOperations';
+import UltraAccountReport from './UltraAccountReport';
 import {formatFinancialAmount} from '../../../lib/platform/ultra/client/reporting.mjs';
 
 const initial={markets:[],sessionMinutes:60,maxPositions:3,tradeRiskPct:0.25,dailyLossPct:2,maxAssetPct:20,excludedSymbols:[]};
@@ -36,6 +37,9 @@ function Totals({rows,empty}){
   </dl></section>)}</div>;
 }
 export default function PlatformUltraControl(){
+ const [reportOwner,setReportOwner]=useState(null);
+ useEffect(()=>{let active=true,authRevision=0;const initialRevision=authRevision;platformSupabase?.auth?.getSession().then(({data})=>{if(active&&initialRevision===authRevision)setReportOwner(data?.session?.user?.id??null)}).catch(()=>{if(active&&initialRevision===authRevision)setReportOwner(null)});const listener=platformSupabase?.auth?.onAuthStateChange((_event,session)=>{authRevision++;if(active)setReportOwner(session?.user?.id??null)});return()=>{active=false;listener?.data?.subscription?.unsubscribe()};},[]);
+ async function verifyReportSession(){const {data,error}=await platformSupabase.auth.getUser();if(error||!reportOwner||data?.user?.id!==reportOwner)throw Error('SESSION_CHANGED');}
  const [config,setConfig]=useState(initial),[drafts,setDrafts]=useState(Object.fromEntries(ULTRA_MARKETS.map(m=>[m.id,{id:m.id,capital:0,leverage:1,currency:m.currency}])));
  const [period,setPeriod]=useState('30d'),[page,setPage]=useState(0),[data,setData]=useState(null),[loaded,setLoaded]=useState(false);
  const [busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -54,7 +58,8 @@ export default function PlatformUltraControl(){
   }).catch(e=>{if(live&&current===sequence.current){setError(e.message);setLoaded(false);setData(null);}})
    .finally(()=>{if(live&&current===sequence.current)setLoading(false);});
   return()=>{live=false;};
- },[period,page]);
+ },[period,page,reportOwner]);
+ useEffect(()=>{setData(null);setLoaded(false);setConfig(initial);setDrafts(Object.fromEntries(ULTRA_MARKETS.map(m=>[m.id,{id:m.id,capital:0,leverage:1,currency:m.currency}])));setExcludedText('');restored.current=false;setReview(null);setAccepted(false);setNotice('');},[reportOwner]);
  useEffect(()=>{if(review&&!dialog.current?.open)dialog.current?.showModal();},[review]);
  function invalidate(){setReview(null);setAccepted(false);setNotice('');}
  function change(key,value){invalidate();restored.current=true;setConfig(old=>({...old,[key]:value}));}
@@ -113,7 +118,7 @@ export default function PlatformUltraControl(){
    <p className={css.muted}>Guardar a configuração não inicia operações. O aceite de risco não substitui margem disponível, permissões da conta ou confirmação da corretora.</p>
   </section>
   <section className={css.panel} id="ultra-results"><div className={css.sectionHead}><div><span className={css.kicker}>02 · RESULTADOS FINANCEIROS</span><h2>Ganhos, perdas e resultado líquido</h2></div></div>
-   <UltraOperations call={call}/><details><summary>Registros com confirmação independente</summary><label>Período<select value={period} onChange={e=>{setPeriod(e.target.value);setPage(0);}}>{ULTRA_PERIODS.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></label><p className={css.muted}>Operações encerradas e confirmadas pela corretora. Períodos no horário da Bahia; moedas apresentadas separadamente. Ganhos e perdas já incluem os custos de cada operação.</p>
+   <UltraOperations key={reportOwner??"unauthenticated"} call={call}/><details><summary>Registros com confirmação independente</summary><label>Período<select value={period} onChange={e=>{setPeriod(e.target.value);setPage(0);}}>{ULTRA_PERIODS.map(p=><option key={p.id} value={p.id}>{p.label}</option>)}</select></label><p className={css.muted}>Operações encerradas e confirmadas pela corretora. Períodos no horário da Bahia; moedas apresentadas separadamente. Ganhos e perdas já incluem os custos de cada operação.</p>
    {loading?<p role="status">Consultando resultados…</p>:!loaded?<p className={css.empty}>Não foi possível consultar os resultados. Nenhum valor foi estimado.</p>:<>
     <h3>No período selecionado</h3><Totals rows={report?.totals} empty="Nenhuma operação encerrada confirmada neste período."/>
     <h3>Resultado geral acumulado</h3><Totals rows={report?.lifetime} empty="Ainda não há operações encerradas confirmadas para esta conta."/>
@@ -121,7 +126,7 @@ export default function PlatformUltraControl(){
     {!!report?.days?.length&&<details><summary>Resultado por dia</summary><div className={css.tableWrap}><table><thead><tr><th>Dia</th><th>Moeda</th><th>Operações</th><th>Ganhos</th><th>Perdas</th><th>Líquido</th></tr></thead><tbody>{report.days.map(d=><tr key={d.day+d.currency}><td>{d.day.split('-').reverse().join('/')}</td><td>{d.currency}</td><td>{d.operations}</td><td>{amount(d.gains,d.currency)}</td><td>{amount(d.losses,d.currency)}</td><td>{amount(d.net,d.currency)}</td></tr>)}</tbody></table></div></details>}
     <h3>Por operação</h3>{!report?.operations?.length?<p className={css.empty}>As operações aparecerão aqui após a confirmação da corretora.</p>:<><div className={css.tableWrap}><table><thead><tr><th>Encerramento</th><th>Ativo / mercado</th><th>Direção</th><th>Bruto</th><th>Taxas</th><th>Financiamento</th><th>Lucro / prejuízo líquido</th></tr></thead><tbody>{report.operations.map(t=><tr key={t.id}><td>{time(t.closed_at)}</td><td>{t.symbol}<small>{ULTRA_MARKETS.find(m=>m.id===t.market)?.label}</small></td><td>{t.side==='buy'?'Compra':'Venda'}</td><td>{amount(t.gross_realized,t.currency)}</td><td>{amount(t.fees,t.currency)}</td><td>{amount(t.financing,t.currency)}</td><td className={Number(t.net_realized)>=0?css.positive:css.negative}>{amount(t.net_realized,t.currency)}</td></tr>)}</tbody></table></div><div className={css.actions}><button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Anterior</button><span>Página {page+1} · {report.count} operações</span><button disabled={(page+1)*50>=report.count} onClick={()=>setPage(p=>p+1)}>Próxima</button></div></>}
    </>}
-   </details><UltraLocalResults/>
+   </details><UltraAccountReport ownerKey={reportOwner} verifySession={verifyReportSession}/><UltraLocalResults/>
   </section>
   <section className={css.panel} id="ultra-connections"><span className={css.kicker}>03 · CONEXÕES</span><h2>Você conecta. O capital fica com você.</h2><UltraClientSetup plan={data?.plan} current={planCurrent}/><p className={css.muted}>Cada trader utiliza sua própria conta e as permissões de sua corretora. Não é necessário fornecer acesso à JENIOS.</p><div className={css.markets}>{ULTRA_MARKETS.map(m=><article className={css.market} key={m.id}><h3>{m.label}</h3><span className={css.status}>Conexão pendente</span><ul>{m.requirements.map(s=><li key={s}>{s}</li>)}</ul><Link href={m.guide}>Ver preparação da conexão →</Link></article>)}</div></section>
   <BrandFooter tone="light" scope="Ultra"/>

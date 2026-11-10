@@ -83,7 +83,7 @@ artefatos recebidos e não foi inventada ABI. Referências oficiais:
 
 ## Verificação e limites
 
-JENIOS: 14 testes dirigidos novos; Flow: nove dos testes do mesmo modelo executados
+JENIOS: 15 testes dirigidos novos; Flow: nove dos testes do mesmo modelo executados
 na cópia real da plataforma. São contagens por produto, com nove definições
 equivalentes; não se declaram 23 cenários independentes. Testes com sessão/banco
 fictícios e SQLite local. Sem autenticação real de usuário ou corretora.

@@ -1,0 +1,29 @@
+{
+  "schema": "JENIOS_R124_INDIVIDUAL_EXTENSION_V1",
+  "baseCommit": "25770702de5acfa2eb5e7e6d44a62386eba37a93",
+  "liveExecutionAllowed": false,
+  "billingAllowed": false,
+  "credentialLocation": "trader_device",
+  "replacements": {
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "3e2a17240e5810983e48a539d8d007dcc72cac05",
+      "target": "05d3e8c5e8ba24a6e2e62eda39f9f8b6fc417d81"
+    },
+    "app/components/platform/PlatformUltraOperations.js": {
+      "baseline": "8e5d4cbe868e55fd123a66d29d26c6022beb3f75",
+      "target": "61f2cb717ac1976fbdcb7d4cb21ca12763d85bf6"
+    },
+    "lib/platform/ultra/operations-http.mjs": {
+      "baseline": "ed809dd13cb6d205cf2d487b08ef329d2689f589",
+      "target": "99694949bc9c79395e2942dfb5eb97558205324c"
+    }
+  },
+  "additions": {
+    "app/components/platform/UltraAccountReport.js": "5d507fe64c9c19947eaccb8065dfc3caf7ff7a37",
+    "app/components/platform/UltraAccountReport.module.css": "df65a52d1d092b5699169aa25a7749fa4d71ab12",
+    "docs/release/R124-ULTRA-INDIVIDUAL-20261110.md": "e349397efd44d60c7063380e5180daa0227160f3",
+    "lib/platform/ultra/client/workspace-report.mjs": "4cc7df55c3c2a406db1c5546525e30a99847b99d",
+    "tests/platformUltraR124.test.mjs": "48d7a76c7507e854e45a440130b2876dfff7efa4",
+    "tests/platformUltraR124Http.test.mjs": "96ae3c1aa8a2b6fb5f21698b2184a666ad5b4d9a"
+  }
+}

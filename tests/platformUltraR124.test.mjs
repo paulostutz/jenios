@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {readFileSync} from 'node:fs';
+import {verifyR106PublicGuidance} from '../scripts/check-authentication-r106.mjs';
 import {initialOperation} from '../lib/platform/ultra/operation.mjs';
 import {OperationLedger} from '../lib/platform/ultra/client/operation-ledger.mjs';
 import {parseWorkspaceReport,workspaceReportView,ultraAccessPreparation,prepareOpeningFee} from '../lib/platform/ultra/client/workspace-report.mjs';
@@ -57,4 +59,8 @@ test('R124 start fee preparation repeats the same scope and never debits unknown
  const a=prepareOpeningFee(args),b=prepareOpeningFee({...args,availableWalletCents:499});assert.equal(a.idempotencyScope,b.idempotencyScope);assert.equal(a.amountCents,500);assert.equal(a.trigger,'start');assert.equal(a.debitExecuted,false);assert.equal(b.fundsStatus,'insufficient');assert.equal(b.billable,false);assert.equal(b.reversalPolicy,null);assert.equal(b.brokerAccountDebited,false);
  assert.notEqual(a.idempotencyScope,prepareOpeningFee({...args,ownerScope:'another-owner'}).idempotencyScope);
  assert.equal(a.idempotencyScope,prepareOpeningFee({...args,platform:'jenios'}).idempotencyScope);
+});
+test('R124 exact release inventory still refuses modified new UI/model/manifest',()=>{
+ assert.equal(verifyR106PublicGuidance().exactSource,true);
+ for(const target of ['app/components/platform/UltraAccountReport.js','lib/platform/ultra/client/workspace-report.mjs','docs/release/R124-INDIVIDUAL-EXTENSION.json'])assert.throws(()=>verifyR106PublicGuidance({read:path=>path===target?Buffer.from('unreviewed change'):readFileSync(path)}));
 });

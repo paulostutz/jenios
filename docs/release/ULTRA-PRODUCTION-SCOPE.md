@@ -1,0 +1,13 @@
+# Autorização específica da release Ultra
+
+A autorização adiciona somente `release/jenios-ultra-commands-20261111` à produção JENIOS no projeto existente `prj_44ipBY3R9sHlQDAXY7NUn1zDguw4`, proveniente de GitHub. A lista de preview não muda. Não altera comandos build/install, ambientes, banco, chaves, proteção, acesso ou público; não autoriza ordens, débitos ou recursos Ultra reais.
+
+Antes do gate de ambiente, o build exige ref/provider/projeto/SHA informados pela plataforma, compara `VERCEL_GIT_COMMIT_SHA` com `git rev-parse HEAD` recusa alterações rastreadas ou arquivos não rastreados não ignorados e executa a guarda integral de conteúdo, que retém e executa o verificador predecessor byte a byte. A guarda identifica o conteúdo pelo manifest exato e árvore predecessor `7954dffbcff7e81c6a3f0b368fdf28d0c3b07065`. Não é suficiente declarar um SHA ou ref em metadata manual.
+
+O operador deve criar a branch real no commit final revisado, consultar novamente o ref e solicitar produção com GitSource real e SHA fixo. Depois deve confirmar ref/SHA/projeto no deployment. Não há SHA autorreferente embutido no próprio commit: o pin de commit pertence à solicitação de deploy, enquanto a guarda do build fixa o conteúdo. Uma branch movida, checkout incompatível ou conteúdo modificado não deve ser publicado. Nenhum preview adicional é solicitado.
+
+Continuam obrigatórios: Supabase de produção para Social, credencial financeira server-side, chave pública, configuração dedicada Platform, aprovação de schema, E2E ou aceite manual anterior explícito. Também são preservados os bloqueios trial/transcodificação, requisitos Inter e as validações G44 para memória, geração e modelos quando os respectivos recursos estão habilitados. A nova autorização não fornece certificações nem credenciais.
+
+Referências oficiais: https://vercel.com/docs/rest-api/sdk/examples/deployments-automation e https://vercel.com/docs/environment-variables/system-environment-variables . `gitSource.ref` escolhe uma referência Git; `VERCEL_GIT_COMMIT_REF` e `VERCEL_GIT_COMMIT_SHA` descrevem a referência e commit usados pela plataforma.
+
+O checkout de build deve disponibilizar os objetos Git exatos usados pelos verificadores históricos (incluindo `6d1f58efc6e5d79aac30e4e8e29c60995ef411ea`, suas bases e árvores predecessor). Um clone raso que omita esses objetos deve falhar fechado. Os objetos locais comprovam a cadeia de integridade, mas não garantem que estejam presentes no checkout Vercel. A publicação precisa confirmar disponibilidade; não remover guardas, substituir digests nem inventar objetos para compensar ausência. Nenhum fetch automático ou ajuste de histórico é introduzido nesta autorização.

@@ -1,4 +1,8 @@
-import {checkS05DeploymentScope} from '../lib/release/environment-scope.mjs';
+import {checkS05DeploymentScope,ULTRA_COMMANDS_RELEASE_BRANCH} from '../lib/release/environment-scope.mjs';
+import {verifyUltraProductionSource} from '../lib/release/ultra-production-source.mjs';
+if(process.env.VERCEL_ENV==='production'&&process.env.VERCEL_GIT_COMMIT_REF===ULTRA_COMMANDS_RELEASE_BRANCH){
+ try{verifyUltraProductionSource(process.env);}catch(error){console.error('JENIOS Ultra release blocked: '+error.message);process.exit(1);}
+}
 if(process.env.VERCEL_GIT_COMMIT_REF==='release/jenios-genios-g44-20261024'){
  const present=name=>typeof process.env[name]==='string'&&process.env[name].length>=21;
  console.log('JENIOS_G44_CONFIG '+JSON.stringify({

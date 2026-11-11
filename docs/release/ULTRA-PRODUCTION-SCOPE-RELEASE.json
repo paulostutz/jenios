@@ -1,0 +1,22 @@
+{
+  "baseTree": "7954dffbcff7e81c6a3f0b368fdf28d0c3b07065",
+  "reviewedPredecessorCommit": "1fe92145ea41fa6c8ae014550884d9976e4b9d75",
+  "additions": {
+    "docs/release/ULTRA-PRODUCTION-SCOPE.md": "8248cce12895eeefeb8a804c5f96fa9dfbed0768",
+    "lib/release/ultra-production-source.mjs": "be1f8655f9e3284b7a7677f7b1b494720b18e01f",
+    "scripts/check-ultra-commands-web-baseline.mjs": "be9d627dbb8bd721a95f4897f2b5087d2ff4d7a6",
+    "tests/release-s05/environment-ultra-production.test.mjs": "e605e3e20906fa79c75482c85c331542829dc877"
+  },
+  "replacements": {
+    "lib/release/environment-scope.mjs": {
+      "baseline": "b6454500932f9c631713f4859f5d206889958bf3",
+      "target": "52d6a45d33f1f9b557f9793a6e93f723d3ec2973"
+    },
+    "scripts/check-s05-env-scope.mjs": {
+      "baseline": "7db7cea5e8d16975a0465563f7eab05901d9982d",
+      "target": "9252705cfbd523645d988c4e2826a9935c4a8278"
+    }
+  },
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false
+}

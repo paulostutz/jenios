@@ -1,0 +1,37 @@
+{
+  "schema": "JENIOS_PUBLIC_TRUTH_CANDIDATE_V1",
+  "baseCommit": "d63f26ca9ddb9987f74cd62aabe0f42bc181ab63",
+  "publicationApproved": true,
+  "liveExecutionAllowed": false,
+  "billingAllowed": false,
+  "credentialCollectionAllowed": false,
+  "replacements": {
+    "app/brocker/page.js": {
+      "baseline": "c9d582cb436589741b0f029df5d7b89cc90d0216",
+      "target": "f0702c775d1cf9795ebf0b421d071e3ed9b4caae"
+    },
+    "app/comunidades/page.js": {
+      "baseline": "98f023d80b8d701b16c5ee5cbc5b5df08ee19dd1",
+      "target": "5238eaabb3998ba9c4eddba570183ca901b8c755"
+    },
+    "app/copy-trading/page.js": {
+      "baseline": "4c520d318318be48748395ba687e2ebef325a166",
+      "target": "b932e2f17ca6929ebe0ed8c0af21c25dcd08e2ff"
+    },
+    "app/engenharia-reversa/page.js": {
+      "baseline": "fa958fa61476505df571ec3d3114d3ff0fe5bfb1",
+      "target": "1b880f633ae2a3ededcac152777287d07ef13488"
+    },
+    "app/risco/page.js": {
+      "baseline": "4bdb8ab9840b0c1f7ae4349a59fb0da555d612f2",
+      "target": "c5b26ebcf8704430b4145617cdcddcfa81c86474"
+    },
+    "app/torneios/page.js": {
+      "baseline": "fdea8572701fba6c7c06f656174033422654d910",
+      "target": "185f5f0f21da35607b04cfde0373a95914c11297"
+    }
+  },
+  "additions": {
+    "tests/publicTruthReview.test.mjs": "a7f2d00b2f82c5a8e05921f5050f5a55bb8bfd40"
+  }
+}

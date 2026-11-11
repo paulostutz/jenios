@@ -71,6 +71,26 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
  for(const [path,sha] of Object.entries(r124.additions)){
   assert.match(sha,/^[a-f0-9]{40}$/);assert.equal(blob(read(path)),sha,'Unreviewed R124 addition: '+path);
  }
+ const truthRaw=read('docs/release/PUBLIC-TRUTH-CANDIDATE-20261111.json');
+ assert.equal(blob(truthRaw),'7bcaa57b11dae9f9b2ca62866c7c57c7624040a8','Public truth candidate manifest changed');
+ const truth=JSON.parse(truthRaw);
+ assert.equal(truth.schema,'JENIOS_PUBLIC_TRUTH_CANDIDATE_V1');
+ assert.equal(truth.baseCommit,'d63f26ca9ddb9987f74cd62aabe0f42bc181ab63');
+ assert.equal(truth.publicationApproved,true);
+ assert.equal(truth.liveExecutionAllowed,false);assert.equal(truth.billingAllowed,false);
+ assert.equal(truth.credentialCollectionAllowed,false);
+ assert.deepEqual(Object.keys(truth.replacements).sort(),["app/brocker/page.js","app/comunidades/page.js","app/copy-trading/page.js","app/engenharia-reversa/page.js","app/risco/page.js","app/torneios/page.js"]);
+ for(const [path,entry] of Object.entries(truth.replacements)){
+  assert.equal(entry.baseline,baseline.blobs[path],'Public truth predecessor mismatch');
+  assert.match(entry.target,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),entry.target,'Unreviewed public truth replacement: '+path);
+ }
+ assert.deepEqual(Object.keys(truth.additions),['tests/publicTruthReview.test.mjs']);
+ for(const [path,sha] of Object.entries(truth.additions)){
+  assert.ok(!Object.hasOwn(baseline.blobs,path));
+  assert.match(sha,/^[a-f0-9]{40}$/);
+  assert.equal(blob(read(path)),sha,'Unreviewed public truth test: '+path);
+ }
  const expected={...baseline.blobs,'scripts/check-pro-image-g49.mjs':'16bfc99c1916fe010f0ad1768cdd17ea1fe9af17',[testPath]:'d2313397603bf89f5fce23dcd59aa5ce2129163d'};
  // Only the two reviewed attribution files may differ from the immutable predecessor.
  // Every other inherited byte, including all auth/financial/native code, stays pinned.
@@ -84,7 +104,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.equal(entry.baseline,expected[path],'Kivoryn replacement baseline mismatch');
    assert.match(entry.target,/^[a-f0-9]{40}$/);
  }
- for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
+ for(const [path,sha] of Object.entries(expected))assert.equal(blob(read(path)),truth.replacements[path]?.target||r124.replacements[path]?.target||r117.replacements[path]?.target||r116.replacements[path]?.target||r115a.replacements[path]?.target||r115.replacements[path]?.target||cb.replacements[path]?.target||footer.replacements[path]?.target||sha,'Unreviewed R106 public release change: '+path);
  // R113 extension is append-only, explicitly pinned, and cannot replace R106 files.
  const extensionRaw=read(extensionManifestPath);
  assert.equal(blob(extensionRaw),extensionManifestSha1,'R113 extension manifest changed');
@@ -177,7 +197,7 @@ export function verifyR106PublicGuidance({read=readFileSync,tracked}={}){
    assert.match(sha,/^[a-f0-9]{40}$/);
    assert.equal(blob(read(path)),sha,'Unreviewed R114 addition: '+path);
  }
- const accepted=['docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
+ const accepted=['docs/release/PUBLIC-TRUTH-CANDIDATE-20261111.json',...Object.keys(truth.additions),'docs/release/R124-INDIVIDUAL-EXTENSION.json',...Object.keys(r124.additions),'docs/release/R117-OPERATIONS-EXTENSION.json',...Object.keys(r117.additions),'docs/release/R116-LOCAL-CLIENT-EXTENSION.json',...Object.keys(r116.additions),'docs/release/R115A-ULTRA-ACCESS-EXTENSION.json','docs/release/R115-ULTRA-SOURCE-EXTENSION.json',...Object.keys(r115.additions),'docs/release/CB006-LETTER-SOURCE-EXTENSION.json',...Object.keys(cb.additions),...Object.keys(expected),...Object.keys(extension.blobs),...Object.keys(footer.additions),...Object.keys(flow.additions),flowManifestPath,manifestPath,helperPath,extensionManifestPath,footerManifestPath];
  assert.deepEqual(files.slice().sort(),[...new Set(accepted)].sort(),'Unreviewed R106/R113 public release inventory');
  return Object.freeze({inheritedFiles:Object.keys(baseline.blobs).length,extensionFiles:Object.keys(extension.blobs).length,
    exactSource:true,brokerPermissionsGranted:false});

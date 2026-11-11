@@ -3,40 +3,30 @@ import { useState } from 'react';
 
 export default function BrokerConnectionPage() {
   const [corretoraSelecionada, setCorretoraSelecionada] = useState('b3');
-  const [apiKey, setApiKey] = useState('');
-  const [apiSecret, setApiSecret] = useState('');
   const [ambiente, setAmbiente] = useState('simulacao');
 
   const [conexoes, setConexoes] = useState([
-    { id: 1, nome: 'B3 • Mini-Índice / Dólar (ProfitChart API)', status: 'Conectado', ping: '12ms', tipo: 'Produção' },
-    { id: 2, nome: 'Binance Futures (API Key Principal)', status: 'Aguardando Teste', ping: '--', tipo: 'Sandbox' }
+    { id: 1, nome: 'B3 • Mini-Índice / Dólar (exemplo)', status: 'Não verificada', ping: 'Não medida', tipo: 'Demonstração local' },
+    { id: 2, nome: 'Binance Futures (exemplo)', status: 'Não verificada', ping: 'Não medida', tipo: 'Demonstração local' }
   ]);
 
-  const testarEConectar = (e) => {
+  const adicionarExemplo = (e) => {
     e.preventDefault();
-    if (!apiKey || !apiSecret) {
-      alert("Por favor, insira a API Key e o Secret Key para validar a conexão.");
-      return;
-    }
 
     const nomeCorretora = corretoraSelecionada === 'b3' ? 'B3 • ProfitChart Gateway' : corretoraSelecionada === 'binance' ? 'Binance Futures API' : 'Bybit Derivatives API';
     
-    const novaConexao = {
-      id: Date.now(),
-      nome: `${nomeCorretora} (${ambiente.toUpperCase()})`,
-      status: 'Conectado com Sucesso',
-      ping: '8ms',
-      tipo: ambiente === 'producao' ? 'Produção (Real)' : 'Simulação (Sandbox)'
-    };
-
-    setConexoes([...conexoes, novaConexao]);
-    setApiKey('');
-    setApiSecret('');
-    alert("Chaves de API validadas e conexão estabelecida com sucesso!");
+    setConexoes(anteriores => [...anteriores, {
+      id: Math.max(0, ...anteriores.map(c => c.id)) + 1,
+      nome: `${nomeCorretora} (exemplo)`,
+      status: 'Não verificada',
+      ping: 'Não medida',
+      tipo: 'Demonstração local'
+    }]);
+    alert("Exemplo adicionado somente nesta tela. Nenhuma chave foi validada e nenhuma conexão foi estabelecida.");
   };
 
-  const desconectar = (id) => {
-    setConexoes(conexoes.filter(c => c.id !== id));
+  const removerExemplo = (id) => {
+    setConexoes(anteriores => anteriores.filter(c => c.id !== id));
   };
 
   return (
@@ -44,14 +34,14 @@ export default function BrokerConnectionPage() {
       <div style={{ maxWidth: '900px', width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
         {/* CABEÇALHO */}
-        <div style={{ backgroundColor: '#ffffff', color: '#0f172a', padding: '20px 24px', borderRadius: '20px', border: '1px solid #cbd5e1', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ backgroundColor: '#ffffff', color: '#0f172a', padding: '20px 24px', borderRadius: '20px', border: '1px solid #cbd5e1', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ width: '38px', height: '38px', borderRadius: '10px', backgroundColor: '#7c3aed', color: '#fff', fontWeight: '900', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(124, 58, 237, 0.4)' }}>
               J
             </div>
             <div>
               <span style={{ fontSize: '13px', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', display: 'block' }}>JENIOS BROKER GATEWAY</span>
-              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>● CONEXÃO HFT & ROTEAMENTO DE ORDENS</span>
+              <span style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace' }}>● DEMONSTRAÇÃO DE INTERFACE</span>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -64,16 +54,17 @@ export default function BrokerConnectionPage() {
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', borderRadius: '20px', padding: '30px', border: '1px solid #cbd5e1', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
             <span style={{ fontSize: '11px', color: '#7c3aed', fontWeight: 'bold', fontFamily: 'monospace', letterSpacing: '2px', textTransform: 'uppercase' }}>INTEGRAÇÃO DE API</span>
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '4px 0 0 0', color: '#0f172a' }}>Vincular Nova Corretora ou Exchange</h2>
-            <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>Insira as chaves de acesso fornecidas pela sua corretora para habilitar o motor HFT e o Modo Reverso.</p>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '4px 0 0 0', color: '#0f172a' }}>Prévia de configuração de corretora</h2>
+            <p style={{ fontSize: '12px', color: '#64748b', margin: '4px 0 0 0' }}>Demonstração local: esta página não consulta contas, valida chaves ou envia ordens. Não informe credenciais reais. Os exemplos não comprovam integração, conexão ou latência.</p>
           </div>
 
-          <form onSubmit={testarEConectar} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+          <form onSubmit={adicionarExemplo} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '16px' }}>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>Selecione a Instituição / Broker</label>
                 <select 
+                  aria-label="Instituição de exemplo"
                   value={corretoraSelecionada}
                   onChange={(e) => setCorretoraSelecionada(e.target.value)}
                   style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '12px', backgroundColor: '#f8fafc', color: '#0f172a', outline: 'none' }}
@@ -87,37 +78,40 @@ export default function BrokerConnectionPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>Ambiente de Execução</label>
                 <select 
+                  aria-label="Ambiente de demonstração"
                   value={ambiente}
                   onChange={(e) => setAmbiente(e.target.value)}
                   style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '12px', backgroundColor: '#f8fafc', color: '#0f172a', outline: 'none' }}
                 >
-                  <option value="simulacao">Simulação / Sandbox (Testes)</option>
-                  <option value="producao">Produção / Conta Real (Live)</option>
+                  <option value="simulacao">Demonstração local (sem conexão)</option>
+                  <option value="producao" disabled>Produção / Conta Real indisponível nesta página</option>
                 </select>
               </div>
 
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '16px' }}>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>API Key (Chave Pública)</label>
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>API Key (indisponível na demonstração)</label>
                 <input 
                   type="text" 
-                  placeholder="Insira a API Key..."
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
+                  aria-label="API Key indisponível na demonstração"
+                  placeholder="Não informe credenciais reais"
+                  disabled
+                  autoComplete="off"
                   style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '12px', backgroundColor: '#f8fafc', color: '#0f172a', outline: 'none' }} 
                 />
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>Secret Key (Chave Privada)</label>
+                <label style={{ fontSize: '11px', fontWeight: 'bold', color: '#334155', textTransform: 'uppercase' }}>Secret Key (indisponível na demonstração)</label>
                 <input 
                   type="password" 
-                  placeholder="Insira o Secret Key..."
-                  value={apiSecret}
-                  onChange={(e) => setApiSecret(e.target.value)}
+                  aria-label="Secret Key indisponível na demonstração"
+                  placeholder="Não informe credenciais reais"
+                  disabled
+                  autoComplete="off"
                   style={{ padding: '12px', border: '1px solid #cbd5e1', borderRadius: '10px', fontSize: '12px', backgroundColor: '#f8fafc', color: '#0f172a', outline: 'none' }} 
                 />
               </div>
@@ -125,27 +119,27 @@ export default function BrokerConnectionPage() {
             </div>
 
             <button type="submit" style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '14px', borderRadius: '12px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '1px', boxShadow: '0 4px 10px rgba(124, 58, 237, 0.3)', marginTop: '8px' }}>
-              Validar Chaves & Conectar Corretora
+              Adicionar exemplo local
             </button>
           </form>
         </div>
 
-        {/* LISTA DE CONEXÕES ATIVAS */}
+        {/* LISTA DE EXEMPLOS LOCAIS */}
         <div style={{ backgroundColor: '#ffffff', color: '#0f172a', borderRadius: '20px', padding: '30px', border: '1px solid #cbd5e1', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0, color: '#0f172a' }}>Corretoras e Gateways Conectados</h3>
-            <span style={{ fontSize: '11px', color: '#64748b' }}>{conexoes.length} ativas</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0, color: '#0f172a' }}>Exemplos de Corretoras e Gateways</h3>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>{conexoes.length} exemplos locais</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {conexoes.map((c) => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #cbd5e1' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#0f172a' }}>{c.nome}</span>
-                  <span style={{ fontSize: '11px', color: '#64748b' }}>Estado: <b style={{ color: '#059669' }}>{c.status}</b> • Latência: <b>{c.ping}</b> • Tipo: {c.tipo}</span>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>Estado: <b style={{ color: '#64748b' }}>{c.status}</b> • Latência: <b>{c.ping}</b> • Tipo: {c.tipo}</span>
                 </div>
-                <button onClick={() => desconectar(c.id)} style={{ backgroundColor: '#fee2e2', color: '#991b1b', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
-                  Desconectar
+                <button onClick={() => removerExemplo(c.id)} style={{ backgroundColor: '#fee2e2', color: '#991b1b', border: 'none', padding: '8px 14px', borderRadius: '8px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  Remover exemplo
                 </button>
               </div>
             ))}
@@ -154,8 +148,8 @@ export default function BrokerConnectionPage() {
 
         {/* RODAPÉ */}
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '10px' }}>
-          <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#7c3aed', letterSpacing: '2px', textTransform: 'uppercase' }}>JENIOS BROKER GATEWAY • SEGURANÇA INSTITUCIONAL</div>
-          <div style={{ fontSize: '10px', color: '#64748b' }}>Chaves encriptadas com criptografia de ponta a ponta (AES-256).</div>
+          <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#7c3aed', letterSpacing: '2px', textTransform: 'uppercase' }}>JENIOS BROKER GATEWAY • DEMONSTRAÇÃO LOCAL</div>
+          <div style={{ fontSize: '10px', color: '#64748b' }}>Nenhuma credencial é recebida por este formulário. Os exemplos são descartados ao recarregar a página.</div>
         </div>
 
       </div>

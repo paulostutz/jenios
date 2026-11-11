@@ -2,15 +2,14 @@
 import { useState } from 'react';
 
 export default function RiscoPage() {
-  const [stopDiario, setStopDiario] = useState('500.00');
-  const [alavancagem, setAlavancagem] = useState('10x');
-  const [modoSeguranca, setModoSeguranca] = useState(true);
+  const [stopDiario, setStopDiario] = useState('');
+  const [alavancagem, setAlavancagem] = useState('');
+  const [modoSeguranca, setModoSeguranca] = useState(false);
   const [salvo, setSalvo] = useState(false);
 
-  const guardarConfiguracoes = (e) => {
+  const atualizarRascunho = (e) => {
     e.preventDefault();
     setSalvo(true);
-    setTimeout(() => setSalvo(false), 3000);
   };
 
   return (
@@ -36,48 +35,56 @@ export default function RiscoPage() {
 
         {/* Formulário de Configuração de Risco */}
         <div style={{ backgroundColor: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '16px', padding: '30px', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
-          <form onSubmit={guardarConfiguracoes}>
+          <p role="note" style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', margin: '0 0 20px 0' }}>
+            Demonstração de formulário: os valores são um rascunho local, não configurações da sua conta. Esta página não aplica limites, bloqueios ou regras ao motor ou à corretora. As alterações são descartadas ao recarregar a página.
+          </p>
+          <form onSubmit={atualizarRascunho}>
             
             <div style={{ marginBottom: '20px' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>
-                Limite de Perda Máxima Diária (Stop Diário em R$)
+                Rascunho de Limite de Perda Diária (em R$)
               </label>
               <input
                 type="text"
+                aria-label="Limite de perda de exemplo"
+                placeholder="Informe um valor fictício"
                 value={stopDiario}
-                onChange={(e) => setStopDiario(e.target.value)}
+                onChange={(e) => { setStopDiario(e.target.value); setSalvo(false); }}
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', color: '#0f172a', fontSize: '13px', boxSizing: 'border-box', outline: 'none', fontFamily: 'monospace' }}
               />
               <span style={{ fontSize: '11px', color: '#64748b', display: 'block', marginTop: '6px' }}>
-                Se atingir este valor negativo nas operações do dia, o motor bloqueia novas entradas automaticamente.
+                Valor apenas ilustrativo. Nenhum bloqueio de ordens é ativado por este formulário.
               </span>
             </div>
 
             <div style={{ marginBottom: '20px' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>
-                Nível Máximo de Alavancagem Institucional
+                Rascunho de Alavancagem
               </label>
               <select
+                aria-label="Alavancagem de exemplo"
                 value={alavancagem}
-                onChange={(e) => setAlavancagem(e.target.value)}
+                onChange={(e) => { setAlavancagem(e.target.value); setSalvo(false); }}
                 style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', backgroundColor: '#f8fafc', color: '#0f172a', fontSize: '13px', boxSizing: 'border-box', outline: 'none' }}
               >
-                <option value="5x">5x (Conservador)</option>
-                <option value="10x">10x (Padrão HFT)</option>
-                <option value="20x">20x (Agressivo / Alta Volatilidade)</option>
+                <option value="">Selecione um exemplo</option>
+                <option value="5x">5x (exemplo)</option>
+                <option value="10x">10x (exemplo)</option>
+                <option value="20x">20x (exemplo)</option>
               </select>
             </div>
 
             <div style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: '#f8fafc', padding: '15px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
               <input
                 type="checkbox"
+                aria-label="Trava automática de exemplo"
                 checked={modoSeguranca}
-                onChange={(e) => setModoSeguranca(e.target.checked)}
+                onChange={(e) => { setModoSeguranca(e.target.checked); setSalvo(false); }}
                 style={{ width: '18px', height: '18px', accentColor: '#7c3aed', cursor: 'pointer' }}
               />
               <div>
-                <b style={{ fontSize: '13px', color: '#0f172a', display: 'block' }}>Ativar Trava Automática Antifúria (Modo Reverso)</b>
-                <span style={{ fontSize: '11px', color: '#64748b' }}>Intercepta cliques emocionais após perdas consecutivas.</span>
+                <b style={{ fontSize: '13px', color: '#0f172a', display: 'block' }}>Incluir Trava Automática no Exemplo</b>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>Opção ilustrativa. Não intercepta cliques nem ativa o Modo Reverso.</span>
               </div>
             </div>
 
@@ -85,12 +92,12 @@ export default function RiscoPage() {
               type="submit"
               style={{ backgroundColor: '#7c3aed', color: '#fff', border: 'none', padding: '14px 20px', borderRadius: '10px', fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', width: '100%', textAlign: 'center' }}
             >
-              Guardar Regras de Risco
+              Atualizar rascunho local
             </button>
 
             {salvo && (
-              <div style={{ backgroundColor: '#d1fae5', color: '#065f46', padding: '10px', borderRadius: '8px', fontSize: '12px', textAlign: 'center', fontWeight: 'bold', marginTop: '15px' }}>
-                ✅ Parâmetros de risco atualizados com sucesso na infraestrutura!
+              <div role="status" style={{ backgroundColor: '#e2e8f0', color: '#475569', padding: '10px', borderRadius: '8px', fontSize: '12px', textAlign: 'center', fontWeight: 'bold', marginTop: '15px' }}>
+                Rascunho atualizado somente nesta tela. Nenhuma regra foi salva na conta ou aplicada a ordens.
               </div>
             )}
 

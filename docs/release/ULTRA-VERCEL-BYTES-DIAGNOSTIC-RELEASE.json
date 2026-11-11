@@ -1,0 +1,17 @@
+{
+  "baseTree": "3086fb4ccf257d438958945b517bd242a491d506",
+  "reviewedPredecessorCommit": "d5cf1dccf90eac9918fd22c74c0d1cdb97c73f72",
+  "additions": {
+    "lib/release/vercel-config-diagnostic.mjs": "446aa42b0277d48d135ee71486a9336de7082725",
+    "scripts/check-ultra-minimal-config-baseline.mjs": "df6800fd5bc923c0dbd9f1b2e16277939e2bf75a",
+    "tests/release-s05/vercel-config-diagnostic.test.mjs": "3c20c65b3b06cda0c2814a24a61a225661eed71b"
+  },
+  "replacements": {
+    "lib/release/ultra-production-source.mjs": {
+      "baseline": "0088742250203ed2dc834a1c4d6dde3872fc4dca",
+      "target": "6fc9b92ff441959e95fac477ee5d21e0c6d395ec"
+    }
+  },
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false
+}

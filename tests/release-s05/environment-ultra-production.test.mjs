@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {checkS05DeploymentScope,ULTRA_COMMANDS_RELEASE_BRANCH} from '../../lib/release/environment-scope.mjs';
-import {verifyUltraProductionSource} from '../../lib/release/ultra-production-source.mjs';
+import {verifyUltraProductionSource,summarizeUltraCheckout} from '../../lib/release/ultra-production-source.mjs';
 const env={VERCEL_ENV:'production',VERCEL_GIT_COMMIT_REF:ULTRA_COMMANDS_RELEASE_BRANCH,VERCEL_GIT_COMMIT_SHA:'a'.repeat(40),VERCEL_GIT_PROVIDER:'github',VERCEL_PROJECT_ID:'prj_44ipBY3R9sHlQDAXY7NUn1zDguw4',NEXT_PUBLIC_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',SOCIAL_SUPABASE_URL:'https://igayfjorjmucthlfoasf.supabase.co',SUPABASE_SECRET_KEY:'fixture-secret',NEXT_PUBLIC_SUP_PUBLISHABLE_KEY:'fixture-public',PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',NEXT_PUBLIC_PLATFORM_SUPABASE_URL:'https://xaicvhagftzjkqphnbgx.supabase.co',NEXT_PUBLIC_PLATFORM_SUPABASE_PUBLISHABLE_KEY:'fixture-platform-public',PLATFORM_SUPABASE_SERVICE_ROLE_KEY:'fixture-server-key-more-than-twenty',JENIOS_S05_SCHEMA_CERTIFIED:'true',JENIOS_S05_E2E_CERTIFIED:'true'};
 const good={git:(...args)=>args[0]==='rev-parse'?env.VERCEL_GIT_COMMIT_SHA:'',verifyContent:()=>({ultraProductionScopeRelease:true,exactSource:true})};
 test('exact Ultra production branch preserves full dedicated scope and certified approval',()=>{
@@ -36,4 +36,19 @@ test('production extension pins source verifier, gate, tests and exact predecess
  const {verifyOwnerWebRelease}=await import('../../scripts/check-ultra-owner-web.mjs');
  assert.equal(verifyOwnerWebRelease().ultraProductionScopeRelease,true);
  for(const target of ['lib/release/environment-scope.mjs','lib/release/ultra-production-source.mjs','scripts/check-s05-env-scope.mjs','scripts/check-ultra-commands-web-baseline.mjs','tests/release-s05/environment-ultra-production.test.mjs','docs/release/ULTRA-PRODUCTION-SCOPE-RELEASE.json'])assert.throws(()=>verifyOwnerWebRelease({read:name=>name===target?Buffer.from('changed'):readFileSync(name)}));
+});
+
+test('dirty checkout diagnosis exposes bounded sanitized paths/statuses, never file contents',()=>{
+ const report=summarizeUltraCheckout('M\0package-lock.json\0D\0old-file.js\0','generated-file.json\0.env.example\0');
+ assert.deepEqual(report,{trackedCount:2,untrackedCount:2,tracked:[{status:'M',path:'package-lock.json'},{status:'D',path:'old-file.js'}],untracked:[{status:'?',path:'generated-file.json'},{status:'?',path:'.env.example'}],truncated:false});
+ const hostile=summarizeUltraCheckout('M\0bad\n\x1b[31mfile.js\0','x'.repeat(500)+'\0');
+ assert.doesNotMatch(JSON.stringify(hostile),/\\n|\\u001b/);assert.ok(hostile.untracked[0].path.length<=160);
+ const many=summarizeUltraCheckout(Array.from({length:30},(_,i)=>'M\0file'+i+'\0').join(''),Array.from({length:30},(_,i)=>'u'+i+'\0').join(''));
+ assert.equal(many.trackedCount,30);assert.equal(many.untrackedCount,30);assert.equal(many.tracked.length,20);assert.equal(many.untracked.length,20);assert.equal(many.truncated,true);
+ assert.deepEqual(Object.keys(many.tracked[0]),['status','path']);
+});
+test('dirty checkout error reports both lists and remains blocked before content verification',()=>{
+ const calls=[];let content=false;
+ assert.throws(()=>verifyUltraProductionSource(env,{git:(...args)=>{calls.push(args);return args[0]==='rev-parse'?env.VERCEL_GIT_COMMIT_SHA:args[0]==='diff'?'M\0package-lock.json\0':'new-file.js\0'},verifyContent:()=>{content=true;return good.verifyContent()}}),error=>error.message.startsWith('ULTRA_CHECKOUT_NOT_CLEAN ')&&error.message.includes('package-lock.json')&&error.message.includes('new-file.js'));
+ assert.equal(content,false);assert.deepEqual(calls.slice(1),[['diff','--name-status','--no-renames','-z','HEAD'],['ls-files','--others','--exclude-standard','-z']]);
 });

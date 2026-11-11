@@ -1,0 +1,19 @@
+{
+  "baseTree": "b8003cbc3320e3470ba221a83c7938294a335b3b",
+  "reviewedPredecessorCommit": "59981c331ab8c4688ca3daeec2de02ffba49f0b9",
+  "additions": {
+    "scripts/check-ultra-production-scope-baseline.mjs": "f2a6a4a8930067fcb14bbec54286462b75622b55"
+  },
+  "replacements": {
+    "lib/release/ultra-production-source.mjs": {
+      "baseline": "be1f8655f9e3284b7a7677f7b1b494720b18e01f",
+      "target": "0088742250203ed2dc834a1c4d6dde3872fc4dca"
+    },
+    "tests/release-s05/environment-ultra-production.test.mjs": {
+      "baseline": "e605e3e20906fa79c75482c85c331542829dc877",
+      "target": "26299e4a0efefce1db2fb5639e628994db82e6d4"
+    }
+  },
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false
+}

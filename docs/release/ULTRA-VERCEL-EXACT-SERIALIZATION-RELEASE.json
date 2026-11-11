@@ -1,0 +1,16 @@
+{
+  "baseTree": "31baf4346c048f4f52ec5fff3bd9e6c8487eeda3",
+  "reviewedPredecessorCommit": "d6c5ea1a067a1f27fc26691406e2181591872472",
+  "additions": {
+    "scripts/check-ultra-vercel-bytes-baseline.mjs": "13db7ff0744b050ffee5e81f854d7fcaea10a74b",
+    "tests/release-s05/vercel-exact-serialization.test.mjs": "9ad356ed5c861988785fb4debc080d00b88c0221"
+  },
+  "replacements": {
+    "vercel.json": {
+      "baseline": "20fc77e7e7cfe269f473bba59884e6ba05afe1af",
+      "target": "cc866f523482ee149aa79649547ac4833721d458"
+    }
+  },
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false
+}

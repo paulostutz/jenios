@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {verifyOwnerWebRelease as previous} from './check-ultra-minimal-config-baseline.mjs';
-const base='3086fb4ccf257d438958945b517bd242a491d506',manifest='docs/release/ULTRA-VERCEL-BYTES-DIAGNOSTIC-RELEASE.json',helper='scripts/check-ultra-owner-web.mjs';
-const manifestSha='825adf82132e7156fbd143fc86e61b2b7b258a9a';
+import {verifyOwnerWebRelease as previous} from './check-ultra-vercel-bytes-baseline.mjs';
+const base='31baf4346c048f4f52ec5fff3bd9e6c8487eeda3',manifest='docs/release/ULTRA-VERCEL-EXACT-SERIALIZATION-RELEASE.json',helper='scripts/check-ultra-owner-web.mjs';
+const manifestSha='f806006e73c7842173ecd5cf40d05c9bc57a5a88';
 const git=(...a)=>execFileSync('git',a,{maxBuffer:64*1024*1024});
 const blob=b=>createHash('sha1').update(Buffer.from('blob '+b.byteLength+'\0')).update(b).digest('hex');
 export function verifyOwnerWebRelease({read=readFileSync,tracked}={}){
@@ -14,9 +14,9 @@ export function verifyOwnerWebRelease({read=readFileSync,tracked}={}){
  const files=tracked??git('ls-files','-z').toString().split('\0').filter(Boolean);
  assert.deepEqual([...files].sort(),[...Object.keys(entries),...Object.keys(m.additions),manifest].sort(),'Command exact inventory');
  const result=previous({tracked:Object.keys(entries),read:name=>name===helper||Object.hasOwn(m.replacements,name)?git('show',base+':'+name):read(name)});
- assert.equal(blob(read('scripts/check-ultra-minimal-config-baseline.mjs')),entries[helper],'Predecessor verifier changed');
+ assert.equal(blob(read('scripts/check-ultra-vercel-bytes-baseline.mjs')),entries[helper],'Predecessor verifier changed');
  for(const [name,sha] of Object.entries(entries)){if(name===helper)continue;const change=m.replacements[name];if(change)assert.equal(change.baseline,sha);assert.equal(blob(read(name)),change?.target??sha,'Command source changed: '+name);}
  for(const [name,sha] of Object.entries(m.additions)){assert.ok(!Object.hasOwn(entries,name));assert.equal(blob(read(name)),sha,'Command addition changed: '+name);}
- return {...result,ultraVercelBytesDiagnosticRelease:true,liveExecutionAllowed:false,realBillingAllowed:false};
+ return {...result,ultraVercelExactSerializationRelease:true,liveExecutionAllowed:false,realBillingAllowed:false};
 }
 if(process.argv[1]?.endsWith('/check-ultra-owner-web.mjs'))console.log(verifyOwnerWebRelease());

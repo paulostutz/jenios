@@ -1,0 +1,37 @@
+{
+  "baseCommit": "6d1f58efc6e5d79aac30e4e8e29c60995ef411ea",
+  "baseTree": "943d8683b46e322698c5dd11a1a574617094847d",
+  "replacements": {
+    "app/carteira/page.js": {
+      "baseline": "0a03d7bff357316a2910c66bd629657e43ccc77f",
+      "target": "85dd68f9e6c92e9baf5850f837bb7943b76018ef"
+    },
+    "app/components/platform/PlatformUltraControl.js": {
+      "baseline": "05d3e8c5e8ba24a6e2e62eda39f9f8b6fc417d81",
+      "target": "a9541897e83ff8a8cc84c01c1363166b4c41ccb5"
+    },
+    "scripts/check-authentication-r106.mjs": {
+      "baseline": "2d383d435e26d602ebbf63e5ba523bf44607acdc",
+      "target": "d6ffe09cac9f285d2657394e7e9b29cc87edf768"
+    }
+  },
+  "additions": {
+    "app/api/platform/ultra/state/route.js": "7be8f17c04220c22e2f0968809bb0b16c090649b",
+    "app/components/platform/JeniosUltraOwnerState.js": "5da024e79f622e43254f460df46b5b55576d21bb",
+    "app/components/platform/UltraOwnerState.js": "e6dd97b579ec974f35bbf1901a83f5ceb99783db",
+    "app/components/platform/UltraOwnerState.module.css": "8142f7024c28b8b6f017b1b087469dcc59bb800d",
+    "docs/release/ULTRA-OWNER-STATE-WEB.md": "92921621023b2413efcc22c7cc6b4d2baf09c89e",
+    "lib/platform/ultra/web/owner-state-http.d.mts": "3c7e4f73c03aceca540be87a63afda49ffecf068",
+    "lib/platform/ultra/web/owner-state-http.mjs": "3e43551513ffc17fb721cbba79470feef15f2fa7",
+    "lib/platform/ultra/web/runtime-source.d.mts": "32dc89736e0888b757714026907256905c8ac568",
+    "lib/platform/ultra/web/runtime-source.mjs": "e128387e1d3a3d755f1caea8212a58f63c79f40b",
+    "lib/platform/ultra/web/state-contract.d.mts": "aca9721969311aa3a9598790f2f5ad9423a7c74b",
+    "lib/platform/ultra/web/state-contract.mjs": "4c3633398ffd475c920cad40d9dc322a6c73531d",
+    "scripts/check-r106-production-baseline.mjs": "2d383d435e26d602ebbf63e5ba523bf44607acdc",
+    "tests/platformUltraOwnerPanel.test.mjs": "bfeb709107e97618ecf20f890ff1dd77e22f5d89",
+    "tests/platformUltraOwnerRelease.test.mjs": "5dd316c3c58f759e5074561b3de63d6b0c2ce733",
+    "tests/platformUltraOwnerState.test.mjs": "b7fab8d2055a749631676e954d976fefd3ea46db"
+  },
+  "liveExecutionAllowed": false,
+  "realBillingAllowed": false
+}

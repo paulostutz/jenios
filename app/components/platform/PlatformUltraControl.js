@@ -1,4 +1,5 @@
 'use client';
+import JeniosUltraOwnerState from './JeniosUltraOwnerState';
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
@@ -94,6 +95,7 @@ export default function PlatformUltraControl(){
   <section className={css.hero}><span className={css.kicker}>JENIOS ULTRA</span><h1>Seu capital. Suas escolhas.</h1><p>Prepare a seleção automática de ativos, defina a exposição e acompanhe os resultados em um só lugar.</p><span className={css.status}>Aguardando conexão operacional</span></section>
   <nav className={css.tabs} aria-label="Seções do Ultra"><a href="#ultra-config">Configuração</a><a href="#ultra-results">Resultados</a><a href="#ultra-connections">Corretoras</a></nav>
   {error&&<p role="alert" className={css.error}>{error}</p>}{notice&&<p role="status" className={css.notice}>{notice}</p>}
+  <JeniosUltraOwnerState/>
   <section className={css.panel} id="ultra-config"><div className={css.sectionHead}><div><span className={css.kicker}>01 · CONFIGURAÇÃO</span><h2>Mercados e capital</h2></div><span>Seleção automática dentro dos mercados escolhidos</span></div>
    <p className={css.muted}>O capital permanece na sua corretora. Defina o orçamento de cada mercado na moeda da respectiva conta.</p>
    <fieldset disabled={busy||loading} className={css.fieldset}><div className={css.markets}>

@@ -1,0 +1,1 @@
+export function ownerCommandHttp(request:Request,options:{platform:'jenios'|'flow';getUser:(request:Request)=>Promise<{id:string;is_anonymous?:boolean}|null>;executeCommand?:(input:any)=>Promise<any>}):Promise<Response>;

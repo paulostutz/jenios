@@ -1,0 +1,26 @@
+{
+  "baseTree": "6fb555dd07b67237168647da9560d68d5c627701",
+  "publishedCommit": "4446b757",
+  "additions": {
+    "app/api/platform/ultra/commands/route.js": "5d7183fed840b7c1b9671bff29647c254abe9411",
+    "app/components/platform/UltraCommands.js": "e99ec4b66a6418724be970013fe3243fea6cc78c",
+    "docs/release/ULTRA-COMMANDS-WEB.md": "46cd8f43bbdcfe89c40f04f5d120b7861acc8cb5",
+    "lib/platform/ultra/web/command-contract.mjs": "0a1c9ccde8fcad453d09daa733a0a0459f443687",
+    "lib/platform/ultra/web/command-controller.mjs": "fc7c218628725e95dee76987bcb9fe2c7537f538",
+    "lib/platform/ultra/web/command-http.d.mts": "53124c72a457040b898cf19249fffb409a78b987",
+    "lib/platform/ultra/web/command-http.mjs": "616a5826e05b7845a813c0fdf1eee5174f8bc5ad",
+    "lib/platform/ultra/web/runtime-command.d.mts": "5dfa09795ec2c9c046bc83d2ac690388578aa152",
+    "lib/platform/ultra/web/runtime-command.mjs": "e4ee1fbe0f2ee304ac46e3701eccd57bab10d070",
+    "scripts/check-ultra-owner-web-baseline.mjs": "504bc197d5657483b5d748ac832589ace7f1e045",
+    "tests/platformUltraCommands.test.mjs": "44e41d722856d421fe173a67a653b6914f2f3aa2",
+    "tests/platformUltraCommandsHttp.test.mjs": "d59bce3b3f758b3b6eb0f0d5e3f54e077bcac911"
+  },
+  "replacements": {
+    "app/components/platform/JeniosUltraOwnerState.js": {
+      "baseline": "5da024e79f622e43254f460df46b5b55576d21bb",
+      "target": "27668722b5bac55b21cce29a2c03a010cc6f793f"
+    }
+  },
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false
+}

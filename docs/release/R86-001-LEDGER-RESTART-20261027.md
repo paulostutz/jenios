@@ -1,0 +1,3 @@
+# JENIOS R86.001 — ensaio de durabilidade SQLite, sem broker
+
+Testes de recuperação local do ledger B152 em arquivo temporário: fechamento/reabertura, preservação de configuração, pausa local e isolamento entre titulares. Nenhum endpoint de ordens, credenciais, host privado ou migration foi adicionado. O ensaio não comprova idempotência após POST nem reconciliação externa: esses gates exigem conta Paper autorizada, recibos oficiais e worker isolado. A release R79 permanece preservada e PR #22 DRAFT. R85.002 Preview `dpl_DmLuczt5MQSrW2inJ2UUKwjJPf56` BUILDING na verificação anterior. Não afirmar CI verde sem resultado do SHA exato.

@@ -100,6 +100,15 @@ test('R78 does not allow forged receipts or database errors to claim approval',a
  await assert.rejects(submitSignedR78PaperOnce(validated(permit),{env,
   approvalStore:{async claimApprovedForExecution(){throw Error('user data secret')}}}),/R78_DURABLE_CONSENT_UNAVAILABLE/);
 });
+test('R105 standalone signed executor rechecks permit after asynchronous preflight and before POST',async()=>{
+ let at=now,posts=0;
+ const approvalStore={async claimApprovedForExecution(){return authRecord(permit);}};
+ await assert.rejects(submitSignedR78PaperOnce(validated(permit),{env,approvalStore,executionClock:()=>at,
+  fetcher:async()=>{posts++;return new Response(null,{status:201});},
+  paperExecutor:async(_request,deps)=>{at=permit.expiresAtMs;return deps.fetcher('https://paper-api.alpaca.markets/v2/orders',{method:'POST'});}
+ }),/R78_WRONG_OWNER_ORDER_OR_EXPIRED/);
+ assert.equal(posts,0);
+});
 test('R78 is private: no HTTP routes, credentials, orders Live or withdrawal paths',()=>{
  const text=readFileSync(new URL('../lib/platform/connections/paper-signed-authorization-r78.mjs',import.meta.url),'utf8');
  for(const forbidden of ['api.alpaca.markets','/v2/withdrawals','/v2/positions/close','SUPABASE_SERVICE_ROLE_KEY']) assert.equal(text.includes(forbidden),false,forbidden);

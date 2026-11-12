@@ -86,3 +86,12 @@ test('B176 refuses external order before an explicit SUBMITTING event in the jou
    {ledger:db,env,lookup:async()=>{called=true;return observation('FILLED','1');}}),/UNEXPECTED_BROKER_ORDER_BEFORE_SEND/);assert.equal(called,false);
  }finally{db.close();rmSync(dir,{recursive:true,force:true});}
 });
+
+test('R103 UNKNOWN observations retain increasing cumulative fills without releasing risk',()=>fixture(async(db,c)=>{
+ await reconcile(db,async()=>observation('UNKNOWN','0.2'));
+ assert.equal(db.snapshot(session,c)[0].filled,units('0.2').toString());
+ await reconcile(db,async()=>observation('UNKNOWN','0.4'),{nowMs:now+2});
+ assert.equal(db.snapshot(session,c)[0].filled,units('0.4').toString());
+ assert.equal(db.snapshot(session,c)[0].held,units('2').toString());
+ await assert.rejects(reconcile(db,async()=>observation('CANCELLED','0'),{nowMs:now+3}),/INVALID_CUMULATIVE_FILL/);
+}));

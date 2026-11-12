@@ -1,0 +1,3 @@
+# JENIOS R85.002 — ledger B152 obrigatório no diagnóstico privado
+
+Endurecimento sobre R85.001: a leitura privada só aceita instância real do `PaperLedger` SQLite B152 (journal WAL, synchronous FULL e reserva transacional). Um objeto artificial com método `snapshot` não satisfaz mais o requisito. Testes usam arquivo SQLite temporário; sem contas reais, sem escrita no Supabase e sem ordens. Este módulo permanece diagnóstico, nunca liga o executor. Base de produção R79 e PR #22 DRAFT preservadas. Preview R85 `dpl_BTxayLmjXAHzkK9HiBdMLies47Fq` READY; outros projetos Vercel reportaram falhas, exigindo avaliação independente. CI do novo commit deve ser confirmada antes de homologação.

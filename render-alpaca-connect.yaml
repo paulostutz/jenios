@@ -1,0 +1,85 @@
+# Dedicated authorization host. Select this path when creating the Blueprint.
+# Fill the app credentials/approval in Render; never commit their values.
+previews:
+  generation: 'off'
+services:
+  - type: web
+    name: jenios-alpaca-connect
+    runtime: node
+    repo: https://github.com/paulostutz/jenios
+    branch: fix/jenios-r80-private-paper-safety-20261027
+    region: virginia
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: 'off'
+    buildCommand: npm ci --ignore-scripts --no-audit --no-fund
+    startCommand: node scripts/platform/connections/r107-alpaca-connect-server.mjs
+    healthCheckPath: /healthz
+    domains:
+      - connect.jenios.com.br
+    disk:
+      name: jenios-connect-state
+      mountPath: /var/data/jenios-connect
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: NODE_ENV
+        value: production
+      - key: PLATFORM_SUPABASE_URL
+        value: https://xaicvhagftzjkqphnbgx.supabase.co
+      - key: PLATFORM_SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: JENIOS_R106_ALPACA_CLIENT_ID
+        sync: false
+      - key: JENIOS_R106_ALPACA_CLIENT_SECRET
+        sync: false
+      # Enter true only with actual approval for third-party live accounts.
+      - key: JENIOS_R83_ALPACA_THIRD_PARTY_APP_APPROVED
+        sync: false
+      - key: JENIOS_R107_BROWSER_SESSION_KEY_B64
+        generateValue: true
+      - key: JENIOS_R83_LIVE_VAULT_KEY_B64
+        generateValue: true
+      - key: JENIOS_R82_LIVE_ACCOUNT_DIGEST_KEY_B64
+        generateValue: true
+      - key: JENIOS_R83_LIVE_VAULT_KEY_ID
+        value: connect-v1
+      - key: JENIOS_R107_PUBLIC_ORIGIN
+        value: https://connect.jenios.com.br
+      - key: JENIOS_R106_ALPACA_REDIRECT_URI
+        value: https://connect.jenios.com.br/platform/integracoes/alpaca/retorno
+      - key: JENIOS_R106_PRIVATE_VOLUME
+        value: /var/data/jenios-connect/oauth
+      - key: JENIOS_R107_CONNECT_HTTP_ENABLED
+        value: 'true'
+      - key: JENIOS_R106_ALPACA_CONNECT_ENABLED
+        value: 'true'
+      - key: JENIOS_R83_PRIVATE_NODE_WORKER
+        value: 'true'
+      - key: JENIOS_R83_LIVE_VAULT_ENABLED
+        value: 'true'
+      - key: JENIOS_R82_PRIVATE_NODE_WORKER
+        value: 'true'
+      - key: JENIOS_R82_ALPACA_LIVE_READ_ENABLED
+        value: 'true'
+      - key: JENIOS_REAL_EXECUTION_ENABLED
+        value: 'false'
+      - key: JENIOS_R82_ALPACA_LIVE_ORDER_EXECUTION_ENABLED
+        value: 'false'
+      - key: JENIOS_R100_INERT_WORKER_ENABLED
+        value: 'false'
+      - key: JENIOS_R104_PRIVATE_OPERATOR_ENABLED
+        value: 'false'
+      - key: JENIOS_R103_PRIVATE_PAPER_CANCEL_ENABLED
+        value: 'false'
+      - key: JENIOS_R80_PRIVATE_ISSUER_ENABLED
+        value: 'false'
+      - key: JENIOS_PRIVATE_PAPER_EXECUTOR
+        value: 'false'
+      - key: JENIOS_PRIVATE_PAPER_TRANSPORT_ENABLED
+        value: 'false'
+      - key: JENIOS_PAY_PAYMENTS_ENABLED
+        value: 'false'
+      - key: JENIOS_INTER_CHARGES_ENABLED
+        value: 'false'

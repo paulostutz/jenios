@@ -13,7 +13,9 @@ test('REVPUB002 customer sees three separate items, monthly closure and blocked 
     assert.match(body, /assinatura é exclusiva do Reverso; não concede Ultra/);
     assert.match(body, /Taxa de uso · R\$ 5,00/); assert.match(body, /Cobrança indisponível/);
     assert.match(body, /participação · fechamento mensal/i);
-    assert.match(body, /10% somente com elegibilidade aprovada e comprovada/);
+    assert.match(body, /10% para quem contrata os planos com Reverso/);
+    assert.match(body, /20% para quem contrata somente o Reverso avulso, mensal ou anual/);
+    assert.doesNotMatch(body, /20% no plano de entrada/);
     assert.match(body, /Dados indisponíveis não são saldo zero/);
     assert.equal(h.requests.some(r => r.method === 'POST'), false);
     const section = findAll(h.tree, n => n.type === 'section' && n.props['aria-labelledby'] === 'reverso-costs-title')[0];
@@ -23,7 +25,10 @@ test('REVPUB002 customer sees three separate items, monthly closure and blocked 
 test('REVPUB002 Admin sees the same conditions without granting a customer or issuing a payment', async () => {
   const h = createJourney({actor: ADMIN, admin: true});
   try { await h.settle(); assert.match(h.text(), /Gestão do Reverso/); assert.match(h.text(), /fechamento mensal/);
-    assert.match(h.text(), /evento que gera a taxa/); assert.equal(h.requests.some(r => r.method === 'POST'), false);
+    assert.match(h.text(), /evento que gera a taxa/);
+    assert.match(h.text(), /10% para quem contrata os planos com Reverso/);
+    assert.match(h.text(), /20% para quem contrata somente o Reverso avulso, mensal ou anual/);
+    assert.equal(h.requests.some(r => r.method === 'POST'), false);
     assert.equal(h.records.size, 0);
   } finally { h.unmount(); }
 });

@@ -10,7 +10,7 @@ import {restoreReversoPredecessorObjects} from '../lib/release/reverso-predecess
 
 export const BASE = 'da47f25126612fe0c94241db7616b76b3852b1a3';
 export const BASE_TREE = '3208df55107cbe8485a1baeb671d34128a82ef7e';
-export const BRANCH = 'release/jenios-reverso-revpub002-20261113';
+export const BRANCH = 'release/jenios-reverso-revrate001-20261113';
 export const MANIFEST = 'docs/release/REVPUB002-WEB-RELEASE.json';
 export const CHECKER = 'scripts/check-reverso-revpub002.mjs';
 export const REPLACEMENTS = Object.freeze([
@@ -32,7 +32,7 @@ export const FALSE_CAPABILITIES = Object.freeze([
   'publicationApproved', 'actualExecutionAuthorized', 'realDebitAuthorized',
   'liveExecutionAllowed', 'realBillingAllowed', 'paymentIssuanceAllowed', 'brokerPermissionsGranted',
 ]);
-const pinnedManifestBlob='7c7cf9f7dd3a3fb6680112b9560446fcb319221e';
+const pinnedManifestBlob='61caab2b1befa9006d5b20bbbb5214bcd949f1be';
 export const git = (...args) => execFileSync('git', args, {maxBuffer: 64 * 1024 * 1024});
 export const paths = bytes => bytes.toString().split('\0').filter(Boolean);
 export const blob = bytes => createHash('sha1').update(Buffer.from('blob ' + bytes.byteLength + '\0')).update(bytes).digest('hex');

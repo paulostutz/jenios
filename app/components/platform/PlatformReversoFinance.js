@@ -78,7 +78,7 @@ export function ReversoPlanOffers({onChoose, selectedInterval = null, disabled =
       <article className={css.offer}><span>Anual</span><strong>R$ 199,00</strong><p>Pagamento único por 12 meses</p>{onChoose && <button type="button" disabled={disabled} aria-pressed={selectedInterval === 'year'} onClick={() => onChoose('year')}>Selecionar anual</button>}</article>
     </div>
     <p className={css.muted}>A vigência começa na confirmação do pagamento. A assinatura é exclusiva do Reverso; não concede Ultra ou outros produtos. Direitos já contratados são preservados.</p>
-    <p className={css.muted}>Participação de 20% no plano de entrada, inclusive no avulso anual, e 10% somente com elegibilidade Reverso aprovada e comprovada.</p>
+    <p className={css.muted}>Participação de 10% para quem contrata os planos com Reverso e 20% para quem contrata somente o Reverso avulso, mensal ou anual. O percentual segue o contrato confirmado.</p>
   </section>;
 }
 
@@ -91,7 +91,7 @@ export function ReversoCommercialConditions() {
         <p className={css.muted}>Sinais, simulações e tentativas não comprovam uma operação cobrável. A taxa é separada da assinatura e da participação.</p>
       </article>
       <article className={css.card}><h3>Participação · fechamento mensal</h3>
-        <p>20% no plano de entrada, inclusive no Reverso avulso. 10% somente com elegibilidade aprovada e comprovada.</p>
+        <p>10% para quem contrata os planos com Reverso. 20% para quem contrata somente o Reverso avulso, mensal ou anual.</p>
         <p className={css.muted}>Somente resultados realizados, atribuídos e conciliados ao Reverso. A cobrança permanece indisponível até a confirmação das regras de perdas, custos, contas e moedas.</p>
       </article>
     </div>

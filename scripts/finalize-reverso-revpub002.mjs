@@ -11,7 +11,7 @@ for (const [name, entry] of Object.entries(entries)) {
 }
 const normalized = normalizedChecker(readFileSync(CHECKER));
 const manifest = {schema: 'JENIOS_REVPUB002_EXACT_WEB_V1', baseCommit: BASE, baseTree: BASE_TREE,
-  releaseBranch: BRANCH, authorizationReference: 'USER_REVERSO_ASSINATURA_COBRANCAS_GESTAO_20261113',
+  releaseBranch: BRANCH, authorizationReference: 'USER_REVERSO_PLANOS_10_AVULSO_20_20261113',
   webPublicationApproved: true, publicationScope: 'web-only-disabled-finance',
   ...Object.fromEntries(FALSE_CAPABILITIES.map(flag => [flag, false])),
   verifierTemplateBlob: blob(normalized),

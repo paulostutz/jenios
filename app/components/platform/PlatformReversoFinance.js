@@ -87,12 +87,12 @@ export function ReversoCommercialConditions() {
     <h2 id="reverso-costs-title">Cobranças do Reverso</h2>
     <div className={css.grid}>
       <article className={css.card}><h3>Taxa de uso · R$ 5,00</h3>
-        <p>Cobrança indisponível. O evento que gera a taxa e as condições de falha, retomada e estorno aguardam confirmação.</p>
-        <p className={css.muted}>Sinais, simulações e tentativas não comprovam uma operação cobrável. A taxa é separada da assinatura e da participação.</p>
+        <p>R$ 5,00 por operação, do Start ao fechamento confirmado. A cobrança real permanece indisponível até a homologação.</p>
+        <p className={css.muted}>Essa taxa é separada da assinatura e não é descontada do lucro líquido usado para calcular a participação. Sinais, simulações e tentativas não comprovam uma operação concluída.</p>
       </article>
       <article className={css.card}><h3>Participação · fechamento mensal</h3>
         <p>10% para quem contrata os planos com Reverso. 20% para quem contrata somente o Reverso avulso, mensal ou anual.</p>
-        <p className={css.muted}>Somente resultados realizados, atribuídos e conciliados ao Reverso. A cobrança permanece indisponível até a confirmação das regras de perdas, custos, contas e moedas.</p>
+        <p className={css.muted}>No fechamento do mês, ganhos, perdas e custos conciliados formam o resultado líquido. Se positivo, aplica-se o percentual do contrato; se zero ou negativo, não há cobrança de participação. A taxa de R$ 5,00 fica fora dessa base. A emissão real aguarda homologação.</p>
       </article>
     </div>
     <p className={css.muted}>Valores apurados ou pendentes não significam cobrança emitida ou pagamento recebido. Dados indisponíveis não são saldo zero.</p>
@@ -128,8 +128,28 @@ export function ReversoFinanceView({state, period = 'all', onPeriodChange = () =
         <p className={css.muted}>Carteira da plataforma. O capital mantido na corretora é acompanhado separadamente.</p>
       </>}</Section>
     </div>
+    <Section title="Negociações detalhadas do Reverso" section={s.operations} wide>{d => {
+      const rows = d.rows.filter(o => period === 'all' || o.month === period);
+      const pending = period === 'all' ? d.costsPending : rows.filter(o => o.state === 'unknown' || o.state === 'closed' && !o.costsComplete).length;
+      return <>
+        {pending > 0 && <p className={css.muted}>{pending} operações aguardam custos ou confirmação.</p>}
+        {rows.length ? <div className={css.scroll} role="region" aria-label="Operações do Reverso" tabIndex={0}><table>
+          <thead><tr><th>Conta / corretora</th><th>Negociação</th><th>Competência</th><th>Estado</th><th>Bruto</th><th>Taxas da corretora</th><th>Financiamento</th><th>Líquido realizado</th></tr></thead>
+          <tbody>{rows.map(o => <tr key={JSON.stringify([o.month, o.provider, o.accountId, o.connectionId, o.environment, o.id])}>
+            <td>{o.accountId || o.connectionId}<small>{provider(o.provider)} · {environment(o.environment)}</small></td>
+            <td>{o.symbol}<small>{o.id}</small></td><td>{month(o.month)}</td><td>{label(o.state)}</td>
+            <td>{amount(o.gross, o.currency)}</td><td>{amount(o.fees, o.currency)}</td><td>{amount(o.financing, o.currency)}</td>
+            <td>{o.state !== 'closed' ? 'Realização pendente' : o.costsComplete === true ? amount(o.net, o.currency) : 'Custos pendentes'}</td>
+          </tr>)}</tbody>
+        </table></div> : <p className={css.muted}>{d.hasMore ? 'Nenhuma operação desta competência está presente no recorte carregado.' : period === 'all' ? 'Nenhuma operação registrada.' : 'Nenhuma operação vinculada a esta competência.'}</p>}
+        {d.hasMore && <p className={css.muted}>Este recorte mostra as operações mais recentes. Há mais operações no relatório do executor.</p>}
+      </>;
+    }}</Section>
+    <Section title="Operações — Start ao fechamento" section={s.cycles} wide>{rows => rows.length ? <ul className={css.list}>{rows.map(c => <li key={c.id}>
+      <strong>{label(c.phase)}</strong> · {date(c.startedAt)}<br/><span className={css.muted}>Encerramento confirmado: {date(c.endedAt)}</span>
+    </li>)}</ul> : <p className={css.muted}>Nenhum ciclo registrado.</p>}</Section>
     <Section title="Resultados por competência" section={s.performance} wide>{d => <>
-      {s.performance.mode === 'demo' && <p className={css.muted}>Demonstração com dados fictícios. A simulação mensal não valida a política comercial do Reverso. O fechamento é mensal; a base de cálculo, os custos e o tratamento de perdas ainda dependem de regra aprovada.</p>}
+      {s.performance.mode === 'demo' && <p className={css.muted}>Demonstração com dados fictícios. A simulação mensal não valida a política comercial do Reverso. A regra aprovada usa o resultado líquido do mês e exclui a taxa de R$ 5,00. Demonstração não emite cobrança real.</p>}
       <div className={css.heading}><p className={css.muted}>Resultados atribuídos ao Reverso. A participação apurada e o pagamento recebido aparecem separadamente.</p>
         <label>Competência<select value={period} onChange={event => onPeriodChange(event.target.value)}>
           <option value="all">Todas as competências</option>{months.map(m => <option key={m} value={m}>{month(m)}</option>)}
@@ -151,23 +171,6 @@ export function ReversoFinanceView({state, period = 'all', onPeriodChange = () =
       </article>)}</div>
       {!d.periods.some(p => period === 'all' || p.month === period) && <p className={css.muted}>Nenhuma apuração disponível nesta competência.</p>}
     </>}</Section>
-    <Section title="Relatório por operação" section={s.operations} wide>{d => {
-      const rows = d.rows.filter(o => period === 'all' || o.month === period);
-      const pending = period === 'all' ? d.costsPending : rows.filter(o => o.state === 'unknown' || o.state === 'closed' && !o.costsComplete).length;
-      return <>
-        {pending > 0 && <p className={css.muted}>{pending} operações aguardam custos ou confirmação.</p>}
-        {rows.length ? <div className={css.scroll} role="region" aria-label="Operações do Reverso" tabIndex={0}><table>
-          <thead><tr><th>Conta / corretora</th><th>Operação</th><th>Competência</th><th>Estado</th><th>Bruto</th><th>Taxas</th><th>Financiamento</th><th>Líquido realizado</th></tr></thead>
-          <tbody>{rows.map(o => <tr key={JSON.stringify([o.month, o.provider, o.accountId, o.connectionId, o.environment, o.id])}>
-            <td>{o.accountId || o.connectionId}<small>{provider(o.provider)} · {environment(o.environment)}</small></td>
-            <td>{o.symbol}<small>{o.id}</small></td><td>{month(o.month)}</td><td>{label(o.state)}</td>
-            <td>{amount(o.gross, o.currency)}</td><td>{amount(o.fees, o.currency)}</td><td>{amount(o.financing, o.currency)}</td>
-            <td>{o.state !== 'closed' ? 'Realização pendente' : o.costsComplete === true ? amount(o.net, o.currency) : 'Custos pendentes'}</td>
-          </tr>)}</tbody>
-        </table></div> : <p className={css.muted}>{d.hasMore ? 'Nenhuma operação desta competência está presente no recorte carregado.' : period === 'all' ? 'Nenhuma operação registrada.' : 'Nenhuma operação vinculada a esta competência.'}</p>}
-        {d.hasMore && <p className={css.muted}>Este recorte mostra as operações mais recentes. Há mais operações no relatório do executor.</p>}
-      </>;
-    }}</Section>
     <Section title="Obrigações e pagamentos" section={s.obligations} wide>{rows => rows.some(o => period === 'all' || o.month === period) ? <div className={css.scroll} role="region" aria-label="Obrigações do Reverso" tabIndex={0}><table>
       <thead><tr><th>Competência</th><th>Participação</th><th>Obrigação</th><th>Pagamento</th><th>Recebimento confirmado</th></tr></thead>
       <tbody>{rows.filter(o => period === 'all' || o.month === period).map(o => <tr key={o.id}>
@@ -176,9 +179,6 @@ export function ReversoFinanceView({state, period = 'all', onPeriodChange = () =
         <td>{o.paymentConfirmed === true && o.paymentStatus === 'paid' ? date(o.paidAt) : 'Pendente'}</td>
       </tr>)}</tbody>
     </table></div> : <p className={css.muted}>{period === 'all' ? 'Nenhuma obrigação registrada.' : 'Nenhuma obrigação nesta competência.'}</p>}</Section>
-    <Section title="Ciclos" section={s.cycles} wide>{rows => rows.length ? <ul className={css.list}>{rows.map(c => <li key={c.id}>
-      <strong>{label(c.phase)}</strong> · {date(c.startedAt)}<br/><span className={css.muted}>Encerramento confirmado: {date(c.endedAt)}</span>
-    </li>)}</ul> : <p className={css.muted}>Nenhum ciclo registrado.</p>}</Section>
     <Section title="Política aplicada" section={s.policy} wide>{d => <>
       <p><strong>{label(d.status)}</strong></p>
       {d.reason && <p className={css.muted}>{d.reason}</p>}

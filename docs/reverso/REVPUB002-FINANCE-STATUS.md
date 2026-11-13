@@ -1,3 +1,13 @@
+# REVMONTH001 — regras confirmadas em 13/11/2026
+
+Paulo confirmou operação = Start ao fechamento; taxa única de R$ 5 por operação, separada e excluída da base de participação. Participação sobre lucro líquido do fechamento mensal, somando ganhos, perdas e custos do período; positivo aplica 10% nos planos ou 20% no avulso; zero ou negativo não cobra participação. O extrato apresenta detalhes e ciclos antes do resumo mensal.
+
+Essas decisões substituem as pendências comerciais de evento, base mensal e inclusão da taxa descritas historicamente abaixo. A apuração existente foi reutilizada em candidata runtime com prova separada de custos: só a taxa R$ 5 identificada é excluída, sem eliminar outros custos aprovados. Dados ausentes, conflitos, moedas/precisão não homologadas e histórico sem regra comprovada continuam pendentes. Nenhum débito ou chamada real foi feito. Fonte real, fechamento confirmado, captura/estorno de falhas e integração Letter ainda precisam de homologação.
+
+Base Web imediata b6ed2c1c; runtime cfbb7378. Não reconstruir o robô. Publicação Web limitada na branch release/jenios-reverso-revmonth001-20261113; runtime candidato não instalado. A disponibilidade do extrato não comprova cobrança ativa.
+
+---
+
 # REVPUB002 — publicação limitada da gestão financeira
 
 ## Sucessora REVRATE001 — confirmação de Paulo em 13/11/2026

@@ -81,6 +81,7 @@ export default function DashboardLogado() {
           ))}
           <Link href="/dashboard" className={styles.navButton}>⚡ Área de negociação</Link>
           <Link href="/platform/ultra" className={styles.navButton}>Ultra · Capital e resultados</Link>
+          <Link href="/platform/reverso" className={styles.navButton}>Reverso · Plano e resultados</Link>
           <Link href="/mesa-operacoes" className={styles.navButton}>▥ Mesa e gráficos</Link>
           <Link href="/tendencias" className={styles.navButton}>↗ Hub de tendências</Link>
           <Link href="/platform/assistente" className={styles.navButton}>✦ Gênio ou Gênia · Assistente</Link>

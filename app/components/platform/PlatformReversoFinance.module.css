@@ -1,0 +1,51 @@
+.page{min-height:100vh;background:#f5f6fa;color:#182039;font-family:system-ui,sans-serif;padding:24px clamp(14px,4vw,44px);box-sizing:border-box;width:100%;min-width:0}
+.wrap{max-width:1180px;margin:auto;min-width:0}
+.page a{color:#6433b7;text-decoration:none}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.top>a:last-child{font-size:13px}
+.hero{background:linear-gradient(120deg,#1c1736,#33265b);color:white;padding:clamp(24px,4vw,40px);border-radius:24px;margin-bottom:22px}
+.hero h1{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:10px 0}
+.hero p{max-width:680px;line-height:1.65;color:#ded9eb;margin-bottom:0}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.13em;color:#7959aa}
+.hero .eyebrow{color:#cdb8ff}
+.panel,.card{background:#fff;border:1px solid #e3e5ed;border-radius:18px;padding:clamp(18px,3vw,26px);min-width:0}
+.panel{margin-bottom:20px}
+.panel h2{margin:3px 0 12px;font-size:22px}
+.card h3{margin:0 0 12px;font-size:17px}
+.card p,.panel p{font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;margin-bottom:20px;min-width:0}
+.offers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.offer{background:#f8f7fc;border:1px solid #e9e3f2;border-radius:14px;padding:18px;min-width:0}
+.offer strong{display:block;font-size:25px;margin:9px 0;color:#32224f}
+.offer p{margin:5px 0}
+.heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:16px}
+.muted,.meta,.unavailable{color:#687184;font-size:13px;line-height:1.65}
+.meta{font-size:12px}
+.unavailable{padding:12px 0;margin:0}
+.badge{display:inline-block;border-radius:8px;background:#efebf5;color:#57416f;font-size:12px;font-weight:650;padding:6px 9px}
+.page button{padding:11px 16px;border:1px solid #d9dce7;border-radius:10px;font:inherit;font-size:13px;font-weight:700;background:#fff;color:#4e386b;cursor:pointer;min-height:44px}
+.page button.primary{background:#7042ad;color:white;border-color:#7042ad}
+.page button:disabled{opacity:.55;cursor:not-allowed}
+.page button:focus-visible,.page input:focus-visible,.page select:focus-visible,.page a:focus-visible{outline:2px solid #a67edb;outline-offset:3px}
+.page label{display:grid;gap:7px;font-size:13px;font-weight:600;line-height:1.5;min-width:0}
+.page input,.page select{font:inherit;font-size:14px;min-width:0;max-width:100%;box-sizing:border-box;padding:11px 12px;border:1px solid #d9dce7;border-radius:9px;background:#fff;color:#192139}
+.adminForm{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.adminForm label{flex:1 1 280px}
+.adminForm input{width:100%}
+.values{margin:0;display:grid;gap:0}
+.values>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid #eef0f5;padding:9px 0;font-size:13px}
+.values>div:last-child{border-bottom:0}
+.values dt{color:#687184;min-width:0}
+.values dd{margin:0;text-align:right;overflow-wrap:anywhere;font-weight:650;min-width:0}
+.scroll{max-width:100%;width:100%;overflow-x:auto;margin-top:14px;border-radius:10px;overscroll-behavior-x:contain}
+.page table{border-collapse:collapse;width:100%;font-size:12px;text-align:left;white-space:nowrap}
+.page th{color:#687184;font-weight:650;background:#f8f9fc}
+.page th,.page td{padding:12px;border-bottom:1px solid #e7e9f0;vertical-align:top}
+.page td small{display:block;font-size:11px;color:#687184;margin-top:4px}
+.page code{font-family:ui-monospace,monospace;font-size:11px;overflow-wrap:anywhere}
+.error{background:#fff4f4;color:#9b263a;padding:13px 16px;border-radius:10px;font-size:13px;line-height:1.6}
+.list{list-style:none;margin:0;padding:0}
+.list li{padding:13px 0;border-bottom:1px solid #eef0f5;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.list li:last-child{border-bottom:0}
+@media(max-width:600px){.offers{grid-template-columns:1fr}.hero{border-radius:18px}.heading{align-items:flex-start}.values>div{gap:10px}}
+@media(max-width:360px){.page{padding-left:12px;padding-right:12px}.panel,.card{padding:16px}.adminForm button{width:100%}.heading button{width:100%}}

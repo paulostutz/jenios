@@ -1,6 +1,7 @@
 /** Only application-owned destinations are accepted by the shared login form. */
 export function socialAuthReturnPath(value){
  const allowed=['/social','/universidade','/dashboard-logado','/dashboard','/mesa-operacoes',
-  '/diagnostico','/platform/aprender','/platform/assistente','/platform/ultra','/integracoes','/admin/consultas','/tendencias'];
+  '/diagnostico','/platform/aprender','/platform/assistente','/platform/ultra','/integracoes','/admin/consultas','/tendencias',
+  '/platform/reverso','/platform/admin/robos/reverso'];
  return allowed.includes(value)?value:'/social';
 }

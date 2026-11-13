@@ -1,5 +1,13 @@
-import {checkS05DeploymentScope,ULTRA_COMMANDS_RELEASE_BRANCH} from '../lib/release/environment-scope.mjs';
+import {checkS05DeploymentScope,ULTRA_COMMANDS_RELEASE_BRANCH,REVERSO_WEB_RELEASE_BRANCH} from '../lib/release/environment-scope.mjs';
 import {verifyUltraProductionSource} from '../lib/release/ultra-production-source.mjs';
+import {verifyReversoWebDeploymentSource} from '../lib/release/reverso-production-source.mjs';
+import {restoreReversoPredecessorObjects} from '../lib/release/reverso-predecessor-objects.mjs';
+if(['production','preview'].includes(process.env.VERCEL_ENV)&&process.env.VERCEL_GIT_COMMIT_REF===REVERSO_WEB_RELEASE_BRANCH){
+ try{
+  restoreReversoPredecessorObjects();
+  verifyReversoWebDeploymentSource(process.env);
+ }catch(error){console.error('JENIOS Reverso Web release blocked: '+error.message);process.exit(1);}
+}
 if(process.env.VERCEL_ENV==='production'&&process.env.VERCEL_GIT_COMMIT_REF===ULTRA_COMMANDS_RELEASE_BRANCH){
  try{verifyUltraProductionSource(process.env);}catch(error){console.error('JENIOS Ultra release blocked: '+error.message);process.exit(1);}
 }

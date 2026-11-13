@@ -5,7 +5,13 @@ import { isFinanceAdmin, requirePayUser } from '../lib/pay/auth.mjs';
 import { createGatewayCheckout, safeCheckoutUrl } from '../lib/pay/gateway.mjs';
 
 test('valores aprovados e planos mensais separados', () => {
-  assert.deepEqual(DEFAULT_PRODUCTS.filter(p => p.category === 'platform').map(p => p.price_cents), [9990,14990,19990]);
+  const originalCodes=['platform-nacional','platform-global-crypto','platform-internacional-pro'];
+  const original=DEFAULT_PRODUCTS.filter(p=>originalCodes.includes(p.code));
+  assert.deepEqual(original.map(p=>p.price_cents),[9990,14990,19990]);
+  assert.ok(original.every(p=>p.category==='platform'&&p.billing_type==='monthly'&&p.active));
+  assert.deepEqual(DEFAULT_PRODUCTS.filter(p=>p.category==='platform'&&!originalCodes.includes(p.code)).map(p=>[p.code,p.price_cents,p.billing_type,p.active]),[
+    ['platform-reverso-monthly',1990,'monthly',false],['platform-reverso-annual',19900,'one_time',false],
+  ]);
   assert.equal(DEFAULT_PRODUCTS.find(p => p.code === 'social-bankscore-report').price_cents, 990);
   assert.equal(DEFAULT_PRODUCTS.find(p => p.code === 'social-crypto-validator').price_cents, 990);
 });

@@ -1,0 +1,66 @@
+{
+  "schema": "JENIOS_REVFIN001_EXACT_WEB_SOURCE_V1",
+  "baseCommit": "0edbbef8c4b6bd5c9a6f5fb5e93c33eb7f11ce47",
+  "baseTree": "c86e7eaef0a3c96efdb2daedf40ecccfcc56af32",
+  "verifierTemplateBlob": "638528dab7a005ce47ae5bfa6eda4254ae2c7f20",
+  "additions": {
+    "app/api/platform/admin/robots/reverso/route.js": "a2c59cadafebd38b96313e427f22440f4f949571",
+    "app/api/platform/reverso/state/route.js": "2e9dfaf688a3f971e753934317c5ff95774a8198",
+    "app/components/platform/PlatformReversoFinance.js": "8efd38720227ea4b37e060d56f1ba8ac55022e05",
+    "app/components/platform/PlatformReversoFinance.module.css": "896e025a1efd903bf0e7d775adf7116dee9ea600",
+    "app/platform/admin/robos/reverso/page.js": "71185ef9457fdd4a3f43fe94d2eed2650dcc80ff",
+    "app/platform/reverso/page.js": "54fbd713556676933fc2eed58e360e2f14720cc8",
+    "docs/release/REVFIN001-HISTORY-WEB-PREDECESSOR.json": "5ebd3fecf1ea3e9bee28f2694e303024d9f5a818",
+    "docs/release/REVFIN001-SOURCE-VERIFICATION.md": "8c71dbc1b75a4d8aa6b7696a3584dbe02149aa0c",
+    "docs/reverso/REVFIN001-FINANCIAL-HISTORY.md": "9b9c491a94c984aec586bdab8ce0f8e96b2d5365",
+    "docs/reverso/REVFIN001.md": "214af08c8f6df2f89bf40eade6df2559e9e4d5fb",
+    "lib/platform/reverso/access.mjs": "9705bb314fcfab18d171830af47b43c03b7294d0",
+    "lib/platform/reverso/http.mjs": "16ad6dcdaa071699b3f2310122e3bbf48c490d85",
+    "lib/platform/reverso/runtime-source.mjs": "bd005c959466854fe1052a57baf87600b6001ed7",
+    "lib/platform/reverso/state-contract.mjs": "c021614171ece08dd94790edcec641e9b98b1917",
+    "lib/platform/reverso/state-reader.mjs": "749ff6b590304da53c0ae2977aa119e3c6e9f9b0",
+    "lib/platform/reverso/subscription/isolation-rpc-v1.mjs": "9a0db708f725f057a3351ced539cbc0f6362382c",
+    "scripts/check-reverso-web-baseline.mjs": "70cbd74e9af932d630f3c03ed8744f11bc9ace68",
+    "scripts/check-reverso-web-history.mjs": "ac41d6c1a3f4164991246aca17aa787360af5928",
+    "scripts/check-reverso-web-release.mjs": "12acd441e00ebdb2e98f0520d1b77d230ad19fb4",
+    "scripts/finalize-reverso-web-release.mjs": "95e1e84f9fb7681de2ba16ebfdc80bbdf0daa33e",
+    "tests/reverso-access.test.mjs": "cf7a60135291f41d2485a3705e34dd1502e40892",
+    "tests/reverso-history.test.mjs": "ba0a0c87a05b1102baa7436d5049e3ec35262c37",
+    "tests/reverso-release.test.mjs": "6e594c0d46af2e20a8725f7354645db9b00d9cdd",
+    "tests/reverso-state.test.mjs": "b29a166cc31e8e404364b2bc9de9317956d7df9f",
+    "tests/reverso-subscription-isolation.test.mjs": "36fe9b89acc0f5ed47007849a53eed13255f8a50",
+    "tests/reverso-ui.test.mjs": "39df3b65ed7eee17435b3c0ae1d1d300073af8f8"
+  },
+  "replacements": {
+    "app/dashboard-logado/page.js": {
+      "baseline": "782fa762f91bcd7b415717ff2e54a4cc02fb11bf",
+      "target": "a65e8668ed2f7cf8cf827f58376375cae39787ac"
+    },
+    "app/platform/admin/robos/page.js": {
+      "baseline": "24e7bf4f942ac9cbd2791421dcd28bf0930598d9",
+      "target": "f0e8c0e33b9d12762803b24ba02bc6d0d97d107a"
+    },
+    "lib/pay/catalog.mjs": {
+      "baseline": "4cdd3a330ada8853398c53f25827177fc0851695",
+      "target": "b4b400b79dccb3b0a2c5545c4386a2c136e7c843"
+    },
+    "lib/pay/letter-billing-cb006.mjs": {
+      "baseline": "b166c75c01111339ee00b1c06afd96b6b34a9588",
+      "target": "20893c783267251a8da8d4e5f9849d70c577edb5"
+    },
+    "lib/platform/monthly-billing.mjs": {
+      "baseline": "f44dee0b3195a781218cee9eafd4e6d93be89f92",
+      "target": "11587771a400fcca20b14f100b53dd876b9f9d68"
+    },
+    "tests/payCatalog.test.mjs": {
+      "baseline": "334149a919494157242db57a265aaec76e244180",
+      "target": "3a619619c27736318684cff9cee1a9330050d5df"
+    }
+  },
+  "publicationApproved": false,
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false,
+  "liveExecutionAllowed": false,
+  "realBillingAllowed": false,
+  "paymentIssuanceAllowed": false
+}

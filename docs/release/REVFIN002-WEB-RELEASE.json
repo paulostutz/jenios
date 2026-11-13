@@ -1,0 +1,45 @@
+{
+  "schema": "JENIOS_REVFIN002_EXACT_WEB_SOURCE_V1",
+  "baseCommit": "e53d946e0434a6c8d2480ecf781f4b63707389b6",
+  "baseTree": "83fd126ccd0d98c8d7782fe3e832659cd64f2424",
+  "verifierTemplateBlob": "3c9ba732fd989c29acd7e3429ebc27461bc9e917",
+  "additions": {
+    "app/api/platform/reverso/subscription/route.js": "589368c0b33254e88a874c4f5d54931310fa5945",
+    "app/components/platform/PlatformReversoSubscription.js": "6da8303f497f1dd904d8ccb9f6365cf706938384",
+    "app/components/platform/PlatformReversoSubscription.module.css": "1d0f35b57aafa25ab279143e7f58f7393bb7e37d",
+    "docs/release/REVFIN002-SOURCE-VERIFICATION.md": "30586d6f96e4180df26c5ff236635dc55165bc55",
+    "docs/reverso/REVFIN002-UI-JOURNEYS.md": "92d9ce6a1075333666fc58fb9875e31ef77bd7aa",
+    "lib/platform/reverso/subscription/client-v2.mjs": "b77549f2edf19e1e05d581fae0af277c379fc856",
+    "lib/platform/reverso/subscription/http-v2.mjs": "69f3405acba35aae5dda04e2236a5224d623ec15",
+    "lib/platform/reverso/subscription/runtime-source-v2.mjs": "fd55d0381b95b7ebdc1fb07eaee31485f1d34b84",
+    "lib/platform/reverso/subscription/view-v2.mjs": "d34d6a94ccb6553402f573557f6ce500838a30be",
+    "scripts/check-reverso-v2-web-baseline.mjs": "6b1d203c10f9873e908bd93b324963e11aa7c85b",
+    "scripts/check-reverso-v2-web-release.mjs": "a3be67bac66c7017de3ca6237327914e7867ad98",
+    "scripts/finalize-reverso-v2-web-release.mjs": "602b4b1d05ae8747a6057b67fb50c4d308af3bac",
+    "scripts/render-reverso-v2-ui-fixtures.mjs": "63aba9aaed2e41f00df2316d520593a10c5c0aec",
+    "tests/helpers/reverso-journey-harness-v2.mjs": "56c717851ce75eb80b0681f2a3996e021c1168d8",
+    "tests/reverso-release-v2.test.mjs": "d4ddf6c9fa93efab8f4b8c228908f9684a7dc155",
+    "tests/reverso-subscription-ui-v2.test.mjs": "9bbe001e7fb7874c48bf11f1980ce43b673e5888"
+  },
+  "replacements": {
+    "app/components/platform/PlatformReversoFinance.js": {
+      "baseline": "8efd38720227ea4b37e060d56f1ba8ac55022e05",
+      "target": "2eedbb919e38918704781807eb01d1f45baf4b93"
+    },
+    "app/components/social-auth-return.mjs": {
+      "baseline": "b4e3d2e72dc191b51a9c3ed74e5a6f5b48e39c1d",
+      "target": "89af626af5571a32a2afed2dc8d854aebd9a0757"
+    },
+    "tests/reverso-ui.test.mjs": {
+      "baseline": "39df3b65ed7eee17435b3c0ae1d1d300073af8f8",
+      "target": "657f11579be82b3f2048f38115f1db86e9ab9f59"
+    }
+  },
+  "publicationApproved": false,
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false,
+  "liveExecutionAllowed": false,
+  "realBillingAllowed": false,
+  "paymentIssuanceAllowed": false,
+  "brokerPermissionsGranted": false
+}

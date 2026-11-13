@@ -1,0 +1,15 @@
+.panel{background:#fff;border:1px solid #e3e5ed;border-radius:18px;padding:clamp(18px,3vw,26px);margin-bottom:20px;min-width:0;color:#182039}
+.heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.heading h2{margin:3px 0 12px;font-size:22px}.panel h3{font-size:17px;line-height:1.5}
+.panel p{font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+.badge{border-radius:8px;background:#efebf5;color:#57416f;font-size:12px;font-weight:650;padding:6px 9px}
+.notice,.pending{background:#f8f7fc;border:1px solid #e9e3f2;border-radius:10px;padding:12px;color:#514460}
+.terms{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7;padding:14px;background:#f8f9fc;border:1px solid #e3e5ed;border-radius:10px}
+.panel label.consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.6;margin:18px 0;font-weight:500}
+.panel .consent input{flex:0 0 auto;width:20px;height:20px;padding:0;margin:1px 0 0;accent-color:#7042ad}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.panel button{min-height:44px;white-space:normal;max-width:100%;overflow-wrap:anywhere}
+.values{margin:0}.values>div{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid #eef0f5;padding:9px 0;font-size:13px}
+.values dt{color:#687184;min-width:0}.values dd{margin:0;min-width:0;text-align:right;overflow-wrap:anywhere;font-weight:650}
+.error{background:#fff4f4;color:#9b263a;padding:13px 16px;border-radius:10px}
+@media(max-width:360px){.panel{padding:16px}.actions{display:grid}.panel button{width:100%}.values>div{gap:10px}}

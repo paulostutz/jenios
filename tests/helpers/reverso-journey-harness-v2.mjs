@@ -13,6 +13,7 @@ const require = createRequire(import.meta.url), React = require('react'), {trans
 export const USER = '11111111-1111-4111-8111-111111111111', OTHER = '22222222-2222-4222-8222-222222222222';
 export const ADMIN = '33333333-3333-4333-8333-333333333333';
 export const NOW = Date.parse('2026-11-12T22:00:00Z');
+export const SYNTHETIC_PASSWORD = 'SyntheticOnly!42';
 export const tick = () => new Promise(done => setImmediate(done));
 export const deferred = () => {let resolve; const promise = new Promise(done => {resolve = done;}); return {promise, resolve};};
 export function offer(interval = 'month') {
@@ -42,13 +43,24 @@ export function findAll(node, predicate) {
 
 /** Executes actual React components, dedicated guards and HTTP handlers with
  * synthetic sessions and an in-memory source. It is not a browser/layout test. */
-export function createJourney({actor = USER, admin = false, socialMaster = false, storage = new Map(), records = new Map()} = {}) {
+export function createJourney({actor = USER, admin = false, socialMaster = false, storage = new Map(), records = new Map(),
+  entryPath = null, adminAccessProps = null} = {}) {
   const root = resolve('.'), instances = new Map(), modules = new Map(), pendingEffects = [], authListeners = new Set(), events = new Map(), timers = new Map();
-  const requests = [], sourceCalls = [], stateSources = new Map(), redirects = [], revoked = new Set();
+  const requests = [], sourceCalls = [], stateSources = new Map(), redirects = [], revoked = new Set(), signIns = [];
   let active, dirty = false, tree, clock = NOW, timerId = 0, sequence = 0, adminAllowed = true, unavailable = false, sourceHook, stateHook, loseResponse, failBefore;
+  let anonymous = false, pagePath = entryPath || (admin ? '/platform/admin/robos/reverso' : '/platform/reverso'), refreshes = 0;
   const token = id => 'synthetic-token-' + id;
-  const session = id => id ? {access_token: token(id), user: {id, is_anonymous: false}} : null;
-  const auth = {getSession: async () => ({data: {session: session(actor)}}), getUser: async () => ({data: {user: actor ? {id: actor, is_anonymous: false} : null}}),
+  const session = id => id ? {access_token: token(id), user: {id, is_anonymous: anonymous}} : null;
+  const auth = {getSession: async () => ({data: {session: session(actor)}}), getUser: async () => ({data: {user: session(actor)?.user || null}}),
+    async signInWithPassword({email, password}) {
+      signIns.push({email});
+      const id = {'cliente@reverso.example.invalid': USER, 'outro@reverso.example.invalid': OTHER,
+        'admin@reverso.example.invalid': ADMIN, 'anonimo@reverso.example.invalid': USER}[email];
+      if (!id || password !== SYNTHETIC_PASSWORD) return {data: {session: null}, error: Error('synthetic invalid credentials')};
+      actor = id; anonymous = email === 'anonimo@reverso.example.invalid';
+      for (const fn of authListeners) fn('SIGNED_IN', session(actor));
+      return {data: {session: session(actor)}, error: null};
+    },
     onAuthStateChange(fn) {authListeners.add(fn); return {data: {subscription: {unsubscribe: () => authListeners.delete(fn)}}};}};
   const getUser = async request => {
     const value = request.headers.get('authorization');
@@ -124,8 +136,10 @@ export function createJourney({actor = USER, admin = false, socialMaster = false
     useContext() {return null;},
   };
   class ClockDate extends Date {constructor(...args) {super(...(args.length ? args : [clock]));} static now() {return clock;}}
-  const router = {replace: value => redirects.push(value), push: value => redirects.push(value)};
+  const route = value => {redirects.push(value); if (entryPath) navigate(value);};
+  const router = {replace: route, push: route, refresh: () => {refreshes++;}};
   const window = {setTimeout: setTimer, clearTimeout: clearTimer,
+    location: new URL(pagePath, 'https://jenios.fixture'),
     sessionStorage: {getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key)},
     addEventListener(name, fn) {if (!events.has(name)) events.set(name, new Set()); events.get(name).add(fn);},
     removeEventListener(name, fn) {events.get(name)?.delete(fn);}};
@@ -137,7 +151,8 @@ export function createJourney({actor = USER, admin = false, socialMaster = false
     const sourceText = readFileSync(file, 'utf8'), code = transformSync(sourceText, {
       jsc: {parser: {syntax: 'ecmascript', jsx: true}, target: 'es2022', transform: {react: {runtime: 'automatic'}}}, module: {type: 'commonjs'},
     }).code;
-    vm.runInNewContext(code, {module, exports: module.exports, Date: ClockDate, Intl, Request, Response, Headers, AbortController,
+    vm.runInNewContext(code, {module, exports: module.exports, Date: ClockDate, Intl, Request, Response, Headers, AbortController, URLSearchParams,
+      process: {env: {NEXT_PUBLIC_PLATFORM_SIGNUP_ENABLED: 'false'}},
       structuredClone, fetch: fetcher, window, setTimeout: setTimer, clearTimeout: clearTimer,
       crypto: {randomUUID: () => 'bbbbbbbb-bbbb-4bbb-8bbb-' + String(++sequence).padStart(12, '0')},
       require(name) {
@@ -145,6 +160,8 @@ export function createJourney({actor = USER, admin = false, socialMaster = false
         if (name === 'react/jsx-runtime') return require(name);
         if (name === 'next/navigation') return {useRouter: () => router};
         if (name === 'next/link') return {__esModule: true, default: props => React.createElement('a', props)};
+        if (name.endsWith('/SocialAccessForm')) return {__esModule: true,
+          default: () => React.createElement('p', null, 'Formulário Social fora do escopo desta jornada fictícia.')};
         if (name === 'next/image') return {__esModule: true, default: ({priority, unoptimized, fill, ...props}) => {
           const path = resolve(root, 'public', props.src.replace(/^\//, ''));
           return React.createElement('img', {...props, src: 'data:image/webp;base64,' + readFileSync(path).toString('base64')});
@@ -166,7 +183,21 @@ export function createJourney({actor = USER, admin = false, socialMaster = false
     }, {filename: file});
     return module.exports;
   }
-  const Page = load(admin ? 'app/platform/admin/robos/reverso/page.js' : 'app/platform/reverso/page.js').default;
+  function pageFor(path) {
+    const pages = {'/platform/entrar': 'app/platform/entrar/page.js', '/platform/reverso': 'app/platform/reverso/page.js',
+      '/platform/admin/robos/reverso': 'app/platform/admin/robos/reverso/page.js'};
+    const pathname = new URL(path, 'https://jenios.fixture').pathname;
+    return pages[pathname] ? load(pages[pathname]).default
+      : function OutOfScopeDestination() {return React.createElement('main', null, 'Destino fora do escopo: ' + pathname);};
+  }
+  let Page = adminAccessProps === null ? pageFor(pagePath)
+    : function LegacyAdminFixture() {return React.createElement(load('app/components/platform/PlatformAdminAccess.js').default,
+      adminAccessProps, React.createElement('main', null, 'Conteúdo administrativo fictício'));};
+  function navigate(value) {
+    const url = new URL(value, 'https://jenios.fixture');
+    assert.equal(url.origin, 'https://jenios.fixture', 'Fixture navigation must remain local');
+    pagePath = url.pathname + url.search; window.location = url; Page = pageFor(pagePath); dirty = true;
+  }
   function render() {
     dirty = false; const seen = new Set();
     function visit(node, path = 'root') {
@@ -189,10 +220,20 @@ export function createJourney({actor = USER, admin = false, socialMaster = false
   }
   const button = label => {const matches = findAll(tree, node => node.type === 'button' && text(node).trim() === label); assert.equal(matches.length, 1, 'Button: ' + label); return matches[0];};
   return {
-    requests, sourceCalls, records, storage, redirects, auth, fetcher, source, subscriptionHandler, adminStateHandler, clientStateHandler,
+    requests, sourceCalls, records, storage, redirects, signIns, auth, fetcher, source, subscriptionHandler, adminStateHandler, clientStateHandler,
+    get path() {return pagePath;}, get refreshes() {return refreshes;}, navigate,
     now: () => clock, get tree() {return tree;}, text: () => text(tree), render,
     async settle() {for (let i = 0; i < 30; i++) {render(); await tick(); if (!dirty) return tree;} throw Error('Fixture render did not settle');},
     button, click(label) {const node = button(label); assert.notEqual(node.props.disabled, true, 'Button disabled: ' + label); return node.props.onClick?.();},
+    followLink(label) {const links = findAll(tree, node => node.type === 'a' && text(node).trim() === label); assert.equal(links.length, 1); navigate(links[0].props.href);},
+    async signIn(email, password = SYNTHETIC_PASSWORD) {
+      for (const [type, value] of [['email', email], ['password', password]]) {
+        const input = findAll(tree, node => node.type === 'input' && node.props.type === type)[0]; assert.ok(input, 'Login input: ' + type);
+        input.props.onChange({target: {value}}); render();
+      }
+      const forms = findAll(tree, node => node.type === 'form'); assert.equal(forms.length, 1);
+      await forms[0].props.onSubmit({preventDefault() {}});
+    },
     accept(value = true) {const input = findAll(tree, node => node.type === 'input' && node.props.type === 'checkbox')[0]; assert.ok(input); input.props.onChange({target: {checked: value}});},
     selectCustomer(id) {const input = findAll(tree, node => node.type === 'input' && node.props.placeholder === 'Identificador da conta Platform')[0]; assert.ok(input); input.props.onChange({target: {value: id}}); render();
       const form = findAll(tree, node => node.type === 'form')[0]; form.props.onSubmit({preventDefault() {}});},

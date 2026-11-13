@@ -77,7 +77,25 @@ export function ReversoPlanOffers({onChoose, selectedInterval = null, disabled =
       <article className={css.offer}><span>Mensal</span><strong>R$ 19,90</strong><p>Por mês</p>{onChoose && <button type="button" disabled={disabled} aria-pressed={selectedInterval === 'month'} onClick={() => onChoose('month')}>Selecionar mensal</button>}</article>
       <article className={css.offer}><span>Anual</span><strong>R$ 199,00</strong><p>Pagamento único por 12 meses</p>{onChoose && <button type="button" disabled={disabled} aria-pressed={selectedInterval === 'year'} onClick={() => onChoose('year')}>Selecionar anual</button>}</article>
     </div>
-    <p className={css.muted}>A vigência começa na confirmação do pagamento. Participação de 20% no plano de entrada e 10% nos demais planos elegíveis, sobre o lucro líquido realizado e elegível do Reverso.</p>
+    <p className={css.muted}>A vigência começa na confirmação do pagamento. A assinatura é exclusiva do Reverso; não concede Ultra ou outros produtos. Direitos já contratados são preservados.</p>
+    <p className={css.muted}>Participação de 20% no plano de entrada, inclusive no avulso anual, e 10% somente com elegibilidade Reverso aprovada e comprovada.</p>
+  </section>;
+}
+
+export function ReversoCommercialConditions() {
+  return <section className={css.panel} aria-labelledby="reverso-costs-title">
+    <h2 id="reverso-costs-title">Cobranças do Reverso</h2>
+    <div className={css.grid}>
+      <article className={css.card}><h3>Taxa de uso · R$ 5,00</h3>
+        <p>Cobrança indisponível. O evento que gera a taxa e as condições de falha, retomada e estorno aguardam confirmação.</p>
+        <p className={css.muted}>Sinais, simulações e tentativas não comprovam uma operação cobrável. A taxa é separada da assinatura e da participação.</p>
+      </article>
+      <article className={css.card}><h3>Participação · fechamento mensal</h3>
+        <p>20% no plano de entrada, inclusive no Reverso avulso. 10% somente com elegibilidade aprovada e comprovada.</p>
+        <p className={css.muted}>Somente resultados realizados, atribuídos e conciliados ao Reverso. A cobrança permanece indisponível até a confirmação das regras de perdas, custos, contas e moedas.</p>
+      </article>
+    </div>
+    <p className={css.muted}>Valores apurados ou pendentes não significam cobrança emitida ou pagamento recebido. Dados indisponíveis não são saldo zero.</p>
   </section>;
 }
 
@@ -111,7 +129,7 @@ export function ReversoFinanceView({state, period = 'all', onPeriodChange = () =
       </>}</Section>
     </div>
     <Section title="Resultados por competência" section={s.performance} wide>{d => <>
-      {s.performance.mode === 'demo' && <p className={css.muted}>A simulação mensal não valida a política comercial do Reverso. Custos, perdas e unidade de apuração ainda dependem de regra aprovada.</p>}
+      {s.performance.mode === 'demo' && <p className={css.muted}>Demonstração com dados fictícios. A simulação mensal não valida a política comercial do Reverso. O fechamento é mensal; a base de cálculo, os custos e o tratamento de perdas ainda dependem de regra aprovada.</p>}
       <div className={css.heading}><p className={css.muted}>Resultados atribuídos ao Reverso. A participação apurada e o pagamento recebido aparecem separadamente.</p>
         <label>Competência<select value={period} onChange={event => onPeriodChange(event.target.value)}>
           <option value="all">Todas as competências</option>{months.map(m => <option key={m} value={m}>{month(m)}</option>)}
@@ -265,6 +283,7 @@ export default function PlatformReversoFinance({admin = false}) {
     <section className={css.hero}><span className={css.eyebrow}>JENIOS REVERSO</span><h1>{admin ? 'Gestão do Reverso' : 'Seu Reverso, em detalhes.'}</h1><p>Plano, vigência, resultados e participação nos ganhos em um só lugar.</p></section>
     {admin ? <ReversoPlanOffers/> : <PlatformReversoSubscription key={identity || 'signed-out'} subject={identity}
       renderOffers={props => <ReversoPlanOffers {...props}/>} onChanged={subscriptionChanged}/>}
+    <ReversoCommercialConditions/>
     {admin && <section className={css.panel}><h2>Consultar cliente</h2><form className={css.adminForm} onSubmit={select}>
       <label>Identificador do cliente<input autoComplete="off" spellCheck={false} value={draft} onChange={event => setDraft(event.target.value)} placeholder="Identificador da conta Platform" required maxLength={36}/></label>
       <button type="submit" className={css.primary} disabled={!identity}>Consultar</button>

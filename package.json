@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build",
+    "build": "node scripts/check-reverso-revpub002-deployment.mjs && npm run test:revpub002 && next build",
     "start": "next start",
     "lint": "next lint",
     "test": "JENIOS_LETTER_INTEGRATION_ENABLED=false node --test tests/*.test.mjs",
     "test:release-s05": "JENIOS_LETTER_INTEGRATION_ENABLED=false node --test tests/release-s05/*.test.mjs tests/social-s05/report-pdf-download.test.mjs",
-    "test:e2e:s05": "node scripts/check-s05-authenticated-e2e.mjs"
+    "test:e2e:s05": "node scripts/check-s05-authenticated-e2e.mjs",
+    "build:revpub001-snapshot": "node scripts/check-s05-env-scope.mjs && npm test && npm run test:release-s05 && next build",
+    "test:revpub002": "JENIOS_LETTER_INTEGRATION_ENABLED=false node --test tests/reverso-access.test.mjs tests/reverso-state.test.mjs tests/reverso-history.test.mjs tests/reverso-subscription-isolation.test.mjs tests/reverso-ui.test.mjs tests/reverso-subscription-ui-v2.test.mjs tests/reverso-publication-boundary.test.mjs tests/reverso-login-return-revsrc001.test.mjs tests/reverso-revpub002.test.mjs tests/release-s05/environment-reverso-publication.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

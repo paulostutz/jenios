@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {platformSupabase} from '../../../lib/platform/supabase-client';
+import {socialAuthReturnPath} from '../social-auth-return.mjs';
 /**
  * Dedicated Platform sessions retain their original API behavior.
  * Social Masters may only use two read-only, backend-gated ADMIN aggregation endpoints.
@@ -32,7 +33,12 @@ export async function platformAdminFetch(url,options={}){
  if(body.status!=='ready'||body.source!=='platform_dedicated_database')throw Error('Banco exclusivo da Platform indisponível.');
  return Response.json({...body,verified:true,source:'platform_dedicated_database'});
 }
-export default function PlatformAdminAccess({permission='platform.admin',children}){
+export default function PlatformAdminAccess({permission='platform.admin',returnTo=null,requireDedicated=false,children}){
+ // Preserve legacy entry links unless this page explicitly supplies an allowed
+ // return path. These options change navigation only, never admin permissions.
+ const loginHref=returnTo&&socialAuthReturnPath(returnTo)===returnTo
+  ? '/platform/entrar?'+(requireDedicated?'dedicated=1&':'')+'next='+encodeURIComponent(returnTo)
+  : '/platform/entrar';
  const [permissions,setPermissions]=useState(null),[error,setError]=useState('');
  const seq=useRef(0);
  useEffect(()=>{
@@ -57,7 +63,7 @@ export default function PlatformAdminAccess({permission='platform.admin',childre
  },[]);
  if(permissions===null)return <main style={{minHeight:'70vh',display:'grid',placeItems:'center',padding:24,background:'#0f172a',color:'white',fontFamily:'system-ui'}}>
   <section role="status" style={{textAlign:'center'}}>{error||'Verificando permissões da Platform…'}
-   <p><Link href="/platform/entrar" style={{color:'#c4b5fd'}}>Entrar na Platform</Link></p>
+   <p><Link href={loginHref} style={{color:'#c4b5fd'}}>Entrar na Platform</Link></p>
   </section></main>;
  const allowed=Array.isArray(permission)?permission.some(p=>permissions.includes(p)):permissions.includes(permission);
  if(!allowed)return <main style={{minHeight:'70vh',display:'grid',placeItems:'center',padding:24,background:'#0f172a',color:'white',fontFamily:'system-ui'}}>

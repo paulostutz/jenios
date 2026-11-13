@@ -1,0 +1,46 @@
+{
+  "schema": "JENIOS_REVPUB002_EXACT_WEB_V1",
+  "baseCommit": "da47f25126612fe0c94241db7616b76b3852b1a3",
+  "baseTree": "3208df55107cbe8485a1baeb671d34128a82ef7e",
+  "releaseBranch": "release/jenios-reverso-revpub002-20261113",
+  "authorizationReference": "USER_REVERSO_ASSINATURA_COBRANCAS_GESTAO_20261113",
+  "webPublicationApproved": true,
+  "publicationScope": "web-only-disabled-finance",
+  "publicationApproved": false,
+  "actualExecutionAuthorized": false,
+  "realDebitAuthorized": false,
+  "liveExecutionAllowed": false,
+  "realBillingAllowed": false,
+  "paymentIssuanceAllowed": false,
+  "brokerPermissionsGranted": false,
+  "verifierTemplateBlob": "b7d3f47f819b0d589e9896ea062cc00ffd97095d",
+  "replacements": {
+    "app/components/platform/PlatformAdminAccess.js": {
+      "baseline": "116517ab784b43e5f29eee83de35ce1cd2a7bc27",
+      "target": "aad1b907d67b5bc9598cd36e0dc2fbdd6530572e"
+    },
+    "app/components/platform/PlatformReversoFinance.js": {
+      "baseline": "2eedbb919e38918704781807eb01d1f45baf4b93",
+      "target": "0855778132e3fde5709255435b656c22d8729382"
+    },
+    "app/platform/admin/robos/reverso/page.js": {
+      "baseline": "71185ef9457fdd4a3f43fe94d2eed2650dcc80ff",
+      "target": "32737d34ec51c9d92f4b2d6ce9b1e60d087470d4"
+    },
+    "package.json": {
+      "baseline": "5448f4d5cc5138c56deabe781efd8c2f7131721f",
+      "target": "82044b5f4ab3ef634eb8c0e5acbbbd644e0ff229"
+    },
+    "tests/helpers/reverso-journey-harness-v2.mjs": {
+      "baseline": "56c717851ce75eb80b0681f2a3996e021c1168d8",
+      "target": "39eba288ba37f32762fec826bc41d7a52f912ea1"
+    }
+  },
+  "additions": {
+    "docs/reverso/REVPUB002-FINANCE-STATUS.md": "2663009a2ff115419a2531a6c1200c84b2b75c4b",
+    "scripts/finalize-reverso-revpub002.mjs": "b524686230280c9ec45451021a8f046ff18176a9",
+    "scripts/check-reverso-revpub002-deployment.mjs": "7b550796d23beefbcebb6faec3f33179015187c0",
+    "tests/reverso-login-return-revsrc001.test.mjs": "eddad2df0f5105c0bb09ab8c1fef6274209d6a95",
+    "tests/reverso-revpub002.test.mjs": "97be6ac70ca9e58799f95e1fbecfdb04438ac0a5"
+  }
+}
